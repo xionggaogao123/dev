@@ -1,5 +1,6 @@
 package com.fulaan.dto;
 
+import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
 import com.fulaan.util.DateUtils;
 import com.fulaan.util.OperationType;
 import com.pojo.fcommunity.MemberEntry;
@@ -35,6 +36,8 @@ public class MemberDTO {
     //判断是否本人的标志位
     private int isOwner;
 
+    //获取某个社区下绑定的孩子有哪些（userId在communityId下的孩子）
+    private List<NewVersionBindRelationDTO> bindRelationDTOList;
 
     public MemberDTO() {
 
@@ -221,5 +224,13 @@ public class MemberDTO {
 
     public void setIsOwner(int isOwner) {
         this.isOwner = isOwner;
+    }
+
+    public List<NewVersionBindRelationDTO> getBindRelationDTOList() {
+        return bindRelationDTOList;
+    }
+
+    public void setBindRelationDTOList(List<NewVersionBindRelationDTO> bindRelationDTOList) {
+        this.bindRelationDTOList = bindRelationDTOList;
     }
 }

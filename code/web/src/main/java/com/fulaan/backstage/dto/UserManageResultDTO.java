@@ -1,6 +1,8 @@
 package com.fulaan.backstage.dto;
 
 
+import java.util.List;
+
 /**
  * 用户管理 列表展示Dto
  * Created by taotao.chan on 2018年8月30日13:32:17
@@ -28,8 +30,10 @@ public class UserManageResultDTO {
     private String communityCount;
 
     //小孩信息
+    private List<UserManageChildrenDTO> childrenDTOList;
 
     //父母信息
+    private List<UserManageParentDTO> parentDTOList;
 
     public UserManageResultDTO(){
 
@@ -110,5 +114,21 @@ public class UserManageResultDTO {
 
     public void setCommunityCount(String communityCount) {
         this.communityCount = communityCount;
+    }
+
+    public List<UserManageChildrenDTO> getChildrenDTOList() {
+        return childrenDTOList;
+    }
+
+    public void setChildrenDTOList(List<UserManageChildrenDTO> childrenDTOList) {
+        this.childrenDTOList = childrenDTOList;
+    }
+
+    public List<UserManageParentDTO> getParentDTOList() {
+        return parentDTOList;
+    }
+
+    public void setParentDTOList(List<UserManageParentDTO> parentDTOList) {
+        this.parentDTOList = parentDTOList;
     }
 }

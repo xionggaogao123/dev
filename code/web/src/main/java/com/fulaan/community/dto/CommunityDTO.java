@@ -1,6 +1,7 @@
 package com.fulaan.community.dto;
 
 import com.fulaan.dto.MemberDTO;
+import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
 import com.fulaan.util.DateUtils;
 import com.pojo.fcommunity.CommunityEntry;
 import com.sys.constants.Constant;
@@ -48,6 +49,9 @@ public class CommunityDTO {
     private String currentUserRole;
     //社群所属学校
     private String schoolName;
+
+    //获取某个社区下绑定的孩子有哪些（userId在communityId下的孩子）
+    private List<NewVersionBindRelationDTO> bindRelationDTOList;
 
     public CommunityDTO() {
 
@@ -262,5 +266,13 @@ public class CommunityDTO {
 
     public void setSchoolName(String schoolName) {
         this.schoolName = schoolName;
+    }
+
+    public List<NewVersionBindRelationDTO> getBindRelationDTOList() {
+        return bindRelationDTOList;
+    }
+
+    public void setBindRelationDTOList(List<NewVersionBindRelationDTO> bindRelationDTOList) {
+        this.bindRelationDTOList = bindRelationDTOList;
     }
 }

@@ -3,6 +3,7 @@ package com.fulaan.backstage.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.easemob.server.EaseMobAPI;
+import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.backstage.dto.UserManageResultDTO;
 import com.fulaan.backstage.service.BackStageUserManageService;
 import com.fulaan.base.BaseController;
@@ -10,6 +11,7 @@ import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
+import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.service.CommunityService;
 import com.fulaan.service.MemberService;
 import com.pojo.utils.MongoUtils;
@@ -23,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
@@ -49,6 +50,9 @@ public class BackStageUserManageController extends BaseController {
     private CommunityService communityService;
     @Autowired
     private EmService emService;
+
+    @Autowired
+    private NewVersionBindService newVersionBindService;
 
     /**
      * 后台用户管理角色筛选
@@ -320,7 +324,8 @@ public class BackStageUserManageController extends BaseController {
     /**
      * 解散群聊
      * 复制从 DefaultGroupController
-     * @param emChatId
+     * emChatId
+     * @param
      * @return
      */
     @ApiOperation(value = "解散群聊", httpMethod = "GET", produces = "application/json")
@@ -377,5 +382,31 @@ public class BackStageUserManageController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * 后台设置解除孩子们绑定
+     * map 中 userIds（,拼接的孩子的Id） communityId
+     * copy from API /relieveCommunityBindRelation
+     * @return
+     */
+    @ApiOperation(value = "解除孩子们绑定", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/relieveChildrenBindRelation")
+    @ResponseBody
+    public RespObj relieveChildrenBindRelation(@RequestBody Map map){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            ObjectId communityId = new ObjectId(map.get("communityId").toString());
+            String userIds = map.get("userIds").toString();
+            backStageUserManageService.relieveChildrenBindRelation(communityId, userIds);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("操作成功！");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
 }

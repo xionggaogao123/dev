@@ -845,10 +845,11 @@ public class MemberDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, updateValue);
     }
 
-    public List<MemberEntry> getCommunityListByUid(ObjectId userId) {
+    public List<MemberEntry> getCommunityListByUid(ObjectId userId,List<ObjectId> listMineCommunityId) {
         BasicDBObject query = new BasicDBObject("r", Constant.ZERO);
         query.append("uid",userId);
         query.append("cmid",new BasicDBObject(Constant.MONGO_EXIST,true));//有关联社群Id的
+        query.append("cmid",new BasicDBObject(Constant.MONGO_IN,listMineCommunityId));
 
         BasicDBObject orderBy = new BasicDBObject(Constant.ID, Constant.DESC);
         List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();

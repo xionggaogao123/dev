@@ -411,7 +411,7 @@ public class CommunityDao extends BaseDao {
      * @param map
      * @return
      */
-    public Map<String,Object> getUserCreatedCommunity(Map map) {
+    public Map<String,Object> getUserCreatedCommunity(Map map,List<ObjectId> listMineCommunityId) {
         int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
         int pageSize = map.get("pageSize") == null?10:Integer.parseInt(map.get("pageSize").toString());
 
@@ -419,6 +419,7 @@ public class CommunityDao extends BaseDao {
         List<CommunityEntry> entries=new ArrayList<CommunityEntry>();
         BasicDBObject query = new BasicDBObject().append("cmow", new ObjectId(map.get("userId").toString()));
         query.append("r",Constant.ZERO);
+        query.append("_id",new BasicDBObject(Constant.MONGO_IN,listMineCommunityId));
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS
                 ,new BasicDBObject("_id", Constant.DESC), (page - 1) * pageSize, pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

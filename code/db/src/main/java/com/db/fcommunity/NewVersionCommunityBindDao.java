@@ -495,4 +495,19 @@ public class NewVersionCommunityBindDao extends BaseDao{
         }
         return new ArrayList<ObjectId>(communityIds);
     }
+
+    /**
+     * 批量解除孩子社群绑定
+     * @param userIdList
+     * @param communityId
+     */
+    public void relieveChildrenBindRelation(List<ObjectId> userIdList, ObjectId communityId) {
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("ir", Constant.ZERO)
+                .append("uid", new BasicDBObject(Constant.MONGO_IN,userIdList));
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
+                query,updateValue);
+    }
 }

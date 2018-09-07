@@ -1085,6 +1085,10 @@ public class Constant {
     public static final String COLLECTION_ACCOUNT_FRASH= "excellent_new_account_frash";
     //后台订单管理
     public static final String COLLECTION_BACK_ORDER= "excellent_back_order";
+    //cc同步数据
+    public static final String COLLECTION_CC_LOGIN= "excellent_cc_login";
+    //用户登陆信息
+    public static final String COLLECTION_USER_DESC= "excellent_user_class_desc";
     /*************************************积分商城*****************************************/
     
     //商品

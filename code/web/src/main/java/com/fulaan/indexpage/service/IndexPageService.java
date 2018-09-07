@@ -2039,7 +2039,7 @@ public class IndexPageService {
             }else{
                 dto.setReadCount(0);
             }
-            dto.setTotalReadCount(indexContentEntry.getAllCount());
+            dto.setTotalReadCount(indexContentEntry.getAllCount()-1);
             UserEntry userEntry = userEntryMap.get(uid);
             if(userEntry!=null){
                 String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();

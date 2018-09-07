@@ -1,15 +1,9 @@
 package com.pojo.excellentCourses;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.pojo.base.BaseDBObject;
-import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by James on 2018-09-06.
@@ -40,8 +34,8 @@ public class UserCCLoinEntry extends BaseDBObject {
             ObjectId contactId,
             String userName,
             String userIp,
-            long enterTime,
-            long leaveTime
+            String enterTime,
+            String leaveTime
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("rid",roomId)
@@ -54,25 +48,13 @@ public class UserCCLoinEntry extends BaseDBObject {
                 .append("isr",Constant.ZERO);
         setBaseEntry(dbObject);
     }
-
-    //修改构造
-    public UserCCLoinEntry(
-            ObjectId id,
-            ObjectId userId,
-            ObjectId contactId,
-            List<ObjectId> classIds
-    ){
-        BasicDBObject dbObject=new BasicDBObject()
-                .append(Constant.ID, id)
-                .append("uid", userId)
-                .append("cid", contactId)
-                .append("clt", classIds)
-                .append("ctm", new Date().getTime())
-                .append("typ",Constant.ZERO)
-                .append("dtm",new Date().getTime())
-                .append("isr",Constant.ZERO);
-        setBaseEntry(dbObject);
+    public String getRoomId(){
+        return getSimpleStringValue("rid");
     }
+    public void setRoomId(String roomId){
+        setSimpleValue("rid",roomId);
+    }
+
     public ObjectId getUserId(){
         return getSimpleObjecIDValue("uid");
     }
@@ -86,45 +68,36 @@ public class UserCCLoinEntry extends BaseDBObject {
         setSimpleValue("cid",contactId);
     }
 
-    public void setClassIds(List<ObjectId> classIds){
-        setSimpleValue("clt", MongoUtils.convert(classIds));
+    public String getUserName(){
+        return getSimpleStringValue("unm");
+    }
+    public void setUserName(String userName){
+        setSimpleValue("unm",userName);
     }
 
-    public List<ObjectId> getClassIds(){
-        ArrayList<ObjectId> classIds = new ArrayList<ObjectId>();
-        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("clt");
-        if(dbList != null && !dbList.isEmpty()){
-            for (Object obj : dbList) {
-                classIds.add((ObjectId)obj);
-            }
-        }
-        return classIds;
+    public String getUserIp(){
+        return getSimpleStringValue("uip");
+    }
+    public void setUserIp(String userIp){
+        setSimpleValue("uip",userIp);
     }
 
-    public long getCreateTime(){
-        return getSimpleLongValue("ctm");
+    public String getEnterTime(){
+        return getSimpleStringValue("etm");
     }
 
-    public void setCreateTime(long createTime){
-        setSimpleValue("ctm",createTime);
+    public void setEnterTime(long enterTime){
+        setSimpleValue("etm",enterTime);
     }
 
 
-    public long getDateTime(){
-        return getSimpleLongValue("dtm");
+    public String getLeaveTime(){
+        return getSimpleStringValue("ltm");
     }
 
-    public void setDateTime(long dateTime){
-        setSimpleValue("dtm",dateTime);
+    public void setLeaveTime(long leaveTime){
+        setSimpleValue("ltm",leaveTime);
     }
-    public int getType(){
-        return getSimpleIntegerValue("typ");
-    }
-
-    public void setType(int type){
-        setSimpleValue("typ",type);
-    }
-
 
     public int getIsRemove(){
         return getSimpleIntegerValue("isr");

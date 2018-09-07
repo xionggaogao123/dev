@@ -129,7 +129,7 @@ public class RedDotService {
     public void jianRedDot(ObjectId userId,int type){
         RedDotEntry redDotEntry = redDotDao.getEntryByUserId(userId,type);
         if(redDotEntry!=null && redDotEntry.getNewNumber()>0){
-            redDotDao.updateEntry(redDotEntry.getID(),redDotEntry.getNewNumber());
+            redDotDao.updateEntry(redDotEntry.getID(),redDotEntry.getNewNumber()-1);
         }
     }
 

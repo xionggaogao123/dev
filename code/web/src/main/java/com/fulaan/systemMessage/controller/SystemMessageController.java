@@ -310,6 +310,24 @@ public class SystemMessageController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "查询大V", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getBigList2")
+    @ResponseBody
+    public RespObj getBigList2(@ApiParam(value="communityIds")@RequestParam("communityIds") String communityIds){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<SimpleUserDTO> dtos =  systemMessageService.getBigList2(communityIds, getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询大V失败");
+        }
+        return respObj;
+    }
+
     @ApiOperation(value = "发送消息", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/sendMessage")

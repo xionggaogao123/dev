@@ -477,16 +477,19 @@ public class BusinessManageService {
             userMap.put("order",order);
             userMap.put("avatar",AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
             userMap.put("price","¥ "+score);
+            userMap.put("newPrice",score);
             userMap.put("jiaId",userEntry.getGenerateUserCode());
             userMap.put("number",number);
             userMap.put("createTime",ctm);
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
             userMap.put("userName",name);
             if(order2.equals("")){
-                if(money==1){
-                    userMap.put("orderId","后台付费");
+                if(money==1){//现金
+                    userMap.put("orderId","");
+                    userMap.put("newPrice",1);
                 }else{
-                    userMap.put("orderId","后台免费");
+                    userMap.put("orderId","");
+                    userMap.put("newPrice",0);
                 }
             }else{
                 userMap.put("orderId",order2);
@@ -901,6 +904,10 @@ public class BusinessManageService {
                 dto.setJiaId(userEntry.getGenerateUserCode());
                 dto.setCount(dto.getClassIdList().size());
             }
+            if(dto.getOrderId().equals("后台付费") || dto.getOrderId().equals("后台免费")){
+                dto.setOrderId("");
+            }
+            dto.setNewPrice("¥ "+dto.getPrice());
             dtos.add(dto);
         }
         map.put("count",count);

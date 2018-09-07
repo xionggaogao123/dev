@@ -8,6 +8,7 @@ import com.db.controlphone.ControlSimpleDao;
 import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.HourClassDao;
+import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
@@ -101,6 +102,8 @@ public class SystemMessageService extends BaseService {
     private EmService emService;
     @Autowired
     private UserService userService;
+
+    private CommunityDao communityDao = new CommunityDao();
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
 
@@ -271,6 +274,39 @@ public class SystemMessageService extends BaseService {
 
         if(oids.size()>0){
             List<ObjectId> memberList = memberDao.getAllGroupIdsMembers(oids);
+            List<ObjectId> objectIdList = teacherApproveDao.selectMap(memberList);
+            //objectIdList.remove(userId);
+            if(objectIdList.size()>0){
+                List<UserEntry> userEntries = userDao.getUserEntryList(objectIdList, Constant.FIELDS);
+                for(UserEntry userEntry:userEntries){
+                    SimpleUserDTO dto = new SimpleUserDTO();
+                    dto.setId(userEntry.getID().toString());
+                    String userName = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                    dto.setName(userName);
+                    dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                    dto.setJiaId(userEntry.getGenerateUserCode());
+                    if(!userId.equals(userEntry.getID())){
+                        dtos.add(dto);
+                    }
+                }
+            }
+        }
+        return dtos;
+    }
+    public List<SimpleUserDTO> getBigList2(String communityIds,ObjectId userId){
+        List<SimpleUserDTO> dtos = new ArrayList<SimpleUserDTO>();
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        if(communityIds!=null && !communityIds.equals("")){
+             String[] strings = communityIds.split(",");
+             for(String s : strings){
+                 oids.add(new ObjectId(s));
+             }
+        }else{
+            return dtos;
+        }
+        List<ObjectId> oids1 = communityDao.getGroupIdsByCommunityIds(oids);
+        if(oids1.size()>0){
+            List<ObjectId> memberList = memberDao.getAllGroupIdsMembers(oids1);
             List<ObjectId> objectIdList = teacherApproveDao.selectMap(memberList);
             //objectIdList.remove(userId);
             if(objectIdList.size()>0){

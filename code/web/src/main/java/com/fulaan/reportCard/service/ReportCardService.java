@@ -207,6 +207,15 @@ public class ReportCardService {
                 webHomePageDao.updateContactStatus(userRecordEntry.getID(), Constant.THREE, Constant.THREE);
                 reportCardSignDao.updateTypeByRecordId(userRecordEntry.getID(),mainUserId);
             }
+            IndexContentEntry indexContentEntry = indexContentDao.getEntry(groupExamDetailId);
+            if(indexContentEntry!=null){
+                List<ObjectId> reList = indexContentEntry.getReaList();
+                if(!reList.contains(userId)) {
+                    indexContentDao.pushReadList(userId, groupExamDetailId);
+                    //红点减一
+                    redDotService.jianRedDot(userId,ApplyTypeEn.repordcard.getType());
+                }
+            }
 
         }
     }

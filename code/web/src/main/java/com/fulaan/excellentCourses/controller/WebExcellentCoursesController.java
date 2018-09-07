@@ -1007,4 +1007,52 @@ public class WebExcellentCoursesController extends BaseController {
     }
 
 
+    /**
+     * 查询某个用户的上课信息
+     */
+    @ApiOperation(value = "查询某个用户的上课信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectUserClassDesc")
+    @ResponseBody
+    public String selectUserClassDesc(@ApiParam(name = "id", required = true, value = "id") @RequestParam String id,
+                                      @ApiParam(name = "userId", required = true, value = "userId") @RequestParam String userId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            //excellentCoursesService.selectUserClassDesc(new ObjectId(id), communityList);
+            respObj.setMessage("查询某个用户的上课信息成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 删除课程小节
+     */
+    @ApiOperation(value = "删除课程小节", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/deleteClass")
+    @ResponseBody
+    public String deleteClass(@ApiParam(name = "id", required = true, value = "id") @RequestParam String id,
+                                      @ApiParam(name = "userId", required = true, value = "userId") @RequestParam String userId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            //excellentCoursesService.selectUserClassDesc(new ObjectId(id), communityList);
+            respObj.setMessage("查询某个用户的上课信息成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 }

@@ -4,6 +4,8 @@ import com.db.backstage.LogMessageDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.excellentCourses.*;
 import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.GroupDao;
+import com.db.fcommunity.MemberDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -84,6 +86,14 @@ public class ExcellentCoursesService {
     private CommunityService communityService;
     @Autowired
     private CoursesRoomService coursesRoomService;
+
+    private UserClassDescDao userClassDescDao = new UserClassDescDao();
+
+    private UserCCLoinDao userCCLoinDao = new UserCCLoinDao();
+
+    private MemberDao memberDao = new MemberDao();
+
+    private GroupDao groupDao = new GroupDao();
 
     private static final Logger logger =Logger.getLogger(DefaultWrongQuestionController.class);
 
@@ -3635,18 +3645,34 @@ public class ExcellentCoursesService {
         return dtos;
     }
 
+    /**
+     * 获得用户的所有具有管理员权限的社区id
+     *
+     */
+    public List<ObjectId> getMyRoleList(ObjectId userId){
+        List<ObjectId> olsit = memberDao.getGroupIdsList(userId);
+        List<ObjectId> clist = new ArrayList<ObjectId>();
+        List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
+        return mlist;
+    }
+
     public List<CommunityDTO> getCommunityList(ObjectId id,ObjectId userId){
         ExcellentCoursesEntry excellentCoursesEntry =  excellentCoursesDao.getEntry(id);
         if(excellentCoursesEntry==null){
             return new ArrayList<CommunityDTO>();
         }
         List<ObjectId> communityIdList = excellentCoursesEntry.getCommunityIdList();
-        List<CommunityDTO> objectIdList = communityService.getCommunitys2(userId, 1, 200);
-        for(CommunityDTO communityDTO:objectIdList){
-            if(communityIdList.contains(new ObjectId(communityDTO.getId()))){
-                communityDTO.setJoin(true);
-            }else{
-                communityDTO.setJoin(false);
+        List<ObjectId> objectIdList3 = getMyRoleList(excellentCoursesEntry.getUserId());
+        List<CommunityDTO> objectIdList4 = communityService.getCommunitys2(excellentCoursesEntry.getUserId(), 1, 200);
+        List<CommunityDTO> objectIdList = new ArrayList<CommunityDTO>();
+        for(CommunityDTO communityDTO:objectIdList4){
+            if(objectIdList3.contains(new ObjectId(communityDTO.getId()))){
+                if(communityIdList.contains(new ObjectId(communityDTO.getId()))){
+                    communityDTO.setJoin(true);
+                }else{
+                    communityDTO.setJoin(false);
+                }
+                objectIdList.add(communityDTO);
             }
         }
         List<CommunityDTO> objectIdList2 = new ArrayList<CommunityDTO>();
@@ -3674,6 +3700,132 @@ public class ExcellentCoursesService {
         excellentCoursesDao.addEntry(excellentCoursesEntry);
     }
 
+    public void  selectUserClassDesc(ObjectId id,ObjectId userId){
+        ExcellentCoursesEntry excellentCoursesEntry =  excellentCoursesDao.getEntry(id);
+        CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        if(coursesRoomEntry==null){
+            return;
+        }
+        /*String roomId,ObjectId contactId,long startTime,long endTime*/
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        List<ObjectId> classOrderEntries = classOrderDao.getEntryIdList(userId, id);
+        //1 .找出已结束课节
+        List<ObjectId>  endIdList = new ArrayList<ObjectId>();
+        List<ObjectId>  allList = new ArrayList<ObjectId>();
+        long nowTime = System.currentTimeMillis();
+        Map<ObjectId,HourClassEntry> hourClassEntryMap = new HashMap<ObjectId, HourClassEntry>();
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
+            if(nowTime>endTime){//已结束
+                endIdList.add(hourClassEntry.getID());
+            }
+            allList.add(hourClassEntry.getID());
+            hourClassEntryMap.put(hourClassEntry.getID(), hourClassEntry);
+        }
+        //2 .判断课节是否已产生记录
+        if(endIdList.size()>0){
+            Set<ObjectId> se = userClassDescDao.getEntryIdList(endIdList, id);
+            //去除已存在记录
+            allList.removeAll(se);
+            //String roomId,ObjectId contactId,long startTime,long endTime
+            List<UserCCLoinEntry> userCCLoinEntries = new ArrayList<UserCCLoinEntry>();
+            for(ObjectId oid:allList){
+                HourClassEntry hourClassEntry = hourClassEntryMap.get(oid);
+                if(hourClassEntry!=null){
+                    userCCLoinEntries.addAll(coursesRoomService.getAllUserList(coursesRoomEntry.getRoomId(), id, hourClassEntry.getStartTime(), hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime()));
+                }
+            }
+            this.addEntryBatch2(userCCLoinEntries);
+        }
+
+        List<UserClassDescEntry> entries = new ArrayList<UserClassDescEntry>();
+        if(allList.size()>0){//无记录课节，生成记录
+            List<UserCCLoinEntry> userCCLoinEntries = userCCLoinDao.getAllEntryIdList(userId, id);
+            for(ObjectId oid:allList){
+                HourClassEntry hourClassEntry = hourClassEntryMap.get(oid);
+                int number = 0;
+                int currentTime = 0;
+                long st = hourClassEntry.getStartTime();
+                long et = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
+                for(UserCCLoinEntry ccLoinEntry:userCCLoinEntries){
+                    long s = 0;
+                    if(ccLoinEntry.getEnterTime()!=null){
+                        s = DateTimeUtils.getStrToLongTime(ccLoinEntry.getEnterTime(), "yyyy-MM-dd HH:mm");
+                    }
+                    long e = 0;
+                    if(ccLoinEntry.getLeaveTime()!=null){
+                        e = DateTimeUtils.getStrToLongTime(ccLoinEntry.getLeaveTime(), "yyyy-MM-dd HH:mm");
+                    }
+                    if(checkTime(st,et,s,e)){
+                        number++;
+                        currentTime += e-s;
+                    }
+                }
+                UserClassDescEntry userClassDescEntry = new UserClassDescEntry(userId,id,hourClassEntry.getID(),hourClassEntry.getCurrentTime(),number,currentTime,st,et,Constant.ONE);
+                entries.add(userClassDescEntry);
+            }
+        }
+        this.addEntryBatch3(entries);
+
+
+
+        //3 .未产生记录的循环查询生成记录（并返回稍后信息）
+
+        //
+
+    }
+
+    public boolean checkTime(long stm,long etm,long stm2,long etm2){
+        if(stm2>stm && etm2<etm ){//1
+            return true;
+        }
+
+        if(etm2 > stm && etm2 < etm ){//2
+            return true;
+        }
+
+        if(stm2 < stm && etm2 > etm){//3
+            return true;
+        }
+
+        if(stm2 >stm && stm2 < etm){//4
+            return true;
+        }
+        if(stm==stm2 || stm== etm2 || etm == stm2 || etm ==etm2){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 批量增加红点记录
+     * @param list
+     */
+    public void addEntryBatch2(List<UserCCLoinEntry> list) {
+        List<DBObject> dbList = new ArrayList<DBObject>();
+        for (int i = 0; list != null && i < list.size(); i++) {
+            dbList.add(list.get(i).getBaseEntry());
+        }
+        //导入新纪录
+        if(dbList.size()>0) {
+            userCCLoinDao.addBatch(dbList);
+        }
+    }
+
+    public void addEntryBatch3(List<UserClassDescEntry> list) {
+        List<DBObject> dbList = new ArrayList<DBObject>();
+        for (int i = 0; list != null && i < list.size(); i++) {
+            dbList.add(list.get(i).getBaseEntry());
+        }
+        //导入新纪录
+        if(dbList.size()>0) {
+            userClassDescDao.addBatch(dbList);
+        }
+    }
+
 
     //cc 获取直播间状态
     public int getRoomStatus(String roomId){
@@ -3686,6 +3838,17 @@ public class ExcellentCoursesService {
         BigDecimal b = new BigDecimal(d);
         d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         return d;
+    }
+
+    //删除课节
+    public void deleteClass(){
+
+    }
+
+
+    //修改课节
+    public void updateClass(){
+
     }
 
 }

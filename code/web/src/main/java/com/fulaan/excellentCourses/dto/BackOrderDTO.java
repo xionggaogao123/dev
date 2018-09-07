@@ -28,6 +28,7 @@ public class BackOrderDTO {
     private int status;
     private int role;
     private int money;
+    private String newPrice;
 
     public BackOrderDTO(){
 
@@ -109,6 +110,14 @@ public class BackOrderDTO {
                 );
         return openEntry;
 
+    }
+
+    public String getNewPrice() {
+        return newPrice;
+    }
+
+    public void setNewPrice(String newPrice) {
+        this.newPrice = newPrice;
     }
 
     public String getUserName() {

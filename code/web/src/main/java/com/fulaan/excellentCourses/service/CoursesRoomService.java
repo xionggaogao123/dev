@@ -8,6 +8,7 @@ import com.fulaan.excellentCourses.dto.CCLoginDTO;
 import com.fulaan.excellentCourses.dto.ReplayDTO;
 import com.fulaan.excellentCourses.util.RoomUtil;
 import com.pojo.excellentCourses.CoursesRoomEntry;
+import com.pojo.excellentCourses.UserCCLoinEntry;
 import com.pojo.user.UserEntry;
 import com.sys.props.Resources;
 import com.sys.utils.AvatarUtils;
@@ -317,6 +318,52 @@ liveid	直播id*/
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 批量获取
+     */
+    public List<UserCCLoinEntry> getAllUserList(String roomId,ObjectId contactId,long startTime,long endTime){
+        Map<String,String> map = new TreeMap<String, String>();
+        map.put("userid",CC_USERID);
+        map.put("roomid",roomId);
+        List<UserCCLoinEntry> entries = new ArrayList<UserCCLoinEntry>();
+        try{
+            String stm = DateTimeUtils.getLongToStrTimeTwo(startTime).substring(0,17);
+            String etm = DateTimeUtils.getLongToStrTimeTwo(endTime).substring(0,17);
+            map.put("starttime",URLEncoder.encode(stm, "utf-8"));
+
+            map.put("endtime",URLEncoder.encode(etm, "utf-8"));
+
+            String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
+            String str3 = URLDecoder.decode(sysCode, "utf-8");
+            String str =  CoursesRoomAPI.getUserList(str3);
+            JSONObject dataJson = new JSONObject(str);
+            String rows = dataJson.getString("result");
+            if(rows.equals("OK")){
+                JSONArray rows2 = dataJson.getJSONArray("userActions");
+                for(int i = 0;i<rows2.length();i++){
+                    JSONObject rows3 = rows2.getJSONObject(i);
+                    String uid = rows3.getString("userId");
+                    if(ObjectId.isValid(uid)){
+                        UserCCLoinEntry userCCLoinEntry = new UserCCLoinEntry(
+                                roomId,
+                                new ObjectId(uid),
+                                contactId,
+                                rows3.getString("userName"),
+                                rows3.getString("userIp"),
+                                rows3.getString("enterTime"),
+                                rows3.getString("leaveTime")
+                                );
+                        entries.add(userCCLoinEntry);
+                    }
+                }
+            }else{
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return entries;
     }
 
     /**

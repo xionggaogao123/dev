@@ -2028,18 +2028,26 @@ public class BackStageService {
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         if(excellentCoursesEntry!=null){
             int index = 0;
-            long startTime = excellentCoursesEntry.getStartTime();
-            long endTime = excellentCoursesEntry.getEndTime();
+            long startTime = 0;
+            long endTime = 0;
             for(HourClassEntry hourClassEntry:hourClassEntries){
                 index++;
                 hourClassDao.sortEntry(hourClassEntry.getID(),index);
                 long stm = hourClassEntry.getStartTime();
-                long etm = hourClassEntry.getStartTime()+hourClassEntry.getCreateTime();
-                if(stm<startTime){
+                long etm = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
+                if(startTime==0l){
                     startTime = stm;
+                }else{
+                    if(stm<startTime){
+                        startTime = stm;
+                    }
                 }
-                if(etm>endTime){
+                if(endTime==0l){
                     endTime = etm;
+                }else{
+                    if(endTime <etm){
+                        endTime = etm;
+                    }
                 }
             }
             //修改起始时间

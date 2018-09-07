@@ -40,6 +40,14 @@ public class HourClassDao extends BaseDao {
     }
 
     //删除
+    public void delOneEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,updateValue);
+    }
+
+
+    //删除
     public void sortEntry(ObjectId id,int order){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ord",order));

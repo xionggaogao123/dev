@@ -18,6 +18,8 @@ public class UserClassDescDTO {
             int status*/
     private String id;
     private String userId;
+    private String userName;
+    private int order;
     private String contactId;
     private int currentTime;
     private int number;
@@ -51,6 +53,22 @@ public class UserClassDescDTO {
         }else{
             new HourClassDTO();
         }
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     public String getId() {

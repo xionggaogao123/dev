@@ -318,9 +318,8 @@ public class SystemMessageService extends BaseService {
                     dto.setName(userName);
                     dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
                     dto.setJiaId(userEntry.getGenerateUserCode());
-                    if(!userId.equals(userEntry.getID())){
-                        dtos.add(dto);
-                    }
+                    dtos.add(dto);
+
                 }
             }
         }

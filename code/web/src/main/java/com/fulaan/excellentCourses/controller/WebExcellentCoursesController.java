@@ -1021,8 +1021,8 @@ public class WebExcellentCoursesController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            //excellentCoursesService.selectUserClassDesc(new ObjectId(id), communityList);
-            respObj.setMessage("查询某个用户的上课信息成功");
+            Map<String,Object> message= excellentCoursesService.selectSimpleList(new ObjectId(id), new ObjectId(userId));
+            respObj.setMessage(message);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
@@ -1040,13 +1040,12 @@ public class WebExcellentCoursesController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/deleteClass")
     @ResponseBody
-    public String deleteClass(@ApiParam(name = "id", required = true, value = "id") @RequestParam String id,
-                                      @ApiParam(name = "userId", required = true, value = "userId") @RequestParam String userId){
+    public String deleteClass(@ApiParam(name = "id", required = true, value = "id") @RequestParam String id){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            //excellentCoursesService.selectUserClassDesc(new ObjectId(id), communityList);
-            respObj.setMessage("查询某个用户的上课信息成功");
+            String message = excellentCoursesService.deleteClass(new ObjectId(id),getUserId());
+            respObj.setMessage(message);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

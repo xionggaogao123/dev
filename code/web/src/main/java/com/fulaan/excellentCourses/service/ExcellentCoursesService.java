@@ -1,6 +1,7 @@
 package com.fulaan.excellentCourses.service;
 
 import com.db.backstage.LogMessageDao;
+import com.db.backstage.PushMessageDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.excellentCourses.*;
 import com.db.fcommunity.CommunityDao;
@@ -94,6 +95,8 @@ public class ExcellentCoursesService {
     private MemberDao memberDao = new MemberDao();
 
     private GroupDao groupDao = new GroupDao();
+
+    private PushMessageDao pushMessageDao = new PushMessageDao();
 
     private static final Logger logger =Logger.getLogger(DefaultWrongQuestionController.class);
 
@@ -3778,6 +3781,56 @@ public class ExcellentCoursesService {
 
     }
 
+    public  Map<String,Object>  selectSimpleList(ObjectId id,ObjectId userId) throws  Exception{
+        Map<String,Object> map = new HashMap<String, Object>();
+        ExcellentCoursesEntry excellentCoursesEntry =  excellentCoursesDao.getEntry(id);
+        CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            throw  new Exception("课程不存在！");
+        }
+        if(coursesRoomEntry==null){
+            throw  new Exception("直播间不存在！");
+        }
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        Map<ObjectId,ClassOrderEntry> entryMap = classOrderDao.getEntryList(userId, id);
+        long nowTime = System.currentTimeMillis();
+        UserEntry userEntry = userDao.findByUserId(userId);
+        if(userEntry==null){
+            throw  new Exception("用户不存在！");
+        }
+        String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+        map.put("name",name);
+        List<UserClassDescDTO>  userClassDescDTOs = new ArrayList<UserClassDescDTO>();
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            HourClassDTO hourClassDTO = new HourClassDTO(hourClassEntry);
+            long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
+            UserClassDescDTO userClassDescDTO = new UserClassDescDTO();
+            userClassDescDTO.setEndTime("");
+            ClassOrderEntry classOrderEntry = entryMap.get(hourClassEntry.getID());
+            if(classOrderEntry==null){
+                userClassDescDTO.setStatus(0);//未购买
+            }else{
+                if(classOrderEntry.getType()==0){
+                    userClassDescDTO.setStatus(1);//已进入
+                }else{
+                    userClassDescDTO.setStatus(2);//未进入
+                }
+            }
+
+            userClassDescDTO.setStartTime(hourClassDTO.getStartTime());
+            userClassDescDTO.setAllTime(hourClassEntry.getCurrentTime() / 60000);
+            userClassDescDTO.setContactId(hourClassDTO.getId());
+            userClassDescDTO.setCurrentTime(hourClassEntry.getCurrentTime() / 60000);
+            userClassDescDTO.setNumber(0);
+            userClassDescDTO.setOrder(hourClassEntry.getOrder());
+            userClassDescDTO.setUserName(name);
+            userClassDescDTOs.add(userClassDescDTO);
+        }
+
+        map.put("list",userClassDescDTOs);
+        return map;
+    }
+
     public boolean checkTime(long stm,long etm,long stm2,long etm2){
         if(stm2>stm && etm2<etm ){//1
             return true;
@@ -3841,7 +3894,69 @@ public class ExcellentCoursesService {
     }
 
     //删除课节
-    public void deleteClass(){
+    public String deleteClass(ObjectId classId,ObjectId userId){
+        HourClassEntry hourClassEntry = hourClassDao.getEntry(classId);
+        if(hourClassEntry==null){
+            return "课节不存在";
+        }
+        ExcellentCoursesEntry excellentCoursesEntry =  excellentCoursesDao.getEntry(hourClassEntry.getParentId());
+        if(excellentCoursesEntry==null){
+            return "课程不存在";
+        }
+        //删除课节
+        hourClassDao.delOneEntry(classId);
+        //删除未进入提示
+        pushMessageDao.delOneEntry(classId);
+        this.addLogMessage(classId.toString(),"删除课程："+excellentCoursesEntry.getTitle()+"，第"+hourClassEntry.getOrder()+"课节：",LogMessageType.courses.getDes(),userId.toString());
+        //重新组装
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(excellentCoursesEntry.getID());
+        double newPrice = 0.00;
+        long st = 0l;
+        long et = 0l;
+        Set<ObjectId> teacherList = new HashSet<ObjectId>();
+        int index= 0;
+        for(HourClassEntry entry:hourClassEntries){
+            index++;
+            newPrice = sum(newPrice,entry.getClassNewPrice());
+            long st2 = entry.getStartTime();
+            long et2 = entry.getStartTime()+entry.getCurrentTime();
+            if(st==0l){
+                st = st2;
+            }else{
+                if(st2<st){
+                    st = st2;
+                }
+            }
+            if(et==0l){
+                et = et2;
+            }else{
+                if(et <et2){
+                    et = et2;
+                }
+            }
+
+            //修改
+            if(entry.getOwnId()!=null){
+                teacherList.add(entry.getOwnId());
+            }
+            //修改排序
+            hourClassDao.sortEntry(entry.getID(), index);
+        }
+
+        excellentCoursesEntry.setAllClassCount(hourClassEntries.size());
+        if(excellentCoursesEntry.getCourseType()==1){//打包课价格不变
+
+        }else{
+            excellentCoursesEntry.setNewPrice(newPrice);
+        }
+        excellentCoursesEntry.setStartTime(st);
+        excellentCoursesEntry.setEndTime(et);
+        //修改
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        objectIdList.addAll(teacherList);
+        excellentCoursesEntry.setTeacherIdList(objectIdList);
+        excellentCoursesDao.addEntry(excellentCoursesEntry);
+        return "删除成功";
 
     }
 

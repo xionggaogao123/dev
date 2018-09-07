@@ -201,13 +201,14 @@ public class ReportCardNewController extends BaseController {
     public RespObj searchRecordStudentScoresStr(String examGroupDetailId,
                                                 String userRecordId,
                                                 String teaType,
+                                                String cur,
                                              @RequestParam(required = false,defaultValue = "-1")int score,
                                              @RequestParam(required = false,defaultValue = "-1")int scoreLevel,
                                              @RequestParam(required = false,defaultValue = "1")int type){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             List<GroupExamUserRecordDTO> examScoreDTOs=reportCardService.searchRecordStudentScores(new ObjectId(examGroupDetailId));
-            respObj.setMessage(this.trans(examScoreDTOs, userRecordId,teaType));
+            respObj.setMessage(this.trans(examScoreDTOs, userRecordId,teaType,cur, score, scoreLevel, type));
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
@@ -223,7 +224,7 @@ public class ReportCardNewController extends BaseController {
      * @param list
      * @return
      */
-    public List<GroupExamUserRecordStrListDTO> trans(List<GroupExamUserRecordDTO> list, String userRecordId, String teaType) {
+    public List<GroupExamUserRecordStrListDTO> trans(List<GroupExamUserRecordDTO> list, String userRecordId, String teaType,String cur, int score, int scoeLevel, int type) {
         List<GroupExamUserRecordStrListDTO> l = new ArrayList<GroupExamUserRecordStrListDTO>();
         for (GroupExamUserRecordDTO g : list) {
             GroupExamUserRecordStrListDTO gs = new GroupExamUserRecordStrListDTO(g);
@@ -241,9 +242,8 @@ public class ReportCardNewController extends BaseController {
                 gs.getSubjectName().add("总分");
             }
             
-            for (String s : subS) {
-                SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(s));
-                gs.getSubjectNameWithDd().add(sc.getName());
+            if (StringUtils.isNotBlank(cur)) {
+                gs.getSubjectNameWithDd().add(gs.getSubjectName().get(Integer.valueOf(cur)));
                 if (gede.getRecordScoreType() == 1) {
                     gs.getSubjectNameWithDd().add("排名");
                     gs.getSubjectNameWithDd().add("等第");
@@ -252,55 +252,137 @@ public class ReportCardNewController extends BaseController {
                     gs.getSubjectNameWithDd().add("等第");
                 }
                 
-            }
-            if (subS.size()>1) {
-                gs.getSubjectNameWithDd().add("总分");
-            }
-            if (subS.size()>1) {
                 if (gede.getRecordScoreType() == 1) {
-                    gs.getSubjectNameWithDd().add("排名");
-                    gs.getSubjectNameWithDd().add("等第");
-                } else {
-                    gs.getSubjectNameWithDd().add("排名");
-                    gs.getSubjectNameWithDd().add("等第");
-                }
-            }
-            
-            
-            for (int j =0;j<scoreSL.size();j++) {
-                
-                if (gede.getRecordScoreType() == 1) {
+                    if (score != -1) {
+                        int ii = compareScoreInt(scoreS.get(Integer.valueOf(cur)),new ScoreRepresentDto(srList.get(Integer.valueOf(cur))));
+                        if (type == 1) {
+                            
+                            if (ii > score) {
+                                continue;
+                            }
+                        } else {
+                            if (ii < score) {
+                                continue;
+                            }
+                        }
+                    }
                     if ("1".equals(teaType)) {
                         if (gede.getFsShowType() == 0) {
-                            gs.getScoreDd().add(scoreS.get(j));
+                            gs.getScoreDd().add(scoreS.get(Integer.valueOf(cur)));
                             gs.getScoreDd().add("-");
-                            gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                            gs.getScoreDd().add(compareScore(scoreS.get(Integer.valueOf(cur)),new ScoreRepresentDto(srList.get(Integer.valueOf(cur)))));
                         } else if (gede.getFsShowType() == 1) {
-                            gs.getScoreDd().add(scoreS.get(j));
-                            gs.getScoreDd().add(rankS.get(j).equals("-1")?"-":rankS.get(j));
+                            gs.getScoreDd().add(scoreS.get(Integer.valueOf(cur)));
+                            gs.getScoreDd().add(rankS.get(Integer.valueOf(cur)).equals("-1")?"-":rankS.get(Integer.valueOf(cur)));
                             gs.getScoreDd().add("-");
                         } else if (gede.getFsShowType() == 2) {
-                            gs.getScoreDd().add(scoreS.get(j));
+                            gs.getScoreDd().add(scoreS.get(Integer.valueOf(cur)));
                             gs.getScoreDd().add("-");
                             gs.getScoreDd().add("-");
                         } else {
                             gs.getScoreDd().add("-");
                             gs.getScoreDd().add("-");
-                            gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                            gs.getScoreDd().add(compareScore(scoreS.get(Integer.valueOf(cur)),new ScoreRepresentDto(srList.get(Integer.valueOf(cur)))));
                         }
                     } else {
-                        gs.getScoreDd().add(scoreS.get(j));
-                        gs.getScoreDd().add(rankS.get(j).equals("-1")?"-":rankS.get(j));
-                        gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                        gs.getScoreDd().add(scoreS.get(Integer.valueOf(cur)));
+                        gs.getScoreDd().add(rankS.get(Integer.valueOf(cur)).equals("-1")?"-":rankS.get(Integer.valueOf(cur)));
+                        gs.getScoreDd().add(compareScore(scoreS.get(Integer.valueOf(cur)),new ScoreRepresentDto(srList.get(Integer.valueOf(cur)))));
                     }
                     
-                    gs.getScoreRep().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                    gs.getScoreRep().add(compareScore(scoreS.get(Integer.valueOf(cur)),new ScoreRepresentDto(srList.get(Integer.valueOf(cur)))));
                 } else {
-                    gs.getScoreDd().add(compareScoreLevel(scoreSL.get(j)));
+                    if (scoeLevel != -1) {
+                        if (scoeLevel == 89) {
+                            if (scoreSL.get(Integer.valueOf(cur)) > 91 || scoreSL.get(Integer.valueOf(cur)) == -1 || scoreSL.get(Integer.valueOf(cur)) == -2) {
+                                continue;
+                            } 
+                        } else if (scoeLevel == 92) {
+                            if (scoreSL.get(Integer.valueOf(cur)) < 92 ||  scoreSL.get(Integer.valueOf(cur)) > 94 || scoreSL.get(Integer.valueOf(cur)) == -1 || scoreSL.get(Integer.valueOf(cur)) == -2) {
+                                continue;
+                            }
+                        } else if (scoeLevel == 95) {
+                            if (scoreSL.get(Integer.valueOf(cur)) < 95 ||  scoreSL.get(Integer.valueOf(cur)) > 97 || scoreSL.get(Integer.valueOf(cur)) == -1 || scoreSL.get(Integer.valueOf(cur)) == -2) {
+                                continue;
+                            }
+                        } else {
+                            if (scoreSL.get(Integer.valueOf(cur)) < 98 || scoreSL.get(Integer.valueOf(cur)) == -1 || scoreSL.get(Integer.valueOf(cur)) == -2) {
+                                continue;
+                            }
+                        }
+                    }
+                    gs.getScoreDd().add(compareScoreLevel(scoreSL.get(Integer.valueOf(cur))));
                     //gs.getScoreDd().add(rankS.get(j));
                     gs.getScoreDd().add("-");
                     gs.getScoreDd().add("-");
                     gs.getScoreRep().add("-");
+                }
+                
+                
+            } else {
+                for (String s : subS) {
+                    SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(s));
+                    gs.getSubjectNameWithDd().add(sc.getName());
+                    if (gede.getRecordScoreType() == 1) {
+                        gs.getSubjectNameWithDd().add("排名");
+                        gs.getSubjectNameWithDd().add("等第");
+                    } else {
+                        gs.getSubjectNameWithDd().add("排名");
+                        gs.getSubjectNameWithDd().add("等第");
+                    }
+                    
+                }
+                if (subS.size()>1) {
+                    gs.getSubjectNameWithDd().add("总分");
+                }
+                if (subS.size()>1) {
+                    if (gede.getRecordScoreType() == 1) {
+                        gs.getSubjectNameWithDd().add("排名");
+                        gs.getSubjectNameWithDd().add("等第");
+                    } else {
+                        gs.getSubjectNameWithDd().add("排名");
+                        gs.getSubjectNameWithDd().add("等第");
+                    }
+                }
+                
+                
+                for (int j =0;j<scoreSL.size();j++) {
+                    
+                    if (gede.getRecordScoreType() == 1) {
+                        if ("1".equals(teaType)) {
+                            if (gede.getFsShowType() == 0) {
+                                gs.getScoreDd().add(scoreS.get(j));
+                                gs.getScoreDd().add("-");
+                                gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                            } else if (gede.getFsShowType() == 1) {
+                                gs.getScoreDd().add(scoreS.get(j));
+                                gs.getScoreDd().add(rankS.get(j).equals("-1")?"-":rankS.get(j));
+                                gs.getScoreDd().add("-");
+                            } else if (gede.getFsShowType() == 2) {
+                                gs.getScoreDd().add(scoreS.get(j));
+                                gs.getScoreDd().add("-");
+                                gs.getScoreDd().add("-");
+                            } else {
+                                gs.getScoreDd().add("-");
+                                gs.getScoreDd().add("-");
+                                gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                            }
+                        } else {
+                            gs.getScoreDd().add(scoreS.get(j));
+                            gs.getScoreDd().add(rankS.get(j).equals("-1")?"-":rankS.get(j));
+                            gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                        }
+                        
+                        gs.getScoreRep().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                    } else {
+                        
+                        gs.getScoreDd().add(compareScoreLevel(scoreSL.get(j)));
+                        //gs.getScoreDd().add(rankS.get(j));
+                        gs.getScoreDd().add("-");
+                        gs.getScoreDd().add("-");
+                        gs.getScoreRep().add("-");
+                    }
+                    
                 }
                 
             }
@@ -337,6 +419,27 @@ public class ReportCardNewController extends BaseController {
         mapthree.put(4, "D");
         
         
+    }
+    
+    public int compareScoreInt(String score, ScoreRepresentDto s) {
+        int i = 1;
+        if (StringUtils.isBlank(score)) {
+            score = "0";
+
+        } else if ("缺".equals(score)) {
+            score = "-1";
+
+        }
+        if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreTwo()))>=0) {
+           
+        } else if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreFour()))>=0) {
+            i =2;
+        } else if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreSix()))>=0) {
+            i = 3;
+        } else {
+            i = 4;
+        }
+        return i;
     }
     
     public String compareScoreLevel(Integer score) {
@@ -380,11 +483,11 @@ public class ReportCardNewController extends BaseController {
             //score = "-1";
             return "-";
         }
-        if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreTwo()))>0) {
+        if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreTwo()))>=0) {
            
-        } else if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreFour()))>0) {
+        } else if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreFour()))>=0) {
             i =2;
-        } else if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreSix()))>0) {
+        } else if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreSix()))>=0) {
             i = 3;
         } else {
             i = 4;

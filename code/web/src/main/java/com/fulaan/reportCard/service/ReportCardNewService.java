@@ -1699,6 +1699,15 @@ public class ReportCardNewService {
             if (null != subjectClassEntry) {
                 detailDTO.setSubjectName(subjectClassEntry.getName());
             }
+            if (StringUtils.isNotBlank(detailEntry.getSubjectIds())) {
+                String[] subjectIdArry = detailEntry.getSubjectIds().split(",");
+                for (String s : subjectIdArry) {
+                    detailDTO.getSubjectNameList().add(subjectClassDao.getEntry(new ObjectId(s)).getName());
+                }
+                if (subjectIdArry.length >1) {
+                    detailDTO.getSubjectNameList().add("总分");
+                }
+            }
             UserEntry userEntry = userService.findById(detailEntry.getUserId());
             if (null != userEntry) {
                 detailDTO.setUserName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());

@@ -4,6 +4,7 @@ import com.pojo.reportCard.GroupExamDetailEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -92,6 +93,8 @@ public class GroupExamDetailDTO {
     private int fsShowType;
     
     private int isNew;
+    
+    private List<String> subjectNameList = new ArrayList<String>();
 
     public GroupExamDetailDTO(){
 
@@ -675,6 +678,14 @@ public class GroupExamDetailDTO {
 
     public void setIsNew(int isNew) {
         this.isNew = isNew;
+    }
+
+    public List<String> getSubjectNameList() {
+        return subjectNameList;
+    }
+
+    public void setSubjectNameList(List<String> subjectNameList) {
+        this.subjectNameList = subjectNameList;
     }
 
    

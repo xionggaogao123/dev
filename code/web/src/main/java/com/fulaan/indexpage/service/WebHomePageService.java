@@ -365,6 +365,7 @@ public class WebHomePageService {
                 GroupExamDetailEntry detailEntry = groupExamDetailEntryMap.get(userRecordEntry.getGroupExamDetailId());
                 if (null != detailEntry) {
                     GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
+                    detailDTO.setGroupExamUserRecordId(userRecordEntry.getID().toString());
                     detailDTO.setOwner(true);
                     //展示类型 个人还是全班
                     detailDTO.setShowType(detailEntry.getShowType());

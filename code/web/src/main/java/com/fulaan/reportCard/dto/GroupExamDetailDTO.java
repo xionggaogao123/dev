@@ -40,6 +40,7 @@ public class GroupExamDetailDTO {
     private String examTypeName;//考试类型名称
 
     //我的孩子的分值
+    private String groupExamUserRecordId;
     private String childUserId;//孩子用户Id
     private String childUserName;//孩子用户姓名
     private double score;//分数
@@ -688,8 +689,16 @@ public class GroupExamDetailDTO {
         this.subjectNameList = subjectNameList;
     }
 
-   
+    public String getGroupExamUserRecordId() {
+        return groupExamUserRecordId;
+    }
 
+    public void setGroupExamUserRecordId(String groupExamUserRecordId) {
+        this.groupExamUserRecordId = groupExamUserRecordId;
+    }
+
+   
+    
     
     
 

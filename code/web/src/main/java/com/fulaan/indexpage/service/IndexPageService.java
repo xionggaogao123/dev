@@ -1525,19 +1525,25 @@ public class IndexPageService {
                 if(entry.getType()==1){
                     //作业
                     appList.add(entry.getContactId());
+                    stringList.add(entry.getContactId().toString());
                 }else if(entry.getType()==2){
                     //通知
                     noList.add(entry.getContactId());
+                    stringList.add(entry.getContactId().toString());
                 }else if(entry.getType()==3 && entry.getUserId() != null && entry.getUserId().equals(userId)){
                     noList.add(entry.getContactId());
+                    stringList.add(entry.getContactId().toString());
                 }else if(entry.getType()==4){
                     syList.add(entry.getContactId());
+                    stringList.add(entry.getContactId().toString());
                 }else if(entry.getType()==6){
                     voList.add(entry.getContactId());
+                    stringList.add(entry.getContactId().toString());
                 }else if(entry.getType()==7){
                     acList.add(entry.getContactId());
+                    stringList.add(entry.getContactId().toString());
                 }
-                stringList.add(entry.getContactId().toString());
+
             }
         }
         //作业

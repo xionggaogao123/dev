@@ -3687,10 +3687,10 @@ public class ExcellentCoursesService {
         return objectIdList2;
     }
 
-    public void updateCommunityList(ObjectId id,String communityIds){
+    public String updateCommunityList(ObjectId id,String communityIds){
         ExcellentCoursesEntry excellentCoursesEntry =  excellentCoursesDao.getEntry(id);
         if(excellentCoursesEntry==null){
-           return;
+           return "课程不存在";
         }
         String[] str = communityIds.split(",");
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
@@ -3699,8 +3699,12 @@ public class ExcellentCoursesService {
                 objectIdList.add(new ObjectId(string));
             }
         }
+        if(excellentCoursesEntry.getOpen()==0 && objectIdList.size()==0){
+            return "不公开的课程至少需要一个推荐社群";
+        }
         excellentCoursesEntry.setCommunityIdList(objectIdList);
         excellentCoursesDao.addEntry(excellentCoursesEntry);
+        return "调整成功";
     }
 
     public void  selectUserClassDesc(ObjectId id,ObjectId userId){

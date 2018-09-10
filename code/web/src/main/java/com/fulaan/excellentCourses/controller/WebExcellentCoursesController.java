@@ -996,8 +996,8 @@ public class WebExcellentCoursesController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            excellentCoursesService.updateCommunityList(new ObjectId(id), communityList);
-            respObj.setMessage("调整成功");
+            String message = excellentCoursesService.updateCommunityList(new ObjectId(id), communityList);
+            respObj.setMessage(message);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

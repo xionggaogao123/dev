@@ -2767,7 +2767,14 @@ public class ReportCardNewService {
             //List<NewVersionCommunityBindEntry> l = newVersionCommunityBindDao.getBindEntriesNew(communityId, userName);
             List<VirtualUserEntry> l =virtualUserDao.getAllVirtualUsersNew(communityId,userName);
             if (!CollectionUtils.isEmpty(l)) {
-                item.setUserId(l.get(0).getUserId().toString());
+                if (StringUtils.isNotBlank(l.get(0).getUserId().toString())) {
+                    item.setUserId(l.get(0).getUserId().toString());
+                } else {
+                    continue;
+                }
+                
+            } else {
+                continue;
             }
             
             //item.setId(id);

@@ -261,7 +261,7 @@ public class ReportCardNewController extends BaseController {
                                 continue;
                             }
                         } else {
-                            if (ii < score) {
+                            if (ii <= score) {
                                 continue;
                             }
                         }

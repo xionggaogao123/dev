@@ -1345,6 +1345,20 @@ public class ReportCardNewService {
         }
         
     }
+    
+    public void saveScoreRepresentByDto (ScoreRepresentListDto list) throws Exception{
+        //List<ScoreRepresentDto> list = JSON.parseObject(s, new TypeReference<List<ScoreRepresentDto>>() {});
+        for (ScoreRepresentDto sr : list.getList()) {
+            if (StringUtils.isNotEmpty(sr.getSubjectId())) {
+                
+                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(sr.getId()),new ObjectId(sr.getGroupExamDetailId()), new ObjectId(sr.getSubjectId()) ,sr.getSubjectName() , sr.getMaxScore(), sr.getScoreOne(), sr.getScoreTwo(), sr.getScoreThree(), sr.getScoreFour(), sr.getScoreFive(), sr.getScoreSix(), sr.getScoreSeven(), sr.getScoreEight(), Integer.valueOf(sr.getSort()), Integer.valueOf(sr.getRepresentNameType())));
+            } else {
+                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(sr.getGroupExamDetailId()), sr.getSubjectName() , sr.getMaxScore(), sr.getScoreOne(), sr.getScoreTwo(), sr.getScoreThree(), sr.getScoreFour(), sr.getScoreFive(), sr.getScoreSix(), sr.getScoreSeven(), sr.getScoreEight(), Integer.valueOf(sr.getSort()), Integer.valueOf(sr.getRepresentNameType()),new ObjectId(sr.getId())));
+            }
+            
+        }
+        
+    }
 
     public void updateVersion(ObjectId groupExamDetailId,
                               long version) {

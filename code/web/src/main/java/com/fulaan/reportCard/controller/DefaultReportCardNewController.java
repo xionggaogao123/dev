@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -40,6 +41,7 @@ import com.fulaan.reportCard.dto.GroupExamUserRecordStrDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordStrListDTO;
 import com.fulaan.reportCard.dto.GroupExamVersionDTO;
 import com.fulaan.reportCard.dto.ScoreRepresentDto;
+import com.fulaan.reportCard.dto.ScoreRepresentListDto;
 import com.fulaan.reportCard.service.ReportCardNewService;
 import com.pojo.reportCard.GroupExamDetailEntry;
 import com.pojo.reportCard.GroupExamUserRecordEntry;
@@ -161,9 +163,15 @@ public class DefaultReportCardNewController extends BaseController {
     public RespObj getScoreRepresentById(String groupExamDetailId) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
-            List<ScoreRepresentDto> listDto = reportCardService.getScoreRepresentById(new ObjectId(groupExamDetailId));
+            List<ScoreRepresentDto> listDto = new ArrayList<ScoreRepresentDto>();
+            listDto = reportCardService.getScoreRepresentById(new ObjectId(groupExamDetailId));
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage(listDto);
+            if (CollectionUtils.isNotEmpty(listDto)) {
+                respObj.setMessage(listDto);
+            } else {
+                respObj.setMessage("");
+            }
+            
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
@@ -187,6 +195,31 @@ public class DefaultReportCardNewController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
             reportCardService.saveScoreRepresent(s);
+            respObj.setCode(Constant.SUCCESS_CODE);
+         
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+    
+    /**
+     * 保存分数段代表
+     *
+     * @param groupExamDetailId
+     * @return
+     */
+    @ApiOperation(value = "保存", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/saveScoreRepresentByDto")
+    @ResponseBody
+    public RespObj saveScoreRepresentByDto(ScoreRepresentListDto s) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            reportCardService.saveScoreRepresentByDto(s);
             respObj.setCode(Constant.SUCCESS_CODE);
          
         } catch (Exception e) {
@@ -267,7 +300,7 @@ public class DefaultReportCardNewController extends BaseController {
                                 continue;
                             }
                         } else {
-                            if (ii < score) {
+                            if (ii <= score) {
                                 continue;
                             }
                         }

@@ -33,6 +33,10 @@ public class ScoreRepresentDto {
     
     private int sort;
     
+    /*//representNameType:各级代表类型
+              1:优秀、良好、合格、需努力
+            2：优、良、中、差
+              3：A\B\C\D*/
     private int representNameType;
     
     public ScoreRepresentDto() {

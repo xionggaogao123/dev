@@ -21,6 +21,7 @@ import com.fulaan.systemMessage.service.SystemMessageService;
 import com.fulaan.wrongquestion.controller.DefaultWrongQuestionController;
 import com.mongodb.DBObject;
 import com.pojo.backstage.LogMessageType;
+import com.pojo.backstage.PushMessageEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.excellentCourses.*;
 import com.pojo.fcommunity.CommunityEntry;
@@ -3948,11 +3949,11 @@ public class ExcellentCoursesService {
         }
 
         excellentCoursesEntry.setAllClassCount(hourClassEntries.size());
-        if(excellentCoursesEntry.getCourseType()==1){//打包课价格不变
+       /* if(excellentCoursesEntry.getCourseType()==1){//打包课价格不变
 
         }else{
             excellentCoursesEntry.setNewPrice(newPrice);
-        }
+        }*/
         excellentCoursesEntry.setStartTime(st);
         excellentCoursesEntry.setEndTime(et);
         //修改
@@ -3965,9 +3966,147 @@ public class ExcellentCoursesService {
     }
 
 
+    //修改总价
+    public void updateAllPrice(ObjectId  id,double price,ObjectId userId) throws Exception{
+        if(price<0){
+            throw  new Exception("课程定价不能小于0");
+        }
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            throw new Exception("课程不存在！");
+        }
+        List<ObjectId> hourClassEntries = hourClassDao.getObjectIdList(id);
+        int count = hourClassEntries.size();
+        //修改总价和数量
+        excellentCoursesEntry.setAllClassCount(count);
+        excellentCoursesEntry.setNewPrice(price);
+        excellentCoursesDao.addEntry(excellentCoursesEntry);
+        double onePrice = getTwoDouble(price / count);
+        //修改课节价格
+        hourClassDao.updateNewPrice(id,hourClassEntries,onePrice);
+        this.addLogMessage(id.toString(),"修改了课程："+excellentCoursesEntry.getTitle()+"的总价",LogMessageType.courses.getDes(),userId.toString());
+    }
     //修改课节
-    public void updateClass(){
+    public void updateOneClass(ObjectId id,HourClassDTO dto,ObjectId userId)throws Exception{
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            throw new Exception("课程不存在！");
+        }
+        dto.setType(Constant.ZERO);
+        dto.setUserId(excellentCoursesEntry.getUserId().toString());
+        dto.setWeek(getWeek(dto.getDateTime()));
+        dto.setParentId(excellentCoursesEntry.getID().toString());
+        //转换
+        if(dto.getOwnId() !=null && dto.getOwnId().equals("无")){
+            dto.setOwnId(userId.toString());
+        }
+        HourClassEntry hourClassEntry = dto.buildUpdateEntry();
+        //修改推送消息
+        long sTm = hourClassEntry.getStartTime();
+        String str = DateTimeUtils.getLongToStrTimeTwo(sTm).substring(0,11);
+        long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        if(hourClassEntry.getID()==null){
+            hourClassDao.addEntry(hourClassEntry);
+            pushMessageDao.updateEntry(hourClassEntry.getID(),sTm,strNum);
+        }else{
+            hourClassDao.addEntry(hourClassEntry);
+            this.sendMessage(excellentCoursesEntry.getTitle(),hourClassEntry.getID(),sTm,strNum);
+        }
+        this.addLogMessage(hourClassEntry.getID().toString(),"修改了课程："+excellentCoursesEntry.getTitle()+"的第"+dto.getOrder()+"课节",LogMessageType.courses.getDes(),userId.toString());
+        //排序
+        sortClassTime(excellentCoursesEntry);
+    }
 
+    /**
+     * 生成推送消息
+     * @return
+     */
+    public void sendMessage(String title,ObjectId id,long startTime,long dateTime){
+        if(pushMessageDao.isNotHave(id)){
+            PushMessageEntry pushMessageEntry = new PushMessageEntry(
+                    "复兰课堂",
+                    new ArrayList<ObjectId>(),
+                    id,
+                    "未上课提醒",
+                    title,
+                    startTime,
+                    dateTime,
+                    1,
+                    0);
+            pushMessageDao.addEntry(pushMessageEntry);
+        }
+    }
+    public void sortClassTime(ExcellentCoursesEntry excellentCoursesEntry){
+        //重新组装
+       // List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(excellentCoursesEntry.getID());
+        List<HourClassEntry> hourClassEntries =  hourClassDao.getEntryListByStartTime(excellentCoursesEntry.getID());
+        double newPrice = 0.00;
+        long st = 0l;
+        long et = 0l;
+        Set<ObjectId> teacherList = new HashSet<ObjectId>();
+        int index= 0;
+        for(HourClassEntry entry:hourClassEntries){
+            index++;
+            newPrice = sum(newPrice,entry.getClassNewPrice());
+            long st2 = entry.getStartTime();
+            long et2 = entry.getStartTime()+entry.getCurrentTime();
+            if(st==0l){
+                st = st2;
+            }else{
+                if(st2<st){
+                    st = st2;
+                }
+            }
+            if(et==0l){
+                et = et2;
+            }else{
+                if(et <et2){
+                    et = et2;
+                }
+            }
+
+            //修改
+            if(entry.getOwnId()!=null){
+                teacherList.add(entry.getOwnId());
+            }
+            //修改排序
+            hourClassDao.sortEntry(entry.getID(), index);
+        }
+
+        excellentCoursesEntry.setAllClassCount(hourClassEntries.size());
+       /* if(excellentCoursesEntry.getCourseType()==1){//打包课价格不变
+
+        }else{
+            excellentCoursesEntry.setNewPrice(newPrice);
+        }*/
+        excellentCoursesEntry.setNewPrice(newPrice);
+        excellentCoursesEntry.setStartTime(st);
+        excellentCoursesEntry.setEndTime(et);
+        //修改
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        objectIdList.addAll(teacherList);
+        excellentCoursesEntry.setTeacherIdList(objectIdList);
+        excellentCoursesDao.addEntry(excellentCoursesEntry);
+    }
+
+
+
+
+    /**
+     * 两个Double数相除，并保留scale位小数
+     * @param v1
+     * @param v2
+     * @param scale
+     * @return Double
+     */
+    public static Double div(Double v1,Double v2,int scale){
+        if(scale<0){
+            throw new IllegalArgumentException(
+                    "The scale must be a positive integer or zero");
+        }
+        BigDecimal b1 = new BigDecimal(v1.toString());
+        BigDecimal b2 = new BigDecimal(v2.toString());
+        return b1.divide(b2,scale,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
 }

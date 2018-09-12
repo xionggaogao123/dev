@@ -1014,7 +1014,7 @@ public class ReportCardService {
         retMap.put("page", page);
         retMap.put("pageSize", pageSize);
         //清除红点
-        //redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
+        redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
         return retMap;
     }
 

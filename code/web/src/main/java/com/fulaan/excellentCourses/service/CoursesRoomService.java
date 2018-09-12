@@ -495,11 +495,12 @@ liveid	直播id*/
                         CC_PLAYERBACKGROUNDHINT);
                 coursesRoomDao.addEntry(coursesRoomEntry);
             }else{
-
+                logger.error(rows);
             }
 
         }catch(Exception e){
-
+            e.printStackTrace();
+            logger.error("error",e);
         }
 
     }

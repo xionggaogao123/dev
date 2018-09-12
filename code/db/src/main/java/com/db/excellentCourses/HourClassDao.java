@@ -67,6 +67,16 @@ public class HourClassDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("stm",startTime).append("dtm",date));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,updateValue);
     }
+
+    //批量修改课程定价
+    public void updateNewPrice(ObjectId id,List<ObjectId> hourClassIds,double price){
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,hourClassIds));
+        query.append("pid",id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("cnp",price));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,updateValue);
+    }
+
+
     public HourClassEntry getEntry(ObjectId id){
         BasicDBObject query=new BasicDBObject(Constant.ID,id).append("isr",Constant.ZERO);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS,query,Constant.FIELDS);

@@ -110,6 +110,54 @@ public class HourClassDTO {
 
     }
 
+    public HourClassEntry buildUpdateEntry(){
+        ObjectId id = null;
+        if(this.getId()!=null&& !"".equals(this.getUserId())){
+            id=new ObjectId(this.getId());
+        }
+        ObjectId uId=null;
+        if(this.getUserId()!=null&&!"".equals(this.getUserId())){
+            uId=new ObjectId(this.getUserId());
+        }
+        ObjectId pId=null;
+        if(this.getParentId()!=null&&!"".equals(this.getParentId())){
+            pId=new ObjectId(this.getParentId());
+        }
+
+        ObjectId oId=null;
+        if(this.getOwnId()!=null&&!"".equals(this.getOwnId())){
+            oId=new ObjectId(this.getOwnId());
+        }
+        long dTm = 0l;
+        if(this.getDateTime() != null && this.getDateTime() != ""){
+            dTm = DateTimeUtils.getStrToLongTime(this.getDateTime(), "yyyy-MM-dd");
+        }
+        long sTm = 0l;
+        if(this.getStartTime() != null && this.getStartTime() != ""){
+            sTm = DateTimeUtils.getStrToLongTime(this.getStartTime());
+        }
+        HourClassEntry openEntry =
+                new HourClassEntry(
+                        id,
+                        uId,
+                        pId,
+                        this.content,
+                        sTm,
+                        dTm,
+                        this.currentTime,
+                        this.classOldPrice,
+                        this.classNewPrice,
+                        this.week,
+                        this.order,
+                        this.type,
+                        oId,
+                        this.ownName,
+                        this.subjectName
+                );
+        return openEntry;
+
+    }
+
     public int getStatus() {
         return status;
     }

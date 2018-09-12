@@ -14,6 +14,8 @@ import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.indexpage.dto.WebHomePageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
+import com.fulaan.reportCard.dto.ScoreRepresentDto;
+import com.fulaan.reportCard.service.ReportCardNewService;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.appnotice.GenerateUserCodeEntry;
 import com.pojo.fcommunity.CommunityEntry;
@@ -74,6 +76,8 @@ public class WebHomePageService {
     private VirtualUserDao virtualUserDao = new VirtualUserDao();
     @Autowired
     private RedDotService redDotService;
+    @Autowired
+    private ReportCardNewService reportCardNewService;
 
 
     public Map<String, Long> setTime(int mode, String sTime, String eTime) throws Exception {
@@ -365,6 +369,12 @@ public class WebHomePageService {
                 GroupExamDetailEntry detailEntry = groupExamDetailEntryMap.get(userRecordEntry.getGroupExamDetailId());
                 if (null != detailEntry) {
                     GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
+                    List<String> maxScoreList = new ArrayList<String>();
+                    List<ScoreRepresentDto> listtt  = reportCardNewService.getScoreRepresentById(userRecordEntry.getGroupExamDetailId());
+                    for (ScoreRepresentDto s : listtt) {
+                        maxScoreList.add(s.getMaxScore());
+                    }
+                    detailDTO.setMaxScoreList(maxScoreList);
                     detailDTO.setGroupExamUserRecordId(userRecordEntry.getID().toString());
                     detailDTO.setOwner(true);
                     //展示类型 个人还是全班
@@ -463,6 +473,12 @@ public class WebHomePageService {
             for (Map.Entry<ObjectId, GroupExamDetailEntry> item:groupExamDetailEntryMap.entrySet()) {
                 GroupExamDetailEntry detailEntry = item.getValue();
                 GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
+                List<String> maxScoreList = new ArrayList<String>();
+                List<ScoreRepresentDto> listtt  = reportCardNewService.getScoreRepresentById(detailEntry.getID());
+                for (ScoreRepresentDto s : listtt) {
+                    maxScoreList.add(s.getMaxScore());
+                }
+                detailDTO.setMaxScoreList(maxScoreList);
                 detailDTO.setOwner(false);
                 detailDTO.setUnSignCount(detailDTO.getSignCount() - detailDTO.getSignedCount());
                 UserEntry mainUserEntry = userEntryMap.get(detailEntry.getUserId());

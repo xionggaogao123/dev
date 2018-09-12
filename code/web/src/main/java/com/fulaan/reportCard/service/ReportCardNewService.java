@@ -2755,12 +2755,40 @@ public class ReportCardNewService {
         
        
     }
+    
+    
+    public void judgeVirtualUser(String groupExamId, HSSFSheet sheet) throws Exception {
+        ObjectId communityId = groupExamDetailDao.getEntryById(new ObjectId(groupExamId)).getCommunityId();
+        List<VirtualUserEntry> l =virtualUserDao.getAllVirtualUsers(communityId);
+        int rowNum = sheet.getLastRowNum();
+        StringBuffer sb = new StringBuffer();
+        for (VirtualUserEntry user : l) {
+            boolean flag = false;
+            for (int i =0;i<=rowNum;i++) {
+                String userName = getStringCellValue(sheet.getRow(i).getCell(0));
+                if (StringUtils.isNotBlank(userName)) {
+                    if (user.getUserName().equals(userName)) {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if (!flag) {
+                sb.append(user.getUserName()).append("、");
+            }
+        }
+        if (StringUtils.isNotBlank(sb.toString())) {
+            throw new Exception("<div style='text-align:left;font-size:14px;'>未在上传exel中找到以下学生成绩：</br>"+sb.toString()+"</br>请在页面直接录入以上学生成绩，</br>或者在Excel里调整以上学生姓名后再上传！</br></br><span style='font-size:12px'>注意：</br>如页面显示的不是新名单，可在左侧“学生管理”里编辑或者导入新的学生名单</span></div>");
+        }
+    }
 
 
     public void importTemplate(String groupExamId,InputStream inputStream) throws Exception {
+        
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(inputStream);
         HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
+        
         int rowNum = sheet.getLastRowNum();
         List<GroupExamUserRecordDTO> examScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
         List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(groupExamId), -1, -1, -1, 1);
@@ -2826,6 +2854,7 @@ public class ReportCardNewService {
             saveRecordExamScore(examScoreDTOs, Constant.ZERO,0);
             increaseVersion(new ObjectId(groupExamId));
         }
+        this.judgeVirtualUser(groupExamId, sheet);
     }
 
     public double getValue(HSSFCell cell) throws Exception{

@@ -17,12 +17,12 @@ public class GroupExamScoreDTO {
     private String groupExamDetailId;
 
     private long version;
-    //谁的成绩
+    //谁的成绩  学生各自成绩：0   全班成绩：1
     private int showType;
     
     //是否点发送按钮 1：实时保存（实时编辑分数） 0：发送(点发送按钮发送通知)
     private int isSend;
-    //成绩类型
+    //成绩类型     //分数展示类型    0.分数和等第1.分数和排名2.仅分数3.仅等第
     private int fsShowType;
 
     public GroupExamScoreDTO(){

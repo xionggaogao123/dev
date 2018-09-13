@@ -571,6 +571,62 @@ public class WebBusinessManageController extends BaseController {
     }
 
     /**
+     * 审批通过
+     * @return
+     */
+    @ApiOperation(value = "审批通过", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/threeFinish")
+    @ResponseBody
+    public String threeFinish(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+                            @ApiParam(name="number",required = false,value="number") @RequestParam(value="number",defaultValue = "") String number){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            String map =  businessManageService.newFinish(new ObjectId(id), number, getUserId());
+            if(map.equals("1")){
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("审核通过");
+            }else{
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage(map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("审批通过失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * (附加信息)
+     * @return
+     */
+    @ApiOperation(value = "附加信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/backFinish")
+    @ResponseBody
+    public String backFinish(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+                            @ApiParam(name="number",required = false,value="number") @RequestParam(value="number",defaultValue = "") String number){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            String map =  businessManageService.newFinish(new ObjectId(id), number, getUserId());
+            if(map.equals("1")){
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("审核通过");
+            }else{
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage(map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("审批通过失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 强制删除
      * @return
      */

@@ -981,6 +981,7 @@ public class BusinessManageService {
         CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getRoomEntry(roomId);
         if(coursesRoomEntry!=null){
             ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(coursesRoomEntry.getContactId());
+            ExcellentCoursesEntry excellentCoursesEntry1 = excellentCoursesDao.getEntry(id);
             if(excellentCoursesEntry!=null){
                 long current = System.currentTimeMillis();
                 //课节列表
@@ -1014,8 +1015,8 @@ public class BusinessManageService {
                     }
                 }
                 this.addClassEntryBatch(classOrderEntries1);
-                excellentCoursesEntry.setStudentNumber(excellentCoursesEntry.getStudentNumber()+num);
-                excellentCoursesDao.addEntry(excellentCoursesEntry);
+                excellentCoursesEntry1.setStudentNumber(excellentCoursesEntry1.getStudentNumber()+num);
+                excellentCoursesDao.addEntry(excellentCoursesEntry1);
             }else{
                 return "课程不存在";
             }
@@ -1084,9 +1085,9 @@ public class BusinessManageService {
             orderIds.add(classOrderEntry.getID());
 
         }
-        if(excellentCoursesEntry.getCourseType()==1){
+        /*if(excellentCoursesEntry.getCourseType()==1){
             price= excellentCoursesEntry.getNewPrice();
-        }
+        }*/
         if(role==0){
             NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
             role = newVersionUserRoleEntry.getNewRole();

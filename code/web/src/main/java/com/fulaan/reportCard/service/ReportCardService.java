@@ -1802,6 +1802,34 @@ public class ReportCardService {
             dto1.setContactId(appNoticeId.toString());
             IndexPageEntry entry = dto1.buildAddEntry();
             indexPageDao.addEntry(entry);
+            //新首页
+            IndexPageDTO dto2 = new IndexPageDTO();
+            dto2.setType(CommunityType.allNotice.getType());
+            dto2.setUserId(userId.toString());
+            dto2.setCommunityId(communityEntry.getID().toString());
+            dto2.setContactId(entry.getID().toString());
+            IndexPageEntry entry2 = dto2.buildAddEntry();
+            indexPageDao.addEntry(entry2);
+
+            IndexContentDTO indexContentDTO = new IndexContentDTO(
+                    "其他",
+                    communityEntry.getCommunityName()+"未匹配学生名单",
+                    "未匹配名单通知列表",
+                    new ArrayList<VideoDTO>(),
+                    imageList,
+                    new ArrayList<Attachement>(),
+                    new ArrayList<Attachement>(),
+                    communityEntry.getCommunityName(),
+                    userEntry.getUserName());
+            List<ObjectId> members=memberDao.getAllMemberIds(communityEntry.getGroupId());
+            IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(userId.toString(),"59dc8a68bf2e791a140769b4", communityEntry.getGroupId().toString(),communityEntry.getID().toString(),1);
+            indexContentEntry.setReadList(new ArrayList<ObjectId>());
+            indexContentEntry.setContactId(entry.getID());
+            indexContentEntry.setContactType(1);
+            indexContentEntry.setAllCount(members.size());
+            indexContentDao.addEntry(indexContentEntry);
+
+
             objectIdList.add(new ObjectId(communityEntry.getID().toString()));
             //1:家长2:学生3:家长，学生
             redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.notice.getType(),Constant.THREE);

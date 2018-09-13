@@ -33,7 +33,7 @@ import java.util.List;
  * studentNumber    上课人数                  stn
  * status           审批状态                  sta      0  未发布    1 审批中    2 通过      3 拒绝     4 结束
  * type             课程状态                  typ      0  正常      1 进行中    2 已结束
- * courseType       课程类型                  cty      0  直播课     1  打包课
+ * courseType       课程类型                  cty      0  直播课     1  打包课     2 赶考课 （无cc直播间）
  * teacherList      上课老师集合              tlt  (List<ObjectId>)
  * top              是否轮播                  top      0  否   1  是
  * open             是否公开                  ope      0  否   1  是

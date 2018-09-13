@@ -96,11 +96,11 @@ public class PictureRunNable{
                     }else if(type==2){
                         sendMessage.put("msg", "通知提醒：\n"+str+" "+name+" 发布了一条新通知 \n请各位家长及时查看！");
                     }else if(type==3){
-                        sendMessage.put("msg", "火热分享提醒：\n"+str+" "+name+" 发布了一条新火热分享 \n请各位家长及时查看！");
+                        sendMessage.put("msg", "兴趣社团提醒：\n"+str+" "+name+" 发布了一条新兴趣社团 \n请各位家长及时查看！");
                     }else if(type==4){
                         sendMessage.put("msg", "参考资料提醒：\n"+str+" "+name+" 发布了一条新参考资料 \n请各位家长及时查看！");
                     }else if(type==5){
-                        sendMessage.put("msg", "投票报名提醒：\n"+str+" "+name+" 发布了一条新投票报名 \n请各位家长及时查看！");
+                        sendMessage.put("msg", "投票通知提醒：\n"+str+" "+name+" 发布了一条新投票通知 \n请各位家长及时查看！");
                     }else if(type==6){
                         sendMessage.put("msg", "成绩单提醒：\n"+str+" "+name+" 发布了一条新成绩单 \n请各位家长及时查看！");
                     }

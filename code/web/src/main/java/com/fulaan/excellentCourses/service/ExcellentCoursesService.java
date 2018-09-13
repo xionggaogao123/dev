@@ -3954,6 +3954,7 @@ public class ExcellentCoursesService {
         }else{
             excellentCoursesEntry.setNewPrice(newPrice);
         }*/
+        excellentCoursesEntry.setNewPrice(newPrice);
         excellentCoursesEntry.setStartTime(st);
         excellentCoursesEntry.setEndTime(et);
         //修改

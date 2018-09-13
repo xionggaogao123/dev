@@ -366,8 +366,17 @@ public class ReportCardNewService {
         dto2.setReceiveIdList(objectIdList);
         IndexPageEntry entry2 = dto2.buildAddEntry();
         indexPageDao.addEntry(entry2);
-        SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(entry.getSubjectId());
-        String name = "";
+        String str = entry.getSubjectIds();
+        String suid = "59dc8a68bf2e791a140769b4";
+        if(str!=null){
+            String[] string = str.split(",");
+            if(string.length>0){
+                suid = string[0];
+            }
+        }
+
+        SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(new ObjectId(suid));
+        String name = "其他";
         if(subjectClassEntry!=null){
             name = subjectClassEntry.getName();
         }
@@ -386,7 +395,7 @@ public class ReportCardNewService {
                 new ArrayList<Attachement>(),
                 groupName,
                 sb.toString());
-        IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(entry.getUserId().toString(),entry.getSubjectId().toString(), entry.getGroupId().toString(),entry.getCommunityId().toString(),3);
+        IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(entry.getUserId().toString(),suid, entry.getGroupId().toString(),entry.getCommunityId().toString(),3);
         indexContentEntry.setReadList(new ArrayList<ObjectId>());
         indexContentEntry.setContactId(entry.getID());
         indexContentEntry.setContactType(8);
@@ -1493,8 +1502,16 @@ public class ReportCardNewService {
                 dto2.setReceiveIdList(objectIdList);
                 IndexPageEntry entry2 = dto2.buildAddEntry();
                 indexPageDao.addEntry(entry2);
-                SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(detailEntry.getSubjectId());
-                String name = "";
+                String str = detailEntry.getSubjectIds();
+                String suid = "59dc8a68bf2e791a140769b4";
+                if(str!=null){
+                    String[] string = str.split(",");
+                    if(string.length>0){
+                        suid = string[0];
+                    }
+                }
+                SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(new ObjectId(suid));
+                String name = "其他";
                 if(subjectClassEntry!=null){
                     name = subjectClassEntry.getName();
                 }
@@ -1513,7 +1530,7 @@ public class ReportCardNewService {
                         new ArrayList<Attachement>(),
                         groupName,
                         sb.toString());
-                IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(detailEntry.getUserId().toString(),detailEntry.getSubjectId().toString(), detailEntry.getGroupId().toString(),detailEntry.getCommunityId().toString(),3);
+                IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(detailEntry.getUserId().toString(),suid, detailEntry.getGroupId().toString(),detailEntry.getCommunityId().toString(),3);
                 indexContentEntry.setReadList(new ArrayList<ObjectId>());
                 indexContentEntry.setContactId(detailEntry.getID());
                 indexContentEntry.setContactType(8);

@@ -290,7 +290,9 @@ public class AppAlipayService  {
         if(classIds==null|| classIds.equals("")){
             throw  new Exception("请至少购买一节课程");
         }
-
+        if(excellentCoursesEntry.getCourseType()==2 && userId.equals(sonId)){
+            throw  new Exception("此课程只能为孩子购买");
+        }
         /*//美豆账户
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
         if(userBehaviorEntry==null){

@@ -11,6 +11,7 @@ import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
+import com.fulaan.jiaschool.service.HomeSchoolService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.service.CommunityService;
 import com.fulaan.service.MemberService;
@@ -54,6 +55,8 @@ public class BackStageUserManageController extends BaseController {
     @Autowired
     private NewVersionBindService newVersionBindService;
 
+    @Autowired
+    private HomeSchoolService homeSchoolService;
     /**
      * 后台用户管理角色筛选
      * @return
@@ -369,7 +372,10 @@ public class BackStageUserManageController extends BaseController {
                 memberService.deleteMemberList(groupId, userIds2);
                 //群组删除
                 groupService.deleteGroup(groupId);
-
+                //删除社群
+                communityService.delCommunityById(new ObjectId(groupDTO.getCommunityId()));
+                //删除学校社群关联
+                homeSchoolService.delSchoolSort(new ObjectId(groupDTO.getCommunityId()));
 
 //            }
             respObj.setCode(Constant.SUCCESS_CODE);

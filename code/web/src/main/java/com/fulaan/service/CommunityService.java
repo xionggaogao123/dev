@@ -642,6 +642,10 @@ public class CommunityService {
         return userSearchInfos;
     }
 
+    public void delCommunityById(ObjectId communityId) {
+        communityDao.delCommunityById(communityId);
+    }
+
     public static class UserSearchInfo {
         private String userId;
         private String avator;

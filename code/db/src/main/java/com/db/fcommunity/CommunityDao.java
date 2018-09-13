@@ -1,6 +1,7 @@
 package com.db.fcommunity;
 
 import com.db.base.BaseDao;
+import com.db.controlphone.ControlVersionDao;
 import com.db.factory.MongoFacroty;
 import com.mongodb.*;
 import com.pojo.fcommunity.CommunityEntry;
@@ -68,6 +69,21 @@ public class CommunityDao extends BaseDao {
     }
     public List<CommunityEntry> findPageByObjectIds(List<ObjectId> ids,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS,
+                Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
+        for (DBObject dbo : dbObjects) {
+            communitys.add(new CommunityEntry(dbo));
+        }
+        return communitys;
+    }
+
+    public List<CommunityEntry> findPageByObjectIdsName(List<ObjectId> ids,String communityName,int page,int pageSize) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
+        if(!"".equals(communityName)){
+            query.append("cmmn",communityName);
+        }
+        query.append("r",Constant.ZERO);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS,
                 Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
@@ -467,4 +483,19 @@ public class CommunityDao extends BaseDao {
         return result;
     }
 
+    public void delCommunityById(ObjectId communityId) {
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("r", Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, update);
+    }
+
+    public int getNotDelNumber(List<ObjectId> communityIdList) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,communityIdList));
+        query.append("r",Constant.ZERO);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_FORUM_COMMUNITY,
+                        query);
+        return count;
+    }
 }

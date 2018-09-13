@@ -3012,8 +3012,8 @@ public class ReportCardNewService {
                 
             }
         }
-        if (StringUtils.isNotBlank(sb.toString())) {
-            throw new Exception("<div style='text-align:left;font-size:14px;'>上传的excel中有多余学生：</br>"+sbb.toString()+"</br></br>未在上传exel中找到以下学生成绩：</br>"+sb.toString()+"</br></br>请在页面直接录入以上学生成绩，</br>或者在Excel里调整以上学生姓名后再上传！</br></br><span style='font-size:12px'>注意：</br>如页面显示的不是新名单，可在左侧“学生管理”里编辑或者导入新的学生名单</span></div>");
+        if (StringUtils.isNotBlank(sb.toString()) || StringUtils.isNotBlank(sbb.toString())) {
+            throw new Exception("<p style='text-align:center;font-weight:bold;margin-top:-20px;'>提醒</p><div style='text-align:left;font-size:14px;margin-top:15px;'><span style='font-weight:bold'>上传的excel中有多余学生：</span></br>"+sbb.toString()+"</br></br><span style='font-weight:bold'>未在上传exel中找到以下学生成绩：</span></br>"+sb.toString()+"</br></br>请在页面直接录入以上学生成绩，</br>或者在Excel里调整以上学生姓名后再上传！</br></br><span style='font-size:12px'>注意：</br>如页面显示的不是新名单，可在左侧“学生管理”里编辑或者导入新的学生名单</span></div>");
         }
     }
 

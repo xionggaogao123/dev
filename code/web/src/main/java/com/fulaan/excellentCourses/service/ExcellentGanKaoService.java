@@ -3,9 +3,11 @@ package com.fulaan.excellentCourses.service;
 import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.HourClassDao;
+import com.db.user.UserDao;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
+import com.pojo.user.UserEntry;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,8 @@ public class ExcellentGanKaoService {
 
     private ClassOrderDao classOrderDao = new ClassOrderDao();
 
+    private UserDao userDao = new UserDao();
+
     public Map<String,Object> gotoNewClass(ObjectId id,ObjectId userId) throws Exception{
         Map<String,Object> map = new HashMap<String, Object>();
         //是否过期
@@ -54,7 +58,8 @@ public class ExcellentGanKaoService {
         long start = hourClassEntry.getStartTime() -STUDENT_TIME;
         long end = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
         if(current>start){//上课中
-            map.put("sign",createSign(userId.toString()));
+            UserEntry userEntry = userDao.findByUserId(userId);
+            map.put("sign",createSign(userId.toString(),userEntry.getMobileNumber()));
         }else{
             throw  new Exception("上课时间未到，请稍后进入");
         }
@@ -64,13 +69,17 @@ public class ExcellentGanKaoService {
     }
 
 
-    public static String  createSign(String userId){
+    public static String  createSign(String userId,String mobilePhone){
         String sign = "";
         //组装参数
         StringBuffer  sb = new StringBuffer();
         sb.append("device_id");
         sb.append("=");
         sb.append(userId);
+        sb.append("&");
+        sb.append("mobile");
+        sb.append("=");
+        sb.append(mobilePhone);
         sb.append("&");
         sb.append("partner_id");
         sb.append("=");
@@ -79,7 +88,7 @@ public class ExcellentGanKaoService {
         sign = MD5(sb.toString());
         //拼装返回
         //myLiveCourseList?device_id=**&partner_id=**&course_id=**&sign=**"
-        String url = "gankao://myLiveCourseList?device_id="+userId+"&partner_id="+PARTNER_ID+"&sign="+sign;
+        String url = "gankao://loginFromPartner?device_id="+userId+"&partner_id="+PARTNER_ID+"&sign="+sign;
         return url;
     }
 

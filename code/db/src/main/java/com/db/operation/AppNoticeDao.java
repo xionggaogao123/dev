@@ -69,6 +69,20 @@ public class AppNoticeDao extends BaseDao{
         return entries;
     }
 
+    public List<AppNoticeEntry> getMyAppNoticeList(int page,int pageSize){
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        BasicDBObject query=new BasicDBObject();
+        query.append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppNoticeEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
 
     public BasicDBObject getMyAppNoticesCondition(ObjectId communityId,
                                                   ObjectId subjectId,

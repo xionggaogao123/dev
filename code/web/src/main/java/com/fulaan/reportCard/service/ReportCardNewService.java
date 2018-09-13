@@ -243,6 +243,8 @@ public class ReportCardNewService {
                     groupExamUserRecordDao.updateGroupExamDetailStatus(id, Constant.ONE);
                     webHomePageDao.removeContactList(id);
                     webHomePageDao.removeReportCard(id);
+                    //删除首页记录
+                    indexPageDao.delEntry(id);
                 }else{
                     throw new Exception("已过有效时间!");
                 }
@@ -2314,7 +2316,7 @@ public class ReportCardNewService {
             dto2.setType(CommunityType.allNotice.getType());
             dto2.setUserId(userId.toString());
             dto2.setCommunityId(communityEntry.getID().toString());
-            dto2.setContactId(entry.getID().toString());
+            dto2.setContactId(appNoticeId.toString());
             IndexPageEntry entry2 = dto2.buildAddEntry();
             indexPageDao.addEntry(entry2);
 
@@ -2331,7 +2333,7 @@ public class ReportCardNewService {
             List<ObjectId> members=memberDao.getAllMemberIds(communityEntry.getGroupId());
             IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(userId.toString(),"59dc8a68bf2e791a140769b4", communityEntry.getGroupId().toString(),communityEntry.getID().toString(),1);
             indexContentEntry.setReadList(new ArrayList<ObjectId>());
-            indexContentEntry.setContactId(entry.getID());
+            indexContentEntry.setContactId(appNoticeId);
             indexContentEntry.setContactType(1);
             indexContentEntry.setAllCount(members.size());
             indexContentDao.addEntry(indexContentEntry);

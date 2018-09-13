@@ -68,9 +68,11 @@ public class GroupExamDetailDTO {
     //参考人数
     private int examCount;
     private List<Integer> examCountList;
-    //未填写人数
+    //未填写人数  新版成绩单中的缺
     private int unCompleteCount;
     private List<Integer> unCompleteCountList;
+    //未填写
+    private List<Integer> wtxCountList;
     //总人数
     private int allCount;
 
@@ -695,6 +697,14 @@ public class GroupExamDetailDTO {
 
     public void setGroupExamUserRecordId(String groupExamUserRecordId) {
         this.groupExamUserRecordId = groupExamUserRecordId;
+    }
+
+    public List<Integer> getWtxCountList() {
+        return wtxCountList;
+    }
+
+    public void setWtxCountList(List<Integer> wtxCountList) {
+        this.wtxCountList = wtxCountList;
     }
 
    

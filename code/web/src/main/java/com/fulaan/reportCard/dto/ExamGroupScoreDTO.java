@@ -9,13 +9,13 @@ import java.util.List;
 public class ExamGroupScoreDTO {
 
     private List<ExamGroupUserScoreDTO> examGroupUserScoreDTOs=new ArrayList<ExamGroupUserScoreDTO>();
-
+    //0:保存  2：发送
     private int status;
 
     private String groupExamDetailId;
 
     private long version;
-    
+    //0:学生各自成绩  1:全班成绩
     private int showType;
     
     //是否点发送按钮 1：实时保存（实时编辑分数） 0：发送(点发送按钮发送通知)

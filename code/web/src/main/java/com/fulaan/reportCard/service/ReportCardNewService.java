@@ -1734,6 +1734,11 @@ public class ReportCardNewService {
             if (null != examTypeEntry) {
                 detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
             }
+            //常量List，防止移动端空指针
+            List<String> clList = new ArrayList<String>();
+            for (int i = 0;i<=detailEntry.getSubjectIds().split(",").length;i++) {
+                clList.add("0");
+            }
             if (detailEntry.getRecordScoreType() == Constant.ONE) {
                 RecordScoreEvaluateEntry evaluateEntry = recordScoreEvaluateDao.getEntryById(groupExamDetailId);
                 if (null != evaluateEntry) {
@@ -1743,12 +1748,42 @@ public class ReportCardNewService {
                     detailDTO.setAvgScore(evaluateEntry.getAvgScore());
                     detailDTO.setGroupMaxScore(evaluateEntry.getMaxScore());
                     detailDTO.setGroupMinScore(evaluateEntry.getMinScore());*/
-                    detailDTO.setExcellentPercentList(Arrays.asList(evaluateEntry.getExcellentPercentStr().split(","))); 
-                    detailDTO.setQualifyPercentList(Arrays.asList(evaluateEntry.getQualifyPercentStr().split(",")));
-                    detailDTO.setUnQualifyPercentList(Arrays.asList(evaluateEntry.getUnQualifyPercentStr().split(",")));
-                    detailDTO.setAvgScoreList(Arrays.asList(evaluateEntry.getAvgScoreStr().split(",")));
-                    detailDTO.setGroupMaxScoreList(Arrays.asList(evaluateEntry.getMaxScoreStr().split(",")));
-                    detailDTO.setGroupMinScoreList(Arrays.asList(evaluateEntry.getMinScoreStr().split(",")));
+                    if (evaluateEntry.getExcellentPercentStr().split(",").length == 0) {
+                        detailDTO.setExcellentPercentList(clList);
+                    } else {
+                        detailDTO.setExcellentPercentList(Arrays.asList(evaluateEntry.getExcellentPercentStr().split(",")));
+                    }
+                    
+                    if (evaluateEntry.getQualifyPercentStr().split(",").length == 0) {
+                        detailDTO.setQualifyPercentList(clList);
+                    } else {
+                        detailDTO.setQualifyPercentList(Arrays.asList(evaluateEntry.getQualifyPercentStr().split(",")));
+                    }
+                    
+                    if (evaluateEntry.getUnQualifyPercentStr().split(",").length == 0) {
+                        detailDTO.setUnQualifyPercentList(clList);
+                    } else {
+                        detailDTO.setUnQualifyPercentList(Arrays.asList(evaluateEntry.getUnQualifyPercentStr().split(",")));
+                    }
+                     
+                    if (evaluateEntry.getAvgScoreStr().split(",").length == 0) {
+                        detailDTO.setAvgScoreList(clList);
+                    } else {
+                        detailDTO.setAvgScoreList(Arrays.asList(evaluateEntry.getAvgScoreStr().split(",")));
+                    }
+                    
+                    if (evaluateEntry.getMaxScoreStr().split(",").length == 0) {
+                        detailDTO.setGroupMaxScoreList(clList);
+                    } else {
+                        detailDTO.setGroupMaxScoreList(Arrays.asList(evaluateEntry.getMaxScoreStr().split(",")));
+                    }
+                    
+                    if (evaluateEntry.getMinScoreStr().split(",").length == 0) {
+                        detailDTO.setGroupMinScoreList(clList);
+                    } else {
+                        detailDTO.setGroupMinScoreList(Arrays.asList(evaluateEntry.getMinScoreStr().split(",")));
+                    }
+                    
                     
                 }
             } else {
@@ -1758,19 +1793,40 @@ public class ReportCardNewService {
                     detailDTO.setbPercent(levelEvaluateEntry.getBpercent());
                     detailDTO.setcPercent(levelEvaluateEntry.getCpercent());
                     detailDTO.setdPercent(levelEvaluateEntry.getDpercent());*/
-                    detailDTO.setaPercentList(Arrays.asList(levelEvaluateEntry.getAPercentStr().split(",")));
-                    detailDTO.setbPercentList(Arrays.asList(levelEvaluateEntry.getBPercentStr().split(",")));
-                    detailDTO.setcPercentList(Arrays.asList(levelEvaluateEntry.getCPercentStr().split(",")));
-                    detailDTO.setdPercentList(Arrays.asList(levelEvaluateEntry.getDPercentStr().split(",")));
+                    if (levelEvaluateEntry.getAPercentStr().split(",").length == 0) {
+                        detailDTO.setaPercentList(clList);
+                    } else {
+                        detailDTO.setaPercentList(Arrays.asList(levelEvaluateEntry.getAPercentStr().split(",")));
+                    }
+                    if (levelEvaluateEntry.getBPercentStr().split(",").length == 0) {
+                        detailDTO.setbPercentList(clList);
+                    } else {
+                        detailDTO.setbPercentList(Arrays.asList(levelEvaluateEntry.getBPercentStr().split(",")));
+                    }
+                    if (levelEvaluateEntry.getCPercentStr().split(",").length == 0) {
+                        detailDTO.setcPercentList(clList);
+                    } else {
+                        detailDTO.setcPercentList(Arrays.asList(levelEvaluateEntry.getCPercentStr().split(",")));
+                    }
+                     if (levelEvaluateEntry.getDPercentStr().split(",").length == 0) {
+                         detailDTO.setdPercentList(clList);
+                     } else {
+                         detailDTO.setdPercentList(Arrays.asList(levelEvaluateEntry.getDPercentStr().split(",")));
+                     }
+                    
                 }
             }
             groupExamDetailDao.updateSignCount(groupExamDetailId, this.getMyRoleList4(detailEntry.getCommunityId(),detailEntry.getUserId()));
             //参考人数
             
             List<Integer> examCountList = new ArrayList<Integer>();
-            //未填写人数
+            //未填写人数（老）  缺考人数（新）
             
             List<Integer> unCompleteCountList = new ArrayList<Integer>();
+            
+            //未填写人数
+            
+            List<Integer> wtxCountList = new ArrayList<Integer>();
             
             
             final List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(groupExamDetailId);
@@ -1813,6 +1869,7 @@ public class ReportCardNewService {
                 for (int i = 0; i<recordEntries.get(0).getScoreStr().split(",").length; i++) {
                     int examCount = 0;
                     int unCompleteCount = 0;
+                    int wtxCount = 0;
                     for(GroupExamUserRecordEntry g : recordEntries) {
                         String[] s = g.getScoreStr().split(",");
                         if (!(("-1").equals(s[i])||("-2").equals(s[i])) ) {
@@ -1821,14 +1878,19 @@ public class ReportCardNewService {
                         if (("-1").equals(s[i])) {
                             unCompleteCount++;
                         }
+                        if (("-2").equals(s[i])) {
+                            wtxCount++;
+                        }
                     }
                     examCountList.add(examCount);
                     unCompleteCountList.add(unCompleteCount);
+                    wtxCountList.add(wtxCount);
                 }
             } else {
                 for (int i = 0; i<recordEntries.get(0).getScoreStr().split(",").length; i++) {
                     int examCount = 0;
                     int unCompleteCount = 0;
+                    int wtxCount = 0;
                     for(GroupExamUserRecordEntry g : recordEntries) {
                         String[] s = g.getScoreLevelStr().split(",");
                         if (!(("-1").equals(s[i])||("-2").equals(s[i])) ) {
@@ -1837,11 +1899,16 @@ public class ReportCardNewService {
                         if (("-1").equals(s[i])) {
                             unCompleteCount++;
                         }
+                        if (("-2").equals(s[i])) {
+                            wtxCount++;
+                        }
                     }
                     examCountList.add(examCount);
                     unCompleteCountList.add(unCompleteCount);
+                    wtxCountList.add(wtxCount);
                 }
             }
+            detailDTO.setWtxCountList(wtxCountList);
             detailDTO.setAllCount(recordEntries.size());
             detailDTO.setExamCountList(examCountList);
             detailDTO.setUnCompleteCountList(unCompleteCountList);

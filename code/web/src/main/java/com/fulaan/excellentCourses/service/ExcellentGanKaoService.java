@@ -88,7 +88,7 @@ public class ExcellentGanKaoService {
         sign = MD5(sb.toString());
         //拼装返回
         //myLiveCourseList?device_id=**&partner_id=**&course_id=**&sign=**"
-        String url = "gankao://loginFromPartner?device_id="+userId+"&partner_id="+PARTNER_ID+"&sign="+sign;
+        String url = "gankao://loginFromPartner?device_id="+userId+"&mobile="+mobilePhone+"&partner_id="+PARTNER_ID+"&sign="+sign;
         return url;
     }
 

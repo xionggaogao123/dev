@@ -246,7 +246,12 @@ public class ReportCardNewController extends BaseController {
                 gs.getSubjectNameWithDd().add(gs.getSubjectName().get(Integer.valueOf(cur)));
                 if (gede.getRecordScoreType() == 1) {
                     gs.getSubjectNameWithDd().add("排名");
-                    gs.getSubjectNameWithDd().add("等第");
+                    if (gede.getFsShowType() == 3) {
+                        gs.getSubjectNameWithDd().add(gs.getSubjectName().get(Integer.valueOf(cur)));
+                    } else {
+                        gs.getSubjectNameWithDd().add("等第");
+                    }
+                    
                 } else {
                     gs.getSubjectNameWithDd().add("排名");
                     gs.getSubjectNameWithDd().add("等第");
@@ -325,7 +330,11 @@ public class ReportCardNewController extends BaseController {
                     gs.getSubjectNameWithDd().add(sc.getName());
                     if (gede.getRecordScoreType() == 1) {
                         gs.getSubjectNameWithDd().add("排名");
-                        gs.getSubjectNameWithDd().add("等第");
+                        if (gede.getFsShowType() == 3) {
+                            gs.getSubjectNameWithDd().add(sc.getName());
+                        } else {
+                            gs.getSubjectNameWithDd().add("等第");
+                        }
                     } else {
                         gs.getSubjectNameWithDd().add("排名");
                         gs.getSubjectNameWithDd().add("等第");
@@ -338,7 +347,11 @@ public class ReportCardNewController extends BaseController {
                 if (subS.size()>1) {
                     if (gede.getRecordScoreType() == 1) {
                         gs.getSubjectNameWithDd().add("排名");
-                        gs.getSubjectNameWithDd().add("等第");
+                        if (gede.getFsShowType() == 3) {
+                            gs.getSubjectNameWithDd().add("总分");
+                        } else {
+                            gs.getSubjectNameWithDd().add("等第");
+                        }
                     } else {
                         gs.getSubjectNameWithDd().add("排名");
                         gs.getSubjectNameWithDd().add("等第");

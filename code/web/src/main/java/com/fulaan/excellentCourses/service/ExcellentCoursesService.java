@@ -813,6 +813,12 @@ public class ExcellentCoursesService {
         return dto;
     }
 
+    public  Map<String,Object>  getNewSimpleCourses(ObjectId userId){
+        List<ObjectId> hourClassIds =  classOrderDao.getObjectIdEntry(userId);
+        Map<String,Object> dto = this.getNewNowEntry(hourClassIds);
+        return dto;
+    }
+
     public Map<String,Object> getNowEntry(List<ObjectId> hourClassIds){
         //用户订单查询
         List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(hourClassIds);
@@ -850,6 +856,53 @@ public class ExcellentCoursesService {
 
         }
         map.put("dto",new HourClassDTO(entry));
+        return map;
+    }
+
+    public Map<String,Object> getNewNowEntry(List<ObjectId> hourClassIds){
+        //用户订单查询
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(hourClassIds);
+        Map<String,Object> map = new HashMap<String, Object>();
+        HourClassEntry entry = null;
+        long current = System.currentTimeMillis();
+        /*long current = System.currentTimeMillis();
+        long start = hourClassEntry.getStartTime() -5*60*1000;
+        long end = start + hourClassEntry.getCurrentTime();*/
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            long startTime =  hourClassEntry.getStartTime()-STUDENT_TIME;
+            long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
+            if(entry ==null){
+                if(endTime>current){
+                    entry = hourClassEntry;
+                }
+            }else{
+                if(endTime>current && startTime <current){
+                    entry = hourClassEntry;
+                }
+            }
+        }
+
+        if(entry != null && entry.getStartTime()-STUDENT_TIME<current){
+            map.put("start",1);//正在上课
+            map.put("time",0);
+        }else{
+            if(entry==null){
+                map.put("start",0);//未上课
+                map.put("time",0);
+            }else{
+                map.put("start",0);//未上课
+                map.put("time",(entry.getStartTime()-current)/1000);
+            }
+
+        }
+        map.put("dto",new HourClassDTO(entry));
+        map.put("courseType",0);
+        if(entry!=null){
+            ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(entry.getParentId());
+            if(excellentCoursesEntry!=null && excellentCoursesEntry.getCourseType()==2){
+                map.put("courseType",2);
+            }
+        }
         return map;
     }
 

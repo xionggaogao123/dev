@@ -296,11 +296,11 @@ public class DefaultReportCardNewController extends BaseController {
                         int ii = compareScoreInt(scoreS.get(Integer.valueOf(cur)),new ScoreRepresentDto(srList.get(Integer.valueOf(cur))));
                         if (type == 1) {
                             
-                            if (ii > score) {
+                            if (ii > score || scoreS.get(Integer.valueOf(cur)) == "缺" || StringUtils.isBlank(scoreS.get(Integer.valueOf(cur)))) {
                                 continue;
                             }
                         } else {
-                            if (ii <= score) {
+                            if (ii <= score|| scoreS.get(Integer.valueOf(cur)) == "缺" || StringUtils.isBlank(scoreS.get(Integer.valueOf(cur)))) {
                                 continue;
                             }
                         }

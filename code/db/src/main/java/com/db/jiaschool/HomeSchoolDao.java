@@ -10,7 +10,9 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by James on 2018/2/1.
@@ -193,5 +195,51 @@ public class HomeSchoolDao extends BaseDao {
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_HOME_SCHOOL, query,updateValue);
+    }
+
+    /**
+     * 运营管理新增方法
+     * @param schoolType
+     * @param provincesName
+     * @param cityName
+     * @param page
+     * @param pageSize
+     * @param schoolName
+     * @return
+     */
+    public Map<String,Object> getBackStageSchoolList(int schoolType, String provincesName, String cityName, int page, int pageSize, String schoolName) {
+        Map<String,Object> map = new HashMap<String, Object>();
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        if(schoolType !=0){
+            query.append("sty",schoolType);
+        }
+        if(schoolName != null && !schoolName.equals("")){
+            query.append("nm", MongoUtils.buildRegex(schoolName));
+        }
+        if(provincesName != null && !provincesName.equals("")){
+            query.append("pr", provincesName);
+        }
+        if(cityName != null && !cityName.equals("")){
+            query.append("city", cityName);
+        }
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_HOME_SCHOOL,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
+        List<HomeSchoolEntry> entryList = new ArrayList<HomeSchoolEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new HomeSchoolEntry((BasicDBObject) obj));
+            }
+        }
+        map.put("entryList",entryList);
+        List<DBObject> dbListCount =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_HOME_SCHOOL,
+                        query, Constant.FIELDS);
+        map.put("count",dbListCount.size());
+        return map;
     }
 }

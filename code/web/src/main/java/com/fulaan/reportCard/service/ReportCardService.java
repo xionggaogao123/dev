@@ -350,7 +350,7 @@ public class ReportCardService {
             sb.append(",");
         }
         //新首页
-        IndexPageDTO dto2 = new IndexPageDTO();
+       /* IndexPageDTO dto2 = new IndexPageDTO();
         dto2.setType(CommunityType.reportCard.getType());
         dto2.setUserId(entry.getUserId().toString());
         dto2.setCommunityId(entry.getCommunityId().toString());
@@ -383,7 +383,7 @@ public class ReportCardService {
         indexContentEntry.setContactId(entry.getID());
         indexContentEntry.setContactType(8);
         indexContentEntry.setAllCount(entry.getSignCount());
-        indexContentDao.addEntry(indexContentEntry);
+        indexContentDao.addEntry(indexContentEntry);*/
 
         //成绩单发送记录
         moduleTimeDao.addEntry(entry.getUserId(),ApplyTypeEn.repordcard.getType(),entry.getCommunityId());
@@ -1235,15 +1235,15 @@ public class ReportCardService {
             }
             List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(groupExamDetailId), -1, -1, -1, 1);
             examScoreDTOs.clear();
-            List<String>  objectIdList = new ArrayList<String>();
-            StringBuffer sb = new StringBuffer();
+           /* List<String>  objectIdList = new ArrayList<String>();
+            StringBuffer sb = new StringBuffer();*/
             for (GroupExamUserRecordEntry entry : recordEntries) {
                 examScoreDTOs.add(new GroupExamUserRecordDTO(entry));
-                objectIdList.add(entry.getUserId().toString());
+                /*objectIdList.add(entry.getUserId().toString());
                 sb.append(entry.getUserId().toString());
                 sb.append("#");
                 sb.append(entry.getID().toString());
-                sb.append(",");
+                sb.append(",");*/
             }
             GroupExamDetailEntry detailEntry = groupExamDetailDao.getEntryById(new ObjectId(groupExamDetailId));
             if (detailEntry.getRecordScoreType() == Constant.ONE) {
@@ -1302,7 +1302,7 @@ public class ReportCardService {
             if(status==2 && isSend!=1){
                 redDotService.addThirdList(detailEntry.getID(),detailEntry.getCommunityId(), detailEntry.getUserId(), ApplyTypeEn.repordcard.getType());
                 //新首页
-                IndexPageDTO dto2 = new IndexPageDTO();
+                /*IndexPageDTO dto2 = new IndexPageDTO();
                 dto2.setType(CommunityType.reportCard.getType());
                 dto2.setUserId(detailEntry.getUserId().toString());
                 dto2.setCommunityId(detailEntry.getCommunityId().toString());
@@ -1336,7 +1336,7 @@ public class ReportCardService {
                 indexContentEntry.setContactId(detailEntry.getID());
                 indexContentEntry.setContactType(8);
                 indexContentEntry.setAllCount(examScoreDTOs.size());
-                indexContentDao.addEntry(indexContentEntry);
+                indexContentDao.addEntry(indexContentEntry);*/
 
                 PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6);
                 //成绩单发送记录

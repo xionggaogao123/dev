@@ -65,6 +65,25 @@ public class SchoolPersionEntry extends BaseDBObject {
         setBaseEntry(dbObject);
     }
 
+    //运营添加构造
+    public SchoolPersionEntry(
+            ObjectId userId,
+            ObjectId schoolId,
+            String name,
+            int role,
+            int type,
+            String roleId
+    ){
+        BasicDBObject dbObject=new BasicDBObject()
+                .append("uid", userId)
+                .append("sid", schoolId)
+                .append("nam", name)
+                .append("rol", role)
+                .append("typ", type)
+                .append("roleId", roleId)
+                .append("isr", 0);
+        setBaseEntry(dbObject);
+    }
 
     public ObjectId getUserId(){
         return getSimpleObjecIDValue("uid");
@@ -111,6 +130,14 @@ public class SchoolPersionEntry extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+
+    public String getRoleId(){
+        return getSimpleStringValue("roleId");
+    }
+
+    public void setRoleId(String roleId){
+        setSimpleValue("roleId",roleId);
     }
 
 }

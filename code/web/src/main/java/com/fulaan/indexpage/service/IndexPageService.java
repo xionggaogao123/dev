@@ -2022,57 +2022,68 @@ public class IndexPageService {
         List<IndexContentDTO> list2 = new ArrayList<IndexContentDTO>();
         List<IndexContentEntry> entryList = indexContentDao.getPageList(cntactIdList);
         List<ObjectId> oids = new ArrayList<ObjectId>();
+        Map<ObjectId,IndexContentEntry> comMap = new HashMap<ObjectId, IndexContentEntry>();
         for(IndexContentEntry indexContentEntry2 : entryList){
             oids.add(indexContentEntry2.getUserId());
+            comMap.put(indexContentEntry2.getContactId(),indexContentEntry2);
         }
         Map<ObjectId, UserEntry> userEntryMap = new HashMap<ObjectId, UserEntry>();
         if (oids.size() > 0) {
             userEntryMap = userService.getUserEntryMap(oids, Constant.FIELDS);
         }
-        for(IndexContentEntry indexContentEntry : entryList){
-            ObjectId uid = indexContentEntry.getUserId();
-            IndexContentDTO dto = new IndexContentDTO(indexContentEntry);
-            dto.setId(indexContentEntry.getContactId().toString());
-           // Index
-            dto.setTimeExpression("");
-            if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(userId)){
-                dto.setIsRead(1);
-            }else{
-                dto.setIsRead(0);
-            }
-            if(indexContentEntry.getReaList()!=null){
-                dto.setReadCount(indexContentEntry.getReaList().size());
-            }else{
-                dto.setReadCount(0);
-            }
-            dto.setTotalReadCount(indexContentEntry.getAllCount()-1);
-            UserEntry userEntry = userEntryMap.get(uid);
-            if(userEntry!=null){
-                String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-                dto.setUserName(name);
-                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
-            }
-            if(userId.toString().equals(uid.toString())){
-                dto.setIsOwner(true);
-            }else{
-                if(indexContentEntry.getContactType()==8){
-                    String str = indexContentEntry.getUserName();
-                    String[] strings = str.split(",");
-                    for(String s:strings){
-                        for(ObjectId oid : userIds){
-                            if(s.contains(oid.toString())){
-                                String[] strings1 = s.split("#");
-                                if(strings1.length==2){
-                                    dto.setTag(strings1[1]);
+        Set<ObjectId> ownIds = new HashSet<ObjectId>();
+        for(ObjectId cid:cntactIdList){
+            IndexContentEntry indexContentEntry = comMap.get(cid);
+            if(indexContentEntry!=null){
+                ObjectId uid = indexContentEntry.getUserId();
+                IndexContentDTO dto = new IndexContentDTO(indexContentEntry);
+                dto.setId(indexContentEntry.getContactId().toString());
+                // Index
+                dto.setTimeExpression("");
+                if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(userId)){
+                    dto.setIsRead(1);
+                }else{
+                    dto.setIsRead(0);
+                }
+                if(indexContentEntry.getReaList()!=null){
+                    dto.setReadCount(indexContentEntry.getReaList().size());
+                }else{
+                    dto.setReadCount(0);
+                }
+                dto.setTotalReadCount(indexContentEntry.getAllCount()-1);
+                UserEntry userEntry = userEntryMap.get(uid);
+                if(userEntry!=null){
+                    String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                    dto.setUserName(name);
+                    dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                }
+                if(userId.toString().equals(uid.toString()) && !ownIds.contains(cid)){
+                    dto.setIsOwner(true);
+                    ownIds.add(cid);
+                }else{
+                    if(indexContentEntry.getContactType()==8){
+                        String str = indexContentEntry.getUserName();
+                        String[] strings = str.split(",");
+                        for(String s:strings){
+                            for(ObjectId oid : userIds){
+                                if(s.contains(oid.toString())){
+                                    String[] strings1 = s.split("#");
+                                    if(strings1.length==2){
+                                        dto.setTag(strings1[1]);
+                                    }
                                 }
                             }
                         }
                     }
+                    dto.setIsOwner(false);
                 }
-                dto.setIsOwner(false);
+                list2.add(dto);
+
             }
-            list2.add(dto);
         }
+       /* for(IndexContentEntry indexContentEntry : entryList){
+
+        }*/
         map.put("count",count);
         map.put("list",list2);
         return map;

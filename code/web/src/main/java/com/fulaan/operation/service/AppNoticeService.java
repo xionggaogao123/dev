@@ -624,4 +624,46 @@ public class AppNoticeService {
         return id;
     }
 
+
+    public void updateOldList(){
+        int page = 1;
+        int pageSize = 10;
+        boolean flag = true;
+        while(flag){
+            page++;
+            List<AppNoticeEntry> appNoticeEntries = appNoticeDao.getMyAppNoticeList(page, pageSize);
+            if(appNoticeEntries.size()<10){
+                flag = false;
+            }
+            for(AppNoticeEntry appNoticeEntry :appNoticeEntries){
+                AppNoticeDTO dto = new AppNoticeDTO(appNoticeEntry);
+                IndexPageDTO dto2 = new IndexPageDTO();
+                dto2.setType(CommunityType.allNotice.getType());
+                dto2.setUserId(dto.getUserId());
+                dto2.setCommunityId(dto.getCommunityId());
+                dto2.setContactId(dto.getId());
+                IndexPageEntry entry2 = dto2.buildAddEntry();
+                indexPageDao.addEntry(entry2);
+
+                IndexContentDTO indexContentDTO = new IndexContentDTO(
+                        dto.getSubject(),
+                        dto.getTitle(),
+                        dto.getContent(),
+                        dto.getVideoList(),
+                        dto.getImageList(),
+                        dto.getAttachements(),
+                        dto.getVoiceList(),
+                        dto.getGroupName(),
+                        dto.getUserName());
+                List<ObjectId> members=memberDao.getAllMemberIds(new ObjectId(dto.getGroupId()));
+                IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(dto.getUserId().toString(),dto.getSubjectId(), dto.getGroupId(),dto.getCommunityId(),dto.getWatchPermission());
+                indexContentEntry.setReadList(members);
+                indexContentEntry.setContactId(appNoticeEntry.getID());
+                indexContentEntry.setContactType(1);
+                indexContentEntry.setAllCount(members.size());
+                indexContentDao.addEntry(indexContentEntry);
+            }
+
+        }
+    }
 }

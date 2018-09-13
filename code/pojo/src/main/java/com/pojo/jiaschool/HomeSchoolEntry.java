@@ -5,6 +5,9 @@ import com.pojo.base.BaseDBObject;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by James on 2018/2/1.
  *
@@ -21,6 +24,16 @@ import org.bson.types.ObjectId;
  *   inp:初始密码
  *   pr:省级行政区域
  *   add:地址
+ *   ====新增====
+ *   city:市级行政区域
+ *   creationDate:创建时间
+ *   schoolParagraph:学段 幼儿园 小学 初中等（可以多选）
+ */
+
+/**
+ * SchoolType
+ * 现在学校类型存的是 10教育局 20公立学校 30私立学校 40培训学校
+ * 以前学校类型存的内容现在存在学段里面
  */
 public class HomeSchoolEntry extends BaseDBObject {
     public HomeSchoolEntry(){
@@ -98,6 +111,73 @@ public class HomeSchoolEntry extends BaseDBObject {
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
+
+    //运营管理添加构造
+    public HomeSchoolEntry(
+            int schoolType,
+            String name,
+            int sort,
+            String province,
+            String address,
+            String city,
+            String creationDate,
+            List<String> schoolParagraph//学段
+    ) {
+        BasicDBObject dbObject = new BasicDBObject()
+                .append("sty", schoolType)
+                .append("nm", name)
+                .append("enm", "")
+                .append("int", "")
+                .append("det", "")
+                .append("dom", "")
+                .append("pc", "")
+                .append("tp", "")
+                .append("so", sort)
+                .append("inp", "")
+                .append("pr", province)
+                .append("add", address)
+                .append("city", city)
+                .append("creationDate", creationDate)
+                .append("schoolParagraph", schoolParagraph)
+                .append("logo", "http://7xiclj.com1.z0.glb.clouddn.com/5a2674e3b0573026f932759b.png")
+                .append("isr", 0);
+        setBaseEntry(dbObject);
+    }
+
+    //运营管理修改构造
+    public HomeSchoolEntry(
+            ObjectId id,
+            int schoolType,
+            String name,
+            int sort,
+            String province,
+            String address,
+            String city,
+            String creationDate,
+            List<String> schoolParagraph//学段
+    ) {
+        BasicDBObject dbObject = new BasicDBObject()
+                .append(Constant.ID, id)
+                .append("sty", schoolType)
+                .append("nm", name)
+//                .append("enm", "")
+//                .append("int", "")
+//                .append("det", "")
+//                .append("dom", "")
+//                .append("pc", "")
+//                .append("tp", "")
+                .append("so", sort)
+//                .append("inp", "")
+                .append("pr", province)
+                .append("add", address)
+                .append("city", city)
+                .append("creationDate", creationDate)
+                .append("schoolParagraph", schoolParagraph)
+                .append("logo", "http://7xiclj.com1.z0.glb.clouddn.com/5a2674e3b0573026f932759b.png")
+                .append("isr", 0);
+        setBaseEntry(dbObject);
+    }
+
     public String getLogo() {
         return getSimpleStringValue("logo");
     }
@@ -193,4 +273,14 @@ public class HomeSchoolEntry extends BaseDBObject {
         setSimpleValue("isr",isRemove);
     }
 
+    public String getCity(){
+        return getSimpleStringValue("city");
+    }
+    public String getCreationDate(){
+        return getSimpleStringValue("creationDate");
+    }
+
+    public List<String> getSchoolParagraph(){
+        return (ArrayList)getSimpleObjectValue("schoolParagraph");
+    }
 }

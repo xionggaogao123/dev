@@ -68,6 +68,31 @@ public class SmallLessonDao extends BaseDao {
         }
         return retList;
     }
+
+    /**
+     * getTeacherLessonList 方法 去掉时间筛选
+     * @param userIds
+     * @return
+     */
+    public List<SmallLessonEntry> getTeacherLessonListNotTimeRange(List<ObjectId> userIds) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
+//        BasicDBList dblist =new BasicDBList();
+//        dblist.add(new BasicDBObject("ctm", new BasicDBObject(Constant.MONGO_GTE, startTime)));
+//        dblist.add(new BasicDBObject("ctm", new BasicDBObject(Constant.MONGO_LT, endTime)));
+//        query.append(Constant.MONGO_AND,dblist);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query, Constant.FIELDS,new BasicDBObject("dtm",Constant.DESC));
+        List<SmallLessonEntry> retList =new ArrayList<SmallLessonEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new SmallLessonEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
     /**
      * 修改
      */

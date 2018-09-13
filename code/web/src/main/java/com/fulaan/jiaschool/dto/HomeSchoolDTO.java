@@ -3,6 +3,10 @@ package com.fulaan.jiaschool.dto;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by James on 2018/1/30.
  */
@@ -24,6 +28,13 @@ public class HomeSchoolDTO {
     private String logo;
     private int open;
 
+    //运营管理
+    private String city;
+    private String creationDate;
+    private String schoolParagraphStr;
+    private List<String> schoolParagraph;
+    private String communityCount;
+
     public HomeSchoolDTO(){
 
     }
@@ -44,6 +55,9 @@ public class HomeSchoolDTO {
             this.address =e.getAddress();
             this.logo = e.getLogo();
 
+            this.city = e.getCity();
+            this.creationDate = e.getCreationDate();
+            this.schoolParagraph = e.getSchoolParagraph();
         }else{
             new HomeSchoolDTO();
         }
@@ -211,5 +225,45 @@ public class HomeSchoolDTO {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getSchoolParagraphStr() {
+        return schoolParagraphStr;
+    }
+
+    public void setSchoolParagraphStr(String schoolParagraphStr) {
+        this.schoolParagraphStr = schoolParagraphStr;
+    }
+
+    public List<String> getSchoolParagraph() {
+        return schoolParagraph;
+    }
+
+    public void setSchoolParagraph(List<String> schoolParagraph) {
+        this.schoolParagraph = schoolParagraph;
+    }
+
+    public String getCommunityCount() {
+        return communityCount;
+    }
+
+    public void setCommunityCount(String communityCount) {
+        this.communityCount = communityCount;
     }
 }

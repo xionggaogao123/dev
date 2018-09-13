@@ -886,4 +886,35 @@ public class MemberDao extends BaseDao {
         result.put("count",allDbObjectsList.size());
         return result;
     }
+
+    /**
+     * //根据community分组 获取对应的member
+     * @param communityIdList
+     * @return
+     */
+    public Map<ObjectId,List<MemberEntry>> getMembersGroupByCommunity(List<ObjectId> communityIdList) {
+        Map<ObjectId,List<MemberEntry>> map = new HashMap<ObjectId, List<MemberEntry>>();
+
+        BasicDBObject query = new BasicDBObject().append("r", 0);
+        query.append("cmid",new BasicDBObject(Constant.MONGO_IN,communityIdList));
+
+        List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            memberEntries.add(memberEntry);
+        }
+        //对查询的结果分组
+        List<MemberEntry> memberEntriesTemp = null;
+        for (ObjectId communityId: communityIdList){
+            memberEntriesTemp = new ArrayList<MemberEntry>();
+            for (MemberEntry entry: memberEntries){
+                if (communityId.equals(entry.getCommunityId())){
+                    memberEntriesTemp.add(entry);
+                }
+            }
+            map.put(communityId,memberEntriesTemp);
+        }
+        return map;
+    }
 }

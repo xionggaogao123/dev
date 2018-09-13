@@ -607,10 +607,11 @@ public class WebBusinessManageController extends BaseController {
     @RequestMapping("/backFinish")
     @ResponseBody
     public String backFinish(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
-                            @ApiParam(name="number",required = false,value="number") @RequestParam(value="number",defaultValue = "") String number){
+                            @ApiParam(name="number",required = false,value="number") @RequestParam(value="number",defaultValue = "") String number,
+                            @ApiParam(name="type",required = false,value="type") @RequestParam(value="type",defaultValue = "0") int type){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            String map =  businessManageService.newFinish(new ObjectId(id), number, getUserId());
+            String map =  businessManageService.threeFinish(new ObjectId(id), number, getUserId(),type);
             if(map.equals("1")){
                 respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage("审核通过");

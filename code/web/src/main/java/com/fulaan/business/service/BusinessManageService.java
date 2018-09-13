@@ -1223,7 +1223,7 @@ public class BusinessManageService {
     }
 
     //审核通过回调接口
-    public String threeFinish(ObjectId id,String word,ObjectId userId){
+    public String threeFinish(ObjectId id,String word,ObjectId userId,int type){
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         if(excellentCoursesEntry==null){
             return "课程不存在";
@@ -1256,6 +1256,9 @@ public class BusinessManageService {
         //课程改为进行中
         excellentCoursesEntry.setNewPrice(all);
         excellentCoursesEntry.setStatus(2);
+        if(type==2){
+            excellentCoursesEntry.setCourseType(2);
+        }
         excellentCoursesDao.addEntry(excellentCoursesEntry);
 
 

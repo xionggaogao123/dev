@@ -672,7 +672,7 @@ public class IndexPageService {
             superTopicDTO.setTitle(appNoticeEntry.getTitle());
             superTopicDTO.setReadName(appNoticeEntry.getSubject());
             superTopicDTO.setUrl("");
-            superTopicDTO.setVoteType(1);
+           // superTopicDTO.setVoteType(1);
             superTopicDTOs.add(superTopicDTO);
         }
 

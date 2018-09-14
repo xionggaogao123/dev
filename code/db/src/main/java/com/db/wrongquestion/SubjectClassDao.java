@@ -92,4 +92,21 @@ public class SubjectClassDao extends BaseDao {
         }
         return entryList;
     }
+
+    public String getBigListByList(List<ObjectId> objectIdList){
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIdList))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_SUBJECT_CLASS,
+                        query, Constant.FIELDS,
+                        new BasicDBObject("lev",Constant.ASC));
+        StringBuffer sb = new StringBuffer();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                sb.append(new SubjectClassEntry((BasicDBObject) obj).getName());
+            }
+        }
+        return sb.toString();
+    }
 }

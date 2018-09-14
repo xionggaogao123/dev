@@ -345,4 +345,8 @@ public class IndexContentEntry extends BaseDBObject {
         return getSimpleIntegerValue("act");
     }
 
+    public void setRemove(int remove){
+        setSimpleValue("ir",remove);
+    }
+
 }

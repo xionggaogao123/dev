@@ -1507,10 +1507,16 @@ public class ReportCardNewService {
                     indexPageDao.addEntry(entry2);
                     String str = detailEntry.getSubjectIds();
                     String suid = "59dc8a68bf2e791a140769b4";
+                    List<ObjectId> os = new ArrayList<ObjectId>();
                     if(str!=null){
                         String[] string = str.split(",");
                         if(string.length>0){
                             suid = string[0];
+                        }
+                        for(String tr:string){
+                            if(ObjectId.isValid(tr)){
+                                os.add(new ObjectId(tr));
+                            }
                         }
                     }
                     SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(new ObjectId(suid));
@@ -1518,6 +1524,7 @@ public class ReportCardNewService {
                     if(subjectClassEntry!=null){
                         name = subjectClassEntry.getName();
                     }
+                    String com = subjectClassDao.getBigListByList(os);
                     CommunityEntry communityEntry = communityDao.findCommunityByObjectId(detailEntry.getGroupId());
                     String groupName = "";
                     if(communityEntry!=null){
@@ -1526,7 +1533,7 @@ public class ReportCardNewService {
                     IndexContentDTO indexContentDTO = new IndexContentDTO(
                             name,
                             "通知—成绩单",
-                            name,
+                            com,
                             new ArrayList<VideoDTO>(),
                             new ArrayList<Attachement>(),
                             new ArrayList<Attachement>(),
@@ -1534,12 +1541,21 @@ public class ReportCardNewService {
                             groupName,
                             sb.toString());
                     List<ObjectId> members=memberDao.getAllMemberIds(detailEntry.getGroupId());
+                    //发送者
                     IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(detailEntry.getUserId().toString(),suid, detailEntry.getGroupId().toString(),detailEntry.getCommunityId().toString(),3);
                     indexContentEntry.setReadList(new ArrayList<ObjectId>());
                     indexContentEntry.setContactId(detailEntry.getID());
                     indexContentEntry.setContactType(8);
                     indexContentEntry.setAllCount(members.size());
                     indexContentDao.addEntry(indexContentEntry);
+                    //接受者
+                  /*  IndexContentEntry indexContentEntry2 = indexContentDTO.buildEntry(detailEntry.getUserId().toString(),suid, detailEntry.getGroupId().toString(),detailEntry.getCommunityId().toString(),3);
+                    indexContentEntry2.setReadList(new ArrayList<ObjectId>());
+                    indexContentEntry2.setContactId(detailEntry.getID());
+                    indexContentEntry2.setContactType(8);
+                    indexContentEntry2.setAllCount(members.size());
+                    indexContentEntry2.setRemove(2);
+                    indexContentDao.addEntry(indexContentEntry2);*/
                 }
                 PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6);
                 //成绩单发送记录

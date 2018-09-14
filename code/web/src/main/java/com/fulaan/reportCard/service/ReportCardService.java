@@ -291,6 +291,8 @@ public class ReportCardService {
         List<ObjectId> objectIdList =  this.getMyRoleList5(groupExamDetailEntry.getCommunityId(),groupExamDetailEntry.getUserId());
         objectIdList.removeAll(signIds);
         unSignIds.addAll(objectIdList);
+        //过滤自己
+        unSignIds.remove(groupExamDetailEntry.getUserId());
         if(signIds.size()>0) {
             setSignValues(signIds,signTime,sign,Constant.ONE,groupExamDetailEntry.getGroupId());
         }

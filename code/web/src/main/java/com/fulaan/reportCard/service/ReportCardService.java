@@ -1303,7 +1303,7 @@ public class ReportCardService {
             //添加红点
             //发送状态下
             if(status==2 && isSend!=1){
-                redDotService.addThirdList(detailEntry.getID(),detailEntry.getCommunityId(), detailEntry.getUserId(), ApplyTypeEn.repordcard.getType());
+               // redDotService.addThirdList(detailEntry.getID(),detailEntry.getCommunityId(), detailEntry.getUserId(), ApplyTypeEn.repordcard.getType());
                 //新首页
                 /*IndexPageDTO dto2 = new IndexPageDTO();
                 dto2.setType(CommunityType.reportCard.getType());

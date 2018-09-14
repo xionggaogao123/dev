@@ -92,6 +92,16 @@ public class ExcellentGanKaoService {
         return url;
     }
 
+    public static void main(String[] args){
+        try{
+            System.out.println(MD5("device_id=5b3b094e3d4df9509e29f241&mobile=18916638449&partner_id=fulangankao123!#$"));
+        }catch (Exception e){
+
+        }
+
+
+    }
+
     public final static String MD5(String s) {
         char hexDigits[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
         try {

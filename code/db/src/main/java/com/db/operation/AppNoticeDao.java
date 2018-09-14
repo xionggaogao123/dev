@@ -74,7 +74,7 @@ public class AppNoticeDao extends BaseDao{
         BasicDBObject query=new BasicDBObject();
         query.append("ir",Constant.ZERO);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
-                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+                Constant.FIELDS,Constant.MONGO_SORTBY_ASC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new AppNoticeEntry(dbObject));

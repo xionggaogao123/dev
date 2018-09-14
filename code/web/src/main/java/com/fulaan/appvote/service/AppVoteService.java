@@ -163,6 +163,33 @@ public class AppVoteService {
                 indexContentEntry.setAllCount(members.size());
                 indexContentDao.addEntry(indexContentEntry);
             }
+            if(appVoteDTO.getVisiblePermission()==2){
+                //新首页记录
+                IndexPageDTO dto2 = new IndexPageDTO();
+                dto2.setType(CommunityType.allNotice.getType());
+                dto2.setUserId(appVoteDTO.getUserId());
+                dto2.setCommunityId(appVoteDTO.getUserId());
+                dto2.setContactId(appVoteEntry.getID().toString());
+                IndexPageEntry entry2 = dto2.buildAddEntry();
+                indexPageDao.addEntry(entry2);
+                IndexContentDTO indexContentDTO = new IndexContentDTO(
+                        appVoteDTO.getSubjectName(),
+                        appVoteDTO.getTitle(),
+                        appVoteDTO.getContent(),
+                        new ArrayList<VideoDTO>(),
+                        appVoteDTO.getImageList(),
+                        new ArrayList<Attachement>(),
+                        new ArrayList<Attachement>(),
+                        dto.getGroupName(),
+                        "");
+                List<ObjectId> members=memberDao.getAllMemberIds(new ObjectId(dto.getGroupId()));
+                IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(appVoteDTO.getUserId(),appVoteDTO.getSubjectId(), dto.getGroupId(),dto.getCommunityId(),appVoteDTO.getVisiblePermission());
+                indexContentEntry.setReadList(new ArrayList<ObjectId>());
+                indexContentEntry.setContactId(appVoteEntry.getID());
+                indexContentEntry.setContactType(7);
+                indexContentEntry.setAllCount(members.size());
+                indexContentDao.addEntry(indexContentEntry);
+            }
 
         }
         if(appVoteDTO.getVisiblePermission()==1 || appVoteDTO.getVisiblePermission()==3 ){//红点

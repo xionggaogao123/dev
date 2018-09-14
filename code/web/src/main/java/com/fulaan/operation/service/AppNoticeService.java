@@ -274,6 +274,7 @@ public class AppNoticeService {
         AppNoticeEntry entry=appNoticeDao.getAppNoticeEntry(id);
         List<ObjectId> reads=entry.getReaList();
         List<ObjectId> members=memberDao.getAllMemberIds(entry.getGroupId());
+        indexContentDao.updateEntry(id,members.size());
         members.remove(entry.getUserId());
         members.removeAll(reads);
         List<User> read=new ArrayList<User>();
@@ -629,6 +630,8 @@ public class AppNoticeService {
         int page = 1;
         int pageSize = 10;
         boolean flag = true;
+        indexPageDao.delAllEntry();
+        indexContentDao.delAllEntry();
         while(flag){
             page++;
             List<AppNoticeEntry> appNoticeEntries = appNoticeDao.getMyAppNoticeList(page, pageSize);
@@ -657,7 +660,8 @@ public class AppNoticeService {
                         dto.getUserName());
                 List<ObjectId> members=memberDao.getAllMemberIds(new ObjectId(dto.getGroupId()));
                 IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(dto.getUserId().toString(),dto.getSubjectId(), dto.getGroupId(),dto.getCommunityId(),dto.getWatchPermission());
-                indexContentEntry.setReadList(members);
+                indexContentEntry.setReadList(appNoticeEntry.getReaList());
+                indexContentEntry.setSubmitTime(appNoticeEntry.getSubmitTime());
                 indexContentEntry.setContactId(appNoticeEntry.getID());
                 indexContentEntry.setContactType(1);
                 indexContentEntry.setAllCount(members.size());

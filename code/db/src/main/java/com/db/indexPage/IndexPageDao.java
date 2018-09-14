@@ -22,6 +22,23 @@ public class IndexPageDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE, entry.getBaseEntry());
         return entry.getID();
     }
+    public IndexPageEntry getEntry(ObjectId id){
+        BasicDBObject query=new BasicDBObject("tid",id).append("isr",Constant.ZERO);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new IndexPageEntry((BasicDBObject) dbObject);
+        }else {
+            return null;
+        }
+    }
+
+    //删除作业
+    public void delAllEntry(){
+        BasicDBObject query = new BasicDBObject();
+        query.append("typ",Constant.EIGHT);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE, query,updateValue);
+    }
 
     //删除作业
     public void delEntry(ObjectId id){

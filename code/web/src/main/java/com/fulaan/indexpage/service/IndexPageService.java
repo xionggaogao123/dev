@@ -2017,6 +2017,7 @@ public class IndexPageService {
         //新集合通知
         List<ObjectId>  userIds = newVersionCommunityBindDao.getIdsByMainUserId(userId);
         userIds.add(userId);
+        dlist.add(userId);
         List<ObjectId> cntactIdList = indexPageDao.getNewPageList(dlist, userId, page, pageSize, Constant.EIGHT,userIds);
         int count = indexPageDao.countNewPageList(dlist, userId, Constant.EIGHT,userIds);
         List<IndexContentDTO> list2 = new ArrayList<IndexContentDTO>();
@@ -2050,7 +2051,12 @@ public class IndexPageService {
                 }else{
                     dto.setReadCount(0);
                 }
-                dto.setTotalReadCount(indexContentEntry.getAllCount()-1);
+                if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(uid)){
+                    dto.setTotalReadCount(indexContentEntry.getAllCount());
+                }else{
+                    dto.setTotalReadCount(indexContentEntry.getAllCount()-1);
+                }
+
                 UserEntry userEntry = userEntryMap.get(uid);
                 if(userEntry!=null){
                     String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
@@ -2067,6 +2073,7 @@ public class IndexPageService {
                         for(String s:strings){
                             for(ObjectId oid : userIds){
                                 if(s.contains(oid.toString())){
+                                    dto.setUserId(oid.toString());
                                     String[] strings1 = s.split("#");
                                     if(strings1.length==2){
                                         dto.setTag(strings1[1]);

@@ -216,7 +216,7 @@ public class DefaultReportCardNewController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/saveScoreRepresentByDto")
     @ResponseBody
-    public RespObj saveScoreRepresentByDto(ScoreRepresentListDto s) {
+    public RespObj saveScoreRepresentByDto(@RequestBody ScoreRepresentListDto s) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
             reportCardService.saveScoreRepresentByDto(s);

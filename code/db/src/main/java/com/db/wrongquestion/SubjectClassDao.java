@@ -105,8 +105,9 @@ public class SubjectClassDao extends BaseDao {
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
                 sb.append(new SubjectClassEntry((BasicDBObject) obj).getName());
+                sb.append(",");
             }
         }
-        return sb.toString();
+        return sb.toString().substring(0,sb.toString().length()-1);
     }
 }

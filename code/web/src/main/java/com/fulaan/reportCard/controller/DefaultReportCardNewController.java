@@ -221,6 +221,7 @@ public class DefaultReportCardNewController extends BaseController {
         try {
             reportCardService.saveScoreRepresentByDto(s);
             respObj.setCode(Constant.SUCCESS_CODE);
+
          
         } catch (Exception e) {
             e.printStackTrace();

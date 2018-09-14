@@ -14,6 +14,7 @@ import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
+import com.db.reportCard.VirtualAndUserDao;
 import com.fulaan.appactivity.dto.AppActivityDTO;
 import com.fulaan.appvote.dto.AppVoteDTO;
 import com.fulaan.appvote.dto.VoteOption;
@@ -101,6 +102,8 @@ public class IndexPageService {
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     private IndexContentDao indexContentDao = new IndexContentDao();
+
+    private VirtualAndUserDao virtualAndUserDao = new  VirtualAndUserDao();
     //老师社群
   //  private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //线上
@@ -1984,6 +1987,17 @@ public class IndexPageService {
         return map;
     }
 
+    //由绑定孩子列表获得虚拟孩子列表
+    public List<ObjectId> getMyChildList(List<ObjectId> objectIds){
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        List<ObjectId> objectIdList1 = virtualAndUserDao.getEntryListByCommunityId(objectIds);
+        set.addAll(objectIdList1);
+        set.addAll(objectIds);
+        objectIdList.addAll(set);
+        return objectIdList;
+    }
+
     public Map<String,Object> getSixHotIndexList(ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         //1.通知逻辑
@@ -2016,7 +2030,8 @@ public class IndexPageService {
         }
         map.put("systemMessage",obmap);
         //新集合通知
-        List<ObjectId>  userIds = newVersionCommunityBindDao.getIdsByMainUserId(userId);
+        List<ObjectId>  userIds2 = newVersionCommunityBindDao.getIdsByMainUserId(userId);
+        List<ObjectId> userIds = this.getMyChildList(userIds2);
         userIds.add(userId);
         dlist.add(userId);
         List<ObjectId> cntactIdList = indexPageDao.getNewPageList(dlist, userId, page, pageSize, Constant.EIGHT,userIds);

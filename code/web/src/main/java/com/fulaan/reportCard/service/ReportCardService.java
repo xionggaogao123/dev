@@ -210,10 +210,10 @@ public class ReportCardService {
             IndexContentEntry indexContentEntry = indexContentDao.getEntry(groupExamDetailId);
             if(indexContentEntry!=null){
                 List<ObjectId> reList = indexContentEntry.getReaList();
-                if(!reList.contains(userId)) {
-                    indexContentDao.pushReadList(userId, groupExamDetailId);
+                if(!reList.contains(mainUserId)) {
+                    indexContentDao.pushReadList(mainUserId, groupExamDetailId);
                     //红点减一
-                    redDotService.jianRedDot(userId,ApplyTypeEn.repordcard.getType());
+                    redDotService.jianRedDot(mainUserId,ApplyTypeEn.repordcard.getType());
                 }
             }
 
@@ -1017,7 +1017,7 @@ public class ReportCardService {
         retMap.put("page", page);
         retMap.put("pageSize", pageSize);
         //清除红点
-        redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
+       // redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
         return retMap;
     }
 
@@ -1810,7 +1810,7 @@ public class ReportCardService {
             dto2.setType(CommunityType.allNotice.getType());
             dto2.setUserId(userId.toString());
             dto2.setCommunityId(communityEntry.getID().toString());
-            dto2.setContactId(entry.getID().toString());
+            dto2.setContactId(appNoticeId.toString());
             IndexPageEntry entry2 = dto2.buildAddEntry();
             indexPageDao.addEntry(entry2);
 
@@ -1827,7 +1827,7 @@ public class ReportCardService {
             List<ObjectId> members=memberDao.getAllMemberIds(communityEntry.getGroupId());
             IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(userId.toString(),"59dc8a68bf2e791a140769b4", communityEntry.getGroupId().toString(),communityEntry.getID().toString(),1);
             indexContentEntry.setReadList(new ArrayList<ObjectId>());
-            indexContentEntry.setContactId(entry.getID());
+            indexContentEntry.setContactId(appNoticeId);
             indexContentEntry.setContactType(1);
             indexContentEntry.setAllCount(members.size());
             indexContentDao.addEntry(indexContentEntry);

@@ -420,7 +420,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -446,7 +446,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -568,7 +568,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -585,7 +585,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 

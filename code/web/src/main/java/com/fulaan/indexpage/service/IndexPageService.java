@@ -655,7 +655,8 @@ public class IndexPageService {
         }else{
             objectIdList.add(new ObjectId(PARENTCOMMUNIY));
         }
-        List<AppNoticeEntry> entries = appNoticeDao.getRoleList(objectIdList, 1, 1,"");
+        //List<AppNoticeEntry> entries = appNoticeDao.getRoleList(oids, page, pageSize, userName);
+        List<AppNoticeEntry> entries = appNoticeDao.getRoleList(objectIdList, 1, 1,"小兰老师");
         for(AppNoticeEntry appNoticeEntry:entries){
             SuperTopicDTO superTopicDTO = new SuperTopicDTO();
             superTopicDTO.setVoteType(2);//教育咨询

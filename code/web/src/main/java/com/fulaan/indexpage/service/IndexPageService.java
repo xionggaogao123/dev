@@ -1082,8 +1082,13 @@ public class IndexPageService {
             }
 
         }
-        List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
-        int count = indexPageDao.countPageList(dlist,userId);
+        List<Integer> integerList = new ArrayList<Integer>();
+        integerList.add(2);
+        integerList.add(3);
+        integerList.add(6);
+        integerList.add(7);
+        List<IndexPageEntry> entrys = indexPageDao.getPageList2(dlist, userId, page, pageSize, integerList);
+        int count = indexPageDao.countPageList2(dlist, userId, integerList);
         //最新系统消息（todo）
 
         //作业
@@ -1513,8 +1518,13 @@ public class IndexPageService {
                 superTopicDTOs=getEducationList(1);
             }
         }
-        List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
-        int count = indexPageDao.countPageList(dlist,userId);
+        List<Integer> integerList = new ArrayList<Integer>();
+        integerList.add(2);
+        integerList.add(3);
+        integerList.add(6);
+        integerList.add(7);
+        List<IndexPageEntry> entrys = indexPageDao.getPageList2(dlist, userId, page, pageSize, integerList);
+        int count = indexPageDao.countPageList2(dlist, userId, integerList);
         //作业
         List<ObjectId> appList = new ArrayList<ObjectId>();
         Map<String,Object> appMap =new HashMap<String, Object>();

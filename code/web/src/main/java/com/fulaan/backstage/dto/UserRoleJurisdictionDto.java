@@ -33,7 +33,7 @@ public class UserRoleJurisdictionDto {
         this.id = entry.getID().toString();
         this.level = entry.getLevel();
         this.roleJurisdiction = entry.getRoleJurisdiction();
-        if (roleJurisdiction.size() != 0){
+        if (roleJurisdiction.size() != 0 && !"".equals(roleJurisdiction.get(0))){
             List<JurisdictionTreeEntry> jurisdictionTreeEntries = new ArrayList<JurisdictionTreeEntry>();
             List<String> classList = new ArrayList<String>();
             for (String roleJurisdictionId: roleJurisdiction){

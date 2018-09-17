@@ -9,7 +9,9 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by scott on 2017/11/29.
@@ -61,6 +63,36 @@ public class UserLogResultDao extends BaseDao {
         } else {
             return null;
         }
+    }
+
+    /**
+     * 按userId分组 返回Map<userId,List<userLogResultEntryRoleId>>
+     * @param userIds
+     * @return
+     */
+    public Map<ObjectId,List<ObjectId>> getEntriesGroupByUserId(List<ObjectId> userIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("uid", new BasicDBObject(Constant.MONGO_IN,userIds));
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
+                query, Constant.FIELDS);
+        List<UserLogResultEntry> userLogResultEntrys = new ArrayList<UserLogResultEntry>();
+        for (DBObject dbo : dbObjects) {
+            userLogResultEntrys.add(new UserLogResultEntry(dbo));
+        }
+
+        //开始封装返回的数据
+        Map<ObjectId,List<ObjectId>> result = new HashMap<ObjectId, List<ObjectId>>();
+        for (ObjectId userId : userIds){
+            List<ObjectId> userLogResultEntryRoleIds = new ArrayList<ObjectId>();
+            for (UserLogResultEntry entry : userLogResultEntrys){
+                if (userId.equals(entry.getUserId())){
+                    userLogResultEntryRoleIds.add(entry.getRoleId());
+                }
+            }
+            result.put(userId,userLogResultEntryRoleIds);
+        }
+
+        return result;
     }
 
     public List<UserLogResultEntry> getLogsByUserId(ObjectId userId) {

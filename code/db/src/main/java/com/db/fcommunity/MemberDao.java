@@ -860,6 +860,46 @@ public class MemberDao extends BaseDao {
         return memberEntries;
     }
 
+    /**
+     * 按userId分组 返回Map<userId,List<MemberEntry>>
+     * @param userIds
+     * @param mineUserIdCommunityIdList
+     * @return
+     */
+    public Map<ObjectId,List<MemberEntry>> getMemberEntriesGroupByuserId(List<ObjectId> userIds, Map<ObjectId,List<ObjectId>> mineUserIdCommunityIdList) {
+        //封装in 的条件
+        List<ObjectId> listMineCommunityId = new ArrayList<ObjectId>();
+        for (ObjectId userId:userIds){
+            listMineCommunityId.addAll((ArrayList)mineUserIdCommunityIdList.get(userId));
+        }
+
+        BasicDBObject query = new BasicDBObject("r", Constant.ZERO);
+        query.append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
+        query.append("cmid",new BasicDBObject(Constant.MONGO_EXIST,true));//有关联社群Id的
+        query.append("cmid",new BasicDBObject(Constant.MONGO_IN,listMineCommunityId));
+
+//        BasicDBObject orderBy = new BasicDBObject(Constant.ID, Constant.DESC);
+        List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS/*, orderBy*/);
+        for (DBObject dbo : dbObjects) {
+            memberEntries.add(new MemberEntry(dbo));
+        }
+
+        //开始封装结果
+        Map<ObjectId,List<MemberEntry>> result = new HashMap<ObjectId, List<MemberEntry>>();
+        for (ObjectId userId:userIds){
+            List<MemberEntry> entries = new ArrayList<MemberEntry>();
+            for (MemberEntry entry:memberEntries){
+                if (userId.equals(entry.getUserId())){
+                    entries.add(entry);
+                }
+            }
+            result.put(userId,entries);
+        }
+
+        return result;
+    }
+
     public void updateRoleById(Map map) {
         BasicDBObject query = new BasicDBObject(Constant.ID,new ObjectId(map.get("id").toString()));
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("rl",Integer.parseInt(map.get("role").toString())));

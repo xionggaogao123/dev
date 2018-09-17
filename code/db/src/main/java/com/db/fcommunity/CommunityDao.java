@@ -5,6 +5,7 @@ import com.db.controlphone.ControlVersionDao;
 import com.db.factory.MongoFacroty;
 import com.mongodb.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
@@ -67,6 +68,42 @@ public class CommunityDao extends BaseDao {
         }
         return communitys;
     }
+
+    /**
+     * 返回Map<userId,List<communityId>>
+     * @param userIds
+     * @param allMineCommunitys
+     * @return
+     */
+    public Map<ObjectId,List<ObjectId>> findCommunityIdsGroupByUserId(List<ObjectId> userIds, Map<ObjectId,List<ObjectId>> allMineCommunityIds) {
+        //封装in 的条件
+        List<ObjectId> mineCommunityIds = new ArrayList<ObjectId>();
+        for (ObjectId userId:userIds){
+            mineCommunityIds.addAll((ArrayList)allMineCommunityIds.get(userId));
+        }
+
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,mineCommunityIds)).append("r",0);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+        List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
+        for (DBObject dbo : dbObjects) {
+            communitys.add(new CommunityEntry(dbo));
+        }
+        //开始封装返回数据
+        Map<ObjectId,List<ObjectId>> result = new HashMap<ObjectId, List<ObjectId>>();
+        for (ObjectId userId:userIds){
+            List<ObjectId> communityIds = new ArrayList<ObjectId>();
+            for (ObjectId communityId:(ArrayList<ObjectId>)allMineCommunityIds.get(userId)){
+                for (CommunityEntry entry : communitys){
+                    if (communityId.equals(entry.getID())){//communityId 在COLLECTION_FORUM_COMMUNITY表里r是0的
+                        communityIds.add(communityId);
+                    }
+                }
+            }
+            result.put(userId,communityIds);
+        }
+        return result;
+    }
+
     public List<CommunityEntry> findPageByObjectIds(List<ObjectId> ids,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS,
@@ -498,4 +535,5 @@ public class CommunityDao extends BaseDao {
                         query);
         return count;
     }
+
 }

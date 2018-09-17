@@ -9,6 +9,7 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +81,40 @@ public class RoleJurisdictionSettingDao extends BaseDao {
         }
     }
 
+
+    public Map<ObjectId,List<String>> getSysRoleNameListGroupByUserId(List<ObjectId> userIds, Map<ObjectId,List<ObjectId>> userLogResultEntryRoleIdsMap) {
+        //封装in 的条件
+        List<ObjectId> roleIds = new ArrayList<ObjectId>();
+        for (ObjectId userId:userIds){
+            roleIds.addAll((ArrayList)userLogResultEntryRoleIdsMap.get(userId));
+        }
+        //查询
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",Constant.ZERO)
+                .append("_id",new BasicDBObject(Constant.MONGO_IN,roleIds));
+        List<RoleJurisdictionSettingEntry> settingEntries = new ArrayList<RoleJurisdictionSettingEntry>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ROLE_JURISDICTION_SETTING, query, Constant.FIELDS);
+        for (DBObject dbo : dbObjects) {
+            settingEntries.add(new RoleJurisdictionSettingEntry(dbo));
+        }
+        //封装返回的数据
+        Map<ObjectId,List<String>> result = new HashMap<ObjectId, List<String>>();
+        if (settingEntries.size()>0){
+            for (ObjectId userId : userIds){
+                List<String> roleNameList = new ArrayList<String>();
+                for (ObjectId roleId : (ArrayList<ObjectId>)userLogResultEntryRoleIdsMap.get(userId)){
+                    for (RoleJurisdictionSettingEntry entry : settingEntries){
+                        if (roleId != null && roleId.equals(entry.getID())) {
+                            roleNameList.add(entry.getRoleName());
+                        }
+                    }
+                }
+                result.put(userId, roleNameList);
+            }
+        }
+
+        return result;
+    }
     public List<RoleJurisdictionSettingEntry> getEntriesByRoleProperty(String roleProperty) {
         List<RoleJurisdictionSettingEntry> entries=new ArrayList<RoleJurisdictionSettingEntry>();
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_ROLE_JURISDICTION_SETTING,

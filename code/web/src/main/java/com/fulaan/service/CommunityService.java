@@ -583,6 +583,17 @@ public class CommunityService {
         return list;
     }
 
+    /**
+     * getCommunitys3方法改版
+     * 超简洁获取我的社团 以userId分组
+     *返回Map<userId,List<communityId>>
+     * @param userIds
+     */
+    public Map<ObjectId,List<ObjectId>> getCommunitys3GroupByUserId(List<ObjectId> userIds) {
+        Map<ObjectId,List<ObjectId>> allMineCommunityIds = mineCommunityDao.findAllGroupByUserId(userIds);//返回Map<userId,List<MineCommunityEntry>>
+        Map<ObjectId,List<ObjectId>> result = communityDao.findCommunityIdsGroupByUserId(userIds,allMineCommunityIds);//返回Map<userId,List<communityId>>
+        return result;
+    }
 
     /**
      * 简洁获取我的社团

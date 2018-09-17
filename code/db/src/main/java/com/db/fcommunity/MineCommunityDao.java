@@ -143,4 +143,28 @@ public class MineCommunityDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("prio",1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query,updateValue);
     }
+
+    public Map<ObjectId,List<ObjectId>> findAllGroupByUserId(List<ObjectId> userIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("uid", new BasicDBObject(Constant.MONGO_IN,userIds));
+        List<DBObject> dbos;
+        dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, Constant.FIELDS);
+        List<MineCommunityEntry> mineCommunityEntries = new ArrayList<MineCommunityEntry>();
+        for (DBObject dbo : dbos) {
+            mineCommunityEntries.add(new MineCommunityEntry(dbo));
+        }
+
+        //开始封装返回数据
+        Map<ObjectId,List<ObjectId>> result = new HashMap<ObjectId, List<ObjectId>>();
+        for (ObjectId userId : userIds) {
+            List<ObjectId> ObjectIds = new ArrayList<ObjectId>();
+            for (MineCommunityEntry entry : mineCommunityEntries){
+                if(userId.equals(entry.getUserId())){
+                    ObjectIds.add(entry.getCommunityId());
+                }
+            }
+            result.put(userId,ObjectIds);
+        }
+    return result;
+    }
 }

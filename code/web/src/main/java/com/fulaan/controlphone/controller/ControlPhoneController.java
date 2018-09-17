@@ -1678,4 +1678,64 @@ public class ControlPhoneController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "设置共享用户", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addControlShareUser")
+    @ResponseBody
+    public RespObj addControlShareUser(@RequestParam(value="sonId") String sonId,
+                                       @RequestParam(value="jiaId") String jiaId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            controlPhoneService.addControlShareUser(getUserId(),new ObjectId(sonId),jiaId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("分享成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "解除共享用户", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/deleteControlShareUser")
+    @ResponseBody
+    public RespObj deleteControlShareUser(@RequestParam(value="id") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            controlPhoneService.deleteControlShareUser(new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("解除成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "查询共享用户", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectControlShareUser")
+    @ResponseBody
+    public RespObj selectControlShareUser(@RequestParam(value="sonId") String sonId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<Map<String,Object>> mapList = controlPhoneService.selectControlShareUser(getUserId(), new ObjectId(sonId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(mapList);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询共享用户失败！");
+        }
+        return respObj;
+    }
 }

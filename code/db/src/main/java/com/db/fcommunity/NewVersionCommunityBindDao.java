@@ -322,6 +322,22 @@ public class NewVersionCommunityBindDao extends BaseDao{
         return entries;
     }
 
+    public List<ObjectId> getNewIdsByMainUserId(ObjectId mainUserId,List<ObjectId> communityIds){
+        List<ObjectId> entries=new ArrayList<ObjectId>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir", Constant.ZERO)
+                .append("muid",mainUserId)
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,communityIds));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,
+                Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new NewVersionCommunityBindEntry(dbObject).getUserId());
+            }
+        }
+        return entries;
+    }
+
     /**
      * 获取家长绑定的社区
      * @return

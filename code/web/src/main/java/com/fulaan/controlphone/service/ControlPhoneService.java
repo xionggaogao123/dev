@@ -34,6 +34,8 @@ import com.pojo.jiaschool.SchoolAppEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
+import com.pojo.user.UserEntry;
+import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +98,8 @@ public class ControlPhoneService {
 
     private ModuleTimeDao moduleTimeDao =  new ModuleTimeDao();
     private VersionOpenDao versionOpenDao = new VersionOpenDao();
+
+    private ControlShareDao controlShareDao = new ControlShareDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -4950,5 +4954,46 @@ public class ControlPhoneService {
 
         }
         return dtos;
+    }
+
+    //添加共享管控用户
+    public void addControlShareUser(ObjectId userId,ObjectId sonId,String jiaId)throws  Exception{
+        UserEntry userEntry = userService.findByGenerateCode(jiaId);
+        if(userEntry==null){
+            throw  new Exception("用户不存在，请重新输入家校美ID！");
+        }
+        ControlShareEntry controlShareEntry = new ControlShareEntry(userId,userEntry.getID(),sonId, Constant.ONE,new ArrayList<String>());
+        controlShareDao.addEntry(controlShareEntry);
+    }
+
+
+    //添加共享管控用户
+    public void deleteControlShareUser(ObjectId id){
+        controlShareDao.deleteEntry(id);
+    }
+
+    //查询共享用户列表
+    public  List<Map<String,Object>> selectControlShareUser(ObjectId userId,ObjectId sonId){
+        List<ControlShareEntry> entries = controlShareDao.getEntryList(userId, sonId);
+        List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        for(ControlShareEntry controlShareEntry : entries){
+            userIds.add(controlShareEntry.getShareId());
+        }
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        for(ControlShareEntry controlShareEntry:entries){
+            UserEntry userEntry= userEntryMap.get(controlShareEntry.getShareId());
+            if(userEntry!=null){
+                Map<String,Object>  map  = new HashMap<String, Object>();
+                String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                map.put("name",name);
+                map.put("jiaId",userEntry.getGenerateUserCode());
+                map.put("userId",userEntry.getID().toString());
+                map.put("id",controlShareEntry.getID().toString());
+                mapList.add(map);
+            }
+        }
+
+        return mapList;
     }
 }

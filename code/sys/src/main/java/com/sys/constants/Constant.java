@@ -1011,6 +1011,8 @@ public class Constant {
     //管控学生数据缓存表
     public static final String COLLECTION_CONTROL_SIMPLE= "controlsimple";
 
+    public static final String COLLECTION_CONTROL_SHARE = "controlshare";
+
     /*********************************后台管理*******************************************/
     //图片鉴黄和垃圾文本
     public static final String COLLECTION_PICTURE_TEXT= "picturetext";

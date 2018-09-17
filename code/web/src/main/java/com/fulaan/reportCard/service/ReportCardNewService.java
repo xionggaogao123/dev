@@ -1565,24 +1565,24 @@ public class ReportCardNewService {
                     indexPageDao.addEntry(entry2);
                     String str = detailEntry.getSubjectIds();
                     String suid = "59dc8a68bf2e791a140769b4";
-                    List<ObjectId> os = new ArrayList<ObjectId>();
+                   // List<ObjectId> os = new ArrayList<ObjectId>();
                     if(str!=null){
                         String[] string = str.split(",");
                         if(string.length>0){
                             suid = string[0];
                         }
-                        for(String tr:string){
+                        /*for(String tr:string){
                             if(ObjectId.isValid(tr)){
                                 os.add(new ObjectId(tr));
                             }
-                        }
+                        }*/
                     }
                     SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(new ObjectId(suid));
                     String name = "其他";
                     if(subjectClassEntry!=null){
                         name = subjectClassEntry.getName();
                     }
-                    String com = subjectClassDao.getBigListByList(os);
+                   // String com = subjectClassDao.getBigListByList(os);
                     CommunityEntry communityEntry = communityDao.findCommunityByObjectId(detailEntry.getGroupId());
                     String groupName = "";
                     if(communityEntry!=null){
@@ -1591,7 +1591,7 @@ public class ReportCardNewService {
                     IndexContentDTO indexContentDTO = new IndexContentDTO(
                             name,
                             "通知—成绩单",
-                            com,
+                            detailEntry.getExamName(),
                             new ArrayList<VideoDTO>(),
                             new ArrayList<Attachement>(),
                             new ArrayList<Attachement>(),

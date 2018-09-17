@@ -2040,7 +2040,7 @@ public class IndexPageService {
         }
         map.put("systemMessage",obmap);
         //新集合通知
-        List<ObjectId>  userIds2 = newVersionCommunityBindDao.getIdsByMainUserId(userId);
+        List<ObjectId>  userIds2 = newVersionCommunityBindDao.getNewIdsByMainUserId(userId, dlist);
         List<ObjectId> userIds = this.getMyChildList(userIds2);
         userIds.add(userId);
         dlist.add(userId);

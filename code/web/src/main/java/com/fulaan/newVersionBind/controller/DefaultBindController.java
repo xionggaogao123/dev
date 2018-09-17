@@ -182,6 +182,26 @@ public class DefaultBindController extends BaseController {
     }
 
     /**
+     * 获取某个家长的绑定(包括分享)的所有的学生列表
+     * @return
+     */
+    @ApiOperation(value = "获取某个家长的绑定的所有的学生列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getNewBindDtos")
+    @ResponseBody
+    public RespObj getThreeVersionBindDtos(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<Map<String,Object>> dtoList=newVersionBindService.getThreeVersionBindDtos(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtoList);
+        }catch (Exception e){
+            respObj.setErrorMessage("查询管控孩子失败！");
+        }
+        return respObj;
+    }
+
+    /**
      * 特殊列表
      * @return
      */

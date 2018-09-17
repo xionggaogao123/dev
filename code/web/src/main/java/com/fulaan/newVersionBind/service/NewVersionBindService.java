@@ -1,6 +1,7 @@
 package com.fulaan.newVersionBind.service;
 
 import com.db.business.BusinessManageDao;
+import com.db.controlphone.ControlShareDao;
 import com.db.controlphone.ControlVersionDao;
 import com.db.excellentCourses.AccountLogDao;
 import com.db.excellentCourses.ClassOrderDao;
@@ -24,6 +25,7 @@ import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
 import com.pojo.app.SessionValue;
+import com.pojo.controlphone.ControlShareEntry;
 import com.pojo.controlphone.ControlVersionEntry;
 import com.pojo.controlphone.MQTTType;
 import com.pojo.excellentCourses.AccountLogEntry;
@@ -93,6 +95,7 @@ public class NewVersionBindService {
 
     private AccountLogDao accountLogDao = new AccountLogDao();
 
+    private ControlShareDao controlShareDao = new ControlShareDao();
     @Autowired
     private UserService userService;
 
@@ -548,6 +551,38 @@ public class NewVersionBindService {
             }
         }
         return dtos;
+    }
+
+    public List<Map<String,Object>> getThreeVersionBindDtos (ObjectId mainUserId){
+        List<Map<String,Object>>  mapList = new ArrayList<Map<String, Object>>();
+        ControlShareEntry controlShareEntry = controlShareDao.getEntry(mainUserId);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        objectIdList.add(mainUserId);
+        if(controlShareEntry!=null){
+            objectIdList.add(controlShareEntry.getUserId());
+        }
+        List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserIdList(objectIdList);
+        List<ObjectId> userIds= new ArrayList<ObjectId>();
+        for(NewVersionBindRelationEntry entry:entries){
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        for(NewVersionBindRelationEntry newVersionBindRelationEntry :entries){
+            UserEntry userEntry = userEntryMap.get(newVersionBindRelationEntry.getUserId());
+            if(userEntry!=null){
+                Map<String,Object> map = new HashMap<String, Object>();
+                String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                map.put("nickName",name);
+                map.put("userId",newVersionBindRelationEntry.getUserId().toString());
+                if(newVersionBindRelationEntry.getMainUserId().equals(mainUserId)){
+                    map.put("isControl",1);
+                }else{
+                    map.put("isControl",0);
+                }
+                mapList.add(map);
+            }
+        }
+        return mapList;
     }
 
     public List<Map<String,Object>> getMyNewVersionBindDtos (ObjectId mainUserId){

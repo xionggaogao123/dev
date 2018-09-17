@@ -127,6 +127,24 @@ public class NewVersionBindRelationDao extends BaseDao{
         return entries;
     }
 
+    //父id
+    public List<NewVersionBindRelationEntry> getEntriesByMainUserIdList( List<ObjectId> mainUserIds
+    ){
+        List<NewVersionBindRelationEntry> entries
+                =new ArrayList<NewVersionBindRelationEntry>();
+        BasicDBObject query = new BasicDBObject()
+                .append("muid",new BasicDBObject(Constant.MONGO_IN,mainUserIds))
+                .append("ir", Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new NewVersionBindRelationEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
     public List<ObjectId> getIdsByMainUserId(
             ObjectId mainUserId
     ){

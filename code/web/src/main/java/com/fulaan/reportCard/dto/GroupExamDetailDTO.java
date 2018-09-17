@@ -45,6 +45,8 @@ public class GroupExamDetailDTO {
     private String childUserName;//孩子用户姓名
     private double score;//分数
     private int scoreLevel;//等第制
+    private List<String> scoreList;//分数制 新成绩单
+    private List<String> scoreLevelList; //等第制 新成绩单
     private int isSign;//没有用
     private double avgScore;//平均分
     private double groupMaxScore;//群组最高分
@@ -706,6 +708,24 @@ public class GroupExamDetailDTO {
     public void setWtxCountList(List<Integer> wtxCountList) {
         this.wtxCountList = wtxCountList;
     }
+
+    public List<String> getScoreList() {
+        return scoreList;
+    }
+
+    public void setScoreList(List<String> scoreList) {
+        this.scoreList = scoreList;
+    }
+
+    public List<String> getScoreLevelList() {
+        return scoreLevelList;
+    }
+
+    public void setScoreLevelList(List<String> scoreLevelList) {
+        this.scoreLevelList = scoreLevelList;
+    }
+
+    
 
    
     

@@ -972,7 +972,19 @@ public class ReportCardNewService {
                 groupExamIds.add(entry.getGroupExamDetailId());
                 uIds.add(entry.getUserId());
                 communityIds.add(entry.getCommunityId());
-                subjectIds.add(entry.getSubjectId());
+                if (entry.getSubjectId() != null) {
+                    subjectIds.add(entry.getSubjectId());
+                } else {
+                    List<String> l = Arrays.asList(entry.getSubjectIds().split(","));
+                    for (String s : l) {
+                        if (StringUtils.isNotEmpty(s)) {
+                            subjectIds.add(new ObjectId(s));
+                        }
+                        
+                    }
+                }
+                
+                
                 if (null != entry.getExamType()) {
                     examTypeIds.add(entry.getExamType());
                 }
@@ -1013,18 +1025,64 @@ public class ReportCardNewService {
                     if (null != communityEntry) {
                         detailDTO.setGroupName(communityEntry.getCommunityName());
                     }
-                    SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(recordEntry.getSubjectId());
+                    /*SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(recordEntry.getSubjectId());
                     if (null != subjectClassEntry) {
                         detailDTO.setSubjectName(subjectClassEntry.getName());
+                    }*/
+                    
+                    if (recordEntry.getSubjectId() != null) {
+                        SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(recordEntry.getSubjectId());
+                        if (null != subjectClassEntry) {
+                            detailDTO.setSubjectName(subjectClassEntry.getName());
+                        }
+                    } else {
+                        String str = recordEntry.getSubjectIds();
+                        String[] sArry = str.split(",");
+                        StringBuffer subjectName = new StringBuffer();
+                        for (int i = 0;i < sArry.length;i++) {
+                            SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(new ObjectId(sArry[i]));
+                            if (null != subjectClassEntry) {
+                                subjectName.append(subjectClassEntry.getName());
+                                if (i < sArry.length-1) {
+                                    subjectName.append(",");
+                                }
+                                
+                            }
+                            
+                        }
+                        detailDTO.setSubjectName(subjectName.toString());
                     }
+                    
+                    
+                    String subjectIdStr = recordEntry.getSubjectIds();
+                    if (StringUtils.isNotBlank(subjectIdStr)) {
+                        List<String> subjectIdList = Arrays.asList(subjectIdStr.split(","));
+                        List<String> subjectNameList = new ArrayList<String>();
+                        for (String s : subjectIdList) {
+                            SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(new ObjectId(s));
+                            if (null != subjectClassEntry) {
+                                subjectNameList.add(subjectClassEntry.getName());
+                            }
+                            
+                            
+                        }
+                        if (CollectionUtils.isNotEmpty(subjectNameList)) {
+                            detailDTO.setSubjectNameList(subjectNameList);
+                        }
+                    }
+                    
                     if (null != recordEntry.getExamType()) {
                         ExamTypeEntry examTypeEntry = examTypeEntryMap.get(recordEntry.getExamType());
                         if (null != examTypeEntry) {
                             detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
                         }
                     }
-                    detailDTO.setScore(recordEntry.getScore());
-                    detailDTO.setScoreLevel(recordEntry.getScoreLevel());
+                    /*detailDTO.setScore(recordEntry.getScore());
+                    detailDTO.setScoreLevel(recordEntry.getScoreLevel());*/
+                    String scoreStr = recordEntry.getScoreStr();
+                    String scoreLevelStr = recordEntry.getScoreLevelStr();
+                    detailDTO.setScoreList(Arrays.asList(scoreStr.split(","))); 
+                    detailDTO.setScoreLevelList(Arrays.asList(scoreLevelStr.split(","))); 
                     UserEntry mainUserEntry = mainUserEntryMap.get(detailEntry.getUserId());
                     if (null != mainUserEntry) {
                         detailDTO.setUserName(StringUtils.isNotEmpty(mainUserEntry.getNickName())?mainUserEntry.getNickName():mainUserEntry.getUserName());

@@ -21,6 +21,7 @@ public class IndexContentDTO {
     private String id;
     private String tag;
     private String subject;
+    private String userId;
     private String title;
     private String content;
     private List<VideoDTO> videoList=new ArrayList<VideoDTO>();
@@ -150,6 +151,14 @@ public class IndexContentDTO {
         IndexContentEntry entry=new IndexContentEntry(uuId, subject, title, content,
                 gId, watchPermission, videoEntries, attachmentEntries,voiceEntries,groupName,userName,subId,cmId,imageEntries);
         return entry;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getId() {

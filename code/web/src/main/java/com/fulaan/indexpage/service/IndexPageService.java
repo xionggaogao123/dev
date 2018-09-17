@@ -14,6 +14,7 @@ import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
+import com.db.reportCard.VirtualAndUserDao;
 import com.fulaan.appactivity.dto.AppActivityDTO;
 import com.fulaan.appvote.dto.AppVoteDTO;
 import com.fulaan.appvote.dto.VoteOption;
@@ -101,6 +102,8 @@ public class IndexPageService {
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     private IndexContentDao indexContentDao = new IndexContentDao();
+
+    private VirtualAndUserDao virtualAndUserDao = new  VirtualAndUserDao();
     //老师社群
   //  private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //线上
@@ -655,7 +658,8 @@ public class IndexPageService {
         }else{
             objectIdList.add(new ObjectId(PARENTCOMMUNIY));
         }
-        List<AppNoticeEntry> entries = appNoticeDao.getRoleList(objectIdList, 1, 1,"");
+        //List<AppNoticeEntry> entries = appNoticeDao.getRoleList(oids, page, pageSize, userName);
+        List<AppNoticeEntry> entries = appNoticeDao.getRoleList(objectIdList, 1, 1,"小兰老师");
         for(AppNoticeEntry appNoticeEntry:entries){
             SuperTopicDTO superTopicDTO = new SuperTopicDTO();
             superTopicDTO.setVoteType(2);//教育咨询
@@ -668,7 +672,7 @@ public class IndexPageService {
             superTopicDTO.setTitle(appNoticeEntry.getTitle());
             superTopicDTO.setReadName(appNoticeEntry.getSubject());
             superTopicDTO.setUrl("");
-            superTopicDTO.setVoteType(1);
+           // superTopicDTO.setVoteType(1);
             superTopicDTOs.add(superTopicDTO);
         }
 
@@ -1078,8 +1082,13 @@ public class IndexPageService {
             }
 
         }
-        List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
-        int count = indexPageDao.countPageList(dlist,userId);
+        List<Integer> integerList = new ArrayList<Integer>();
+        integerList.add(2);
+        integerList.add(3);
+        integerList.add(6);
+        integerList.add(7);
+        List<IndexPageEntry> entrys = indexPageDao.getPageList2(dlist, userId, page, pageSize, integerList);
+        int count = indexPageDao.countPageList2(dlist, userId, integerList);
         //最新系统消息（todo）
 
         //作业
@@ -1509,8 +1518,13 @@ public class IndexPageService {
                 superTopicDTOs=getEducationList(1);
             }
         }
-        List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
-        int count = indexPageDao.countPageList(dlist,userId);
+        List<Integer> integerList = new ArrayList<Integer>();
+        integerList.add(2);
+        integerList.add(3);
+        integerList.add(6);
+        integerList.add(7);
+        List<IndexPageEntry> entrys = indexPageDao.getPageList2(dlist, userId, page, pageSize, integerList);
+        int count = indexPageDao.countPageList2(dlist, userId, integerList);
         //作业
         List<ObjectId> appList = new ArrayList<ObjectId>();
         Map<String,Object> appMap =new HashMap<String, Object>();
@@ -1983,6 +1997,17 @@ public class IndexPageService {
         return map;
     }
 
+    //由绑定孩子列表获得虚拟孩子列表
+    public List<ObjectId> getMyChildList(List<ObjectId> objectIds){
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        List<ObjectId> objectIdList1 = virtualAndUserDao.getEntryListByCommunityId(objectIds);
+        set.addAll(objectIdList1);
+        set.addAll(objectIds);
+        objectIdList.addAll(set);
+        return objectIdList;
+    }
+
     public Map<String,Object> getSixHotIndexList(ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         //1.通知逻辑
@@ -2015,8 +2040,10 @@ public class IndexPageService {
         }
         map.put("systemMessage",obmap);
         //新集合通知
-        List<ObjectId>  userIds = newVersionCommunityBindDao.getIdsByMainUserId(userId);
+        List<ObjectId>  userIds2 = newVersionCommunityBindDao.getIdsByMainUserId(userId);
+        List<ObjectId> userIds = this.getMyChildList(userIds2);
         userIds.add(userId);
+        dlist.add(userId);
         List<ObjectId> cntactIdList = indexPageDao.getNewPageList(dlist, userId, page, pageSize, Constant.EIGHT,userIds);
         int count = indexPageDao.countNewPageList(dlist, userId, Constant.EIGHT,userIds);
         List<IndexContentDTO> list2 = new ArrayList<IndexContentDTO>();
@@ -2050,7 +2077,12 @@ public class IndexPageService {
                 }else{
                     dto.setReadCount(0);
                 }
-                dto.setTotalReadCount(indexContentEntry.getAllCount()-1);
+                if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(uid)){
+                    dto.setTotalReadCount(indexContentEntry.getAllCount());
+                }else{
+                    dto.setTotalReadCount(indexContentEntry.getAllCount()-1);
+                }
+
                 UserEntry userEntry = userEntryMap.get(uid);
                 if(userEntry!=null){
                     String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
@@ -2067,6 +2099,7 @@ public class IndexPageService {
                         for(String s:strings){
                             for(ObjectId oid : userIds){
                                 if(s.contains(oid.toString())){
+                                    dto.setUserId(oid.toString());
                                     String[] strings1 = s.split("#");
                                     if(strings1.length==2){
                                         dto.setTag(strings1[1]);

@@ -1397,7 +1397,7 @@ public class BusinessManageService {
         //加入基础权限
         BusinessRoleEntry businessRoleEntry2 = businessRoleDao.getEntry(roleId);
         String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
-        String newUrl = oldUrl+"-headv1";
+        String newUrl = oldUrl+"-blueheadv1";
         if(businessRoleEntry2==null){
             stringList.add(RoleType.updateCommunityName.getEname());
             stringList.add(RoleType.commentAndZan.getEname());

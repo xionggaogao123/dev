@@ -14,6 +14,7 @@ import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolAppDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.user.NewVersionBindRelationDao;
+import com.db.user.NewVersionUserRoleDao;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.community.dto.CommunityDTO;
@@ -33,6 +34,7 @@ import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.jiaschool.SchoolAppEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
+import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -100,6 +102,8 @@ public class ControlPhoneService {
     private VersionOpenDao versionOpenDao = new VersionOpenDao();
 
     private ControlShareDao controlShareDao = new ControlShareDao();
+
+    private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -4961,6 +4965,13 @@ public class ControlPhoneService {
         UserEntry userEntry = userService.findByGenerateCode(jiaId);
         if(userEntry==null){
             throw  new Exception("用户不存在，请重新输入家校美ID！");
+        }
+        if(userId.equals(userEntry.getID())){
+            throw  new Exception("不可共享权限给自己！");
+        }
+        NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userEntry.getID());
+        if(newVersionUserRoleEntry.getNewRole()==1 || newVersionUserRoleEntry.getNewRole()==2){
+            throw  new Exception("不可共享权限给学生用户！");
         }
         ControlShareEntry controlShareEntry = new ControlShareEntry(userId,userEntry.getID(),sonId, Constant.ONE,new ArrayList<String>());
         controlShareDao.addEntry(controlShareEntry);

@@ -653,7 +653,23 @@ public class BusinessManageService {
             cellItem.setCellValue("¥ "+score);
 
             cellItem = rowItem.createCell(6);
+            int newPrice = 0;
             if(order2.equals("")){
+                if(function==3){//后台
+                    if(money==1){//现金
+                        cellItem.setCellValue("后台付费");
+                        newPrice = 1;
+                    }else{
+                        cellItem.setCellValue("后台免费");
+                        newPrice = 0;
+                    }
+                }else if(function==0){//自定义购买
+                    cellItem.setCellValue("");
+                }
+            } else {
+                cellItem.setCellValue(order2);
+            }
+            /*if(order2.equals("")){
                 if(money==1){
                     cellItem.setCellValue("后台付费");
                 }else{
@@ -661,15 +677,28 @@ public class BusinessManageService {
                 }
             }else{
                 cellItem.setCellValue(order2);
-            }
+            }*/
 
             cellItem = rowItem.createCell(7);
+            /*	<span v-if="scope.row.function==3 && scope.row.newPrice==0" width="40" height="40" >免费</span>
+						<span v-if="scope.row.function==3 && scope.row.newPrice==1" width="40" height="40" >现金</span>
+						<span v-if="scope.row.function==0 && scope.row.newPrice==1" width="40" height="40" >免费</span>
+						<span v-if="scope.row.function==1" width="40" height="40" >支付宝</span>
+						<span v-if="scope.row.function==2" width="40" height="40" >微信</span>*/
             if(function==1){
                 cellItem.setCellValue("支付宝");
             }else if(function==2){
                 cellItem.setCellValue("微信");
+            }else if(function==0){
+                cellItem.setCellValue("免费");
+            }else if(function==3){
+                if(newPrice==0){
+                    cellItem.setCellValue("免费");
+                }else{
+                    cellItem.setCellValue("现金");
+                }
             }else{
-                cellItem.setCellValue("后台添加");
+                cellItem.setCellValue("免费");
             }
 
             cellItem = rowItem.createCell(8);
@@ -701,7 +730,7 @@ public class BusinessManageService {
         String sheetName = "";
         if(status==1){//删除
             sheetName = "课程《"+excellentCoursesEntry.getTitle()+"》删除订单列表";
-        }else{
+        }else{//退课
             sheetName = "课程《"+excellentCoursesEntry.getTitle()+"》退课订单列表";
         }
 
@@ -785,18 +814,37 @@ public class BusinessManageService {
             cellItem.setCellValue(dto.getClassIdList().size()+"");
 
             cellItem = rowItem.createCell(4);
-            cellItem.setCellValue(dto.getPrice()+"");
+            cellItem.setCellValue("¥ "+dto.getPrice());
 
             cellItem = rowItem.createCell(5);
-            cellItem.setCellValue(dto.getOrderId());
+            if(dto.getOrderType()==0){
+                cellItem.setCellValue("");
+            }else{
+                cellItem.setCellValue(dto.getOrderId());
+            }
 
+            /*<span v-if="scope.row.orderType==3 && scope.row.money==0" width="40" height="40" >免费</span>
+						<span v-if="scope.row.orderType==3 && scope.row.money==1" width="40" height="40" >现金</span>
+						<span v-if="scope.row.orderType==0" width="40" height="40" >免费</span>
+						<span v-if="scope.row.orderType==1" width="40" height="40" >支付宝</span>
+						<span v-if="scope.row.orderType==2" width="40" height="40" >微信</span>*/
             cellItem = rowItem.createCell(6);
             if(dto.getOrderType()==1){
                 cellItem.setCellValue("支付宝");
             }else if(dto.getOrderType()==2){
                 cellItem.setCellValue("微信");
+            }else if(dto.getOrderType()==0){
+                cellItem.setCellValue("免费");
+            }else if(dto.getOrderType()==3){
+                if(dto.getMoney()==0){
+                    cellItem.setCellValue("免费");
+                }else if(dto.getMoney()==1){
+                    cellItem.setCellValue("现金");
+                }else{
+                    cellItem.setCellValue("免费");
+                }
             }else{
-                cellItem.setCellValue("后台添加");
+                cellItem.setCellValue("免费");
             }
 
             cellItem = rowItem.createCell(7);

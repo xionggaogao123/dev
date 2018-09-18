@@ -14,6 +14,7 @@ import com.db.user.UserDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.business.dto.BusinessManageDTO;
+import com.fulaan.controlphone.dto.CoursesBusinessDTO;
 import com.fulaan.excellentCourses.dto.BackOrderDTO;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourClassDTO;
@@ -107,6 +108,8 @@ public class BusinessManageService {
     private BackOrderDao backOrderDao = new BackOrderDao();
 
     private NewVersionUserRoleDao newVersionUserRoleDao= new NewVersionUserRoleDao();
+
+    private CoursesBusinessDao coursesBusinessDao = new CoursesBusinessDao();
 
     @Autowired
     private EmService emService;
@@ -255,7 +258,7 @@ public class BusinessManageService {
         for(UserEntry userEntry: userEntries){
             //String userName,String nickName,String userId,String avator,int sex,String time
             if(!oisd.contains(userEntry.getID())){
-                User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),userEntry.getMobileNumber(),userEntry.getSex(),userEntry.getGenerateUserCode());
+                User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),userEntry.getSex(),userEntry.getGenerateUserCode());
                 userList.add(user);
                 oisd.add(userEntry.getID());
             }
@@ -1327,6 +1330,69 @@ public class BusinessManageService {
         backStageService.addLogMessage(id.toString(), "审核直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
         return "1";
     }
+
+    //审核通过回调接口
+    public String backFinish(ObjectId id,String word,ObjectId userId,int type){
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return "课程不存在";
+        }
+        if(word.equals("")){
+            return "无设置";
+        }
+        String[] str = word.split(",");
+        Map<String,Double> map = new HashMap<String, Double>();
+        for(int i = 0;i<str.length;i++){
+            String tr = str[i];
+            String[] strings = tr.split("#");
+            map.put(strings[0],getTwoDouble(Double.parseDouble(strings[1])));
+        }
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        double all = 0.00;
+        int minute = 0;
+        for(HourClassEntry hourClassEntry : hourClassEntries){
+            Double price = map.get(hourClassEntry.getID().toString());
+            if(price!=null){
+                hourClassDao.updatePriceEntry(hourClassEntry.getID(),price);
+                all = sum(all,price);
+            }
+            //课程提醒
+            String str2 = DateTimeUtils.getLongToStrTimeTwo(hourClassEntry.getStartTime()).substring(0,11);
+            long strNum = DateTimeUtils.getStrToLongTime(str2, "yyyy-MM-dd");
+            sendMessage(excellentCoursesEntry.getTitle(),hourClassEntry.getID(),hourClassEntry.getStartTime(),strNum);
+            minute = hourClassEntry.getCurrentTime()/60000 - 5;
+        }
+        //课程改为进行中
+        excellentCoursesEntry.setNewPrice(all);
+        excellentCoursesEntry.setStatus(2);
+        if(type==2){
+            excellentCoursesEntry.setCourseType(2);
+        }
+        excellentCoursesDao.addEntry(excellentCoursesEntry);
+
+
+
+        //创建直播间
+        long start  = excellentCoursesEntry.getStartTime();
+        String startTime = "";
+        if(start!=0l){
+            startTime = DateTimeUtils.getLongToStrTimeTwo(start);
+        }
+        //todo
+        if(minute>5){
+
+        }else{
+            minute = 5;
+        }
+        coursesRoomService.createBackCourses(excellentCoursesEntry.getTitle(),excellentCoursesEntry.getTarget(),excellentCoursesEntry.getID(),startTime,minute);
+        backStageService.addLogMessage(id.toString(), "审核直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
+        return "1";
+    }
+
+    public void addCoursesBusinessEntry(CoursesBusinessDTO dto){
+        CoursesBusinessEntry coursesBusinessEntry = dto.buildAddEntry();
+        coursesBusinessDao.addEntry(coursesBusinessEntry);
+     }
 
 
     /**

@@ -1091,6 +1091,8 @@ public class Constant {
     public static final String COLLECTION_CC_LOGIN= "excellent_cc_login";
     //用户登陆信息
     public static final String COLLECTION_USER_DESC= "excellent_user_class_desc";
+
+    public static final String COLLECTION_COURSES_BUSINESS="excellent_courses_business";
     /*************************************积分商城*****************************************/
     
     //商品

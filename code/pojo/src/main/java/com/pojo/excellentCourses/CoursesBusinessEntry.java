@@ -71,15 +71,27 @@ public class CoursesBusinessEntry extends BaseDBObject {
     public String getAssistantName(){
         return getSimpleStringValue("anm");
     }
+
     public void setAssistantName(String assistantName){
         setSimpleValue("anm",assistantName);
     }
+
     public ObjectId getSellId(){
         return getSimpleObjecIDValue("sid");
     }
+
     public void setSellId(ObjectId sellId){
         setSimpleValue("sid",sellId);
     }
+
+    public ObjectId getAssistantId(){
+        return getSimpleObjecIDValue("aid");
+    }
+
+    public void setAssistantId(ObjectId assistantId){
+        setSimpleValue("aid",assistantId);
+    }
+
     public String getProvince(){
         return getSimpleStringValue("pro");
     }

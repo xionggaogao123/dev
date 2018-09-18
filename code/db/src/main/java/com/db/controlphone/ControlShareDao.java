@@ -25,6 +25,23 @@ public class ControlShareDao extends BaseDao {
         }
         return null;
     }
+    public List<ControlShareEntry> getAllEntryList(ObjectId shareId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("hid", shareId)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_SHARE,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ControlShareEntry> entryList = new ArrayList<ControlShareEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ControlShareEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
 
     //添加
     public String addEntry(ControlShareEntry entry) {

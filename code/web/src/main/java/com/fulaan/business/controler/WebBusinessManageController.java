@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.business.service.BusinessManageService;
+import com.fulaan.controlphone.dto.CoursesBusinessDTO;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.pojo.User;
 import com.sys.constants.Constant;
@@ -12,6 +13,7 @@ import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -630,10 +632,12 @@ public class WebBusinessManageController extends BaseController {
     @ResponseBody
     public String backFinish(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
                             @ApiParam(name="number",required = false,value="number") @RequestParam(value="number",defaultValue = "") String number,
-                            @ApiParam(name="type",required = false,value="type") @RequestParam(value="type",defaultValue = "0") int type){
+                            @ApiParam(name="type",required = false,value="type") @RequestParam(value="type",defaultValue = "0") int type,
+                            @RequestBody CoursesBusinessDTO dto){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            String map =  businessManageService.threeFinish(new ObjectId(id), number, getUserId(),type);
+            String map = businessManageService.threeFinish(new ObjectId(id), number, getUserId(),type);
+            businessManageService.addCoursesBusinessEntry(dto);
             if(map.equals("1")){
                 respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage("审核通过");

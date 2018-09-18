@@ -12,7 +12,6 @@ import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
-import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.appactivity.AppActivityEntry;
@@ -86,7 +85,7 @@ public class AppActivityService {
             appActivityDao.saveEntry(appActivityEntry);
             if(appActivityDTO.getVisiblePermission()==1){//发送给家长
                 //发送通知
-                PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
+               // PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
                 //首页记录
                 IndexPageDTO dto1 = new IndexPageDTO();
                 dto1.setType(CommunityType.activity.getType());

@@ -5007,4 +5007,12 @@ public class ControlPhoneService {
 
         return mapList;
     }
+    //获取学生的实际管控人
+    public ObjectId getMainUserId(ObjectId sonId){
+        NewVersionBindRelationEntry newEntry = newVersionBindRelationDao.getBindEntry(sonId);
+        if(newEntry!=null){
+            return newEntry.getMainUserId();
+        }
+        return null;
+    }
 }

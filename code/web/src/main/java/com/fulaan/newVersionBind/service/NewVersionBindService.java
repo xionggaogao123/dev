@@ -554,22 +554,30 @@ public class NewVersionBindService {
     }
 
     public List<Map<String,Object>> getThreeVersionBindDtos (ObjectId mainUserId){
+        //可管控对象
+        List<ObjectId> sonIds = new ArrayList<ObjectId>();
+
         List<Map<String,Object>>  mapList = new ArrayList<Map<String, Object>>();
-        ControlShareEntry controlShareEntry = controlShareDao.getEntry(mainUserId);
+        List<ControlShareEntry> controlShareEntrys = controlShareDao.getAllEntryList(mainUserId);
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         objectIdList.add(mainUserId);
-        if(controlShareEntry!=null){
+        for(ControlShareEntry controlShareEntry : controlShareEntrys){
             objectIdList.add(controlShareEntry.getUserId());
+            //分享
+            sonIds.add(controlShareEntry.getSonId());
         }
         List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserIdList(objectIdList);
         List<ObjectId> userIds= new ArrayList<ObjectId>();
         for(NewVersionBindRelationEntry entry:entries){
+            if(entry.getMainUserId().equals(mainUserId)){//管控
+                sonIds.add(entry.getUserId());
+            }
             userIds.add(entry.getUserId());
         }
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
         for(NewVersionBindRelationEntry newVersionBindRelationEntry :entries){
             UserEntry userEntry = userEntryMap.get(newVersionBindRelationEntry.getUserId());
-            if(userEntry!=null){
+            if(userEntry!=null && sonIds.contains(newVersionBindRelationEntry.getUserId())){
                 Map<String,Object> map = new HashMap<String, Object>();
                 String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
                 map.put("nickName",name);

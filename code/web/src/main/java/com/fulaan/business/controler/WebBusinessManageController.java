@@ -170,6 +170,28 @@ public class WebBusinessManageController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    
+    /**
+     * 删除管理员用户
+     * @return
+     */
+    @ApiOperation(value = "删除管理员用户", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/delRoleUser")
+    @ResponseBody
+    public String delRoleUser(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            String result = businessManageService.delRoleUser(getUserId(),new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("删除管理员用户失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /**
      * 权限列表

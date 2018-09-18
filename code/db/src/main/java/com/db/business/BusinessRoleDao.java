@@ -46,6 +46,15 @@ public class BusinessRoleDao extends BaseDao {
         }
         return null;
     }
+    
+  //删除
+    public void delEntry(ObjectId userId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("uid", userId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_BUSINESS_ROLE, query,updateValue);
+    }
+    
     public List<BusinessRoleEntry> getPageList() {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);

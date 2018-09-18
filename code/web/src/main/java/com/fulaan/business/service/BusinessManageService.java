@@ -1392,19 +1392,36 @@ public class BusinessManageService {
 
     //添加管理员用户
     public String  addRoleUser(ObjectId userId,ObjectId roleId){
+        UserEntry entry1 =  userDao.findByUserId(roleId);
         List<String>  stringList = new ArrayList<String>();
         //加入基础权限
         BusinessRoleEntry businessRoleEntry2 = businessRoleDao.getEntry(roleId);
+        String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
+        String newUrl = oldUrl+"-headv1";
         if(businessRoleEntry2==null){
             stringList.add(RoleType.updateCommunityName.getEname());
             stringList.add(RoleType.commentAndZan.getEname());
-            BusinessRoleEntry businessRoleEntry=  new BusinessRoleEntry(roleId,0,new ArrayList<ObjectId>(),stringList);
+            BusinessRoleEntry businessRoleEntry=  new BusinessRoleEntry(roleId,0,new ArrayList<ObjectId>(),stringList,oldUrl, newUrl);
             String str = businessRoleDao.addEntry(businessRoleEntry);
+            //加运营人员大v
+            userDao.updateAvater(roleId,newUrl);
+            memberDao.updateAllAvatar(roleId, newUrl);
             backStageService.addLogMessage(str, "添加运营管理员：" + roleId.toString(), LogMessageType.yunRole.getDes(), userId.toString());
             return "添加成功";
         }else{
+            if (StringUtils.isBlank(businessRoleEntry2.getOldAvatar()) || StringUtils.isBlank(businessRoleEntry2.getNewAvatar())) {
+                businessRoleEntry2.setOldAvatar(oldUrl);
+                businessRoleEntry2.setNewAvatar(newUrl);
+                businessRoleDao.updEntry(businessRoleEntry2);
+            }
             return "用户已添加";
         }
+    }
+    
+  //删除管理员用户
+    public String  delRoleUser(ObjectId userId,ObjectId roleId) throws Exception{
+        businessRoleDao.delEntry(roleId);
+        return "用户已删除";
     }
 
     public List<Map<String,Object>> getRoleList(ObjectId userId){

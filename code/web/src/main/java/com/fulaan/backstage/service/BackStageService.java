@@ -931,10 +931,14 @@ public class BackStageService {
                     String oldUrl = "";
                     String newUrl = "";
                     if(entry.getOldAvatar() !=null && entry.getOldAvatar()!=""){
-                        oldUrl = entry.getOldAvatar();
-                        newUrl = entry.getNewAvatar();
+                        String ava = entry.getOldAvatar().replaceAll("-blueheadv1", "");
+                        ava = ava.replaceAll("-headv1", "");
+                        oldUrl = ava;
+                        newUrl = oldUrl+"-headv1";
                     }else{
-                        oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
+                        String ava = entry1.getAvatar().replaceAll("-blueheadv1", "");
+                        ava = ava.replaceAll("-headv1", "");
+                        oldUrl = AvatarUtils.getAvatar(ava,entry1.getRole(),entry1.getSex());
                         newUrl = oldUrl+"-headv1";
                     }
                     userDao.updateAvater(id,newUrl);
@@ -965,7 +969,9 @@ public class BackStageService {
                     dto.setUserId(id.toString());
                     dto.setApproveId(userId.toString());
                     dto.setType(type);
-                    String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
+                    String ava = entry1.getAvatar().replaceAll("-blueheadv1", "");
+                    ava = ava.replaceAll("-headv1", "");
+                    String oldUrl = AvatarUtils.getAvatar(ava,entry1.getRole(),entry1.getSex());
                     String newUrl = oldUrl+"-headv1";
                     dto.setOldAvatar(oldUrl);
                     dto.setNewAvatar(newUrl);
@@ -985,7 +991,9 @@ public class BackStageService {
                     dto.setUserId(id.toString());
                     dto.setApproveId(userId.toString());
                     dto.setType(type);
-                    String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
+                    String ava = entry1.getAvatar().replaceAll("-blueheadv1", "");
+                    ava = ava.replaceAll("-headv1", "");
+                    String oldUrl = AvatarUtils.getAvatar(ava,entry1.getRole(),entry1.getSex());
                     String newUrl = oldUrl+"-headv1";
                     dto.setOldAvatar(oldUrl);
                     dto.setNewAvatar(newUrl);

@@ -1462,16 +1462,19 @@ public class BusinessManageService {
         List<String>  stringList = new ArrayList<String>();
         //加入基础权限
         BusinessRoleEntry businessRoleEntry2 = businessRoleDao.getEntry(roleId);
-        String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
+        String ava = entry1.getAvatar().replaceAll("-blueheadv1", "");
+        ava = ava.replaceAll("-headv1", "");
+        String oldUrl = AvatarUtils.getAvatar(ava,entry1.getRole(),entry1.getSex());
         String newUrl = oldUrl+"-blueheadv1";
+        //加运营人员大v
+        userDao.updateAvater(roleId,newUrl);
+        memberDao.updateAllAvatar(roleId, newUrl);
         if(businessRoleEntry2==null){
             stringList.add(RoleType.updateCommunityName.getEname());
             stringList.add(RoleType.commentAndZan.getEname());
             BusinessRoleEntry businessRoleEntry=  new BusinessRoleEntry(roleId,0,new ArrayList<ObjectId>(),stringList,oldUrl, newUrl);
             String str = businessRoleDao.addEntry(businessRoleEntry);
-            //加运营人员大v
-            userDao.updateAvater(roleId,newUrl);
-            memberDao.updateAllAvatar(roleId, newUrl);
+            
             backStageService.addLogMessage(str, "添加运营管理员：" + roleId.toString(), LogMessageType.yunRole.getDes(), userId.toString());
             return "添加成功";
         }else{

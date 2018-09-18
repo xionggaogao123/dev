@@ -1420,7 +1420,19 @@ public class BusinessManageService {
     
   //删除管理员用户
     public String  delRoleUser(ObjectId userId,ObjectId roleId) throws Exception{
-        businessRoleDao.delEntry(roleId);
+        //加入基础权限
+        BusinessRoleEntry businessRoleEntry2 = businessRoleDao.getEntry(roleId);
+        if (businessRoleEntry2 != null) {
+            String oldUrl = "";
+            if (StringUtils.isNotBlank(businessRoleEntry2.getOldAvatar())) {
+                oldUrl = businessRoleEntry2.getOldAvatar();
+              //加运营人员大v
+                userDao.updateAvater(roleId,oldUrl);
+                memberDao.updateAllAvatar(roleId, oldUrl);
+            } 
+            businessRoleDao.delEntry(roleId);
+        }
+        
         return "用户已删除";
     }
 

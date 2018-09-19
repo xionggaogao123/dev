@@ -111,6 +111,7 @@ public class BusinessManageService {
 
     private CoursesBusinessDao coursesBusinessDao = new CoursesBusinessDao();
 
+
     @Autowired
     private EmService emService;
 
@@ -1414,6 +1415,74 @@ public class BusinessManageService {
         }
         excellentCoursesDao.juEntry(id);
         backStageService.addLogMessage(id.toString(), "拒绝直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
+    }
+
+    public Map<String,Object> selectCourseBusinessList(String businessName,String province,String city,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<CoursesBusinessEntry> entries = coursesBusinessDao.getAllEntryList(businessName, province, city, page, pageSize);
+        int count = coursesBusinessDao.selectMyCount(businessName, province, city);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        for(CoursesBusinessEntry coursesBusinessEntry: entries){
+            objectIdList.add(coursesBusinessEntry.getContactId());
+        }
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getEntryListById4(objectIdList);
+        Map<ObjectId,ExcellentCoursesEntry> map1 = new HashMap<ObjectId, ExcellentCoursesEntry>();
+        List<ObjectId> courseIds = new ArrayList<ObjectId>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
+            map1.put(excellentCoursesEntry.getID(),excellentCoursesEntry);
+            courseIds.add(excellentCoursesEntry.getID());
+        }
+        List<HourClassEntry> hourClassEntries = hourClassDao.getParentEntryList(courseIds);
+        Map<ObjectId,List<HourClassEntry>>  hourMap = new HashMap<ObjectId, List<HourClassEntry>>();
+        for(HourClassEntry hourClassEntry : hourClassEntries){
+            List<HourClassEntry> hourClassEntries1 = hourMap.get(hourClassEntry.getParentId());
+            if(hourClassEntries1==null){
+                List<HourClassEntry> newHour = new ArrayList<HourClassEntry>();
+                newHour.add(hourClassEntry);
+            }else{
+                hourClassEntries1.add(hourClassEntry);
+                hourMap.put(hourClassEntry.getParentId(),hourClassEntries1);
+            }
+        }
+        List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
+        long current = System.currentTimeMillis();
+        for(CoursesBusinessEntry coursesBusinessEntry: entries){
+            ExcellentCoursesEntry entry = map1.get(coursesBusinessEntry.getContactId());
+            if(entry!=null){
+                Map<String,Object> map2 = new HashMap<String, Object>();
+                map2.put("courseId",coursesBusinessEntry.getClassNumber());
+                map2.put("id",entry.getID().toString());
+                map2.put("courseName",entry.getTitle());
+                if(entry.getStartTime()!=0l){
+                    map2.put("startTime", DateTimeUtils.getLongToStrTimeTwo(entry.getStartTime()));
+                }else{
+                    map2.put("startTime","");
+                }
+                map2.put("count",entry.getAllClassCount());
+                List<HourClassEntry> hourClassEntries2 =  hourMap.get(coursesBusinessEntry.getContactId());
+                if(hourClassEntries2!=null){
+                    int index = 0;
+                    for(HourClassEntry hourClassEntry : hourClassEntries2){
+                        long end = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
+                        if(current>end){
+                            index++;
+                        }
+                    }
+                    map2.put("endCount",index);
+                }else{
+                    map2.put("endCount",0);
+                }
+                map2.put("studentNumber",entry.getStudentNumber());
+                map2.put("price",entry.getNewPrice());
+                map2.put("area",coursesBusinessEntry.getProvince() +" "+coursesBusinessEntry.getCity());
+                map2.put("sellName",coursesBusinessEntry.getSellName());
+                map2.put("assistantName",coursesBusinessEntry.getAssistantName());
+                mapList.add(map2);
+            }
+        }
+        map.put("list",mapList);
+        map.put("count",count);
+        return map;
     }
 
     /**

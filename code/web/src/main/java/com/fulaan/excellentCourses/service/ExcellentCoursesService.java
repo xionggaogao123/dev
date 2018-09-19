@@ -99,6 +99,8 @@ public class ExcellentCoursesService {
 
     private PushMessageDao pushMessageDao = new PushMessageDao();
 
+    private CoursesBusinessDao coursesBusinessDao = new CoursesBusinessDao();
+
     private static final Logger logger =Logger.getLogger(DefaultWrongQuestionController.class);
 
 
@@ -2121,7 +2123,9 @@ public class ExcellentCoursesService {
         if(classIds==null|| classIds.equals("")){
             throw  new Exception("请至少购买一节课程");
         }
-
+        if(excellentCoursesEntry.getCourseType()==2 && userId.equals(sonId)){
+            throw  new Exception("家长不可购买赶考网课程");
+        }
         //美豆账户
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
         if(userBehaviorEntry==null){
@@ -2289,12 +2293,15 @@ public class ExcellentCoursesService {
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         Map<ObjectId,ExcellentCoursesDTO> listMap = new HashMap<ObjectId, ExcellentCoursesDTO>();
+        long current = System.currentTimeMillis();
         if (userBehaviorEntry != null) {
             List<ObjectId> objectIdList = userBehaviorEntry.getCollectList();
             List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getOtherEntryListById(objectIdList);
             for (ExcellentCoursesEntry entry : excellentCoursesEntries) {
                 //dtos.add(new ExcellentCoursesDTO(entry));
-                listMap.put(entry.getID(),new ExcellentCoursesDTO(entry));
+                if(entry.getEndTime()>current){
+                    listMap.put(entry.getID(),new ExcellentCoursesDTO(entry));
+                }
             }
             int size = objectIdList.size();
             List<String> ol = new ArrayList<String>();
@@ -2828,6 +2835,9 @@ public class ExcellentCoursesService {
         excellentCoursesDao.delEntry(id);
         //3. 删除课节
         hourClassDao.delEntry(id,userId);
+        //4. 删除附加表
+        coursesBusinessDao.delEntry(id);
+
         return "删除成功";
     }
 

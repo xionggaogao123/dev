@@ -674,12 +674,38 @@ public class WebBusinessManageController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             businessManageService.refuseFinish(new ObjectId(id),getUserId());
-            respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("已拒绝");
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("已拒绝");
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("拒绝失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 直播课堂运营数据查询
+     * @return
+     */
+    @ApiOperation(value = "直播课堂运营数据查询", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectCourseBusinessList")
+    @ResponseBody
+    public String selectCourseBusinessList(@ApiParam(name="businessName",required = false,value="id") @RequestParam(value="businessName",defaultValue = "") String businessName,
+                                           @ApiParam(name="province",required = false,value="province") @RequestParam(value="province",defaultValue = "") String province,
+                                           @ApiParam(name="city",required = false,value="city") @RequestParam(value="city",defaultValue = "") String city,
+                                           @ApiParam(name="page",required = false,value="page") @RequestParam(value="page",defaultValue = "1") int page,
+                                           @ApiParam(name="pageSize",required = false,value="pageSize") @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> map = businessManageService.selectCourseBusinessList(businessName,province,city,page,pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("直播课堂运营数据查询失败!");
         }
         return JSON.toJSONString(respObj);
     }

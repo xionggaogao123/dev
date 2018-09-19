@@ -38,6 +38,13 @@ public class ExcellentCoursesDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,updateValue);
     }
 
+    //拒绝课程
+    public void juEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sta",Constant.THREE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,updateValue);
+    }
+
     //设为轮播课
     public void setLunEntry(ObjectId id,int status){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);

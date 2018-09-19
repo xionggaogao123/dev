@@ -13,7 +13,6 @@ import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -184,7 +183,7 @@ public class WebBusinessManageController extends BaseController {
     public String delRoleUser(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id") String id){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            String result = businessManageService.delRoleUser(getUserId(),new ObjectId(id));
+            String result = businessManageService.delRoleUser(getUserId(), new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         } catch (Exception e) {
@@ -623,7 +622,7 @@ public class WebBusinessManageController extends BaseController {
     }
 
     /**
-     * (附加信息)
+     * 审批通过(附加信息)
      * @return
      */
     @ApiOperation(value = "附加信息", httpMethod = "POST", produces = "application/json")
@@ -633,10 +632,20 @@ public class WebBusinessManageController extends BaseController {
     public String backFinish(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
                             @ApiParam(name="number",required = false,value="number") @RequestParam(value="number",defaultValue = "") String number,
                             @ApiParam(name="type",required = false,value="type") @RequestParam(value="type",defaultValue = "0") int type,
-                            @RequestBody CoursesBusinessDTO dto){
+                            @ApiParam(name="classNumber",required = false,value="classNumber") @RequestParam(value="classNumber") String classNumber,
+                            @ApiParam(name="sellName",required = false,value="sellName") @RequestParam(value="sellName") String sellName,
+                            @ApiParam(name="province",required = false,value="province") @RequestParam(value="province") String province,
+                            @ApiParam(name="city",required = false,value="city") @RequestParam(value="city") String city){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             String map = businessManageService.threeFinish(new ObjectId(id), number, getUserId(),type);
+            CoursesBusinessDTO dto = new CoursesBusinessDTO();
+            dto.setClassNumber(classNumber);
+            dto.setSellName(sellName);
+            dto.setProvince(province);
+            dto.setCity(city);
+            dto.setContactId(id);
+            dto.setType(Constant.ZERO);
             businessManageService.addCoursesBusinessEntry(dto);
             if(map.equals("1")){
                 respObj.setCode(Constant.SUCCESS_CODE);
@@ -649,6 +658,28 @@ public class WebBusinessManageController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("审批通过失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 拒绝通过(附加信息)
+     * @return
+     */
+    @ApiOperation(value = "附加信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/refuseFinish")
+    @ResponseBody
+    public String refuseFinish(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.refuseFinish(new ObjectId(id),getUserId());
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("已拒绝");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("拒绝失败!");
         }
         return JSON.toJSONString(respObj);
     }

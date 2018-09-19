@@ -1390,10 +1390,31 @@ public class BusinessManageService {
     }
 
     public void addCoursesBusinessEntry(CoursesBusinessDTO dto){
+        int count = excellentCoursesDao.selectAllWebEntryList(null, null);
+        String code = dto.getClassNumber()+Plus(count);
+        dto.setClassNumber(code);
         CoursesBusinessEntry coursesBusinessEntry = dto.buildAddEntry();
         coursesBusinessDao.addEntry(coursesBusinessEntry);
      }
 
+    public static String Plus(int i){
+        i++;
+        String s = "00000"+i;
+        return s.substring(s.length()-6);
+    }
+
+    /*public static void main(String[] args){
+
+    }*/
+
+    public void refuseFinish(ObjectId id,ObjectId userId){
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        excellentCoursesDao.juEntry(id);
+        backStageService.addLogMessage(id.toString(), "拒绝直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
+    }
 
     /**
      * 生成推送消息

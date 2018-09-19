@@ -196,7 +196,7 @@ public class DefaultReportCardNewController extends BaseController {
         try {
             reportCardService.saveScoreRepresent(s);
             respObj.setCode(Constant.SUCCESS_CODE);
-         
+            respObj.setMessage("保存成功！");
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());

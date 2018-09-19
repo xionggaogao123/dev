@@ -346,10 +346,9 @@ public class WxpayService {
         if(classIds==null|| classIds.equals("")){
             throw  new Exception("请至少购买一节课程");
         }
-       /* if(excellentCoursesEntry.getCourseType()==2 && userId.equals(sonId)){
-            throw  new Exception("此课程只能为孩子购买");
+        if(excellentCoursesEntry.getCourseType()==2 && userId.equals(sonId)){
+            throw  new Exception("家长不可购买赶考网课程");
         }
-*/
         /*//美豆账户
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
         if(userBehaviorEntry==null){

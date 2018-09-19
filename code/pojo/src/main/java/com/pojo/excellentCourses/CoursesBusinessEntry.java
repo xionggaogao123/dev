@@ -13,6 +13,7 @@ import java.util.Date;
  *
  * id                    记录id                      id
  * contactId             关联课程id                  cid
+ * classNumber           课程唯一ID                  cnm
  * sellName              销售者姓名                  snm
  * sellId                销售者id                    sid
  * province              省份                        pro
@@ -34,6 +35,7 @@ public class CoursesBusinessEntry extends BaseDBObject {
     //添加构造
     public CoursesBusinessEntry(
             ObjectId contactId,
+            String classNumber,
             String sellName,
             ObjectId sellId,
             String province,
@@ -43,6 +45,7 @@ public class CoursesBusinessEntry extends BaseDBObject {
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("cid", contactId)
+                .append("cnm",classNumber)
                 .append("snm", sellName)
                 .append("sid", sellId)
                 .append("pro", province)
@@ -74,6 +77,13 @@ public class CoursesBusinessEntry extends BaseDBObject {
 
     public void setAssistantName(String assistantName){
         setSimpleValue("anm",assistantName);
+    }
+    public String getClassNumber(){
+        return getSimpleStringValue("cnm");
+    }
+
+    public void setClassNumber(String classNumber){
+        setSimpleValue("cnm",classNumber);
     }
 
     public ObjectId getSellId(){

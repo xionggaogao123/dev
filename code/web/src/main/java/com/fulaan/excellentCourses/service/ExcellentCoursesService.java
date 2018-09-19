@@ -625,8 +625,9 @@ public class ExcellentCoursesService {
                 }
             }
         });
+        // update 已结束课程中不在显示已结束未购买的课程
         //获得学生所在社群
-        List<ObjectId> objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
+      /*  List<ObjectId> objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
         //推荐名单
         List<ExcellentCoursesEntry> coursesEntries = excellentCoursesDao.getOldEntryList(objectIdList, current);
         Collections.sort(coursesEntries, new Comparator<ExcellentCoursesEntry>() {
@@ -640,7 +641,9 @@ public class ExcellentCoursesService {
                     return -1;
                 }
             }
-        });
+        });*/
+        //新增
+        List<ExcellentCoursesEntry> coursesEntries = new ArrayList<ExcellentCoursesEntry>();
         for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries2){
             if(excellentCoursesEntry.getEndTime()<current){
                 coursesEntries.add(excellentCoursesEntry);
@@ -1684,7 +1687,9 @@ public class ExcellentCoursesService {
         if(classIds==null|| classIds.equals("")){
             throw  new Exception("请至少购买一节课程");
         }
-
+        if(excellentCoursesEntry.getCourseType()==2 && userId.equals(sonId)){
+            throw  new Exception("家长不可购买赶考网课程");
+        }
         //美豆账户
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
         if(userBehaviorEntry==null){
@@ -1981,7 +1986,9 @@ public class ExcellentCoursesService {
         if(classIds==null|| classIds.equals("")){
             throw  new Exception("请至少购买一节课程");
         }
-
+        if(excellentCoursesEntry.getCourseType()==2 && userId.equals(sonId)){
+            throw  new Exception("家长不可购买赶考网课程");
+        }
         //美豆账户
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
         if(userBehaviorEntry==null){

@@ -1,11 +1,7 @@
 package com.fulaan.controlphone.dto;
 
-import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.pojo.excellentCourses.CoursesBusinessEntry;
 import org.bson.types.ObjectId;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by James on 2018-09-18.
@@ -15,6 +11,8 @@ public class CoursesBusinessDTO {
     private String id;
 
     private String contactId;
+
+    private String classNumber;
 
     private String sellName;
 
@@ -28,8 +26,6 @@ public class CoursesBusinessDTO {
 
     private String assistantId;
 
-    private List<HourClassDTO> dtos = new ArrayList<HourClassDTO>();
-
     private int type;
 
 
@@ -41,6 +37,7 @@ public class CoursesBusinessDTO {
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
             this.contactId = e.getContactId() == null ? "" : e.getContactId().toString();
+            this.classNumber = e.getClassNumber();
             this.sellId = e.getSellId() == null ? "" : e.getSellId().toString();
             this.sellName = e.getSellName();
             this.province = e.getProvince();
@@ -67,6 +64,7 @@ public class CoursesBusinessDTO {
         CoursesBusinessEntry openEntry =
                 new CoursesBusinessEntry(
                         cId,
+                        this.classNumber,
                         this.sellName,
                         sId,
                         this.province,
@@ -76,6 +74,14 @@ public class CoursesBusinessDTO {
                 );
         return openEntry;
 
+    }
+
+    public String getClassNumber() {
+        return classNumber;
+    }
+
+    public void setClassNumber(String classNumber) {
+        this.classNumber = classNumber;
     }
 
     public String getProvince() {
@@ -141,15 +147,6 @@ public class CoursesBusinessDTO {
     public void setAssistantId(String assistantId) {
         this.assistantId = assistantId;
     }
-
-    public List<HourClassDTO> getDtos() {
-        return dtos;
-    }
-
-    public void setDtos(List<HourClassDTO> dtos) {
-        this.dtos = dtos;
-    }
-
     public int getType() {
         return type;
     }

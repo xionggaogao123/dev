@@ -14,7 +14,7 @@ public class BaseAPI {
 
     public static final String SERVICE_URL = "http://gateway.system.eduyun.cn:40015";
     public static final String CC_URL = "http://api.csslcloud.net/api";
-
+    public static final String GANKAO_URL = "https://www.gankao.com/api";
     /**
      * get方法
      * @param resoureUrl
@@ -66,6 +66,17 @@ public class BaseAPI {
      */
     public static String getCCForToken(String resoureUrl) {
         resoureUrl = CC_URL + resoureUrl;
+        String resultStr = restTemplate.getForObject(resoureUrl, String.class);
+        return resultStr;
+    }
+
+    /**
+     * 赶考网 get方法
+     * @param resoureUrl
+     * @return
+     */
+    public static String getGanKaoForToken(String resoureUrl) {
+        resoureUrl = GANKAO_URL + resoureUrl;
         String resultStr = restTemplate.getForObject(resoureUrl, String.class);
         return resultStr;
     }

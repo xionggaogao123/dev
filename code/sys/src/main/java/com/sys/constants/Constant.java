@@ -1091,8 +1091,10 @@ public class Constant {
     public static final String COLLECTION_CC_LOGIN= "excellent_cc_login";
     //用户登陆信息
     public static final String COLLECTION_USER_DESC= "excellent_user_class_desc";
-
+    //附加信息
     public static final String COLLECTION_COURSES_BUSINESS="excellent_courses_business";
+    //赶考网对接支付通知
+    public static final String COLLECTION_GAN_KAO_PAY="excellent_gankao_pay";
     /*************************************积分商城*****************************************/
     
     //商品

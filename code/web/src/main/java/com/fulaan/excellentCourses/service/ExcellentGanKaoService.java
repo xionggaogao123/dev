@@ -75,6 +75,24 @@ public class ExcellentGanKaoService {
     }
 
 
+    public Map<String,Object> gotoStudyClass(ObjectId id,ObjectId userId) throws Exception{
+        Map<String,Object> map = new HashMap<String, Object>();
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            throw  new Exception("该课程不存在！");
+        }
+        if(excellentCoursesEntry.getCourseType()!=2){
+            throw  new Exception("非赶考网课程不能跳转！");
+        }
+        List<ObjectId> objectIdList = classOrderDao.getEntryIdList(userId, id);
+        if(objectIdList.size()==0){
+            throw  new Exception("无该订单！");
+        }
+        UserEntry userEntry = userDao.findByUserId(userId);
+        map.put("sign",createSign(userId.toString(),userEntry.getMobileNumber()));
+        return map;
+    }
+
     public static String  createSign(String userId,String mobilePhone){
         String sign = "";
         //组装参数

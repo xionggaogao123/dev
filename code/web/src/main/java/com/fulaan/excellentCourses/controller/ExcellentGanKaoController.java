@@ -27,9 +27,9 @@ public class ExcellentGanKaoController extends BaseController {
     private ExcellentGanKaoService excellentGanKaoService;
 
     /**
-     *  赶考网去上课
+     *  赶考网去上课（详情）
      */
-    @ApiOperation(value = "赶考网去上课", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "赶考网去上课（详情）", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -49,4 +49,27 @@ public class ExcellentGanKaoController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+    /**
+     *  赶考网去上课（列表）
+     */
+    @ApiOperation(value = "赶考网去上课（列表）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/gotoStudyClass")
+    @ResponseBody
+    public String gotoStudyClass(@ApiParam(name = "id", required = false, value = "id") @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dto = excellentGanKaoService.gotoStudyClass(new ObjectId(id), getUserId());
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
 }

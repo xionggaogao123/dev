@@ -691,11 +691,13 @@ public class NewVersionBindService {
                         Constant.EMPTY,
                         Constant.EMPTY,
                         Constant.EMPTY);
+                relationEntry.setUserName(nickName);
                 if(null!=oldEntry) {
                     NewVersionBindRelationEntry bindRelationEntry = newVersionBindRelationDao.getBindRelationEntry(mainUserId, userId);
                     if (null != bindRelationEntry) {
                         bindRelationEntry.setRelation(relation);
                         bindRelationEntry.setRemove(Constant.ZERO);
+                        bindRelationEntry.setUserName(nickName);
                         newVersionBindRelationDao.saveNewVersionBindEntry(bindRelationEntry);
                     } else {
                         relationEntry.setRelation(relation);
@@ -704,6 +706,7 @@ public class NewVersionBindService {
                         relationEntry.setRegionAreaName(oldEntry.getRegionAreaName());
                         relationEntry.setSchoolName(oldEntry.getSchoolName());
                         relationEntry.setPersonalSignature(oldEntry.getPersonalSignature());
+                        relationEntry.setUserName(nickName);
                         newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
                     }
                 }else{

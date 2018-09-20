@@ -48,6 +48,12 @@ public class NewVersionBindRelationEntry extends BaseDBObject {
                 .append("ir",Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
+    public void setUserName(String userName){//孩子真实姓名
+        setSimpleValue("nm",userName);
+    }
+    public String getUserName(){
+        return getSimpleStringValue("nm");
+    }
 
     public void setRemove(int remove){
         setSimpleValue("ir",remove);

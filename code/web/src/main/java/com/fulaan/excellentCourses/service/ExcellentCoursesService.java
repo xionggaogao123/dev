@@ -2892,10 +2892,14 @@ public class ExcellentCoursesService {
         if(current>start){//上课中
             CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(excellentCoursesEntry.getID());
             UserEntry userEntry = userDao.findByUserId(userId);
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
             if(userEntry==null){
                 throw  new Exception("非法用户！");
             }
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+                name = newVersionBindRelationEntry.getUserName();
+            }
             map.put("uid",coursesRoomEntry.getUserId());
             map.put("roomid",coursesRoomEntry.getRoomId());
             map.put("userName",name);
@@ -2908,7 +2912,7 @@ public class ExcellentCoursesService {
             //去上课
             if( classOrderEntry.getType()==1){
                 classOrderDao.updateToEntry(classOrderEntry.getID());
-                NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
+
                 if(newVersionBindRelationEntry!=null){
                     //发送通知
                     try{
@@ -2947,12 +2951,16 @@ public class ExcellentCoursesService {
         if(current>start){//上课中
             CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(excellentCoursesEntry.getID());
             UserEntry userEntry = userDao.findByUserId(userId);
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
             if(userEntry==null){
                 throw  new Exception("非法用户！");
             }
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
             map.put("uid",coursesRoomEntry.getUserId());
             map.put("roomid",coursesRoomEntry.getRoomId());
+            if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+                name = newVersionBindRelationEntry.getUserName();
+            }
             map.put("userName",name);
             if(coursesRoomEntry.getAuthtype()==0){//接口认证
                 map.put("password",userId.toString());
@@ -2964,7 +2972,7 @@ public class ExcellentCoursesService {
             //去上课
             if( classOrderEntry.getType()==1){
                 classOrderDao.updateToEntry(classOrderEntry.getID());
-                NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
+
                 if(newVersionBindRelationEntry!=null){
                     //发送通知
                     try{
@@ -3003,12 +3011,16 @@ public class ExcellentCoursesService {
         if(current>start){//上课中
             CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(excellentCoursesEntry.getID());
             UserEntry userEntry = userDao.findByUserId(userId);
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
             if(userEntry==null){
                 throw  new Exception("非法用户！");
             }
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
             map.put("uid",coursesRoomEntry.getUserId());
             map.put("roomid",coursesRoomEntry.getRoomId());
+            if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+                name = newVersionBindRelationEntry.getUserName();
+            }
             map.put("userName",name);
           //  map.put("password",coursesRoomEntry.getPlaypass());
             if(coursesRoomEntry.getAuthtype()==0){//接口认证
@@ -3021,7 +3033,7 @@ public class ExcellentCoursesService {
             //去上课
             if( classOrderEntry.getType()==1){
                 classOrderDao.updateToEntry(classOrderEntry.getID());
-                NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
+
                 if(newVersionBindRelationEntry!=null){
                     //发送通知
                     try{

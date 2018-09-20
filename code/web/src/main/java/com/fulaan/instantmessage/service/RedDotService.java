@@ -5,6 +5,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.instantmessage.RedDotDao;
 import com.db.reportCard.GroupExamUserRecordDao;
+import com.db.reportCard.VirtualAndUserDao;
 import com.fulaan.instantmessage.dto.RedDotDTO;
 import com.fulaan.instantmessage.dto.RedResultDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
@@ -36,6 +37,8 @@ public class RedDotService {
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     private GroupExamUserRecordDao groupExamUserRecordDao = new GroupExamUserRecordDao();
+
+    private VirtualAndUserDao virtualAndUserDao = new VirtualAndUserDao();
 
     /**
      * 批量增加红点记录
@@ -227,9 +230,11 @@ public class RedDotService {
     public void addThirdList(ObjectId id,ObjectId communityId,ObjectId userId,int type){
         List<ObjectId> sids = groupExamUserRecordDao.getStudentReceivedEntries(id);
         List<ObjectId> pids = newVersionCommunityBindDao.getAllStudentBindEntries(communityId,sids);
+        List<ObjectId> objectIdList1 = virtualAndUserDao.getEntryListByCommunityId(sids);
         Set<ObjectId> set = new HashSet<ObjectId>();
         set.addAll(sids);
         set.addAll(pids);
+        set.addAll(objectIdList1);
         set.remove(userId);
         List<ObjectId> uids = new ArrayList<ObjectId>();
         uids.addAll(set);

@@ -22,6 +22,24 @@ public class CoursesBusinessDao extends BaseDao {
         return entry.getID().toString();
     }
 
+    public CoursesBusinessEntry getEntry(ObjectId id){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSES_BUSINESS,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new CoursesBusinessEntry((BasicDBObject) dbObject);
+        }else {
+            return null;
+        }
+    }
+
+    //添加助教
+    public void updateEntry(ObjectId id,String name){
+        BasicDBObject query=new BasicDBObject()
+                .append(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("anm",name));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSES_BUSINESS, query,updateValue);
+    }
+
     //批量删除
     public void delEntry(ObjectId id){
         BasicDBObject query = new BasicDBObject("cid",id);

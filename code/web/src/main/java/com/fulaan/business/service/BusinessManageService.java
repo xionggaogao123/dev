@@ -1439,6 +1439,7 @@ public class BusinessManageService {
             if(hourClassEntries1==null){
                 List<HourClassEntry> newHour = new ArrayList<HourClassEntry>();
                 newHour.add(hourClassEntry);
+                hourMap.put(hourClassEntry.getParentId(),newHour);
             }else{
                 hourClassEntries1.add(hourClassEntry);
                 hourMap.put(hourClassEntry.getParentId(),hourClassEntries1);
@@ -1452,9 +1453,11 @@ public class BusinessManageService {
                 Map<String,Object> map2 = new HashMap<String, Object>();
                 map2.put("courseId",coursesBusinessEntry.getClassNumber());
                 map2.put("id",entry.getID().toString());
+                map2.put("businessId",coursesBusinessEntry.getID().toString());
                 map2.put("courseName",entry.getTitle());
-                if(entry.getStartTime()!=0l){
-                    map2.put("startTime", DateTimeUtils.getLongToStrTimeTwo(entry.getStartTime()));
+                if(entry.getStartTime()!=0l && entry.getEndTime()!=0l){
+                    String date = DateTimeUtils.getLongToStrTimeTwo(entry.getStartTime()).substring(0, 11)+" 至 "+DateTimeUtils.getLongToStrTimeTwo(entry.getEndTime()).substring(0, 11);
+                    map2.put("startTime", date);
                 }else{
                     map2.put("startTime","");
                 }
@@ -1483,6 +1486,14 @@ public class BusinessManageService {
         map.put("list",mapList);
         map.put("count",count);
         return map;
+    }
+
+    public void updateAss(ObjectId id,String name,ObjectId userId){
+        CoursesBusinessEntry coursesBusinessEntry = coursesBusinessDao.getEntry(id);
+        if(coursesBusinessEntry!=null){
+            coursesBusinessDao.updateEntry(id,name);
+            backStageService.addLogMessage(id.toString(), "修改直播课堂助教:"+name, LogMessageType.courses.getDes(), userId.toString());
+        }
     }
 
     /**

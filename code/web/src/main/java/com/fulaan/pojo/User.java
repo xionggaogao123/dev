@@ -27,6 +27,15 @@ public class User {
         this.mobileNumber=mobileNumber;
     }
     
+    public User(String userName,String nickName,String userId,String avator,int sex,String time){
+        this.userName=userName;
+        this.nickName=nickName;
+        this.userId=userId;
+        this.avator=avator;
+        this.sex=sex;
+        this.time=time;
+    }
+    
     
 
     public String getMobileNumber() {

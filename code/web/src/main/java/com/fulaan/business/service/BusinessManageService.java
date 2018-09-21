@@ -259,7 +259,7 @@ public class BusinessManageService {
         for(UserEntry userEntry: userEntries){
             //String userName,String nickName,String userId,String avator,int sex,String time
             if(!oisd.contains(userEntry.getID())){
-                User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),userEntry.getSex(),userEntry.getGenerateUserCode());
+                User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),userEntry.getSex(),userEntry.getGenerateUserCode(), userEntry.getMobileNumber());
                 userList.add(user);
                 oisd.add(userEntry.getID());
             }

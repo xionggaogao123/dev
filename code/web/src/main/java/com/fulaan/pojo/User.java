@@ -13,16 +13,28 @@ public class User {
     private int sex;
     private String time;
     private int role; //0:家长,1:学生
+    private String mobileNumber;
 
     public User(){}
 
-    public User(String userName,String nickName,String userId,String avator,int sex,String time){
+    public User(String userName,String nickName,String userId,String avator,int sex,String time ,String mobileNumber){
         this.userName=userName;
         this.nickName=nickName;
         this.userId=userId;
         this.avator=avator;
         this.sex=sex;
         this.time=time;
+        this.mobileNumber=mobileNumber;
+    }
+    
+    
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
     }
 
     public int getRole() {

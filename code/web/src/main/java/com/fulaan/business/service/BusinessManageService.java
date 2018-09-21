@@ -1479,7 +1479,12 @@ public class BusinessManageService {
                 map2.put("price",entry.getNewPrice());
                 map2.put("area",coursesBusinessEntry.getProvince() +" "+coursesBusinessEntry.getCity());
                 map2.put("sellName",coursesBusinessEntry.getSellName());
-                map2.put("assistantName",coursesBusinessEntry.getAssistantName());
+                if(coursesBusinessEntry.getAssistantName()==null || coursesBusinessEntry.getAssistantName().equals("")){
+                    map2.put("assistantName","无");
+                }else{
+                    map2.put("assistantName",coursesBusinessEntry.getAssistantName());
+                }
+
                 mapList.add(map2);
             }
         }

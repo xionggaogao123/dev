@@ -2897,7 +2897,7 @@ public class ExcellentCoursesService {
                 throw  new Exception("非法用户！");
             }
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-            if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+            if(newVersionBindRelationEntry!=null && newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
                 name = newVersionBindRelationEntry.getUserName();
             }
             map.put("uid",coursesRoomEntry.getUserId());
@@ -2958,7 +2958,7 @@ public class ExcellentCoursesService {
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
             map.put("uid",coursesRoomEntry.getUserId());
             map.put("roomid",coursesRoomEntry.getRoomId());
-            if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+            if(newVersionBindRelationEntry!=null && newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
                 name = newVersionBindRelationEntry.getUserName();
             }
             map.put("userName",name);
@@ -3018,7 +3018,7 @@ public class ExcellentCoursesService {
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
             map.put("uid",coursesRoomEntry.getUserId());
             map.put("roomid",coursesRoomEntry.getRoomId());
-            if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+            if(newVersionBindRelationEntry!=null && newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
                 name = newVersionBindRelationEntry.getUserName();
             }
             map.put("userName",name);

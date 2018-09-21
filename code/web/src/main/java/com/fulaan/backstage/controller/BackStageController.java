@@ -1366,4 +1366,28 @@ public class BackStageController extends BaseController {
         return respObj;
     }
 
+    /**
+     *  判断用户权限
+     * @return
+     */
+    @ApiOperation(value = "判断用户权限", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getRoleFromClass2")
+    @ResponseBody
+    public RespObj getRoleFromClass2(@ApiParam(name = "id", required = true, value = "id") @RequestParam(value = "id",defaultValue = "") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            int message = backStageService.getRoleFromClass(new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(message);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("查询用户绑定关系失败");
+        }
+        return respObj;
+    }
+
 }

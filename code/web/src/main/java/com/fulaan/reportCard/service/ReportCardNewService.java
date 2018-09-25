@@ -43,6 +43,7 @@ import com.sys.utils.DateTimeUtils;
 import com.sys.utils.QiniuFileUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -109,6 +110,8 @@ public class ReportCardNewService {
     public ScoreRepresentDao scoreRepresentDao = new ScoreRepresentDao();
 
     private IndexContentDao indexContentDao = new IndexContentDao();
+    
+    private static final Logger logger = Logger.getLogger(ReportCardNewService.class);
     
   
 
@@ -1077,19 +1080,25 @@ public class ReportCardNewService {
                             detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
                         }
                     }
-                    if (StringUtils.isNotBlank(subjectIdStr)) {
-                        String scoreStr = recordEntry.getScoreStr();
-                        String scoreLevelStr = recordEntry.getScoreLevelStr();
-                        if (StringUtils.isNotBlank(scoreStr)) {
-                            detailDTO.setScoreList(Arrays.asList(scoreStr.split(",")));
-                        }
-                        if (StringUtils.isNotBlank(scoreLevelStr)) {
-                            detailDTO.setScoreLevelList(Arrays.asList(scoreLevelStr.split(",")));
-                        }
-                    } else {
+ 
+                    String scoreStr = recordEntry.getScoreStr();
+                    String scoreLevelStr = recordEntry.getScoreLevelStr();
+                    if (StringUtils.isNotBlank(scoreStr)) {
+                        detailDTO.setScoreList(Arrays.asList(scoreStr.split(",")));
+                    }
+                    if (StringUtils.isNotBlank(scoreLevelStr)) {
+                        detailDTO.setScoreLevelList(Arrays.asList(scoreLevelStr.split(",")));
+                    }
+            
+                    try {
                         detailDTO.setScore(recordEntry.getScore());
                         detailDTO.setScoreLevel(recordEntry.getScoreLevel());
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        logger.error("error", e);
                     }
+                        
+                   
                     
                     
                     

@@ -1112,11 +1112,12 @@ public class WebExcellentCoursesController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/updateClassTime")
     @ResponseBody
-    public String updateClassTime(@ApiParam(name = "dto", required = true, value = "dto") HourClassDTO dto){
+    public String updateClassTime(@ApiParam(name = "id", required = true, value = "id") @RequestParam String id,
+                                  @ApiParam(name = "ids", required = true, value = "ids") @RequestParam String ids){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            excellentCoursesService.updateOneClass(new ObjectId(dto.getParentId()),dto ,getUserId());
+            excellentCoursesService.updateClassTime(getUserId(), new ObjectId(id), ids);
             respObj.setMessage("修改成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -1135,11 +1136,15 @@ public class WebExcellentCoursesController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/updateClassTeacher")
     @ResponseBody
-    public String updateClassTeacher(@ApiParam(name = "dto", required = true, value = "dto") HourClassDTO dto){
+    public String updateClassTeacher(@ApiParam(name = "id", required = true, value = "id") @RequestParam String id,
+                                     @ApiParam(name = "ids", required = true, value = "ids") @RequestParam String ids,
+                                     @ApiParam(name = "ownId", required = true, value = "ownId") @RequestParam String ownId,
+                                     @ApiParam(name = "ownName", required = true, value = "ownName") @RequestParam String ownName,
+                                     @ApiParam(name = "subjectName", required = true, value = "subjectName") @RequestParam String subjectName){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            excellentCoursesService.updateOneClass(new ObjectId(dto.getParentId()),dto ,getUserId());
+            excellentCoursesService.updateClassTeacher(getUserId(), new ObjectId(id),ids,new ObjectId(ownId),ownName,subjectName);
             respObj.setMessage("修改成功");
         } catch (Exception e) {
             e.printStackTrace();

@@ -230,6 +230,7 @@ public class ExcellentCoursesDao extends BaseDao {
         }
         if(priceType==0&&persionType==0&&timeType==0){
             orderQuery.append("ope",1);
+            orderQuery.append("ctm",-1);
         }
         query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
         //query.append("ope", Constant.ONE);//公开课

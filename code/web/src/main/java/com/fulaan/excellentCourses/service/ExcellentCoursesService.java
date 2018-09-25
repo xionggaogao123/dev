@@ -770,6 +770,44 @@ public class ExcellentCoursesService {
     }
 
     /**
+     * 学生首页加载（不包含推荐课程）
+     * @param userId
+     * @return
+     */
+    public Map<String,Object> getNewMyChildOldCoursesList(ObjectId userId,ObjectId id){
+        Map<String,Object> map = new HashMap<String, Object>();
+        long current = System.currentTimeMillis();
+        List<ClassOrderEntry> classOrderEntries =  classOrderDao.getEntry(userId);
+        List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+        List<ObjectId> hourClassIds = new ArrayList<ObjectId>();
+        for(ClassOrderEntry classOrderEntry:classOrderEntries){
+            if(classOrderEntry.getIsBuy()==1){
+                objectIdList1.add(classOrderEntry.getContactId());
+                hourClassIds.add(classOrderEntry.getParentId());
+            }
+        }
+        //objectIdList1
+        List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById4(objectIdList1);
+
+        //推荐名单
+        List<ExcellentCoursesEntry> coursesEntries = new ArrayList<ExcellentCoursesEntry>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries2){
+            if(excellentCoursesEntry.getEndTime()<current){
+                coursesEntries.add(excellentCoursesEntry);
+            }
+        }
+        List<ExcellentCoursesDTO> dtos2 = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries){//推荐
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            dto.setIsBuy(1);
+            dtos2.add(dto);
+        }
+        map.put("list",dtos2);
+        map.put("count",dtos2.size());
+        return map;
+    }
+
+    /**
      * 添加收藏
      * @param userId
      * @param type
@@ -2338,6 +2376,14 @@ public class ExcellentCoursesService {
         int count = excellentCoursesDao.selectCount(subjectId,current,objectIdList);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
+            if(excellentCoursesEntry.getOpen()==1){
+                List<ObjectId> newList = new ArrayList<ObjectId>();
+                newList.addAll(objectIdList);
+                newList.removeAll(excellentCoursesEntry.getCommunityIdList());
+                if(objectIdList.size()!=newList.size()){//推荐
+                    excellentCoursesEntry.setOpen(0);
+                }
+            }
             dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));
         }
         map.put("list", dtos);
@@ -4096,6 +4142,66 @@ public class ExcellentCoursesService {
             this.sendMessage(excellentCoursesEntry.getTitle(),hourClassEntry.getID(),sTm,strNum);
         }
         this.addLogMessage(hourClassEntry.getID().toString(),"修改了课程："+excellentCoursesEntry.getTitle()+"的第"+dto.getOrder()+"课节",LogMessageType.courses.getDes(),userId.toString());
+        //排序
+        sortClassTime(excellentCoursesEntry);
+    }
+
+    //修改上课时间
+    public void updateClassTime(ObjectId userId,ObjectId id,String ids)throws Exception{
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            throw new Exception("课程不存在！");
+        }
+        List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
+        String[] strings = ids.split(",");
+        Map<ObjectId,String> map = new HashMap<ObjectId, String>();
+        for(String s:strings){
+            String[] strings1 = s.split("#");
+            if(strings1.length==2){
+                if(ObjectId.isValid(strings1[0])){
+                    objectIdList.add(new ObjectId(strings1[0]));
+                    map.put(new ObjectId(strings1[0]),strings1[1]);
+                }
+            }
+        }
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(objectIdList);
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            String str = map.get(hourClassEntry.getID());
+           if(str!=null){
+               long stm = 0l;
+               if(!str.equals("")){
+                   stm = DateTimeUtils.getStrToLongTime(str);
+                   hourClassEntry.setStartTime(stm);
+                   hourClassDao.addEntry(hourClassEntry);
+               }
+           }
+        }
+        this.addLogMessage(excellentCoursesEntry.getID().toString(),"批量修改了课程："+excellentCoursesEntry.getTitle()+"的上课时间",LogMessageType.courses.getDes(),userId.toString());
+        //排序
+        sortClassTime(excellentCoursesEntry);
+    }
+
+    //修改课节老师和学科
+    public void updateClassTeacher(ObjectId userId,ObjectId id,String ids,ObjectId ownId,String ownName,String subjectName)throws Exception{
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            throw new Exception("课程不存在！");
+        }
+        List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
+        String[] strings = ids.split(",");
+        for(String s:strings){
+            if(ObjectId.isValid(s)){
+                objectIdList.add(new ObjectId(s));
+            }
+        }
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(objectIdList);
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            hourClassEntry.setOwnId(ownId);
+            hourClassEntry.setOwnName(ownName);
+            hourClassEntry.setSubjectName(subjectName);
+            hourClassDao.addEntry(hourClassEntry);
+        }
+        this.addLogMessage(excellentCoursesEntry.getID().toString(),"批量修改了课程："+excellentCoursesEntry.getTitle()+"的课节上课老师",LogMessageType.courses.getDes(),userId.toString());
         //排序
         sortClassTime(excellentCoursesEntry);
     }

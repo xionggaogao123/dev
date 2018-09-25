@@ -1123,4 +1123,12 @@ public class Constant {
     public static final String COLLECTION_USER_ROLE_JURISDICTION = "jxm_user_role_jurisdiction";
     public static final String COLLECTION_ROLE_JURISDICTION_SETTING = "jxm_role_jurisdiction_setting";
     public static final String COLLECTION_JURISDICTION_TREE = "jxm_jurisdiction_tree";
+
+    /*************************************库存管理*****************************************/
+    /*库存表*/
+    public static final String COLLECTION_PHONES_STORAGE_MANAGE = "jxm_phones_storage_manage";
+    /*出入库记录表*/
+    public static final String COLLECTION_PHONES_IN_OUT_STORAGE_RECORD = "jxm_phones_in_out_storage_record";
+    /*家校美手机项目表*/
+    public static final String COLLECTION_PHONES_PROJECT = "jxm_phones_project";
 }

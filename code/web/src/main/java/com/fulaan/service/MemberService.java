@@ -584,4 +584,14 @@ public class MemberService {
         }
         return status;
     }
+    //大V用户
+    public int judgeNewPersonPermission(ObjectId userId){//1:老师 2:家长 3:老师与家长
+        int status = 0;
+        //认证大V 给与权限
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        if(teacherApproveEntry!=null && teacherApproveEntry.getType()==Constant.TWO){
+            status = 5;
+        }
+        return status;
+    }
 }

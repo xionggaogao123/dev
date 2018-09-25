@@ -1103,4 +1103,50 @@ public class WebExcellentCoursesController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     * 批量修改时间
+     */
+    @ApiOperation(value = "批量修改时间", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/updateClassTime")
+    @ResponseBody
+    public String updateClassTime(@ApiParam(name = "dto", required = true, value = "dto") HourClassDTO dto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            excellentCoursesService.updateOneClass(new ObjectId(dto.getParentId()),dto ,getUserId());
+            respObj.setMessage("修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 批量修改老师
+     */
+    @ApiOperation(value = "批量修改老师", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/updateClassTeacher")
+    @ResponseBody
+    public String updateClassTeacher(@ApiParam(name = "dto", required = true, value = "dto") HourClassDTO dto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            excellentCoursesService.updateOneClass(new ObjectId(dto.getParentId()),dto ,getUserId());
+            respObj.setMessage("修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 }

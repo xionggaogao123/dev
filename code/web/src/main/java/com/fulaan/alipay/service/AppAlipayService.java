@@ -10,6 +10,8 @@ import com.db.excellentCourses.*;
 import com.db.lancustom.MonetaryOrdersDao;
 import com.db.user.UserDao;
 import com.fulaan.alipay.config.AlipayNewConfig;
+import com.fulaan.excellentCourses.service.ExcellentGanKaoService;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.*;
 import com.pojo.lancustom.MonetaryOrdersEntry;
@@ -19,6 +21,7 @@ import com.sys.props.Resources;
 import com.sys.utils.DateTimeUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -82,6 +85,11 @@ public class AppAlipayService  {
     //小兰购物回调
     private static final String XIAOLAN_PAY_NOTIFYURL = Resources.getProperty("alipay.app.order.notify.url");
    /* private static final String XIAOLAN_PAY_NOTIFYURL = "http://2175u3v245.imwork.net:55131/jxmapi/orders/aliNotify.do";*/
+    
+    private GanKaoPayMessageDao ganKaoPayMessageDao = new GanKaoPayMessageDao();
+    
+    @Autowired
+    private ExcellentGanKaoService ExcellentGanKaoServiceExcellentGanKaoService;
 
 
     private static final Logger EBusinessLog = Logger.getLogger("AppAlipayService");
@@ -653,10 +661,44 @@ public class AppAlipayService  {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+            
+            
+            //添加赶考网
+            AppAlipayService.addGankao(userId.toString(), excellentCoursesEntry.getID().toString(), (int)price*100);
+            
         }
 
 
 
+    }
+    //添加赶考网信息
+    public static void addGankao(final String userId, final String courseId, final int price) {
+        new Thread() {
+            
+            public void run() {
+                UserDao userDao = new UserDao();
+                GanKaoPayMessageDao ganKaoPayMessageDao = new GanKaoPayMessageDao();
+                try {
+                    
+                    UserEntry u = userDao.getUserEntry(new ObjectId(userId), new BasicDBObject());
+                    String mobilePhone = "";
+                    if (u != null) {
+                        mobilePhone = u.getMobileNumber();
+                    }
+                    long time = System.currentTimeMillis()+1000;
+                    long endTime = System.currentTimeMillis()+30*60*1000;
+                    GanKaoPayMessageEntry g = new GanKaoPayMessageEntry(new ObjectId(userId), new ObjectId(courseId), mobilePhone, 0, price, Constant.ZERO, 1, time, endTime);
+                    ganKaoPayMessageDao.addEntry(g);
+                    String code = ExcellentGanKaoService.createPaySign(g.getUserId().toString(), g.getMobilePhone(), g.getCourseId().toString(), g.getTruePrice());
+                    ExcellentGanKaoService.TimeOut(code, g.getID(),g.getType(),g.getTime());
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    EBusinessLog.error("error",e);
+                }
+                
+            }
+           
+        }.start();
     }
 
 

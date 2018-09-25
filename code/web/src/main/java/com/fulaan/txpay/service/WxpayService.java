@@ -4,6 +4,7 @@ import cn.jiguang.commom.utils.StringUtils;
 import com.db.excellentCourses.*;
 import com.db.lancustom.MonetaryOrdersDao;
 import com.db.user.UserDao;
+import com.fulaan.alipay.service.AppAlipayService;
 import com.fulaan.txpay.Utils.HttpXmlUtils;
 import com.fulaan.txpay.Utils.ParseXMLUtils;
 import com.fulaan.txpay.Utils.RandCharsUtils;
@@ -672,6 +673,9 @@ public class WxpayService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+            
+          //添加赶考网
+            AppAlipayService.addGankao(userId.toString(), excellentCoursesEntry.getID().toString(), (int)price*100);
         }
 
 

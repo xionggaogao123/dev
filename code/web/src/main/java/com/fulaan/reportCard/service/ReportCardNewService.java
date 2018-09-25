@@ -1077,16 +1077,22 @@ public class ReportCardNewService {
                             detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
                         }
                     }
-                    detailDTO.setScore(recordEntry.getScore());
-                    detailDTO.setScoreLevel(recordEntry.getScoreLevel());
-                    String scoreStr = recordEntry.getScoreStr();
-                    String scoreLevelStr = recordEntry.getScoreLevelStr();
-                    if (StringUtils.isNotBlank(scoreStr)) {
-                        detailDTO.setScoreList(Arrays.asList(scoreStr.split(",")));
+                    if (StringUtils.isNotBlank(subjectIdStr)) {
+                        String scoreStr = recordEntry.getScoreStr();
+                        String scoreLevelStr = recordEntry.getScoreLevelStr();
+                        if (StringUtils.isNotBlank(scoreStr)) {
+                            detailDTO.setScoreList(Arrays.asList(scoreStr.split(",")));
+                        }
+                        if (StringUtils.isNotBlank(scoreLevelStr)) {
+                            detailDTO.setScoreLevelList(Arrays.asList(scoreLevelStr.split(",")));
+                        }
+                    } else {
+                        detailDTO.setScore(recordEntry.getScore());
+                        detailDTO.setScoreLevel(recordEntry.getScoreLevel());
                     }
-                    if (StringUtils.isNotBlank(scoreLevelStr)) {
-                        detailDTO.setScoreLevelList(Arrays.asList(scoreLevelStr.split(",")));
-                    }
+                    
+                    
+                    
                      
                     UserEntry mainUserEntry = mainUserEntryMap.get(detailEntry.getUserId());
                     if (null != mainUserEntry) {

@@ -1,25 +1,35 @@
 package com.fulaan.excellentCourses.service;
 
+import java.security.MessageDigest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import org.bson.types.ObjectId;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.GanKaoPayMessageDao;
 import com.db.excellentCourses.HourClassDao;
 import com.db.user.UserDao;
 import com.fulaan.excellentCourses.api.CoursesGanKaoAPI;
+import com.fulaan.excellentCourses.dto.ResultDto;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.GanKaoPayMessageEntry;
 import com.pojo.excellentCourses.HourClassEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
-import org.bson.types.ObjectId;
-import org.springframework.stereotype.Service;
-
-import java.security.MessageDigest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
 
 /**
  * Created by James on 2018-09-13.
@@ -150,7 +160,9 @@ public class ExcellentGanKaoService {
         return url;
     }
 
-    public static  void sendMessage(){
+    @Scheduled(cron= "*/10 * * * * ?")
+    public void sendMessage(){
+        //System.out.println("++++++++++++++++++++++++++++++++");
         new Thread(){
             public void run() {
                 GanKaoPayMessageDao ganKaoPayMessageDao = new GanKaoPayMessageDao();
@@ -197,6 +209,8 @@ public class ExcellentGanKaoService {
 
     public static void main(String[] args){
         //TimeOut("");
+        String code = createPaySign("5a17dafd0a9d324986663c9a", "17683928886","5ba1e3461f7e9d460cd34996",111);
+        TimeOut(code,new ObjectId(),1,1231234124141l);
     }
 
     public static void TimeOut(final String code,final ObjectId id,final int type,final long time){
@@ -205,9 +219,11 @@ public class ExcellentGanKaoService {
         Callable<String> call = new Callable<String>() {
             public String call() throws Exception {
                 //开始执行耗时操作
-                Thread.sleep(1000 * 4);
+                //Thread.sleep(1000 * 4);
                 String message = CoursesGanKaoAPI.sendMessage(code);
-                if(message.equals("success")){//成功
+                ResultDto resultDto = JSON.parseObject(message, new TypeReference<ResultDto>() {});
+                //System.out.println(message);
+                if(resultDto.getCode().equals("10001")){//成功
                     long time = System.currentTimeMillis();
                     ganKaoPayMessageDao.updateEntry(id, Constant.ONE,time);
                 }else{

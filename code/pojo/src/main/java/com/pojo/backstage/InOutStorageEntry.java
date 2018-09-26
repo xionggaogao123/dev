@@ -54,7 +54,7 @@ import java.util.List;
  * recycleComment	回收备注
  * repairRange		维修范围
  * repairCost		维修价格
- * storageRecordStatus 记录出入库状态( 参考小兰退货 "serviceVersion":2, 维修(入库)    "serviceVersion":1, 退货  "serviceVersion":3, 换货     4 回收入库     0 新机入库 5 出库)
+ * storageRecordStatus 记录出入库状态( 0 新机入库 参考小兰退货 "serviceVersion":1, 退货 "serviceVersion":2, 维修(入库)      "serviceVersion":3, 换货     4 回收入库    5 出库(数据存在物流信息表示发货))
  */
 public class InOutStorageEntry extends BaseDBObject {
 

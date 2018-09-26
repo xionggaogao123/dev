@@ -4116,7 +4116,7 @@ public class ExcellentCoursesService {
         this.addLogMessage(id.toString(),"修改了课程："+excellentCoursesEntry.getTitle()+"的总价",LogMessageType.courses.getDes(),userId.toString());
     }
     //修改课节
-    public void updateOneClass(ObjectId id,HourClassDTO dto,ObjectId userId)throws Exception{
+    public void updateOneClass(ObjectId id,HourClassDTO dto,ObjectId userId,int type)throws Exception{
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         if(excellentCoursesEntry==null){
             throw new Exception("课程不存在！");
@@ -4134,16 +4134,58 @@ public class ExcellentCoursesService {
         long sTm = hourClassEntry.getStartTime();
         String str = DateTimeUtils.getLongToStrTimeTwo(sTm).substring(0,11);
         long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
-        if(hourClassEntry.getID()==null){
+        if(hourClassEntry.getID()!=null){
             hourClassDao.addEntry(hourClassEntry);
             pushMessageDao.updateEntry(hourClassEntry.getID(),sTm,strNum);
         }else{
             hourClassDao.addEntry(hourClassEntry);
             this.sendMessage(excellentCoursesEntry.getTitle(),hourClassEntry.getID(),sTm,strNum);
+            //添加订单
+            if(type==2){
+                addClassTime(hourClassEntry);
+            }
         }
         this.addLogMessage(hourClassEntry.getID().toString(),"修改了课程："+excellentCoursesEntry.getTitle()+"的第"+dto.getOrder()+"课节",LogMessageType.courses.getDes(),userId.toString());
         //排序
         sortClassTime(excellentCoursesEntry);
+    }
+
+    //增加课节订单
+    public void addClassTime(HourClassEntry classEntry){
+        ObjectId pid = classEntry.getParentId();
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(pid);
+        //用户订单查询
+        Map<ObjectId,ClassOrderEntry> mapEntry = classOrderDao.getMapEntry(excellentCoursesEntry.getID());
+        Set<ObjectId> userIds =  mapEntry.keySet();
+        List<UserEntry> userEntries = userDao.getUserEntryList(userIds, Constant.FIELDS);
+        List<ClassOrderEntry> classOrderEntries1 = new ArrayList<ClassOrderEntry>();
+        long current = System.currentTimeMillis();
+        for(UserEntry u : userEntries){
+            ClassOrderEntry oldClassOrderEntry = mapEntry.get(u.getID());
+            ClassOrderEntry classOrderEntry = new ClassOrderEntry();
+            //购买  1  未购买
+            classOrderEntry.setIsBuy(1);
+            //下单
+            classOrderEntry.setType(1);
+            classOrderEntry.setCreateTime(current);
+            classOrderEntry.setContactId(excellentCoursesEntry.getID());
+            classOrderEntry.setIsRemove(0);
+            classOrderEntry.setParentId(classEntry.getID());
+            if(oldClassOrderEntry!=null){
+                classOrderEntry.setOrderId(oldClassOrderEntry.getOrderId());
+                classOrderEntry.setFunction(oldClassOrderEntry.getFunction());
+            }else{
+                classOrderEntry.setOrderId("系统添加课程附带添加");
+                classOrderEntry.setFunction(4);
+            }
+            classOrderEntry.setPrice(classEntry.getClassNewPrice());
+            classOrderEntry.setUserId(u.getID());//孩子的订单
+            classOrderEntries1.add(classOrderEntry);
+        }
+        //添加课节订单
+        if(classOrderEntries1.size()>0){
+            this.addClassEntryBatch(classOrderEntries1);
+        }
     }
 
     //修改上课时间

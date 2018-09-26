@@ -22,12 +22,10 @@ import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.playmate.service.MateService;
-import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.CommunityMessage;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
 import com.fulaan.pojo.Validate;
-import com.fulaan.reportCard.dto.ExamGroupDTO;
 import com.fulaan.service.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
@@ -3690,6 +3688,24 @@ public class WebCommunityController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
            boolean status=memberService.judgeManagePermissionOfUser(getUserId());
+            respObj.setMessage(status);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    @RequestMapping("/judgeNewPersonPermission")
+    @ResponseBody
+    @SessionNeedless
+    @ApiOperation(value = "查询该用户是否有权限发送通知", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询该用户是否有权限发送通知成功",response = Map.class),
+            @ApiResponse(code = 500, message = "查询该用户是否有权限发送通知失败")})
+    public RespObj judgeNewPersonPermission(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            int status=memberService.judgeNewPersonPermission(getUserId());
             respObj.setMessage(status);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

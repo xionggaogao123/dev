@@ -7,6 +7,7 @@ import com.db.excellentCourses.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -14,9 +15,12 @@ import com.fulaan.backstage.dto.LogMessageDTO;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.excellentCourses.dto.*;
+import com.fulaan.fgroup.service.EmService;
+import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
+import com.fulaan.service.MemberService;
 import com.fulaan.systemMessage.service.SystemMessageService;
 import com.fulaan.wrongquestion.controller.DefaultWrongQuestionController;
 import com.mongodb.DBObject;
@@ -25,6 +29,8 @@ import com.pojo.backstage.PushMessageEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.excellentCourses.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.GroupEntry;
+import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
@@ -1737,6 +1743,12 @@ public class ExcellentCoursesService {
             UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,ot,ot,ot);
             userBehaviorDao.addEntry(userBehaviorEntry1);
             userBehaviorEntry= userBehaviorEntry1;
+        }else{
+            //取消收藏
+            List<ObjectId> collList = userBehaviorEntry.getCollectList();
+            collList.remove(id);
+            userBehaviorEntry.setCollectList(collList);
+            userBehaviorDao.addEntry(userBehaviorEntry);
         }
 
         //充值账户
@@ -1840,6 +1852,12 @@ public class ExcellentCoursesService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+            //加入社群
+            List<ObjectId> uids = new ArrayList<ObjectId>();
+            uids.add(userId);
+            Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+            map.put(userId,sonId);
+            inviteLessonMember(id, uids,map);
             return "购买成功";
         }else{
             throw  new Exception("订单信息不存在！");
@@ -1896,7 +1914,14 @@ public class ExcellentCoursesService {
             UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,ot,ot,ot);
             userBehaviorDao.addEntry(userBehaviorEntry1);
             userBehaviorEntry= userBehaviorEntry1;
+        }else{
+            //取消收藏
+            List<ObjectId> collList = userBehaviorEntry.getCollectList();
+            collList.remove(id);
+            userBehaviorEntry.setCollectList(collList);
+            userBehaviorDao.addEntry(userBehaviorEntry);
         }
+
 
         //充值账户
         AccountFrashEntry accountFrashEntry = accountFrashDao.getEntry(userId);
@@ -2004,6 +2029,21 @@ public class ExcellentCoursesService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+            //加入社群
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(sonId);
+            if(newVersionBindRelationEntry==null){//非学生
+                List<ObjectId> uids = new ArrayList<ObjectId>();
+                uids.add(sonId);
+                Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+                //map.put(userId,sonId);
+                inviteLessonMember(id, uids,map);
+            }else{//学生
+                List<ObjectId> uids = new ArrayList<ObjectId>();
+                uids.add(newVersionBindRelationEntry.getMainUserId());
+                Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+                map.put(newVersionBindRelationEntry.getMainUserId(),sonId);
+                inviteLessonMember(id, uids,map);
+            }
             return "购买成功";
         }else{
             throw  new Exception("订单信息不存在！");
@@ -2036,6 +2076,12 @@ public class ExcellentCoursesService {
             UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,ot,ot,ot);
             userBehaviorDao.addEntry(userBehaviorEntry1);
             userBehaviorEntry= userBehaviorEntry1;
+        }else{
+            //取消收藏
+            List<ObjectId> collList = userBehaviorEntry.getCollectList();
+            collList.remove(id);
+            userBehaviorEntry.setCollectList(collList);
+            userBehaviorDao.addEntry(userBehaviorEntry);
         }
 
         //充值账户
@@ -2148,6 +2194,23 @@ public class ExcellentCoursesService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+            //加入社群
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(sonId);
+            if(newVersionBindRelationEntry==null){//非学生
+                List<ObjectId> uids = new ArrayList<ObjectId>();
+                uids.add(sonId);
+                Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+                //map.put(userId,sonId);
+                inviteLessonMember(id, uids,map);
+            }else{//学生
+                List<ObjectId> uids = new ArrayList<ObjectId>();
+                uids.add(newVersionBindRelationEntry.getMainUserId());
+                Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+                map.put(newVersionBindRelationEntry.getMainUserId(),sonId);
+                inviteLessonMember(id, uids,map);
+            }
+
+
             return "购买成功";
         }else{
             throw  new Exception("订单信息不存在！");
@@ -2171,6 +2234,12 @@ public class ExcellentCoursesService {
             UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,ot,ot,ot);
             userBehaviorDao.addEntry(userBehaviorEntry1);
             userBehaviorEntry= userBehaviorEntry1;
+        }else{
+            //取消收藏
+            List<ObjectId> collList = userBehaviorEntry.getCollectList();
+            collList.remove(id);
+            userBehaviorEntry.setCollectList(collList);
+            userBehaviorDao.addEntry(userBehaviorEntry);
         }
 
         //充值账户
@@ -2274,6 +2343,12 @@ public class ExcellentCoursesService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+            //加入社群
+            List<ObjectId> uids = new ArrayList<ObjectId>();
+            uids.add(userId);
+            Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+            //map.put(userId,sonId);
+            inviteLessonMember(id, uids,map);
             return "购买成功";
         }else{
             throw  new Exception("订单信息不存在！");
@@ -4340,4 +4415,55 @@ public class ExcellentCoursesService {
         return b1.divide(b2,scale,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
+
+    //直播课堂购买订单加入社群
+    public static void inviteLessonMember(ObjectId id,
+                                   List<ObjectId> userList,Map<ObjectId,ObjectId> map) {
+        CoursesBusinessDao coursesBusinessDao = new CoursesBusinessDao();
+        CoursesBusinessEntry coursesBusinessEntry = coursesBusinessDao.getOneEntry(id);
+        if(coursesBusinessEntry!=null && coursesBusinessEntry.getEmid()!=null){
+            String emChatId = coursesBusinessEntry.getEmid();
+            try {
+                GroupService groupService = new GroupService();
+                MemberService memberService = new MemberService();
+                CommunityService communityService = new CommunityService();
+                EmService emService =  new EmService();
+                NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
+
+
+                GroupEntry groupEntry = groupService.getGroupEntryByEmchatId(emChatId);
+                if(null==groupEntry){
+                    throw new Exception("传入的环信Id有误");
+                }
+                ObjectId groupId=groupEntry.getID();
+                for (ObjectId personId : userList) {
+                    if (!memberService.isGroupMember(groupId, personId)) {
+                        if (emService.addUserToEmGroup(emChatId, personId)) {
+                            if (memberService.isBeforeMember(groupId, personId)) {
+                                memberService.updateMember(groupId, personId, 0);
+                            } else {
+                                memberService.saveMember(personId, groupId);
+                            }
+                            communityService.setPartIncontentStatus(groupEntry.getCommunityId(), personId, 0);
+                            communityService.pushToUser(groupEntry.getCommunityId(), personId, 1);
+                        }
+                    }
+                }
+                //循环绑定家长学生
+                for (Map.Entry<ObjectId, ObjectId> entry : map.entrySet()) {
+                    //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                    NewVersionCommunityBindEntry entry2 = new NewVersionCommunityBindEntry(groupEntry.getCommunityId(), entry.getKey(), entry.getValue());
+                    newVersionCommunityBindDao.saveEntry(entry2);
+                }
+
+                //更新群聊头像
+                groupService.asyncUpdateHeadImage(groupId);
+            }catch (Exception e){
+
+            }
+        }
+
+
+
+    }
 }

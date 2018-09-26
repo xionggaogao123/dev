@@ -5,6 +5,7 @@ import com.db.excellentCourses.*;
 import com.db.lancustom.MonetaryOrdersDao;
 import com.db.user.UserDao;
 import com.fulaan.alipay.service.AppAlipayService;
+import com.fulaan.excellentCourses.service.ExcellentCoursesService;
 import com.fulaan.txpay.Utils.HttpXmlUtils;
 import com.fulaan.txpay.Utils.ParseXMLUtils;
 import com.fulaan.txpay.Utils.RandCharsUtils;
@@ -673,9 +674,29 @@ public class WxpayService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
-            
+
+            //取消收藏
+            List<ObjectId> collList = userBehaviorEntry.getCollectList();
+            collList.remove(excellentCoursesEntry.getID());
+            userBehaviorEntry.setCollectList(collList);
+            userBehaviorDao.addEntry(userBehaviorEntry);
+
+            //加入社群
+            if(classOrderEntries.size()>0){
+                List<ObjectId> uids = new ArrayList<ObjectId>();
+                uids.add(userId);
+                Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+                ObjectId sonId = classOrderEntries.get(0).getUserId();
+                if(sonId!=null && !userId.equals(sonId)){
+                    map.put(userId,sonId);
+                }
+                ExcellentCoursesService.inviteLessonMember(excellentCoursesEntry.getID(), uids,map);
+            }
           //添加赶考网
-            AppAlipayService.addGankao(userId.toString(), excellentCoursesEntry.getID().toString(), (int)price*100);
+            if(excellentCoursesEntry.getCourseType()==2){
+                AppAlipayService.addGankao(userId.toString(), excellentCoursesEntry.getID().toString(), (int)price*100);
+            }
+
         }
 
 

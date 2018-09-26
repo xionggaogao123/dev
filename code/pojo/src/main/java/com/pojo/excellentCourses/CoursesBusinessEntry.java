@@ -20,6 +20,8 @@ import java.util.Date;
  * city                  城市                        cit
  * assistantName         助教姓名                    anm
  * assistantId           助教id                      aid
+ * communityId           社群id                      cid  //课程群组
+ * emid                  环信id                      mid
  *
  *
  */
@@ -129,6 +131,20 @@ public class CoursesBusinessEntry extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+
+    public void setCommunityId(ObjectId communityId){
+        setSimpleValue("cmid",communityId);
+    }
+
+    public ObjectId getCommunityId(){
+        return getSimpleObjecIDValue("cmid");
+    }
+    public String getEmid(){
+        return getSimpleStringValue("mid");
+    }
+    public void setEmid(String emid){
+        setSimpleValue("mid", emid);
     }
 
 

@@ -18,15 +18,6 @@ public class NewStringUtil {
         for (int i=0; i<str.length(); i++) {
             char c = str.charAt(i);
             switch (c) {
-                case '\"':
-                    res.append("\\\"");
-                    break;
-                case '\\':
-                    res.append("\\\\");
-                    break;
-                case '/':
-                    res.append("\\/");
-                    break;
                 case '\b':
                     res.append("\\b");
                     break;
@@ -41,9 +32,6 @@ public class NewStringUtil {
                     break;
                 case '\t':
                     res.append("\\t");
-                    break;
-                case '\'':
-                    res.append("\\\'");
                     break;
                 default:
                     res.append(c);

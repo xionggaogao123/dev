@@ -663,6 +663,31 @@ public class WebBusinessManageController extends BaseController {
     }
 
     /**
+     * 增加附加信息
+     * @return
+     */
+    @ApiOperation(value = "增加附加信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addCommunityToFinish")
+    @ResponseBody
+    public String addCommunityToFinish(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+                             @ApiParam(name="communityId",required = false,value="communityId") @RequestParam(value="communityId",defaultValue = "") String communityId,
+                             @ApiParam(name="emid",required = false,value="emid") @RequestParam(value="emid",defaultValue = "") String emid){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.addCommunityToFinish(new ObjectId(id),new ObjectId(communityId),emid);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("增加附加信息成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("增加附加信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+    /**
      * 拒绝通过(附加信息)
      * @return
      */

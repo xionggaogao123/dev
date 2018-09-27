@@ -1,14 +1,24 @@
 package com.fulaan.reportCard.controller;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.db.reportCard.GroupExamDetailDao;
+import com.db.reportCard.ScoreRepresentDao;
+import com.db.wrongquestion.SubjectClassDao;
+import com.fulaan.annotation.ObjectIdType;
+import com.fulaan.base.BaseController;
+import com.fulaan.indexpage.service.WebHomePageService;
+import com.fulaan.integral.service.IntegralSufferService;
+import com.fulaan.reportCard.dto.*;
+import com.fulaan.reportCard.service.ReportCardNewService;
+import com.pojo.integral.IntegralType;
+import com.pojo.reportCard.GroupExamDetailEntry;
+import com.pojo.reportCard.ScoreRepresentEntry;
+import com.pojo.wrongquestion.SubjectClassEntry;
+import com.sys.constants.Constant;
+import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -16,46 +26,17 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
-import com.db.reportCard.GroupExamDetailDao;
-import com.db.reportCard.ScoreRepresentDao;
-import com.db.wrongquestion.SubjectClassDao;
-import com.fulaan.annotation.ObjectIdType;
-import com.fulaan.base.BaseController;
-import com.fulaan.indexpage.service.WebHomePageService;
-import com.fulaan.reportCard.dto.ExamGroupDTO;
-import com.fulaan.reportCard.dto.ExamGroupNewDto;
-import com.fulaan.reportCard.dto.ExamGroupScoreDTO;
-import com.fulaan.reportCard.dto.ExamGroupUserScoreDTO;
-import com.fulaan.reportCard.dto.GroupExamDetailDTO;
-import com.fulaan.reportCard.dto.GroupExamScoreDTO;
-import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
-import com.fulaan.reportCard.dto.GroupExamUserRecordStrDTO;
-import com.fulaan.reportCard.dto.GroupExamUserRecordStrListDTO;
-import com.fulaan.reportCard.dto.GroupExamVersionDTO;
-import com.fulaan.reportCard.dto.ScoreRepresentDto;
-import com.fulaan.reportCard.dto.ScoreRepresentListDto;
-import com.fulaan.reportCard.service.ReportCardNewService;
-import com.pojo.reportCard.GroupExamDetailEntry;
-import com.pojo.reportCard.GroupExamUserRecordEntry;
-import com.pojo.reportCard.ScoreRepresentEntry;
-import com.pojo.reportCard.VirtualUserEntry;
-import com.pojo.user.UserEntry;
-import com.pojo.wrongquestion.SubjectClassEntry;
-import com.sys.constants.Constant;
-import com.sys.utils.RespObj;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by scott on 2017/9/30.
@@ -76,6 +57,8 @@ public class DefaultReportCardNewController extends BaseController {
     
     @Autowired
     private WebHomePageService webHomePageService;
+    @Autowired
+    private IntegralSufferService integralSufferService;
     
     private static final Logger logger =Logger.getLogger(DefaultReportCardNewController.class);
     
@@ -587,7 +570,11 @@ public class DefaultReportCardNewController extends BaseController {
                 reportCardService.updateShowType(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()), examGroupScoreDTO.getShowType());
                 reportCardService.updateFsShowType(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()), examGroupScoreDTO.getFsShowType());
                 respObj.setCode(Constant.SUCCESS_CODE);
-                respObj.setMessage("保存或编辑成绩成功!");
+                respObj.setMessage("0");
+                if(examGroupScoreDTO.getIsSend()==0 && examGroupScoreDTO.getStatus()==2){
+                    int score = integralSufferService.addIntegral(getUserId(), IntegralType.repordcard,1,1);
+                    respObj.setMessage(""+score);
+                }
             } else {
                 respObj.setErrorMessage("不是最新的版本");
             }

@@ -32,6 +32,16 @@ public class CoursesBusinessDao extends BaseDao {
         }
     }
 
+    public CoursesBusinessEntry getOneEntry(ObjectId contactId){
+        BasicDBObject query=new BasicDBObject("cid",contactId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSES_BUSINESS,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new CoursesBusinessEntry((BasicDBObject) dbObject);
+        }else {
+            return null;
+        }
+    }
+
     //添加助教
     public void updateEntry(ObjectId id,String name){
         BasicDBObject query=new BasicDBObject()

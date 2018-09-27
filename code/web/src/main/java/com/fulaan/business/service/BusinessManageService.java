@@ -1332,6 +1332,19 @@ public class BusinessManageService {
         return "1";
     }
 
+    //绑定直播社群
+    public void addCommunityToFinish(ObjectId id,ObjectId communityId,String emid){
+        CoursesBusinessEntry coursesBusinessEntry =  coursesBusinessDao.getOneEntry(id);
+        if(coursesBusinessEntry==null){
+
+        }else{
+            coursesBusinessEntry.setCommunityId(communityId);
+            coursesBusinessEntry.setEmid(emid);
+            coursesBusinessDao.addEntry(coursesBusinessEntry);
+        }
+    }
+
+
     //审核通过回调接口
     public String backFinish(ObjectId id,String word,ObjectId userId,int type){
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);

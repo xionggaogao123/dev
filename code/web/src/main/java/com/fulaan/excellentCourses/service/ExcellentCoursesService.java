@@ -7,6 +7,7 @@ import com.db.excellentCourses.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -14,9 +15,12 @@ import com.fulaan.backstage.dto.LogMessageDTO;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.excellentCourses.dto.*;
+import com.fulaan.fgroup.service.EmService;
+import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
+import com.fulaan.service.MemberService;
 import com.fulaan.systemMessage.service.SystemMessageService;
 import com.fulaan.wrongquestion.controller.DefaultWrongQuestionController;
 import com.mongodb.DBObject;
@@ -25,6 +29,8 @@ import com.pojo.backstage.PushMessageEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.excellentCourses.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.GroupEntry;
+import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
@@ -764,6 +770,44 @@ public class ExcellentCoursesService {
             }
         }
 
+        map.put("list",dtos2);
+        map.put("count",dtos2.size());
+        return map;
+    }
+
+    /**
+     * 学生首页加载（不包含推荐课程）
+     * @param userId
+     * @return
+     */
+    public Map<String,Object> getNewMyChildOldCoursesList(ObjectId userId,ObjectId id){
+        Map<String,Object> map = new HashMap<String, Object>();
+        long current = System.currentTimeMillis();
+        List<ClassOrderEntry> classOrderEntries =  classOrderDao.getEntry(userId);
+        List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+        List<ObjectId> hourClassIds = new ArrayList<ObjectId>();
+        for(ClassOrderEntry classOrderEntry:classOrderEntries){
+            if(classOrderEntry.getIsBuy()==1){
+                objectIdList1.add(classOrderEntry.getContactId());
+                hourClassIds.add(classOrderEntry.getParentId());
+            }
+        }
+        //objectIdList1
+        List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById4(objectIdList1);
+
+        //推荐名单
+        List<ExcellentCoursesEntry> coursesEntries = new ArrayList<ExcellentCoursesEntry>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries2){
+            if(excellentCoursesEntry.getEndTime()<current){
+                coursesEntries.add(excellentCoursesEntry);
+            }
+        }
+        List<ExcellentCoursesDTO> dtos2 = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries){//推荐
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            dto.setIsBuy(1);
+            dtos2.add(dto);
+        }
         map.put("list",dtos2);
         map.put("count",dtos2.size());
         return map;
@@ -1699,6 +1743,12 @@ public class ExcellentCoursesService {
             UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,ot,ot,ot);
             userBehaviorDao.addEntry(userBehaviorEntry1);
             userBehaviorEntry= userBehaviorEntry1;
+        }else{
+            //取消收藏
+            List<ObjectId> collList = userBehaviorEntry.getCollectList();
+            collList.remove(id);
+            userBehaviorEntry.setCollectList(collList);
+            userBehaviorDao.addEntry(userBehaviorEntry);
         }
 
         //充值账户
@@ -1802,6 +1852,12 @@ public class ExcellentCoursesService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+            //加入社群
+            List<ObjectId> uids = new ArrayList<ObjectId>();
+            uids.add(userId);
+            Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+            map.put(userId,sonId);
+            inviteLessonMember(id, uids,map);
             return "购买成功";
         }else{
             throw  new Exception("订单信息不存在！");
@@ -1858,7 +1914,14 @@ public class ExcellentCoursesService {
             UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,ot,ot,ot);
             userBehaviorDao.addEntry(userBehaviorEntry1);
             userBehaviorEntry= userBehaviorEntry1;
+        }else{
+            //取消收藏
+            List<ObjectId> collList = userBehaviorEntry.getCollectList();
+            collList.remove(id);
+            userBehaviorEntry.setCollectList(collList);
+            userBehaviorDao.addEntry(userBehaviorEntry);
         }
+
 
         //充值账户
         AccountFrashEntry accountFrashEntry = accountFrashDao.getEntry(userId);
@@ -1966,6 +2029,21 @@ public class ExcellentCoursesService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+            //加入社群
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(sonId);
+            if(newVersionBindRelationEntry==null){//非学生
+                List<ObjectId> uids = new ArrayList<ObjectId>();
+                uids.add(sonId);
+                Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+                //map.put(userId,sonId);
+                inviteLessonMember(id, uids,map);
+            }else{//学生
+                List<ObjectId> uids = new ArrayList<ObjectId>();
+                uids.add(newVersionBindRelationEntry.getMainUserId());
+                Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+                map.put(newVersionBindRelationEntry.getMainUserId(),sonId);
+                inviteLessonMember(id, uids,map);
+            }
             return "购买成功";
         }else{
             throw  new Exception("订单信息不存在！");
@@ -1998,6 +2076,12 @@ public class ExcellentCoursesService {
             UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,ot,ot,ot);
             userBehaviorDao.addEntry(userBehaviorEntry1);
             userBehaviorEntry= userBehaviorEntry1;
+        }else{
+            //取消收藏
+            List<ObjectId> collList = userBehaviorEntry.getCollectList();
+            collList.remove(id);
+            userBehaviorEntry.setCollectList(collList);
+            userBehaviorDao.addEntry(userBehaviorEntry);
         }
 
         //充值账户
@@ -2110,6 +2194,23 @@ public class ExcellentCoursesService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+            //加入社群
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(sonId);
+            if(newVersionBindRelationEntry==null){//非学生
+                List<ObjectId> uids = new ArrayList<ObjectId>();
+                uids.add(sonId);
+                Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+                //map.put(userId,sonId);
+                inviteLessonMember(id, uids,map);
+            }else{//学生
+                List<ObjectId> uids = new ArrayList<ObjectId>();
+                uids.add(newVersionBindRelationEntry.getMainUserId());
+                Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+                map.put(newVersionBindRelationEntry.getMainUserId(),sonId);
+                inviteLessonMember(id, uids,map);
+            }
+
+
             return "购买成功";
         }else{
             throw  new Exception("订单信息不存在！");
@@ -2133,6 +2234,12 @@ public class ExcellentCoursesService {
             UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,ot,ot,ot);
             userBehaviorDao.addEntry(userBehaviorEntry1);
             userBehaviorEntry= userBehaviorEntry1;
+        }else{
+            //取消收藏
+            List<ObjectId> collList = userBehaviorEntry.getCollectList();
+            collList.remove(id);
+            userBehaviorEntry.setCollectList(collList);
+            userBehaviorDao.addEntry(userBehaviorEntry);
         }
 
         //充值账户
@@ -2236,6 +2343,12 @@ public class ExcellentCoursesService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+            //加入社群
+            List<ObjectId> uids = new ArrayList<ObjectId>();
+            uids.add(userId);
+            Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+            //map.put(userId,sonId);
+            inviteLessonMember(id, uids,map);
             return "购买成功";
         }else{
             throw  new Exception("订单信息不存在！");
@@ -2338,6 +2451,14 @@ public class ExcellentCoursesService {
         int count = excellentCoursesDao.selectCount(subjectId,current,objectIdList);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
+            if(excellentCoursesEntry.getOpen()==1){
+                List<ObjectId> newList = new ArrayList<ObjectId>();
+                newList.addAll(objectIdList);
+                newList.removeAll(excellentCoursesEntry.getCommunityIdList());
+                if(objectIdList.size()!=newList.size()){//推荐
+                    excellentCoursesEntry.setOpen(0);
+                }
+            }
             dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));
         }
         map.put("list", dtos);
@@ -4070,7 +4191,7 @@ public class ExcellentCoursesService {
         this.addLogMessage(id.toString(),"修改了课程："+excellentCoursesEntry.getTitle()+"的总价",LogMessageType.courses.getDes(),userId.toString());
     }
     //修改课节
-    public void updateOneClass(ObjectId id,HourClassDTO dto,ObjectId userId)throws Exception{
+    public void updateOneClass(ObjectId id,HourClassDTO dto,ObjectId userId,int type)throws Exception{
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         if(excellentCoursesEntry==null){
             throw new Exception("课程不存在！");
@@ -4088,14 +4209,116 @@ public class ExcellentCoursesService {
         long sTm = hourClassEntry.getStartTime();
         String str = DateTimeUtils.getLongToStrTimeTwo(sTm).substring(0,11);
         long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
-        if(hourClassEntry.getID()==null){
+        if(hourClassEntry.getID()!=null){
             hourClassDao.addEntry(hourClassEntry);
             pushMessageDao.updateEntry(hourClassEntry.getID(),sTm,strNum);
         }else{
             hourClassDao.addEntry(hourClassEntry);
             this.sendMessage(excellentCoursesEntry.getTitle(),hourClassEntry.getID(),sTm,strNum);
+            //添加订单
+            if(type==2){
+                addClassTime(hourClassEntry);
+            }
         }
         this.addLogMessage(hourClassEntry.getID().toString(),"修改了课程："+excellentCoursesEntry.getTitle()+"的第"+dto.getOrder()+"课节",LogMessageType.courses.getDes(),userId.toString());
+        //排序
+        sortClassTime(excellentCoursesEntry);
+    }
+
+    //增加课节订单
+    public void addClassTime(HourClassEntry classEntry){
+        ObjectId pid = classEntry.getParentId();
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(pid);
+        //用户订单查询
+        Map<ObjectId,ClassOrderEntry> mapEntry = classOrderDao.getMapEntry(excellentCoursesEntry.getID());
+        Set<ObjectId> userIds =  mapEntry.keySet();
+        List<UserEntry> userEntries = userDao.getUserEntryList(userIds, Constant.FIELDS);
+        List<ClassOrderEntry> classOrderEntries1 = new ArrayList<ClassOrderEntry>();
+        long current = System.currentTimeMillis();
+        for(UserEntry u : userEntries){
+            ClassOrderEntry oldClassOrderEntry = mapEntry.get(u.getID());
+            ClassOrderEntry classOrderEntry = new ClassOrderEntry();
+            //购买  1  未购买
+            classOrderEntry.setIsBuy(1);
+            //下单
+            classOrderEntry.setType(1);
+            classOrderEntry.setCreateTime(current);
+            classOrderEntry.setContactId(excellentCoursesEntry.getID());
+            classOrderEntry.setIsRemove(0);
+            classOrderEntry.setParentId(classEntry.getID());
+            if(oldClassOrderEntry!=null){
+                classOrderEntry.setOrderId(oldClassOrderEntry.getOrderId());
+                classOrderEntry.setFunction(oldClassOrderEntry.getFunction());
+            }else{
+                classOrderEntry.setOrderId("系统添加课程附带添加");
+                classOrderEntry.setFunction(4);
+            }
+            classOrderEntry.setPrice(classEntry.getClassNewPrice());
+            classOrderEntry.setUserId(u.getID());//孩子的订单
+            classOrderEntries1.add(classOrderEntry);
+        }
+        //添加课节订单
+        if(classOrderEntries1.size()>0){
+            this.addClassEntryBatch(classOrderEntries1);
+        }
+    }
+
+    //修改上课时间
+    public void updateClassTime(ObjectId userId,ObjectId id,String ids)throws Exception{
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            throw new Exception("课程不存在！");
+        }
+        List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
+        String[] strings = ids.split(",");
+        Map<ObjectId,String> map = new HashMap<ObjectId, String>();
+        for(String s:strings){
+            String[] strings1 = s.split("#");
+            if(strings1.length==2){
+                if(ObjectId.isValid(strings1[0])){
+                    objectIdList.add(new ObjectId(strings1[0]));
+                    map.put(new ObjectId(strings1[0]),strings1[1]);
+                }
+            }
+        }
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(objectIdList);
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            String str = map.get(hourClassEntry.getID());
+           if(str!=null){
+               long stm = 0l;
+               if(!str.equals("")){
+                   stm = DateTimeUtils.getStrToLongTime(str);
+                   hourClassEntry.setStartTime(stm);
+                   hourClassDao.addEntry(hourClassEntry);
+               }
+           }
+        }
+        this.addLogMessage(excellentCoursesEntry.getID().toString(),"批量修改了课程："+excellentCoursesEntry.getTitle()+"的上课时间",LogMessageType.courses.getDes(),userId.toString());
+        //排序
+        sortClassTime(excellentCoursesEntry);
+    }
+
+    //修改课节老师和学科
+    public void updateClassTeacher(ObjectId userId,ObjectId id,String ids,ObjectId ownId,String ownName,String subjectName)throws Exception{
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            throw new Exception("课程不存在！");
+        }
+        List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
+        String[] strings = ids.split(",");
+        for(String s:strings){
+            if(ObjectId.isValid(s)){
+                objectIdList.add(new ObjectId(s));
+            }
+        }
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(objectIdList);
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            hourClassEntry.setOwnId(ownId);
+            hourClassEntry.setOwnName(ownName);
+            hourClassEntry.setSubjectName(subjectName);
+            hourClassDao.addEntry(hourClassEntry);
+        }
+        this.addLogMessage(excellentCoursesEntry.getID().toString(),"批量修改了课程："+excellentCoursesEntry.getTitle()+"的课节上课老师",LogMessageType.courses.getDes(),userId.toString());
         //排序
         sortClassTime(excellentCoursesEntry);
     }
@@ -4192,4 +4415,55 @@ public class ExcellentCoursesService {
         return b1.divide(b2,scale,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
+
+    //直播课堂购买订单加入社群
+    public static void inviteLessonMember(ObjectId id,
+                                   List<ObjectId> userList,Map<ObjectId,ObjectId> map) {
+        CoursesBusinessDao coursesBusinessDao = new CoursesBusinessDao();
+        CoursesBusinessEntry coursesBusinessEntry = coursesBusinessDao.getOneEntry(id);
+        if(coursesBusinessEntry!=null && coursesBusinessEntry.getEmid()!=null){
+            String emChatId = coursesBusinessEntry.getEmid();
+            try {
+                GroupService groupService = new GroupService();
+                MemberService memberService = new MemberService();
+                CommunityService communityService = new CommunityService();
+                EmService emService =  new EmService();
+                NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
+
+
+                GroupEntry groupEntry = groupService.getGroupEntryByEmchatId(emChatId);
+                if(null==groupEntry){
+                    throw new Exception("传入的环信Id有误");
+                }
+                ObjectId groupId=groupEntry.getID();
+                for (ObjectId personId : userList) {
+                    if (!memberService.isGroupMember(groupId, personId)) {
+                        if (emService.addUserToEmGroup(emChatId, personId)) {
+                            if (memberService.isBeforeMember(groupId, personId)) {
+                                memberService.updateMember(groupId, personId, 0);
+                            } else {
+                                memberService.saveMember(personId, groupId);
+                            }
+                            communityService.setPartIncontentStatus(groupEntry.getCommunityId(), personId, 0);
+                            communityService.pushToUser(groupEntry.getCommunityId(), personId, 1);
+                        }
+                    }
+                }
+                //循环绑定家长学生
+                for (Map.Entry<ObjectId, ObjectId> entry : map.entrySet()) {
+                    //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                    NewVersionCommunityBindEntry entry2 = new NewVersionCommunityBindEntry(groupEntry.getCommunityId(), entry.getKey(), entry.getValue());
+                    newVersionCommunityBindDao.saveEntry(entry2);
+                }
+
+                //更新群聊头像
+                groupService.asyncUpdateHeadImage(groupId);
+            }catch (Exception e){
+
+            }
+        }
+
+
+
+    }
 }

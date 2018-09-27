@@ -124,6 +124,25 @@ public class ClassOrderDao extends BaseDao {
         return entryList;
     }
 
+    public  Map<ObjectId,ClassOrderEntry> getMapEntry(ObjectId contactId){
+        Map<ObjectId,ClassOrderEntry> entryList=new HashMap<ObjectId, ClassOrderEntry>();
+        BasicDBObject query=new BasicDBObject();
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(1);
+        list.add(0);
+        query.append("cid",contactId).append("isr", Constant.ZERO).append("isb", Constant.ONE);
+        query.append("typ",new BasicDBObject(Constant.MONGO_IN,list));
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                ClassOrderEntry classOrderEntry = new ClassOrderEntry((BasicDBObject) obj);
+                entryList.put(classOrderEntry.getUserId(), classOrderEntry);
+            }
+        }
+        return entryList;
+    }
+
     //课程订单用户查询
     public  List<ClassOrderEntry> getCoursesUserList(ObjectId contactId){
         List<ClassOrderEntry> entryList=new ArrayList<ClassOrderEntry>();

@@ -351,6 +351,48 @@ public class DefaultGroupController extends BaseController {
         return respObj;
     }
 
+    //直播课堂购买订单加入社群
+    public void inviteLessonMember(String emChatId,
+                                String userIds) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            GroupEntry groupEntry = groupService.getGroupEntryByEmchatId(emChatId);
+            if(null==groupEntry){
+                throw new Exception("传入的环信Id有误");
+            }
+            ObjectId groupId=groupEntry.getID();
+            GroupDTO groupDTO = groupService.findById(groupId, getUserId());
+            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+            for (ObjectId personId : userList) {
+                if (!memberService.isGroupMember(groupId, personId)) {
+                    if (emService.addUserToEmGroup(emChatId, personId)) {
+                        if (memberService.isBeforeMember(groupId, personId)) {
+                            memberService.updateMember(groupId, personId, 0);
+                        } else {
+                            memberService.saveMember(personId, groupId);
+                        }
+                        if (groupDTO.isBindCommunity()) {
+                            communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), personId, 0);
+                            communityService.pushToUser(new ObjectId(groupDTO.getCommunityId()), personId, 1);
+                        }
+                        //孩子绑定进入
+
+                    }
+                }
+            }
+            //更新群聊头像
+            groupService.asyncUpdateHeadImage(groupId);
+            if (groupDTO.getIsM() == 0) {
+                groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("操作成功");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+
+
+    }
     /**
      * 学生邀请人进群
      *

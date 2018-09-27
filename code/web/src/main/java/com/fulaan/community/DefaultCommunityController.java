@@ -3732,6 +3732,24 @@ public class DefaultCommunityController extends BaseController {
         return respObj;
     }
 
+    @RequestMapping("/judgeNewPersonPermission")
+    @ResponseBody
+    @SessionNeedless
+    @ApiOperation(value = "查询该用户是否有权限发送通知", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询该用户是否有权限发送通知成功",response = Map.class),
+            @ApiResponse(code = 500, message = "查询该用户是否有权限发送通知失败")})
+    public RespObj judgeNewPersonPermission(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            int status=memberService.judgeNewPersonPermission(getUserId());
+            respObj.setMessage(status);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
     @ApiOperation(value = "老数据处理脚本", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "查询该用户是否有权限发送通知成功",response = Map.class),
             @ApiResponse(code = 500, message = "查询该用户是否有权限发送通知失败")})

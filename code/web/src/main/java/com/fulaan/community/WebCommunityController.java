@@ -22,12 +22,10 @@ import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.playmate.service.MateService;
-import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.CommunityMessage;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
 import com.fulaan.pojo.Validate;
-import com.fulaan.reportCard.dto.ExamGroupDTO;
 import com.fulaan.service.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
@@ -133,6 +131,10 @@ public class WebCommunityController extends BaseController {
                                    @ApiParam(name = "logo", required = false, value = "社区logo") @RequestParam(required = false, defaultValue = "") StringBuffer logo,
                                    @ApiParam(name = "open", required = false, value = "社区是否公开标志位,0是不公开，1是公开") @RequestParam(required = false, defaultValue = "0") int open,
                                    @ApiParam(name = "userIds", required = false, value = "加入群组人员列表") @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
+        List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+        if(newVersionBindService.judgeUserStudent(userList)){
+            return RespObj.FAILDWithErrorMsg("不能把学生拉进社群");
+        }
         Validate validate = detectCondition(name, desc, logo);
         if (!validate.isOk()) {
             return RespObj.FAILDWithErrorMsg(validate.getMessage());
@@ -157,7 +159,63 @@ public class WebCommunityController extends BaseController {
         communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 5, commId);
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findById(new ObjectId(communityDTO.getGroupId()),uid);
-            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+            //List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+            for (ObjectId userId : userList) {
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
+                    memberService.saveMember(userId, new ObjectId(groupDTO.getId()), 0);
+                    communityService.pushToUser(communityId, userId, 1);
+                }
+            }
+        }
+        int memberCount = memberService.getMemberCount(new ObjectId(communityDTO.getGroupId()));
+        communityDTO.setMemberCount(memberCount);
+        List<MemberDTO> members = memberService.getMembers(new ObjectId(communityDTO.getGroupId()), 20,uid);
+        communityDTO.setMembers(members);
+        MemberDTO mine = memberService.getUser(new ObjectId(communityDTO.getGroupId()), getUserId());
+        communityDTO.setMine(mine);
+        String headImage = groupService.getHeadImage(new ObjectId(communityDTO.getGroupId()));
+        communityDTO.setHeadImage(headImage);
+        groupService.asyncUpdateHeadImage(new ObjectId(communityDTO.getGroupId()));
+        return RespObj.SUCCESS(communityDTO);
+    }
+
+    @ApiOperation(value = "创建直播课新社区", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "创建社区成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "创建社区失败")})
+    @RequestMapping("/createLessonCommunity")
+    @ResponseBody
+    public RespObj createLessonCommunity(@ApiParam(name = "name", required = true, value = "社区名称")String name,
+                                   @ApiParam(name = "desc", required = false, value = "社区描述") @RequestParam(required = false, defaultValue = "") StringBuffer desc,
+                                   @ApiParam(name = "logo", required = false, value = "社区logo") @RequestParam(required = false, defaultValue = "") StringBuffer logo,
+                                   @ApiParam(name = "open", required = false, value = "社区是否公开标志位,0是不公开，1是公开") @RequestParam(required = false, defaultValue = "0") int open,
+                                   @ApiParam(name = "userIds", required = false, value = "加入群组人员列表") @RequestParam(required = false, defaultValue = "") String userIds,
+                                   @ApiParam(name = "uid", required = false, value = "社长") @RequestParam(required = false, defaultValue = "") String usid) throws Exception {
+        List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+        Validate validate = detectCondition(name, desc, logo);
+        if (!validate.isOk()) {
+            return RespObj.FAILDWithErrorMsg(validate.getMessage());
+        }
+        ObjectId uid = new ObjectId(usid);
+        ObjectId communityId = new ObjectId();
+        String qrUrl = QRUtils.getCommunityQrUrl(communityId);
+        if (qrUrl == null) {
+            return RespObj.FAILDWithErrorMsg("无法生成二维码");
+        }
+        String seqId = communityService.getSeq();
+        if (StringUtils.isBlank(seqId)) {
+            return RespObj.FAILDWithErrorMsg("社区序列值不够");
+        }
+        ObjectId commId = communityService.createCommunity(communityId, uid, name, desc.toString(), logo.toString(), qrUrl, seqId, open);
+        if (commId == null) {
+            return RespObj.FAILDWithErrorMsg("创建社区失败");
+        }
+        CommunityDTO communityDTO = communityService.findByObjectId(commId);
+        //创建社区系统消息通知
+        communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 4, commId);
+        communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 5, commId);
+        if (StringUtils.isNotBlank(userIds)) {
+            GroupDTO groupDTO = groupService.findById(new ObjectId(communityDTO.getGroupId()),uid);
+            //List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
             for (ObjectId userId : userList) {
                 if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                     memberService.saveMember(userId, new ObjectId(groupDTO.getId()), 0);
@@ -3690,6 +3748,24 @@ public class WebCommunityController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
            boolean status=memberService.judgeManagePermissionOfUser(getUserId());
+            respObj.setMessage(status);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    @RequestMapping("/judgeNewPersonPermission")
+    @ResponseBody
+    @SessionNeedless
+    @ApiOperation(value = "查询该用户是否有权限发送通知", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询该用户是否有权限发送通知成功",response = Map.class),
+            @ApiResponse(code = 500, message = "查询该用户是否有权限发送通知失败")})
+    public RespObj judgeNewPersonPermission(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            int status=memberService.judgeNewPersonPermission(getUserId());
             respObj.setMessage(status);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

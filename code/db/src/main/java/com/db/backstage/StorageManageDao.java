@@ -44,7 +44,13 @@ public class StorageManageDao extends BaseDao {
                 query.append("storageStatus", new BasicDBObject(Constant.MONGO_IN,storageStatusList));
             }
 
+        }else{
+            //出库不展示
+            List<String> outStorageStatusList = new ArrayList<String>();
+            outStorageStatusList.add("5");
+            query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
         }
+
         if (!"".equals(useStatus)) {
             query.append("useStatus", useStatus);
         }
@@ -54,10 +60,7 @@ public class StorageManageDao extends BaseDao {
         if (!"".equals(month)) {
             query.append("inStorageMonth", month);
         }
-        //出库不展示
-        List<String> outStorageStatusList = new ArrayList<String>();
-        outStorageStatusList.add("5");
-        query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
+
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE, query, Constant.FIELDS,
                 new BasicDBObject("inStorageTime", Constant.DESC),(page-1)*pageSize,pageSize);
         List<StorageManageEntry> storageManageEntryList = new ArrayList<StorageManageEntry>();
@@ -204,5 +207,77 @@ public class StorageManageDao extends BaseDao {
         query.append("imeiNo", imeiNo);
         int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE, query);
         return count;
+    }
+
+    /**
+     * 发货管理-获取当前型号库存手机颜色
+     * @return
+     */
+    public List<String> getCurrentModelColor(String phoneModel) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("phoneModel", phoneModel);
+        //可用
+        query.append("useStatus", "1");
+        //出库不展示
+        List<String> outStorageStatusList = new ArrayList<String>();
+        outStorageStatusList.add("5");
+        query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
+
+        //查询
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE, query, Constant.FIELDS);
+        List<String> stringList = new ArrayList<String>();
+        for (DBObject dbObject : dbObjects){
+            if (!stringList.contains(new StorageManageEntry(dbObject).getColor())){
+                stringList.add(new StorageManageEntry(dbObject).getColor());
+            }
+        }
+        return stringList;
+    }
+
+    /**
+     * 发货管理-配置手机检测可用
+     * @return
+     */
+    public int checkPhoneInfoValid(String imeiNo) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("imeiNo", imeiNo);
+        //可用
+        query.append("useStatus", "1");
+        //出库不展示
+        List<String> outStorageStatusList = new ArrayList<String>();
+        outStorageStatusList.add("5");
+        query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
+
+        //查询
+        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE, query);
+        return count;
+    }
+
+    /**
+     * 根据imeiNo 更新出库状态
+     * @param map
+     * @return
+     */
+    public String updateStorageInfoByImeiNo(Map map) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("imeiNo", map.get("imeiNo").toString());
+        //可用
+        query.append("useStatus", "1");
+        //出库不展示
+        List<String> outStorageStatusList = new ArrayList<String>();
+        outStorageStatusList.add("5");
+        query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
+
+        //更新内容
+        BasicDBObject updateParam = new BasicDBObject();
+        updateParam.append("storageStatus","5");
+
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE,query,updateValue);
+
+        return map.get("imeiNo").toString();
     }
 }

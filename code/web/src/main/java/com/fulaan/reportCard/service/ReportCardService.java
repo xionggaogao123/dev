@@ -2004,7 +2004,7 @@ public class ReportCardService {
         HSSFRow row = sheet.createRow(0);
 
         HSSFCell cell = row.createCell(0);
-        cell.setCellValue("用户名");
+        cell.setCellValue("学生姓名");
 
         /*cell = row.createCell(1);
         cell.setCellValue("用户学号");*/

@@ -2947,7 +2947,7 @@ public class ReportCardNewService {
             HSSFRow row = sheet.createRow(1);
 
             HSSFCell cell = row.createCell(0);
-            cell.setCellValue("用户姓名");
+            cell.setCellValue("学生姓名");
             for (GroupExamUserRecordDTO g : recordDTOs) {
                 String[] ss = g.getSubjectId().split(",");
                 for (int i =0;i<ss.length;i++) {

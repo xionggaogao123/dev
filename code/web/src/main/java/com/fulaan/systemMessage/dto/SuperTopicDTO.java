@@ -23,6 +23,7 @@ public class SuperTopicDTO {
     private String createTime;
     private String timeStr;
     private int voteType;
+    private int isPublic;
 
     public SuperTopicDTO(){
 
@@ -38,6 +39,12 @@ public class SuperTopicDTO {
             this.url = e.getCommunityContent();
             this.voteType = e.getVoteType();
             this.timeStr = getTimeStr(e.getCreateTime());
+            try {
+                this.isPublic = e.getIsPublic();
+            } catch (Exception e2) {
+                // TODO: handle exception
+                this.isPublic = 0;
+            }
             for (AttachmentEntry entry : e.getImageList()) {
                 this.imageUrl.add(new Attachement(entry));
             }
@@ -152,4 +159,14 @@ public class SuperTopicDTO {
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
+
+    public int getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(int isPublic) {
+        this.isPublic = isPublic;
+    }
+    
+    
 }

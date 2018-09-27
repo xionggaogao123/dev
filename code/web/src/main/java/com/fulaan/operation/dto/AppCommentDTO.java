@@ -63,6 +63,7 @@ public class AppCommentDTO {
     private int isLoad;
     private int showType; //是否展示  0 展示  1不展示
     private int isTutorId; //是否是助教   不是   是
+    private int isPublic; //是否公开 0公开 1：不公开
 
     private String tutorId;//修改助教id
     private String tutorName;//助教姓名
@@ -593,4 +594,12 @@ public class AppCommentDTO {
     public void setIsTutorId(int isTutorId) {
         this.isTutorId = isTutorId;
     }
+    public int getIsPublic() {
+        return isPublic;
+    }
+    public void setIsPublic(int isPublic) {
+        this.isPublic = isPublic;
+    }
+    
+    
 }

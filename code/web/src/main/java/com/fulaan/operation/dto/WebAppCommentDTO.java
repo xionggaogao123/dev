@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class WebAppCommentDTO {
     private String id;
+    private int isPublic;
     private String subjectId;
     private String title;
     private String description;
@@ -47,6 +48,7 @@ public class WebAppCommentDTO {
             appDto.setImageList(dto.getImageList());
             appDto.setVoiceList(dto.getVoiceList());
             appDto.setAttachements(dto.getAttachements());
+            appDto.setIsPublic(dto.getIsPublic());
         }
         return appDto;
     }
@@ -57,6 +59,16 @@ public class WebAppCommentDTO {
 
     public void setId(String id) {
         this.id = id;
+    }
+    
+    
+
+    public int getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(int isPublic) {
+        this.isPublic = isPublic;
     }
 
     public String getSubjectId() {

@@ -234,7 +234,7 @@ public class SystemMessageService extends BaseService {
                         userId, dto.getTitle(), dto.getDescription(), Constant.THREE,
                         new ArrayList<ObjectId>(), attachmentEntries, vedios, imageEntries,
                         dto.getSubject(),  dto.getSubjectId(), s , null , null, 0,
-                        new Date().getTime(), 1, videoEntries
+                        new Date().getTime(), 1, videoEntries, dto.getIsPublic()
                 );//默认滚屏
                communityDetailDao.save(entry);
             }else if(str.equals(PARENTCOMMUNIY)){//发送家长
@@ -242,7 +242,7 @@ public class SystemMessageService extends BaseService {
                         userId, dto.getTitle(), dto.getDescription(), Constant.THREE,
                         new ArrayList<ObjectId>(), attachmentEntries, vedios, imageEntries,
                         dto.getSubject(),  dto.getSubjectId(), s , null , null, 0,
-                        new Date().getTime(), 1, videoEntries
+                        new Date().getTime(), 1, videoEntries, dto.getIsPublic()
                 );//默认滚屏
                 communityDetailDao.save(entry);
 
@@ -361,7 +361,20 @@ public class SystemMessageService extends BaseService {
         List<ObjectId> ids = communityDetailDao.getURLListByUserId(entry2.getCommunityContent(),entry2.getCommunityTitle());
         //添加一级评论
         // AppCommentEntry entry = appCommentDao.getEntry(id);
-        List<AppNewOperationEntry>  entries= appOperationDao.getEntryListByParentId(ids,role,page,pageSize);
+        int i = 0;
+        try {
+            i = entry2.getIsPublic();
+        } catch (Exception e) {
+            // TODO: handle exception
+            i = 0;
+        }
+        List<AppNewOperationEntry>  entries = new ArrayList<AppNewOperationEntry>();
+        if (i == 0) {
+            entries= appOperationDao.getEntryListByParentId(ids,page,pageSize);
+        } else {
+            entries= appOperationDao.getEntryListByParentId(ids,role,page,pageSize);
+        }
+        
         //添加二级评论
         List<ObjectId> plist = new ArrayList<ObjectId>();
         if(entries != null && entries.size()>0){

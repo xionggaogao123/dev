@@ -209,7 +209,7 @@ public class ExcellentGanKaoService {
 
     public static void main(String[] args){
         //TimeOut("");
-        String code = createPaySign("5a17dafd0a9d324986663c9a", "17683928886","5ba1e3461f7e9d460cd34996",111);
+        String code = createPaySign("5b3b4b5f3d4df9509e2b700f", "18916473419","5ba9df720a9d3232dda02812",11);
         TimeOut(code,new ObjectId(),1,1231234124141l);
     }
 
@@ -221,6 +221,7 @@ public class ExcellentGanKaoService {
                 //开始执行耗时操作
                 //Thread.sleep(1000 * 4);
                 String message = CoursesGanKaoAPI.sendMessage(code);
+                System.out.println(message);
                 ResultDto resultDto = JSON.parseObject(message, new TypeReference<ResultDto>() {});
                 //System.out.println(message);
                 if(resultDto.getCode().equals("10001")){//成功

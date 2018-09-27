@@ -243,7 +243,12 @@ public class ReportCardNewController extends BaseController {
             }
             
             if (StringUtils.isNotBlank(cur)) {
-                gs.getSubjectNameWithDd().add(gs.getSubjectName().get(Integer.valueOf(cur)));
+                if (gede.getRecordScoreType() == 1) {
+                    gs.getSubjectNameWithDd().add("分数");
+                } else {
+                    gs.getSubjectNameWithDd().add("等第");
+                }
+                //gs.getSubjectNameWithDd().add(gs.getSubjectName().get(Integer.valueOf(cur)));
                 if (gede.getRecordScoreType() == 1) {
                     gs.getSubjectNameWithDd().add("排名");
                     if (gede.getFsShowType() == 3) {
@@ -327,7 +332,12 @@ public class ReportCardNewController extends BaseController {
             } else {
                 for (String s : subS) {
                     SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(s));
-                    gs.getSubjectNameWithDd().add(sc.getName());
+                    if (gede.getRecordScoreType() == 1) {
+                        gs.getSubjectNameWithDd().add("分数");
+                    } else {
+                        gs.getSubjectNameWithDd().add("等第");
+                    }
+                    //gs.getSubjectNameWithDd().add(sc.getName());
                     if (gede.getRecordScoreType() == 1) {
                         gs.getSubjectNameWithDd().add("排名");
                         if (gede.getFsShowType() == 3) {
@@ -342,7 +352,11 @@ public class ReportCardNewController extends BaseController {
                     
                 }
                 if (subS.size()>1) {
-                    gs.getSubjectNameWithDd().add("总分");
+                    if (gede.getRecordScoreType() == 1) {
+                        gs.getSubjectNameWithDd().add("分数");
+                    } else {
+                        gs.getSubjectNameWithDd().add("等第");
+                    }
                 }
                 if (subS.size()>1) {
                     if (gede.getRecordScoreType() == 1) {

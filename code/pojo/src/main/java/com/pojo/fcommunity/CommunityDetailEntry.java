@@ -50,7 +50,7 @@ import java.util.List;
  * vdt:voteDeadTime投票截止时间
  * vt:voteType投票类型
  * r:remove 0:未删除 1：已删除
- *
+ *isP:0公开 1不公开
  *
  * //新加需求(加置顶的字段)
  * tp:top
@@ -114,6 +114,59 @@ public class CommunityDetailEntry extends BaseDBObject {
             .append("zc",Constant.ZERO)
             .append("zl",MongoUtils.convert(zanList))
             .append("dus",MongoUtils.convert(deleteUserIds))
+            .append("r", 0);
+    setBaseEntry(basicDBObject);
+  }
+  
+  public CommunityDetailEntry(ObjectId communityId, ObjectId communityUserId, String communityTitle,
+                              String communityContent, int communityType,List<ObjectId> unReadList,
+                              List<AttachmentEntry> attachmentList,
+                              List<AttachmentEntry> voiceList, List<AttachmentEntry> imageList,
+                              String shareUrl,String shareImage,String shareTitle,String sharePrice,
+                              String voteContent,int voteMaxCount,long voteDeadTime,int voteType,List<VideoEntry> videoList, int isP) {
+    BasicDBList attachmentDbList = new BasicDBList();
+    BasicDBList voiceDbList = new BasicDBList();
+    BasicDBList imageDbList = new BasicDBList();
+    BasicDBList videoDBList = new BasicDBList();
+    for (VideoEntry videoEntry : videoList) {
+      videoDBList.add(videoEntry.getBaseEntry());
+    }
+    for(AttachmentEntry attachmentEntry:attachmentList){
+      attachmentDbList.add(attachmentEntry.getBaseEntry());
+    }
+    for(AttachmentEntry attachment:voiceList){
+      voiceDbList.add(attachment.getBaseEntry());
+    }
+    for(AttachmentEntry attachment:imageList){
+      imageDbList.add(attachment.getBaseEntry());
+    }
+    List<ObjectId> zanList=new ArrayList<ObjectId>();
+    List<ObjectId> deleteUserIds = new ArrayList<ObjectId>();
+    BasicDBObject basicDBObject = new BasicDBObject()
+            .append("cmid", communityId)
+            .append("cmuid", communityUserId)
+            .append("cmtl", communityTitle)
+            .append("cmct", communityContent)
+            .append("cmty", communityType)
+            .append("unrl",unReadList)
+            .append("atl", attachmentDbList)
+            .append("vil", voiceDbList)
+            .append("iml", imageDbList)
+            .append("vol", videoDBList)
+            .append("shul",shareUrl)
+            .append("shim",shareImage)
+            .append("shti",shareTitle)
+            .append("shpr",sharePrice)
+            .append("ti", System.currentTimeMillis())
+            .append("vc",voteContent)
+            .append("vmc",voteMaxCount)
+            .append("vdt",voteDeadTime)
+            .append("vt",voteType)
+            .append("tp",0)
+            .append("zc",Constant.ZERO)
+            .append("zl",MongoUtils.convert(zanList))
+            .append("dus",MongoUtils.convert(deleteUserIds))
+            .append("isP",  isP)
             .append("r", 0);
     setBaseEntry(basicDBObject);
   }
@@ -361,6 +414,14 @@ public class CommunityDetailEntry extends BaseDBObject {
   public void setRemove(int remove) {
     setSimpleValue("r", remove);
   }
+  
+  public int getIsPublic() {
+      return getSimpleIntegerValue("isP");
+    }
+
+    public void setIsPublic(int isP) {
+      setSimpleValue("isP", isP);
+    }
 
 
   public void setList(Collection<? extends BaseDBObject> list, String field){

@@ -69,6 +69,26 @@ public class AppNewOperationDao extends BaseDao {
         }
         return entryList;
     }
+    
+  //超级话题
+    public List<AppNewOperationEntry> getEntryListByParentId(List<ObjectId> contactIds,int page,int pageSize) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,contactIds))
+                .append("lev", 1)//一级
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_TOPIC_COMMENT,
+                        query, Constant.FIELDS,
+                        new BasicDBObject("zc",-1), (page - 1) * pageSize, pageSize);
+        List<AppNewOperationEntry> entryList = new ArrayList<AppNewOperationEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppNewOperationEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
 
     //超级话题 所有
     public List<AppNewOperationEntry> getAllEntryListByParentId(List<ObjectId> contactIds,int page,int pageSize) {

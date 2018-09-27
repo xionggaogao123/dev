@@ -44,7 +44,13 @@ public class StorageManageDao extends BaseDao {
                 query.append("storageStatus", new BasicDBObject(Constant.MONGO_IN,storageStatusList));
             }
 
+        }else{
+            //出库不展示
+            List<String> outStorageStatusList = new ArrayList<String>();
+            outStorageStatusList.add("5");
+            query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
         }
+
         if (!"".equals(useStatus)) {
             query.append("useStatus", useStatus);
         }
@@ -54,10 +60,7 @@ public class StorageManageDao extends BaseDao {
         if (!"".equals(month)) {
             query.append("inStorageMonth", month);
         }
-        //出库不展示
-        List<String> outStorageStatusList = new ArrayList<String>();
-        outStorageStatusList.add("5");
-        query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
+
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE, query, Constant.FIELDS,
                 new BasicDBObject("inStorageTime", Constant.DESC),(page-1)*pageSize,pageSize);
         List<StorageManageEntry> storageManageEntryList = new ArrayList<StorageManageEntry>();

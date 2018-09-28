@@ -1137,4 +1137,8 @@ public class Constant {
     public static final String COLLECTION_PHONES_IN_OUT_STORAGE_RECORD = "jxm_phones_in_out_storage_record";
     /*家校美手机项目表*/
     public static final String COLLECTION_PHONES_PROJECT = "jxm_phones_project";
+
+    /*************************************新版运营校管控*****************************************/
+    /*校管控*/
+    public static final String COLLECTION_SCHOOL_CONTROL_TIME = "jxm_school_control_time";
 }

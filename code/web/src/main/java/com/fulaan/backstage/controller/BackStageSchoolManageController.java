@@ -2,6 +2,7 @@ package com.fulaan.backstage.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.fulaan.backstage.dto.SchoolControlTimeDTO;
 import com.fulaan.backstage.service.BackStageAdminManageService;
 import com.fulaan.backstage.service.BackStageSchoolManageService;
 import com.fulaan.base.BaseController;
@@ -236,6 +237,79 @@ public class BackStageSchoolManageController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("重置失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+    /**
+     * 校管控设置保存
+     */
+    @ApiOperation(value = "校管控设置保存", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/saveSchoolControlSetting")
+    @ResponseBody
+    public String saveSchoolControlSetting(@RequestBody Map map){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String result = backStageSchoolManageService.saveSchoolControlSetting(map);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("操作失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 校管控列表查询
+     * 查询当前学校的管控设置列表展示
+     */
+    @ApiOperation(value = "校管控列表查询", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getEachSchoolControlSettingList")
+    @ResponseBody
+    public RespObj getEachSchoolControlSettingList(
+            @ApiParam(name = "schoolId", required = true, value = "schoolId") @RequestParam(value = "schoolId",defaultValue = "") String schoolId
+    ){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<SchoolControlTimeDTO> result = backStageSchoolManageService.getEachSchoolControlSettingList(new ObjectId(schoolId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("操作失败");
+        }
+        return respObj;
+    }
+
+    /**
+     * 校管控设置删除
+     */
+    @ApiOperation(value = "校管控设置删除", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/delSchoolControlSetting")
+    @ResponseBody
+    public String delSchoolControlSetting(@RequestBody Map map){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String result = backStageSchoolManageService.delSchoolControlSetting(map);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("操作失败");
         }
         return JSON.toJSONString(respObj);
     }

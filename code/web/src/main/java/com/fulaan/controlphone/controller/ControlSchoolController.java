@@ -85,16 +85,17 @@ public class ControlSchoolController extends BaseController {
     @RequestMapping("/addCommunityFreeTime")
     @ResponseBody
     public String addCommunityFreeTime(@ApiParam(name = "communityId", required = true, value = "社群id") @RequestParam(value = "communityId") String communityId,
+                                       @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId,
                                        @ApiParam(name = "freeTime", required = true, value = "自由时间") @RequestParam(value = "freeTime") int freeTime){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> message= controlSchoolPhoneService.getOneCommunityMessageForTea(new ObjectId(communityId),getUserId());
-            respObj.setMessage(message);
+            controlSchoolPhoneService.addCommunityFreeTime(new ObjectId(appId),new ObjectId(communityId),getUserId(), freeTime);
+            respObj.setMessage("设置成功");
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("老师首页加载一条基础信息失败!");
+            respObj.setErrorMessage(e.getMessage());
         }
         return JSON.toJSONString(respObj);
     }

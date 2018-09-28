@@ -19,6 +19,9 @@ import org.bson.types.ObjectId;
  *
  */
 public class ControlAppSchoolEntry extends BaseDBObject {
+    public ControlAppSchoolEntry(){
+
+    }
     public ControlAppSchoolEntry(DBObject dbObject){
         setBaseEntry((BasicDBObject)dbObject);
     }
@@ -35,7 +38,7 @@ public class ControlAppSchoolEntry extends BaseDBObject {
                 .append("ftm",freeTime)
                 .append("typ",type)
                 .append("ti", System.currentTimeMillis())
-                .append("ir", Constant.ZERO);
+                .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
 

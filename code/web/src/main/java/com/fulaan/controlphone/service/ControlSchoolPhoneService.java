@@ -15,7 +15,9 @@ import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.controlphone.ControlAppEntry;
 import com.pojo.controlphone.ControlAppSchoolEntry;
 import com.pojo.controlphone.ControlAppSchoolResultEntry;
+import com.pojo.controlphone.ControlAppSchoolUserEntry;
 import com.pojo.fcommunity.CommunityEntry;
+import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -177,9 +179,59 @@ public class ControlSchoolPhoneService {
 
 
     //开放社群上学阶段应用自由时间
-    public void addCommunityFreeTime(){
+    /**
+     *    针对上课时间的管控
+     */
+    public void addCommunityFreeTime(ObjectId appId,ObjectId communityId,ObjectId userId,int time)throws Exception{
+        AppDetailEntry appDetailEntry = appDetailDao.findEntryById(appId);
+        if(appDetailEntry==null){
+            throw new Exception("应用已被删除!");
+        }
+        //1.获取社群状态并添加记录
+        ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ZERO,communityId,appId);
+        long current = System.currentTimeMillis();
+        if(controlAppSchoolResultEntry==null){
+            //无记录添加新纪录
+            ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                    appId,communityId,appDetailEntry.getAppPackageName(),Constant.ONE,time*60*1000,
+                    Constant.ZERO,Constant.ZERO,Constant.ZERO,current,current,Constant.ONE);
+            controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+        }else{
+            //有记录，更新记录
+            controlAppSchoolResultEntry.setFreeTime(time * 60 * 1000);
+            controlAppSchoolResultEntry.setMarkStartFreeTime(current);
+            controlAppSchoolResultEntry.setSaveTime(current);
+            controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+        }
+        //2 添加用户操作记录
+        /*   ObjectId userId,
+                                     ObjectId appId,
+                                     ObjectId communityId,
+                                     int controlType,
+                                     long freeTime,
+                                     int open*/
+        ControlAppSchoolUserEntry controlAppSchoolUserEntry = new ControlAppSchoolUserEntry(userId,appId,communityId,Constant.ONE,time*60*1000,Constant.ONE);
+        controlAppSchoolUserDao.addEntry(controlAppSchoolUserEntry);
 
     }
+      /* ObjectId appId,
+            ObjectId communityId,
+            String packageName,
+            int controlType,
+            long freeTime,
+            long outSchoolCanUseTime,
+            int outSchoolRule,
+            long dateTime,
+            long markStartFreeTime,
+            long saveTime,
+            int type*/
+           /* ControlAppSchoolEntry controlAppSchoolEntry  = controlAppSchoolDao.getEntry(appId);
+            if(controlAppSchoolEntry==null){//无默认管控记录
+                //生成上课时间的默认管控配置
+                ControlAppSchoolEntry controlAppSchoolEntry1 = new ControlAppSchoolEntry(appId,appDetailEntry.getAppPackageName(),Constant.ONE,0,1);
+                controlAppSchoolDao.addEntry(controlAppSchoolEntry1);
+                controlAppSchoolEntry = controlAppSchoolEntry1;
+            }*/
 
     //关闭社群上学阶段应用自由时间
     public void deleteCommunuityFreeTime(){

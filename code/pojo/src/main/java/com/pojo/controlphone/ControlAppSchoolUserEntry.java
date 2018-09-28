@@ -18,6 +18,9 @@ import org.bson.types.ObjectId;
  * time                         时间戳                          tim
  */
 public class ControlAppSchoolUserEntry extends BaseDBObject {
+    public ControlAppSchoolUserEntry(){
+
+    }
     public ControlAppSchoolUserEntry(DBObject dbObject){
         setBaseEntry((BasicDBObject)dbObject);
     }
@@ -37,7 +40,7 @@ public class ControlAppSchoolUserEntry extends BaseDBObject {
                 .append("ftm",freeTime)
                 .append("ope",open)
                 .append("ti", System.currentTimeMillis())
-                .append("ir", Constant.ZERO);
+                .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
 

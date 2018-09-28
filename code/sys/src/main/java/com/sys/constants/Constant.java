@@ -1014,6 +1014,8 @@ public class Constant {
     public static final String COLLECTION_CONTROL_SHARE = "controlshare";
     //校管控社群应用状态表
     public static final String COLLECTION_CONTROL_APP_SCHOOL_RESULT="controlappschoolresult";
+    //校管控社群用户操作记录表
+    public static final String COLLECTION_CONTROL_APP_SCHOOL_USER="controlappschooluser";
     //校管控默认应用状态表
     public static final String COLLECTION_CONTROL_APP_SCHOOL="controlappschool";
 

@@ -229,12 +229,13 @@ public class RedDotService {
      */
     public void addThirdList(ObjectId id,ObjectId communityId,ObjectId userId,int type){
         List<ObjectId> sids = groupExamUserRecordDao.getStudentReceivedEntries(id);
-        List<ObjectId> pids = newVersionCommunityBindDao.getAllStudentBindEntries(communityId,sids);
-        List<ObjectId> objectIdList1 = virtualAndUserDao.getEntryListByCommunityId(sids);
+        List<ObjectId> objectIdList1 = virtualAndUserDao.getViEntryListByCommunityId(sids);
+        sids.addAll(objectIdList1);
+        List<ObjectId> pids = newVersionCommunityBindDao.getAllStudentBindEntries(communityId, sids);
         Set<ObjectId> set = new HashSet<ObjectId>();
         set.addAll(sids);
         set.addAll(pids);
-        set.addAll(objectIdList1);
+        //set.addAll(objectIdList1);
         set.remove(userId);
         List<ObjectId> uids = new ArrayList<ObjectId>();
         uids.addAll(set);

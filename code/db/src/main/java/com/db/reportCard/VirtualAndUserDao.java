@@ -76,6 +76,25 @@ public class VirtualAndUserDao extends BaseDao {
     }
 
     //查找
+    public List<ObjectId> getViEntryListByCommunityId(List<ObjectId> objectIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("vid",new BasicDBObject(Constant.MONGO_IN,objectIds))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_VIRTUAL_CONNECT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ObjectId> entryList = new ArrayList<ObjectId>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new VirtualAndUserEntry((BasicDBObject) obj).getUserId());
+            }
+        }
+        return entryList;
+    }
+
+    //查找
     public List<VirtualAndUserEntry> getUserIdList(List<ObjectId> objectIds) {
         BasicDBObject query = new BasicDBObject()
                 .append("vid",new BasicDBObject(Constant.MONGO_IN,objectIds))

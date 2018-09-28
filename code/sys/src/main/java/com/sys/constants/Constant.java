@@ -1010,8 +1010,14 @@ public class Constant {
 
     //管控学生数据缓存表
     public static final String COLLECTION_CONTROL_SIMPLE= "controlsimple";
-
+    //家管控分享
     public static final String COLLECTION_CONTROL_SHARE = "controlshare";
+    //校管控社群应用状态表
+    public static final String COLLECTION_CONTROL_APP_SCHOOL_RESULT="controlappschoolresult";
+    //校管控社群用户操作记录表
+    public static final String COLLECTION_CONTROL_APP_SCHOOL_USER="controlappschooluser";
+    //校管控默认应用状态表
+    public static final String COLLECTION_CONTROL_APP_SCHOOL="controlappschool";
 
     /*********************************后台管理*******************************************/
     //图片鉴黄和垃圾文本
@@ -1131,4 +1137,8 @@ public class Constant {
     public static final String COLLECTION_PHONES_IN_OUT_STORAGE_RECORD = "jxm_phones_in_out_storage_record";
     /*家校美手机项目表*/
     public static final String COLLECTION_PHONES_PROJECT = "jxm_phones_project";
+
+    /*************************************新版运营校管控*****************************************/
+    /*校管控*/
+    public static final String COLLECTION_SCHOOL_CONTROL_TIME = "jxm_school_control_time";
 }

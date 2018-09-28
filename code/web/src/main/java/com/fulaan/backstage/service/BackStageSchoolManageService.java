@@ -1,6 +1,7 @@
 package com.fulaan.backstage.service;
 
 import com.db.backstage.LogMessageDao;
+import com.db.backstage.SchoolControlTimeDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
@@ -15,12 +16,14 @@ import com.db.smalllesson.SmallLessonDao;
 import com.db.user.UserDao;
 import com.fulaan.backstage.dto.LogMessageDTO;
 import com.fulaan.backstage.dto.RoleJurisdictionSettingDto;
+import com.fulaan.backstage.dto.SchoolControlTimeDTO;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.jiaschool.dto.SchoolCommunityDTO;
 import com.fulaan.utils.HSSFUtils;
 import com.pojo.backstage.LogMessageType;
+import com.pojo.backstage.SchoolControlTimeEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.business.ModuleTimeEntry;
 import com.pojo.fcommunity.CommunityEntry;
@@ -87,6 +90,9 @@ public class BackStageSchoolManageService {
     private MineCommunityDao mineCommunityDao = new MineCommunityDao();
 
     private GroupDao groupDao = new GroupDao();
+
+    //新版校管控
+    private SchoolControlTimeDao schoolControlTimeDao = new SchoolControlTimeDao();
 
 
     public Map<String, Object> getSchoolList(int schoolType, String provincesName, String cityName, int page, int pageSize, String schoolName) {
@@ -649,5 +655,68 @@ public class BackStageSchoolManageService {
             }
         }
         return flage;
+    }
+
+    /**
+     * 校管控设置保存
+     */
+    public String saveSchoolControlSetting(Map map) {
+        String result = "";
+        if (map.get("id") == null) {
+            //新增
+            SchoolControlTimeEntry schoolControlEntry = new SchoolControlTimeEntry(
+                    map.get("type") == null ? null : Integer.parseInt(map.get("type").toString()),
+                    map.get("week") == null ? null : Integer.parseInt(map.get("week").toString()),
+                    map.get("dateFrom") == null ? "" : map.get("dateFrom").toString(),
+                    map.get("dateTo") == null ? "" : map.get("dateTo").toString(),
+                    map.get("schoolTimeFrom") == null ? "" : map.get("schoolTimeFrom").toString(),
+                    map.get("schoolTimeTo") == null ? "" : map.get("schoolTimeTo").toString(),
+                    map.get("bedTimeFrom") == null ? "" : map.get("bedTimeFrom").toString(),
+                    map.get("bedTimeTo") == null ? "" : map.get("bedTimeTo").toString(),
+                    map.get("schoolId") == null ? null : new ObjectId(map.get("schoolId").toString()),
+                    map.get("holidayName") == null ? "" : map.get("holidayName").toString()
+            );
+            result = schoolControlTimeDao.saveSchoolControlSetting(schoolControlEntry);
+        } else {
+            //修改
+            SchoolControlTimeEntry schoolControlEntry = new SchoolControlTimeEntry(
+                    map.get("id") == null ? null : new ObjectId(map.get("id").toString()),
+                    map.get("type") == null ? null : Integer.parseInt(map.get("type").toString()),
+                    map.get("week") == null ? null : Integer.parseInt(map.get("week").toString()),
+                    map.get("dateFrom") == null ? "" : map.get("dateFrom").toString(),
+                    map.get("dateTo") == null ? "" : map.get("dateTo").toString(),
+                    map.get("schoolTimeFrom") == null ? "" : map.get("schoolTimeFrom").toString(),
+                    map.get("schoolTimeTo") == null ? "" : map.get("schoolTimeTo").toString(),
+                    map.get("bedTimeFrom") == null ? "" : map.get("bedTimeFrom").toString(),
+                    map.get("bedTimeTo") == null ? "" : map.get("bedTimeTo").toString(),
+                    map.get("schoolId") == null ? null : new ObjectId(map.get("schoolId").toString()),
+                    map.get("holidayName") == null ? "" : map.get("holidayName").toString()
+            );
+            result = schoolControlTimeDao.saveSchoolControlSetting(schoolControlEntry);
+        }
+        return result;
+    }
+
+    /**
+     * 校管控列表查询
+     * 查询当前学校的管控设置列表展示
+     */
+    public List<SchoolControlTimeDTO> getEachSchoolControlSettingList(ObjectId schoolId) {
+        List<SchoolControlTimeDTO> schoolControlTimeDTOList = new ArrayList<SchoolControlTimeDTO>();
+        List<SchoolControlTimeEntry> schoolControlTimeEntryList = schoolControlTimeDao.getEachSchoolControlSettingList(schoolId);
+        for (SchoolControlTimeEntry entry : schoolControlTimeEntryList){
+            if (entry != null){
+                schoolControlTimeDTOList.add(new SchoolControlTimeDTO(entry));
+            }
+        }
+        return schoolControlTimeDTOList;
+    }
+
+    public String delSchoolControlSetting(Map map) {
+        return schoolControlTimeDao.delSchoolControlSetting(map);
+    }
+
+    public String getSchoolIdByManageUid(ObjectId userId) {
+        return schoolPersionDao.getSchoolIdByManageUid(userId);
     }
 }

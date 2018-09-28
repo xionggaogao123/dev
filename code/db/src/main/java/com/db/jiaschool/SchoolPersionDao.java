@@ -99,4 +99,16 @@ public class SchoolPersionDao extends BaseDao {
         int count = count(MongoFacroty.getAppDB(),Constant.COLLECTION_SCHOOL_PERSON,query);
         return count;
     }
+
+    public String getSchoolIdByManageUid(ObjectId userId) {
+        String schoolId = "";
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        query.append("uid",userId);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(),Constant.COLLECTION_SCHOOL_PERSON,query);
+        if (dbObject != null){
+            schoolId = new SchoolPersionEntry((BasicDBObject) dbObject).getSchoolId().toString();
+        }
+        return schoolId;
+    }
 }

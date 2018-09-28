@@ -203,10 +203,12 @@ public class BackStageSchoolManageController extends BaseController {
             respObj.setCode(Constant.SUCCESS_CODE);
             //当从学校管理点进去 会有schoolId，
             // 当从社群管理点进去，则没有，取当前管理员属于哪个学校
-            if (schoolId == ""){
-//                schoolId =
+            if (schoolId == "" || schoolId == null || "undefined".equals(schoolId)){
+                schoolId = backStageSchoolManageService.getSchoolIdByManageUid(getUserId());
+//                schoolId = backStageSchoolManageService.getSchoolIdByManageUid(new ObjectId("5ad453a43d4df940950b99e2"));
             }
             Map<String,Object> map = backStageSchoolManageService.getCommunityListBySchoolId(new ObjectId(schoolId),communityName,page,pageSize);
+            map.put("schoolId",schoolId);
             respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();

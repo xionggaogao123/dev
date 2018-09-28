@@ -715,4 +715,8 @@ public class BackStageSchoolManageService {
     public String delSchoolControlSetting(Map map) {
         return schoolControlTimeDao.delSchoolControlSetting(map);
     }
+
+    public String getSchoolIdByManageUid(ObjectId userId) {
+        return schoolPersionDao.getSchoolIdByManageUid(userId);
+    }
 }

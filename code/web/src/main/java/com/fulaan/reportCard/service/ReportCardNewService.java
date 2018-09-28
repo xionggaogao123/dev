@@ -2762,7 +2762,7 @@ public class ReportCardNewService {
             cell.setCellValue("考试Id");
 
             cell = row.createCell(2);
-            cell.setCellValue("用户姓名");
+            cell.setCellValue("学生姓名");
 
             /*cell = row.createCell(3);
             cell.setCellValue("用户学号");*/
@@ -2835,7 +2835,7 @@ public class ReportCardNewService {
             cell.setCellValue("考试Id");*/
 
             HSSFCell cell = row.createCell(0);
-            cell.setCellValue("用户姓名");
+            cell.setCellValue("学生姓名");
 
             /*cell = row.createCell(3);
             cell.setCellValue("用户学号");*/

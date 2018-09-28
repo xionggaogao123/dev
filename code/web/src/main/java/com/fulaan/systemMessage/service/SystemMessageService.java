@@ -446,7 +446,13 @@ public class SystemMessageService extends BaseService {
                 olist.add(dto6);
             }
         }
-        int count = appOperationDao.getEntryListByParentIdNum(ids,role);
+        int count = 0;
+        if (i == 0) {
+            count = appOperationDao.getEntryListByParentIdNum(ids);
+        } else {
+            count = appOperationDao.getEntryListByParentIdNum(ids,role);
+        }
+        
         //分页评论列表
         map2.put("list",olist);
         map2.put("count",count);

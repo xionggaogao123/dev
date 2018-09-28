@@ -235,6 +235,22 @@ public class AppNewOperationDao extends BaseDao {
                         query);
         return count;
     }
+    
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int getEntryListByParentIdNum(List<ObjectId> contactIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,contactIds))
+                .append("lev", 1)
+                .append("isr", 0);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_TOPIC_COMMENT,
+                        query);
+        return count;
+    }
 
     public int getAllEntryListByParentIdNum(List<ObjectId> contactIds) {
         BasicDBObject query = new BasicDBObject()

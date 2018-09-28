@@ -742,16 +742,17 @@ public class ExcellentCoursesService {
         //objectIdList1
         List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById4(objectIdList1);
         //获得学生所在社群
-        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
-        if(userId.equals(id)){//自己
-            //获得家长所在社群
-            objectIdList = communityService.getCommunitys3(id, 1, 100);
-        }else{//孩子
-            //获得学生所在社群
-           objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
-        }
-        //推荐名单
-        List<ExcellentCoursesEntry> coursesEntries = excellentCoursesDao.getOldEntryList(objectIdList, current);
+//        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+//        if(userId.equals(id)){//自己
+//            //获得家长所在社群
+//            objectIdList = communityService.getCommunitys3(id, 1, 100);
+//        }else{//孩子
+//            //获得学生所在社群
+//           objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
+//        }
+//        //推荐名单
+//        List<ExcellentCoursesEntry> coursesEntries = excellentCoursesDao.getOldEntryList(objectIdList, current);
+        List<ExcellentCoursesEntry> coursesEntries =new ArrayList<ExcellentCoursesEntry>();
         for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries2){
             if(excellentCoursesEntry.getEndTime()<current){
                 coursesEntries.add(excellentCoursesEntry);
@@ -764,7 +765,7 @@ public class ExcellentCoursesService {
 
             }else{
                 ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
-                dto.setIsBuy(0);
+                dto.setIsBuy(1);
                 dtos2.add(dto);
                 objectIdList2.add(excellentCoursesEntry.getID());
             }

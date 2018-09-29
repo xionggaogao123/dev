@@ -2682,7 +2682,7 @@ public class IndexPageService {
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject",dto8.getTitle());
                     ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178838126103aac1a705e.png");
-                    ob1.put("title","火热分享");
+                    ob1.put("title","热点话题");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","恭喜！您的留言被选为精选留言了！");
                     ob1.put("imageList",new ArrayList<Attachement>());

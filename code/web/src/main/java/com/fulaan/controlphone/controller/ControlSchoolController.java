@@ -99,4 +99,127 @@ public class ControlSchoolController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 关闭班级自由时间
+     */
+    @ApiOperation(value = "关闭班级自由时间", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/deleteCommunuityFreeTime")
+    @ResponseBody
+    public String deleteCommunuityFreeTime(@ApiParam(name = "communityId", required = true, value = "社群id") @RequestParam(value = "communityId") String communityId,
+                                       @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            controlSchoolPhoneService.deleteCommunuityFreeTime(new ObjectId(appId), new ObjectId(communityId), getUserId());
+            respObj.setMessage("关闭成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 设置放学防沉迷时间
+     */
+    @ApiOperation(value = "设置放学防沉迷时间", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/updateHomeAppTime")
+    @ResponseBody
+    public String updateHomeAppTime(@ApiParam(name = "communityId", required = true, value = "社群id") @RequestParam(value = "communityId") String communityId,
+                                           @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId,
+                                           @ApiParam(name = "freeTime", required = true, value = "自由时间") @RequestParam(value = "freeTime") int freeTime,
+                                           @ApiParam(name = "type", required = true, value = "类型") @RequestParam(value = "type") int type){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            controlSchoolPhoneService.updateHomeAppTime(new ObjectId(appId), new ObjectId(communityId), getUserId(),freeTime,type);
+            respObj.setMessage("设置放学防沉迷时间成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 查询应用的具体放学设置
+     */
+    @ApiOperation(value = "查询应用的具体放学设置", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectHomeAppList")
+    @ResponseBody
+    public String selectHomeAppList(@ApiParam(name = "communityId", required = true, value = "社群id") @RequestParam(value = "communityId") String communityId,
+                                    @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> result = controlSchoolPhoneService.selectHomeAppList(new ObjectId(appId), new ObjectId(communityId), getUserId());
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+    /**
+     * 学生登陆情况获得所有管控信息
+     */
+    @ApiOperation(value = "学生登陆情况获得所有管控信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getStudentLoginControl")
+    @ResponseBody
+    public String getStudentLoginControl(@ApiParam(name = "communityId", required = true, value = "社群id") @RequestParam(value = "communityId") String communityId,
+                                    @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> result = controlSchoolPhoneService.selectHomeAppList(new ObjectId(appId), new ObjectId(communityId), getUserId());
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 学生未登陆情况获得所有管控信息
+     */
+    @ApiOperation(value = "学生登陆情况获得所有管控信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getStudentUnLoginControl")
+    @ResponseBody
+    public String getStudentUnLoginControl(@ApiParam(name = "communityId", required = true, value = "社群id") @RequestParam(value = "communityId") String communityId,
+                                         @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> result = controlSchoolPhoneService.selectHomeAppList(new ObjectId(appId), new ObjectId(communityId), getUserId());
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
 }

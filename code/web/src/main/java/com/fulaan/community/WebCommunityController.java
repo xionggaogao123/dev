@@ -190,7 +190,11 @@ public class WebCommunityController extends BaseController {
                                    @ApiParam(name = "open", required = false, value = "社区是否公开标志位,0是不公开，1是公开") @RequestParam(required = false, defaultValue = "0") int open,
                                    @ApiParam(name = "userIds", required = false, value = "加入群组人员列表") @RequestParam(required = false, defaultValue = "") String userIds,
                                    @ApiParam(name = "uid", required = false, value = "社长") @RequestParam(required = false, defaultValue = "") String usid) throws Exception {
-        List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+        List<ObjectId> userList2 = MongoUtils.convertObjectIds(userIds);
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        set.addAll(userList2);
+        List<ObjectId> userList = new ArrayList<ObjectId>();
+        userList.addAll(set);
         Validate validate = detectCondition(name, desc, logo);
         if (!validate.isOk()) {
             return RespObj.FAILDWithErrorMsg(validate.getMessage());

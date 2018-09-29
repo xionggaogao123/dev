@@ -150,7 +150,7 @@ public class ControlSchoolPhoneService {
             appMap.put("controlType",2);
             if(controlAppSchoolResultEntry!=null){
                 appMap.put("controlType",controlAppSchoolResultEntry.getControlType());
-                appMap.put("freeTime",controlAppSchoolResultEntry.getFreeTime());
+                appMap.put("freeTime",controlAppSchoolResultEntry.getOutSchoolCanUseTime());
                 if(controlAppSchoolResultEntry.getOutSchoolRule()==0){
                     appMap.put("today",1);
                 }
@@ -188,7 +188,7 @@ public class ControlSchoolPhoneService {
             throw new Exception("应用已被删除!");
         }
         //1.获取社群状态并添加记录
-        ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ZERO,communityId,appId);
+        ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ONE,communityId,appId);
         long current = System.currentTimeMillis();
         if(controlAppSchoolResultEntry==null){
             //无记录添加新纪录
@@ -204,48 +204,121 @@ public class ControlSchoolPhoneService {
             controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
         }
         //2 添加用户操作记录
-        /*   ObjectId userId,
-                                     ObjectId appId,
-                                     ObjectId communityId,
-                                     int controlType,
-                                     long freeTime,
-                                     int open*/
         ControlAppSchoolUserEntry controlAppSchoolUserEntry = new ControlAppSchoolUserEntry(userId,appId,communityId,Constant.ONE,time*60*1000,Constant.ONE);
         controlAppSchoolUserDao.addEntry(controlAppSchoolUserEntry);
 
     }
-      /* ObjectId appId,
-            ObjectId communityId,
-            String packageName,
-            int controlType,
-            long freeTime,
-            long outSchoolCanUseTime,
-            int outSchoolRule,
-            long dateTime,
-            long markStartFreeTime,
-            long saveTime,
-            int type*/
-           /* ControlAppSchoolEntry controlAppSchoolEntry  = controlAppSchoolDao.getEntry(appId);
-            if(controlAppSchoolEntry==null){//无默认管控记录
-                //生成上课时间的默认管控配置
-                ControlAppSchoolEntry controlAppSchoolEntry1 = new ControlAppSchoolEntry(appId,appDetailEntry.getAppPackageName(),Constant.ONE,0,1);
-                controlAppSchoolDao.addEntry(controlAppSchoolEntry1);
-                controlAppSchoolEntry = controlAppSchoolEntry1;
-            }*/
 
     //关闭社群上学阶段应用自由时间
-    public void deleteCommunuityFreeTime(){
-
+    public void deleteCommunuityFreeTime(ObjectId appId,ObjectId communityId,ObjectId userId)throws Exception{
+        AppDetailEntry appDetailEntry = appDetailDao.findEntryById(appId);
+        if(appDetailEntry==null){
+            throw new Exception("应用已被删除!");
+        }
+        //1.获取社群状态并添加记录
+        ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ONE,communityId,appId);
+        long current = System.currentTimeMillis();
+        if(controlAppSchoolResultEntry==null){
+            //无记录添加新纪录
+            ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                    appId,communityId,appDetailEntry.getAppPackageName(),Constant.ONE,0,
+                    Constant.ZERO,Constant.ZERO,Constant.ZERO,current,current,Constant.ONE);
+            controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+        }else{
+            //有记录，更新记录
+            controlAppSchoolResultEntry.setFreeTime(0);
+            controlAppSchoolResultEntry.setSaveTime(current);
+            controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+        }
+        //2 添加用户操作记录
+        ControlAppSchoolUserEntry controlAppSchoolUserEntry = new ControlAppSchoolUserEntry(userId,appId,communityId,Constant.ONE,0,Constant.ZERO);
+        controlAppSchoolUserDao.addEntry(controlAppSchoolUserEntry);
     }
 
     //查询社群放学阶段应用某个设置列表
-    public void selectHomeAppList(){
+    public Map<String,Object> selectHomeAppList(ObjectId appId,ObjectId communityId,ObjectId userId)throws Exception{
+        Map<String,Object> map = new HashMap<String, Object>();
+        AppDetailEntry appDetailEntry = appDetailDao.findEntryById(appId);
+        if(appDetailEntry==null){
+            throw new Exception("应用已被删除!");
+        }
+        List<Integer> integers = new ArrayList<Integer>();
+        integers.add(1);
+        integers.add(0);
+        integers.add(6);
+        //1.获取社群状态并添加记录
+        List<ControlAppSchoolResultEntry> controlAppSchoolResultEntrys = controlAppSchoolResultDao.getEntryList(appId,communityId,integers);
+        Map<String,Object> dto2 = new HashMap<String, Object>();
+        dto2.put("type",0);
+        dto2.put("freeTime",0);
+        long current = System.currentTimeMillis();
+        String str = DateTimeUtils.getLongToStrTimeTwo(current);
+        long startNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        int week = getWeek(startNum);
+        Map<String,Object> dto3 = null;
+        for(ControlAppSchoolResultEntry controlAppSchoolResultEntry:controlAppSchoolResultEntrys){
+            if(controlAppSchoolResultEntry.getOutSchoolRule()==1){//1-5
+                Map<String,Object> dto = new HashMap<String, Object>();
+                dto.put("type",controlAppSchoolResultEntry.getOutSchoolRule());
+                dto.put("freeTime",controlAppSchoolResultEntry.getOutSchoolCanUseTime()/60000);
+                map.put("one",dto);
+                if(week<6){
+                    dto2.put("type",controlAppSchoolResultEntry.getOutSchoolRule());
+                    dto2.put("freeTime",controlAppSchoolResultEntry.getOutSchoolCanUseTime()/60000);
+                }
+            }
+            if(controlAppSchoolResultEntry.getOutSchoolRule()==6){//6-7
+                Map<String,Object> dto = new HashMap<String, Object>();
+                dto.put("type",controlAppSchoolResultEntry.getOutSchoolRule());
+                dto.put("freeTime",controlAppSchoolResultEntry.getOutSchoolCanUseTime()/60000);
+                map.put("six",dto);
+                if(week>5){
+                    dto2.put("type",controlAppSchoolResultEntry.getOutSchoolRule());
+                    dto2.put("freeTime",controlAppSchoolResultEntry.getOutSchoolCanUseTime()/60000);
+                }
+            }
 
+            if(controlAppSchoolResultEntry.getOutSchoolRule()==0){
+                if(controlAppSchoolResultEntry.getDateTime()==startNum){//仅当天
+                    dto3 = new HashMap<String, Object>();
+                }
+            }
+
+        }
+        if(dto3!=null){
+            dto2=dto3;
+        }
+        map.put("today",dto2);
+        return map;
     }
 
     //设置社群放学阶段应用
-    public void updateHomeAppTime(){
-
+    public void updateHomeAppTime(ObjectId appId,ObjectId communityId,ObjectId userId,int time,int type)throws Exception{//type =1 type=6  type=0
+        AppDetailEntry appDetailEntry = appDetailDao.findEntryById(appId);
+        if(appDetailEntry==null){
+            throw new Exception("应用已被删除!");
+        }
+        //1.获取社群状态并添加记录
+        ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getHomeEntry(Constant.ZERO, communityId, appId, type);
+        long current = System.currentTimeMillis();
+        String str = DateTimeUtils.getLongToStrTimeTwo(current);
+        long startNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        if(controlAppSchoolResultEntry==null){
+            //无记录添加新纪录
+            ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                    appId,communityId,appDetailEntry.getAppPackageName(),Constant.ONE,0,
+                    time*60*1000,type,startNum,current,current,Constant.ZERO);
+            controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+        }else{
+            //有记录，更新记录
+            controlAppSchoolResultEntry.setOutSchoolCanUseTime(time*60*1000);
+            controlAppSchoolResultEntry.setDateTime(startNum);
+            controlAppSchoolResultEntry.setSaveTime(current);
+            controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+        }
+        //2 添加用户操作记录
+        ControlAppSchoolUserEntry controlAppSchoolUserEntry = new ControlAppSchoolUserEntry(userId,appId,communityId,Constant.ZERO,time*60*1000,Constant.ONE);
+        controlAppSchoolUserDao.addEntry(controlAppSchoolUserEntry);
     }
 
 

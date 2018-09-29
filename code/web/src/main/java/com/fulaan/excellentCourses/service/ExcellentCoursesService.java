@@ -1716,6 +1716,13 @@ public class ExcellentCoursesService {
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
             excellentCoursesDao.addEntry(excellentCoursesEntry);
+
+            //加入社群
+            List<ObjectId> uids = new ArrayList<ObjectId>();
+            uids.add(parentId);
+            Map<ObjectId,ObjectId> map = new HashMap<ObjectId, ObjectId>();
+            map.put(parentId,userId);
+            inviteLessonMember(id, uids,map);
             return "购买成功";
         }else{
             throw  new Exception("订单信息不存在！");
@@ -2437,6 +2444,37 @@ public class ExcellentCoursesService {
      * 课程中心
      */
     public Map<String,Object> myClassList(ObjectId userId,String subjectId,int priceType,int persionType,int timeType,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        long current = System.currentTimeMillis();
+        NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if(newVersionUserRoleEntry.getNewRole()==3 || newVersionUserRoleEntry.getNewRole()==0){//家长
+            //获得家长所在社群
+            objectIdList = communityService.getCommunitys3(userId, 1, 100);
+        }else{//学生
+            //获得学生所在社群
+            objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
+        }
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getAllEntryList(subjectId,priceType,persionType,timeType,page,pageSize,current,objectIdList);
+        int count = excellentCoursesDao.selectCount(subjectId,current,objectIdList);
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
+            if(excellentCoursesEntry.getOpen()==1){
+                List<ObjectId> newList = new ArrayList<ObjectId>();
+                newList.addAll(objectIdList);
+                newList.removeAll(excellentCoursesEntry.getCommunityIdList());
+                if(objectIdList.size()!=newList.size()){//推荐
+                    excellentCoursesEntry.setOpen(0);
+                }
+            }
+            dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));
+        }
+        map.put("list", dtos);
+        map.put("count", count);
+        return map;
+    }
+    //智能排序
+    public Map<String,Object> myNewClassList(ObjectId userId,String subjectId,int priceType,int persionType,int timeType,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         long current = System.currentTimeMillis();
         NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);

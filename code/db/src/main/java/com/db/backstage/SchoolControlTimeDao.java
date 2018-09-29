@@ -50,4 +50,23 @@ public class SchoolControlTimeDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_CONTROL_TIME,query,updateValue);
         return map.get("id").toString();
     }
+
+    /**
+     * 校管控列表查询
+     * 系统默认管控设置列表展示
+     */
+    public List<SchoolControlTimeEntry> getDefaultSchoolControlSettingList() {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("schoolId",null);
+
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(),Constant.COLLECTION_SCHOOL_CONTROL_TIME,query);
+        List<SchoolControlTimeEntry> entryList = new ArrayList<SchoolControlTimeEntry>();
+        for (DBObject dbObject : dbObjectList){
+            if (dbObject != null){
+                entryList.add(new SchoolControlTimeEntry(dbObject));
+            }
+        }
+        return entryList;
+    }
 }

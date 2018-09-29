@@ -119,7 +119,7 @@ public class SchoolControlTimeEntry extends BaseDBObject {
         return getSimpleStringValue("bedTimeTo");
     }
     public String getSchoolId(){
-        return getSimpleObjecIDValue("schoolId").toString();
+        return getSimpleObjecIDValue("schoolId") == null ? "": getSimpleObjecIDValue("schoolId").toString();
     }
     public String getHolidayName(){
         return getSimpleStringValue("holidayName");

@@ -719,4 +719,19 @@ public class BackStageSchoolManageService {
     public String getSchoolIdByManageUid(ObjectId userId) {
         return schoolPersionDao.getSchoolIdByManageUid(userId);
     }
+
+    /**
+     * 校管控列表查询
+     * 系统默认管控设置列表展示
+     */
+    public List<SchoolControlTimeDTO> getDefaultSchoolControlSettingList() {
+        List<SchoolControlTimeDTO> schoolControlTimeDTOList = new ArrayList<SchoolControlTimeDTO>();
+        List<SchoolControlTimeEntry> schoolControlTimeEntryList = schoolControlTimeDao.getDefaultSchoolControlSettingList();
+        for (SchoolControlTimeEntry entry : schoolControlTimeEntryList){
+            if (entry != null){
+                schoolControlTimeDTOList.add(new SchoolControlTimeDTO(entry));
+            }
+        }
+        return schoolControlTimeDTOList;
+    }
 }

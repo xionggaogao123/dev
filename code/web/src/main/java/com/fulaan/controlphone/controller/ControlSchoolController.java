@@ -1,6 +1,7 @@
 package com.fulaan.controlphone.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.controlphone.service.ControlSchoolPhoneService;
 import com.sys.constants.Constant;
@@ -184,12 +185,11 @@ public class ControlSchoolController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getStudentLoginControl")
     @ResponseBody
-    public String getStudentLoginControl(@ApiParam(name = "communityId", required = true, value = "社群id") @RequestParam(value = "communityId") String communityId,
-                                    @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId){
+    public String getStudentLoginControl(){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> result = controlSchoolPhoneService.selectHomeAppList(new ObjectId(appId), new ObjectId(communityId), getUserId());
+            Map<String,Object> result = controlSchoolPhoneService.getNewAllSchoolMessageForSon(getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -202,18 +202,18 @@ public class ControlSchoolController extends BaseController {
     /**
      * 学生未登陆情况获得所有管控信息
      */
+    @SessionNeedless
     @ApiOperation(value = "学生登陆情况获得所有管控信息", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getStudentUnLoginControl")
     @ResponseBody
-    public String getStudentUnLoginControl(@ApiParam(name = "communityId", required = true, value = "社群id") @RequestParam(value = "communityId") String communityId,
-                                         @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId){
+    public String getStudentUnLoginControl(){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> result = controlSchoolPhoneService.selectHomeAppList(new ObjectId(appId), new ObjectId(communityId), getUserId());
+            Map<String,Object> result = controlSchoolPhoneService.getNewSimpleMessageForSon();
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

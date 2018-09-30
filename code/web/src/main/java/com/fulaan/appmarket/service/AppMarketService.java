@@ -4,6 +4,7 @@ import com.db.appmarket.AppDetailCommentDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.appmarket.AppDetailStarStatisticDao;
 import com.db.backstage.JxmAppVersionDao;
+import com.db.controlphone.ControlAppSchoolDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolAppDao;
 import com.fulaan.apkForParse.apkResolverParse.entity.ApkInfo;
@@ -22,6 +23,7 @@ import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appmarket.AppDetailStarStatisticEntry;
 import com.pojo.backstage.JxmAppVersionEntry;
 import com.pojo.backstage.LogMessageType;
+import com.pojo.controlphone.ControlAppSchoolEntry;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.jiaschool.SchoolAppEntry;
@@ -61,6 +63,8 @@ public class AppMarketService {
     private BackStageService backStageService = new BackStageService();
 
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
+
+    private ControlAppSchoolDao controlAppSchoolDao = new ControlAppSchoolDao();
     @Autowired
     private UserService userService;
 
@@ -125,6 +129,28 @@ public class AppMarketService {
         List<AppDetailEntry> appDetailEntries = appDetailDao.getEntries();
         for (AppDetailEntry entry : appDetailEntries) {
             detailDTOs.add(new AppDetailDTO(entry));
+        }
+        return detailDTOs;
+    }
+
+    public List<AppDetailDTO> getNewAllAppDetails() {
+        List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
+        List<AppDetailEntry> appDetailEntries = appDetailDao.getNewEntries();
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        for (AppDetailEntry entry : appDetailEntries) {
+            detailDTOs.add(new AppDetailDTO(entry));
+            oids.add(entry.getID());
+        }
+        Map<String,ControlAppSchoolEntry> map = controlAppSchoolDao.getEntryMap(oids);
+        for(AppDetailDTO dto : detailDTOs){
+            ControlAppSchoolEntry controlAppSchoolEntry = map.get(dto.getId());
+            if(controlAppSchoolEntry!=null){
+                dto.setOrder(controlAppSchoolEntry.getControlType());
+                dto.setAppSize(controlAppSchoolEntry.getFreeTime() / 60000);
+            }else{
+                dto.setOrder(1);
+                dto.setAppSize(0);
+            }
         }
         return detailDTOs;
     }

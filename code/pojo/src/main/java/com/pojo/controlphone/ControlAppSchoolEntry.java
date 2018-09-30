@@ -15,7 +15,7 @@ import org.bson.types.ObjectId;
  * appPackageName           包名                apn
  * controlType              管控类型            cty     1 受管控  2 不受管控
  * freeTime                 开放时间            ftm      （毫秒值）
- * type                     生效阶段            typ     0 放学后  1 上课中
+ * type                     生效阶段            typ     0 放学后
  *
  */
 public class ControlAppSchoolEntry extends BaseDBObject {

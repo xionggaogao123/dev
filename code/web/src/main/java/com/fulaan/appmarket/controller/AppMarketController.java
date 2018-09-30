@@ -9,6 +9,7 @@ import com.fulaan.appmarket.dto.AppDetailCommentDTO;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.base.BaseController;
+import com.fulaan.controlphone.service.ControlSchoolPhoneService;
 import com.fulaan.util.QRUtils;
 import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.sys.constants.Constant;
@@ -37,6 +38,8 @@ public class AppMarketController extends BaseController{
 
     @Autowired
     private AppMarketService appMarketService;
+    @Autowired
+    private ControlSchoolPhoneService controlSchoolPhoneService;
 
     private LoginTokenDao loginTokenDao=new LoginTokenDao();
 
@@ -134,6 +137,24 @@ public class AppMarketController extends BaseController{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             List<AppDetailDTO> appDetailDTOs=appMarketService.getAllAppDetails();
+            respObj.setMessage(appDetailDTOs);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "查询后台的所有应用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getNewAllAppDetails")
+    @ResponseBody
+    public RespObj getNewAllAppDetails(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            List<AppDetailDTO> appDetailDTOs=appMarketService.getNewAllAppDetails();
             respObj.setMessage(appDetailDTOs);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
@@ -328,7 +349,31 @@ public class AppMarketController extends BaseController{
 
     }
 
-
+    /**
+     * 设置默认应用管控时间
+     */
+    @SessionNeedless
+    @ApiOperation(value = "设置默认应用管控时间", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/updateAppControlTime")
+    @ResponseBody
+    public String updateAppControlTime(@ApiParam(name = "time", required = true, value = "时间（分钟）") @RequestParam(value = "time") int time,
+                                       @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId,
+                                       @ApiParam(name = "type", required = true, value = "类型") @RequestParam(value = "type") int type){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            controlSchoolPhoneService.updateAppControlTime(new ObjectId(appId),time,type);
+            respObj.setMessage("修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
 
 
 

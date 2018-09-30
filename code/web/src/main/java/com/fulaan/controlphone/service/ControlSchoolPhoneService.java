@@ -12,10 +12,7 @@ import com.db.jiaschool.SchoolCommunityDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.community.dto.CommunityDTO;
-import com.fulaan.controlphone.dto.ControlAppUserDTO;
-import com.fulaan.controlphone.dto.ControlPhoneDTO;
-import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
-import com.fulaan.controlphone.dto.PhoneTimeDTO;
+import com.fulaan.controlphone.dto.*;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.backstage.SchoolControlTimeEntry;
@@ -283,8 +280,14 @@ public class ControlSchoolPhoneService {
         if(schoolControlTimeEntry!=null){
             objectMap.put("schoolTime",schoolControlTimeEntry.getSchoolTimeFrom()+"-"+schoolControlTimeEntry.getSchoolTimeTo());
             objectMap.put("homeTime",schoolControlTimeEntry.getSchoolTimeTo()+"-"+schoolControlTimeEntry.getBedTimeFrom());
-            long ssm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
-            long sem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
+            long ssm = dateTime;
+            if(schoolControlTimeEntry.getSchoolTimeFrom()!=null&& !schoolControlTimeEntry.getSchoolTimeFrom().equals("")){
+                ssm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
+            }
+            long sem = dateTime;
+            if(schoolControlTimeEntry.getSchoolTimeTo()!=null&& !schoolControlTimeEntry.getSchoolTimeTo().equals("")){
+                sem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
+            }
             long bsm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getBedTimeFrom(), "yyyy-MM-dd HH:mm");
             long bem = DateTimeUtils.getStrToLongTime(string+" 23:59", "yyyy-MM-dd HH:mm");
             objectMap.put("type",2);
@@ -301,8 +304,14 @@ public class ControlSchoolPhoneService {
             if(schoolControlTimeEntry2!=null){
                 objectMap.put("schoolTime",schoolControlTimeEntry2.getSchoolTimeFrom()+"-"+schoolControlTimeEntry2.getSchoolTimeTo());
                 objectMap.put("homeTime",schoolControlTimeEntry2.getSchoolTimeTo()+"-"+schoolControlTimeEntry2.getBedTimeFrom());
-                long ssm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
-                long sem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
+                long ssm = dateTime;
+                if(schoolControlTimeEntry.getSchoolTimeFrom()!=null&& !schoolControlTimeEntry.getSchoolTimeFrom().equals("")){
+                    ssm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
+                }
+                long sem = dateTime;
+                if(schoolControlTimeEntry.getSchoolTimeTo()!=null&& !schoolControlTimeEntry.getSchoolTimeTo().equals("")){
+                    sem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
+                }
                 long bsm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getBedTimeFrom(), "yyyy-MM-dd HH:mm");
                 long bem = DateTimeUtils.getStrToLongTime(string+" 23:59", "yyyy-MM-dd HH:mm");
                 objectMap.put("type",2);
@@ -521,41 +530,25 @@ public class ControlSchoolPhoneService {
         // ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getEntry(1);
         int week = getWeek(zero);
         //获取默认校管控
-        List<PhoneTimeDTO> phoneTimeDTOs = new ArrayList<PhoneTimeDTO>();
+        List<PhoneSchoolTimeDTO> phoneTimeDTOs = new ArrayList<PhoneSchoolTimeDTO>();
         this.getAppControlTime(current,dateNowStr,week,zero,map,phoneTimeDTOs);
         map.put("freeTime",-1);
-
-
-        List<ControlSchoolTimeEntry> entryList = controlSchoolTimeDao.getAllEntryList();
-        for(ControlSchoolTimeEntry ctm : entryList){
-            PhoneTimeDTO phoneTimeDTO = new PhoneTimeDTO();
-            if(ctm.getType()==1){
-                phoneTimeDTO.setCurrentTime(ctm.getWeek()+"");
-            }else if(ctm.getType()==2){
-                phoneTimeDTO.setCurrentTime(ctm.getDataTime().substring(5,10));
-            }else if(ctm.getType()==3){
-                phoneTimeDTO.setCurrentTime(ctm.getDataTime());
-            }
-
-            phoneTimeDTO.setClassTime(ctm.getStartTime()+"-"+ctm.getEndTime());
-            phoneTimeDTO.setStart("");
-            phoneTimeDTO.setEnd("");
-            phoneTimeDTO.setType(ctm.getType());
-            phoneTimeDTOs.add(phoneTimeDTO);
-        }
         map.put("controlList",phoneTimeDTOs);
         return map;
     }
 
 
     //获得某个社群的校管控时间
-    public void getAppControlTime(long current,String string,int week,long dateTime,Map<String,Object> objectMap,List<PhoneTimeDTO> phoneTimeDTOs){
+    public void getAppControlTime(long current,String string,int week,long dateTime,Map<String,Object> objectMap,List<PhoneSchoolTimeDTO> phoneTimeDTOs){
         Map<String,SchoolControlTimeEntry>  map = new HashMap<String, SchoolControlTimeEntry>();
         //查询默认管控
         List<SchoolControlTimeEntry> schoolControlTimeEntryList2 = schoolControlTimeDao.getEachSchoolControlSettingList(null);
         for (SchoolControlTimeEntry entry : schoolControlTimeEntryList2){
+            PhoneSchoolTimeDTO phoneTimeDTO = new PhoneSchoolTimeDTO();
             if(entry.getType()==1){
                 map.put(entry.getWeek()+"",entry);
+                phoneTimeDTO.setCurrentTime(entry.getWeek()+"");
+                phoneTimeDTO.setType(1);
             }else if(entry.getType()==2){
                 long stm = DateTimeUtils.getStrToLongTime(entry.getDateFrom(), "yyyy-MM-dd");
                 long etm = DateTimeUtils.getStrToLongTime(entry.getDateTo(), "yyyy-MM-dd");
@@ -568,15 +561,29 @@ public class ControlSchoolPhoneService {
                 if(etm==dateTime){
                     map.put(dateTime+"",entry);
                 }
+                phoneTimeDTO.setCurrentTime(entry.getDateFrom()+"="+entry.getDateTo());
+                phoneTimeDTO.setType(3);
             }
+
+            phoneTimeDTO.setClassTime(entry.getSchoolTimeFrom()+"-"+entry.getSchoolTimeTo());
+            phoneTimeDTO.setBedTime(entry.getBedTimeFrom()+"-"+entry.getBedTimeTo());
+            phoneTimeDTO.setStart("");
+            phoneTimeDTO.setEnd("");
+            phoneTimeDTOs.add(phoneTimeDTO);
         }
         //计算生效的结果
         SchoolControlTimeEntry schoolControlTimeEntry = map.get("0");
         if(schoolControlTimeEntry!=null){
             objectMap.put("schoolTime",schoolControlTimeEntry.getSchoolTimeFrom()+"-"+schoolControlTimeEntry.getSchoolTimeTo());
             objectMap.put("bedTime",schoolControlTimeEntry.getBedTimeFrom()+"-"+schoolControlTimeEntry.getBedTimeTo());
-            long ssm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
-            long sem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
+            long ssm = dateTime;
+            if(schoolControlTimeEntry.getSchoolTimeFrom()!=null&& !schoolControlTimeEntry.getSchoolTimeFrom().equals("")){
+                ssm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
+            }
+            long sem = dateTime;
+            if(schoolControlTimeEntry.getSchoolTimeTo()!=null&& !schoolControlTimeEntry.getSchoolTimeTo().equals("")){
+                sem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
+            }
             objectMap.put("isControl",false);
             if(current>ssm && current<sem){//上课时间 管控
                 objectMap.put("isControl",true);
@@ -587,8 +594,14 @@ public class ControlSchoolPhoneService {
             if(schoolControlTimeEntry2!=null){
                 objectMap.put("schoolTime",schoolControlTimeEntry2.getSchoolTimeFrom()+"-"+schoolControlTimeEntry2.getSchoolTimeTo());
                 objectMap.put("homeTime",schoolControlTimeEntry2.getBedTimeFrom()+"-"+schoolControlTimeEntry2.getBedTimeTo());
-                long ssm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
-                long sem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
+                long ssm = dateTime;
+                if(schoolControlTimeEntry.getSchoolTimeFrom()!=null&& !schoolControlTimeEntry.getSchoolTimeFrom().equals("")){
+                    ssm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
+                }
+                long sem = dateTime;
+                if(schoolControlTimeEntry.getSchoolTimeTo()!=null&& !schoolControlTimeEntry.getSchoolTimeTo().equals("")){
+                    sem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
+                }
                 objectMap.put("isControl",false);
                 if(current>ssm && current<sem){//上课时间，跳1
                     objectMap.put("isControl",true);
@@ -923,6 +936,24 @@ public class ControlSchoolPhoneService {
         }
         return new ControlSchoolTimeDTO(controlSchoolTimeEntry);
     }
+
+    //修改默认应用管控
+    public void updateAppControlTime(ObjectId appId,int time,int type)throws Exception{
+        AppDetailEntry appDetailEntry = appDetailDao.findEntryById(appId);
+        if(appDetailEntry==null){
+            throw new Exception("应用已被删除!");
+        }
+        ControlAppSchoolEntry controlAppSchoolEntry = controlAppSchoolDao.getEntry(appId);
+        if(controlAppSchoolEntry==null){
+            ControlAppSchoolEntry controlAppSchoolEntry1 = new ControlAppSchoolEntry(appId,appDetailEntry.getAppPackageName(),type,time*60000,Constant.ZERO);
+            controlAppSchoolDao.addEntry(controlAppSchoolEntry1);
+        }else{
+            controlAppSchoolEntry.setControlType(type);
+            controlAppSchoolEntry.setFreeTime(time*60000);
+            controlAppSchoolDao.addEntry(controlAppSchoolEntry);
+        }
+    }
+
 
 
     /**

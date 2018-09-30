@@ -52,4 +52,23 @@ public class ControlAppSchoolDao extends BaseDao {
         }
         return map;
     }
+
+    public Map<String,ControlAppSchoolEntry> getEntryMap(List<ObjectId> appIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("aid", new BasicDBObject(Constant.MONGO_IN, appIds))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_APP_SCHOOL,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        Map<String,ControlAppSchoolEntry> map = new HashMap<String, ControlAppSchoolEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                ControlAppSchoolEntry controlAppSchoolEntry = new ControlAppSchoolEntry((BasicDBObject) obj);
+                map.put(controlAppSchoolEntry.getAppId().toString(), controlAppSchoolEntry);
+            }
+        }
+        return map;
+    }
 }

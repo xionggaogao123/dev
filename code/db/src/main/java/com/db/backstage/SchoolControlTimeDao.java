@@ -5,7 +5,6 @@ import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.backstage.SchoolControlTimeEntry;
-import com.pojo.base.BaseDBObject;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -28,6 +27,21 @@ public class SchoolControlTimeDao extends BaseDao {
         BasicDBObject query = new BasicDBObject();
         query.append("isr", Constant.ZERO);
         query.append("schoolId",schoolId);
+
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(),Constant.COLLECTION_SCHOOL_CONTROL_TIME,query);
+        List<SchoolControlTimeEntry> entryList = new ArrayList<SchoolControlTimeEntry>();
+        for (DBObject dbObject : dbObjectList){
+            if (dbObject != null){
+                entryList.add(new SchoolControlTimeEntry(dbObject));
+            }
+        }
+        return entryList;
+    }
+
+    public List<SchoolControlTimeEntry> getMoreSchoolControlSettingList(List<ObjectId> schoolIds) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("schoolId",new BasicDBObject(Constant.MONGO_IN,schoolIds));
 
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(),Constant.COLLECTION_SCHOOL_CONTROL_TIME,query);
         List<SchoolControlTimeEntry> entryList = new ArrayList<SchoolControlTimeEntry>();

@@ -97,8 +97,11 @@ public class AppDetailDao extends BaseDao {
 
     public List<AppDetailEntry> getNoThreeAppList(){
         List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
+        List<Integer> integers = new ArrayList<Integer>();
+        integers.add(1);
+        integers.add(0);
         BasicDBObject query=new BasicDBObject()
-                .append("ir",Constant.ZERO).append("ty",new BasicDBObject(Constant.MONGO_NE,Constant.TWO));
+                .append("ir",Constant.ZERO).append("ty",new BasicDBObject(Constant.MONGO_IN,integers));
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_MARKET_DETAIL,
                 query,Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

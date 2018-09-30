@@ -99,4 +99,62 @@ public class ControlAppSchoolResultDao extends BaseDao {
         }
         return map;
     }
+
+    //查找社区应用使用情况列表
+    public Map<String,ControlAppSchoolResultEntry> getAllEntryListByCommunityId(List<ObjectId> appIds,List<ObjectId> communityIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,communityIds))
+                .append("aid",new BasicDBObject(Constant.MONGO_IN,appIds))
+                .append("isr", 0); // 未删除
+
+
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_APP_SCHOOL_RESULT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        Map<String,ControlAppSchoolResultEntry> map = new HashMap<String, ControlAppSchoolResultEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = new ControlAppSchoolResultEntry((BasicDBObject) obj);
+                if(controlAppSchoolResultEntry.getType()==1){//管控内
+                    ControlAppSchoolResultEntry controlAppSchoolResultEntry1=  map.get(controlAppSchoolResultEntry.getAppId().toString() + "*" + controlAppSchoolResultEntry.getType() + "*");
+                    if(controlAppSchoolResultEntry1==null){
+                        map.put(controlAppSchoolResultEntry.getAppId().toString()+"*"+controlAppSchoolResultEntry.getType()+"*",controlAppSchoolResultEntry);
+                    }else{
+                        if(controlAppSchoolResultEntry.getSaveTime()>controlAppSchoolResultEntry1.getSaveTime()){
+                            map.put(controlAppSchoolResultEntry.getAppId().toString()+"*"+controlAppSchoolResultEntry.getType()+"*",controlAppSchoolResultEntry);
+                        }
+                    }
+
+                }else{
+                    if(controlAppSchoolResultEntry.getOutSchoolRule()==0){
+                        ControlAppSchoolResultEntry controlAppSchoolResultEntry1=  map.get(controlAppSchoolResultEntry.getAppId().toString()+"*"+controlAppSchoolResultEntry.getType()+"*"+controlAppSchoolResultEntry.getDateTime());
+                        if(controlAppSchoolResultEntry1==null){
+                            map.put(controlAppSchoolResultEntry.getAppId().toString()+"*"+controlAppSchoolResultEntry.getType()+"*"+controlAppSchoolResultEntry.getDateTime(),controlAppSchoolResultEntry);
+                        }else{
+                            if(controlAppSchoolResultEntry.getSaveTime()>controlAppSchoolResultEntry1.getSaveTime()){
+                                map.put(controlAppSchoolResultEntry.getAppId().toString()+"*"+controlAppSchoolResultEntry.getType()+"*"+controlAppSchoolResultEntry.getDateTime(),controlAppSchoolResultEntry);
+                            }
+
+                        }
+
+                    }else{
+                        ControlAppSchoolResultEntry controlAppSchoolResultEntry1=  map.get(controlAppSchoolResultEntry.getAppId().toString()+"*"+controlAppSchoolResultEntry.getType()+"*"+controlAppSchoolResultEntry.getOutSchoolRule());
+                        if(controlAppSchoolResultEntry1==null){
+                            map.put(controlAppSchoolResultEntry.getAppId().toString()+"*"+controlAppSchoolResultEntry.getType()+"*"+controlAppSchoolResultEntry.getOutSchoolRule(),controlAppSchoolResultEntry);
+                        }else {
+                            if (controlAppSchoolResultEntry.getSaveTime() > controlAppSchoolResultEntry1.getSaveTime()) {
+                                map.put(controlAppSchoolResultEntry.getAppId().toString() + "*" + controlAppSchoolResultEntry.getType() + "*" + controlAppSchoolResultEntry.getOutSchoolRule(), controlAppSchoolResultEntry);
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+        return map;
+    }
 }

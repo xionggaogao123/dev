@@ -87,11 +87,18 @@ public class ControlSchoolController extends BaseController {
     @ResponseBody
     public String addCommunityFreeTime(@ApiParam(name = "communityId", required = true, value = "社群id") @RequestParam(value = "communityId") String communityId,
                                        @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId,
-                                       @ApiParam(name = "freeTime", required = true, value = "自由时间") @RequestParam(value = "freeTime") int freeTime){
+                                       @ApiParam(name = "date", required = true, value = "应用id") @RequestParam(value = "date") String date){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            controlSchoolPhoneService.addCommunityFreeTime(new ObjectId(appId),new ObjectId(communityId),getUserId(), freeTime);
+            String dtm = "";
+            if(!date.equals("")){
+                String[] strings = date.split("-");
+                if(strings.length==2){
+                    dtm= strings[1];
+                }
+            }
+            controlSchoolPhoneService.addCommunityFreeTime(new ObjectId(appId),new ObjectId(communityId),getUserId(), dtm);
             respObj.setMessage("设置成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,7 +196,10 @@ public class ControlSchoolController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
+            long stm = System.currentTimeMillis();
             Map<String,Object> result = controlSchoolPhoneService.getNewAllSchoolMessageForSon(getUserId());
+            long etm = System.currentTimeMillis();
+            System.out.print(etm-stm);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,7 +223,10 @@ public class ControlSchoolController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
+            long stm = System.currentTimeMillis();
             Map<String,Object> result = controlSchoolPhoneService.getNewSimpleMessageForSon();
+            long etm = System.currentTimeMillis();
+            System.out.print(etm-stm);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

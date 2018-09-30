@@ -109,14 +109,30 @@ public class SchoolControlTimeEntry extends BaseDBObject {
     public String getSchoolTimeFrom(){
         return getSimpleStringValue("schoolTimeFrom");
     }
+    public void setSchoolTimeFrom(String schoolTimeFrom){
+        setSimpleValue("schoolTimeFrom",schoolTimeFrom);
+
+    }
     public String getSchoolTimeTo(){
         return getSimpleStringValue("schoolTimeTo");
+    }
+    public void setSchoolTimeTo(String schoolTimeTo){
+        setSimpleValue("schoolTimeTo",schoolTimeTo);
+
     }
     public String getBedTimeFrom(){
         return getSimpleStringValue("bedTimeFrom");
     }
+    public void setBedTimeFrom(String bedTimeFrom){
+        setSimpleValue("bedTimeFrom",bedTimeFrom);
+
+    }
     public String getBedTimeTo(){
         return getSimpleStringValue("bedTimeTo");
+    }
+    public void setBedTimeTo(String bedTimeTo){
+        setSimpleValue("bedTimeTo",bedTimeTo);
+
     }
     public String getSchoolId(){
         return getSimpleObjecIDValue("schoolId") == null ? "": getSimpleObjecIDValue("schoolId").toString();

@@ -19,6 +19,7 @@ public class UserLogResultDTO {
     //用户相关信息
     private String nickName;
     private String registerTime;
+    private String jiaId;
     //roleId关联信息
     private UserRoleJurisdictionDto userRoleJurisdictionDto;
     //UserRoleJurisdictionDto 需展示的属性
@@ -124,5 +125,13 @@ public class UserLogResultDTO {
 
     public void setRoleId(String roleId) {
         this.roleId = roleId;
+    }
+
+    public String getJiaId() {
+        return jiaId;
+    }
+
+    public void setJiaId(String jiaId) {
+        this.jiaId = jiaId;
     }
 }

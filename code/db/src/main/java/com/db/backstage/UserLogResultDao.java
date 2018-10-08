@@ -111,7 +111,7 @@ public class UserLogResultDao extends BaseDao {
     public List<UserLogResultEntry> getEntryByRoleId(ObjectId roleId) {
         List<UserLogResultEntry> entries = new ArrayList<UserLogResultEntry>();
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
-                new BasicDBObject().append("roleId", roleId),Constant.FIELDS);
+                new BasicDBObject().append("roleId", roleId).append("ir",Constant.ZERO),Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new UserLogResultEntry(dbObject));
@@ -123,7 +123,7 @@ public class UserLogResultDao extends BaseDao {
     public List<UserLogResultEntry> getEntryByRoleIdList(List<ObjectId> settingEntryIdList) {
         List<UserLogResultEntry> entries = new ArrayList<UserLogResultEntry>();
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
-                new BasicDBObject().append("roleId", new BasicDBObject(Constant.MONGO_IN,settingEntryIdList)),Constant.FIELDS);
+                new BasicDBObject().append("roleId", new BasicDBObject(Constant.MONGO_IN,settingEntryIdList)).append("ir",Constant.ZERO),Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new UserLogResultEntry(dbObject));
@@ -135,7 +135,7 @@ public class UserLogResultDao extends BaseDao {
     public List<UserLogResultEntry> getEntryPageByRoleId(ObjectId roleId, int page, int pageSize) {
         List<UserLogResultEntry> entries = new ArrayList<UserLogResultEntry>();
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
-                new BasicDBObject().append("roleId", roleId), Constant.FIELDS, new BasicDBObject(Constant.ID, Constant.DESC), (page - 1) * pageSize, pageSize);
+                new BasicDBObject().append("roleId", roleId).append("ir",Constant.ZERO), Constant.FIELDS, new BasicDBObject(Constant.ID, Constant.DESC), (page - 1) * pageSize, pageSize);
         if (null != dbObjectList && !dbObjectList.isEmpty()) {
             for (DBObject dbObject : dbObjectList) {
                 entries.add(new UserLogResultEntry(dbObject));
@@ -147,12 +147,21 @@ public class UserLogResultDao extends BaseDao {
     public List<UserLogResultEntry> getEntryPageByRoleIdList(List<ObjectId> settingEntryIdList, int page, int pageSize) {
         List<UserLogResultEntry> entries = new ArrayList<UserLogResultEntry>();
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
-                new BasicDBObject().append("roleId", new BasicDBObject(Constant.MONGO_IN,settingEntryIdList)), Constant.FIELDS, new BasicDBObject(Constant.ID, Constant.DESC), (page - 1) * pageSize, pageSize);
+                new BasicDBObject().append("roleId", new BasicDBObject(Constant.MONGO_IN,settingEntryIdList)).append("ir",Constant.ZERO), Constant.FIELDS, new BasicDBObject(Constant.ID, Constant.DESC), (page - 1) * pageSize, pageSize);
         if (null != dbObjectList && !dbObjectList.isEmpty()) {
             for (DBObject dbObject : dbObjectList) {
                 entries.add(new UserLogResultEntry(dbObject));
             }
         }
         return entries;
+    }
+
+    public String delAdminJurisdiction(ObjectId id) {
+        DBObject query = new BasicDBObject(Constant.ID, id);
+        BasicDBObject updateParam = new BasicDBObject();
+        updateParam.append("ir",Constant.ONE);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,query,updateValue);
+        return id.toString();
     }
 }

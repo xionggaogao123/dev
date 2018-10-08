@@ -11,6 +11,7 @@ public class UserManageParentDTO {
     private String nickName;
     private String mobilePhone;
     private String status;
+    private String jiaId;
 
     public String getUserId() {
         return userId;
@@ -50,5 +51,13 @@ public class UserManageParentDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getJiaId() {
+        return jiaId;
+    }
+
+    public void setJiaId(String jiaId) {
+        this.jiaId = jiaId;
     }
 }

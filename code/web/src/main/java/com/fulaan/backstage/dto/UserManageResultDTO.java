@@ -18,6 +18,8 @@ public class UserManageResultDTO {
 
     //用户角色
     private String userRoleName;
+    //家校美ID
+    private String jiaId;
 
     //UserRoleJurisdictionDto 需展示的属性
     //系统中角色
@@ -130,5 +132,13 @@ public class UserManageResultDTO {
 
     public void setParentDTOList(List<UserManageParentDTO> parentDTOList) {
         this.parentDTOList = parentDTOList;
+    }
+
+    public String getJiaId() {
+        return jiaId;
+    }
+
+    public void setJiaId(String jiaId) {
+        this.jiaId = jiaId;
     }
 }

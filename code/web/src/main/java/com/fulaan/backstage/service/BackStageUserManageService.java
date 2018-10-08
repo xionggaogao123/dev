@@ -169,10 +169,7 @@ public class BackStageUserManageService {
                     userId = userEntry.getID();
                 }else {
                     //根据用户名，手机号都查询不到
-                    if (!StringUtils.isNumeric(map.get("userInfo").toString())){
-                        userEntry = userDao.findByUserId(new ObjectId(map.get("userInfo").toString()));
-                    }
-
+                    userEntry = userDao.getGenerateCodeEntry(map.get("userInfo").toString());
                     if (null != userEntry){
                         userId = userEntry.getID();
                     }else {//根据用户名，根据用户Id，手机号都查询不到
@@ -237,6 +234,7 @@ public class BackStageUserManageService {
 
                 }
                 userManageResultDTO.setUserId(userEntry.getID().toString());
+                userManageResultDTO.setJiaId(userEntry.getGenerateUserCode());
                 userManageResultDTO.setUserName(userEntry.getUserName());
                 userManageResultDTO.setNickName(userEntry.getNickName());
                 userManageResultDTO.setTelephone(userEntry.getMobileNumber());
@@ -265,6 +263,7 @@ public class BackStageUserManageService {
                     }
                 }
                 userManageResultDTO.setUserId(userEntry.getID().toString());
+                userManageResultDTO.setJiaId(userEntry.getGenerateUserCode());
                 userManageResultDTO.setUserName(userEntry.getUserName());
                 userManageResultDTO.setNickName(userEntry.getNickName());
                 userManageResultDTO.setTelephone(userEntry.getMobileNumber());
@@ -340,6 +339,7 @@ public class BackStageUserManageService {
                     }
                 }
                 userManageResultDTO.setUserId(userEntry == null ? "" : userEntry.getID().toString());
+                userManageResultDTO.setJiaId(userEntry == null ? "" : userEntry.getGenerateUserCode());
                 userManageResultDTO.setUserName(userEntry == null ? "" : userEntry.getUserName());
                 userManageResultDTO.setNickName(userEntry == null ? "" : userEntry.getNickName());
                 userManageResultDTO.setTelephone(userEntry == null ? "" : userEntry.getMobileNumber());
@@ -454,6 +454,7 @@ public class BackStageUserManageService {
                     userManageResultDTO.setParentDTOList(userManageParentDTOList);
                 }
                 userManageResultDTO.setUserId(userEntry == null ? "" : userEntry.getID().toString());
+                userManageResultDTO.setJiaId(userEntry == null ? "" : userEntry.getGenerateUserCode());
                 userManageResultDTO.setUserName(userEntry == null ? "" : userEntry.getUserName());
                 userManageResultDTO.setNickName(userEntry == null ? "" : userEntry.getNickName());
                 userManageResultDTO.setTelephone(userEntry == null ? "" : userEntry.getMobileNumber());
@@ -483,6 +484,7 @@ public class BackStageUserManageService {
             UserManageParentDTO userManageParentDTO = new UserManageParentDTO();
             userManageParentDTO.setUserName(userEntry1.getUserName());
             userManageParentDTO.setUserId(userEntry1.getID().toString());
+            userManageParentDTO.setJiaId(userEntry1.getGenerateUserCode());
             userManageParentDTO.setMobilePhone(userEntry1.getMobileNumber());
             userManageParentDTO.setNickName(userEntry1.getNickName());
             parentDTOList.add(userManageParentDTO);
@@ -508,6 +510,7 @@ public class BackStageUserManageService {
             UserManageChildrenDTO userManageChildrenDTO = new UserManageChildrenDTO();
             userManageChildrenDTO.setUserName(userEntry1.getUserName());
             userManageChildrenDTO.setUserId(userEntry1.getID().toString());
+            userManageChildrenDTO.setJiaId(userEntry1.getGenerateUserCode());
             userManageChildrenDTO.setMobilePhone(userEntry1.getMobileNumber());
             userManageChildrenDTO.setNickName(userEntry1.getNickName());
             //是否管控
@@ -640,16 +643,19 @@ public class BackStageUserManageService {
         result = memberDao.getAllMembersForPage(map);
         List<MemberEntry> entries = (ArrayList)result.get("memberEntries");
         List<MemberDTO> memberDTOs = new ArrayList<MemberDTO>();
-//        List<ObjectId> userIds=new ArrayList<ObjectId>();
-//        for (MemberEntry entry : entries) {
-//            userIds.add(entry.getUserId());
-//        }
+        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        for (MemberEntry entry : entries) {
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId, UserEntry> userEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
 //        Map<ObjectId,RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
 //        if(null!=userId) {
 //            remarkEntryMap=remarkDao.find(userId, userIds);
 //        }
         for (MemberEntry entry : entries) {
             MemberDTO memberDTO=new MemberDTO(entry);
+            UserEntry userEntry = userEntryMap.get(entry.getUserId());
+            memberDTO.setJiaId(userEntry.getGenerateUserCode());
 //            if(null!=remarkEntryMap){
 //                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
 //                if(null!=remarkEntry){

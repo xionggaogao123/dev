@@ -516,6 +516,7 @@ public class NewVersionBindService {
                 dto.setMobileNumber(userEntry.getMobileNumber());
                 dto.setSex(userEntry.getSex());
                 dto.setNickName(userEntry.getNickName());
+                dto.setJiaId(userEntry.getGenerateUserCode());
                 dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 String birthDate=format.format(userEntry.getBirthDate());

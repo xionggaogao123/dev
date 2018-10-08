@@ -51,6 +51,9 @@ public class NewVersionBindRelationDTO {
 
     private List<GroupOfCommunityDTO> bindCommunities = new ArrayList<GroupOfCommunityDTO>();
 
+    //家校美ID
+    private String jiaId;
+
     public NewVersionBindRelationDTO(NewVersionBindRelationEntry  entry){
         this.bindId=entry.getID().toString();
         this.mainUserId=entry.getMainUserId().toString();
@@ -310,5 +313,13 @@ public class NewVersionBindRelationDTO {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public String getJiaId() {
+        return jiaId;
+    }
+
+    public void setJiaId(String jiaId) {
+        this.jiaId = jiaId;
     }
 }

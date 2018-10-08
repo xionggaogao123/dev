@@ -54,6 +54,27 @@ public class BackStageAdminManageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+    @ApiOperation(value = "后台管理员注销", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/delAdminJurisdiction")
+    @ResponseBody
+    public String delAdminJurisdiction(@RequestBody Map map) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            String msg = backStageAdminManageService.delAdminJurisdiction(map);
+            respObj.setMessage(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("后台添加管理员错误!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
     /**
      * 后台管理员初始化角色筛选列表
      * @return

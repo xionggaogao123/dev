@@ -235,4 +235,10 @@ public class BackStageAdminManageService {
 
         return jsonArray;
     }
+
+    public String delAdminJurisdiction(Map map) {
+        String result = "";
+        result = userLogResultDao.delAdminJurisdiction(new ObjectId(map.get("id").toString()));
+        return result;
+    }
 }

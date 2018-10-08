@@ -39,6 +39,8 @@ public class MemberDTO {
     //获取某个社区下绑定的孩子有哪些（userId在communityId下的孩子）
     private List<NewVersionBindRelationDTO> bindRelationDTOList;
 
+    private String jiaId;
+
     public MemberDTO() {
 
     }
@@ -232,5 +234,13 @@ public class MemberDTO {
 
     public void setBindRelationDTOList(List<NewVersionBindRelationDTO> bindRelationDTOList) {
         this.bindRelationDTOList = bindRelationDTOList;
+    }
+
+    public String getJiaId() {
+        return jiaId;
+    }
+
+    public void setJiaId(String jiaId) {
+        this.jiaId = jiaId;
     }
 }

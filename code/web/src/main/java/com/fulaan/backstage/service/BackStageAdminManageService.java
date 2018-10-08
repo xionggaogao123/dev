@@ -46,18 +46,19 @@ public class BackStageAdminManageService {
 
     public String saveAdminJurisdiction(Map map) {
         String msg = "";
-        UserEntry userEntry = userDao.findByUserId(new ObjectId(map.get("userId").toString()));
+        UserEntry userEntry = userDao.getGenerateCodeEntry(map.get("userJiaId").toString());
         if (null == userEntry){
             msg = "用户不存在，请检查用户Id";
             return msg;
         }
         if ("".equals(map.get("id")) || null == map.get("id")) {//新增管理员权限
-            UserLogResultEntry entry=new UserLogResultEntry(new ObjectId(map.get("userId").toString()),new ObjectId(map.get("roleId").toString()));
+//            UserLogResultEntry entry=new UserLogResultEntry(new ObjectId(map.get("userId").toString()),new ObjectId(map.get("roleId").toString()));
+            UserLogResultEntry entry=new UserLogResultEntry(userEntry.getID(), new ObjectId(map.get("roleId").toString()));
             userLogResultDao.saveUserLogEntry(entry);
             this.addLogMessage
                     (entry.getID().toString(),
                     "新增了管理员用户"+userEntry.getUserName()+"权限为"+new ObjectId(map.get("roleId").toString()),
-                    LogMessageType.manageUserRole.getDes(),map.get("userId").toString()
+                    LogMessageType.manageUserRole.getDes(),userEntry.getID().toString()
                     );
             msg = entry.getID().toString();
         }else {//修改管理员权限
@@ -66,7 +67,7 @@ public class BackStageAdminManageService {
             this.addLogMessage
                     (resultEntry.getID().toString(),
                     "修改了"+userEntry.getUserName()+"的权限为"+new ObjectId(map.get("roleId").toString()),
-                    LogMessageType.manageUserRole.getDes(),map.get("userId").toString()
+                    LogMessageType.manageUserRole.getDes(), userEntry.getID().toString()
                     );
             userLogResultDao.saveUserLogEntry(resultEntry);
             msg = resultEntry.getID().toString();
@@ -92,16 +93,19 @@ public class BackStageAdminManageService {
             //roleProperty 去 jxm_role_jurisdiction_setting表查找对应的roleId
             // 同一个roleProperty可以对应多个roleId
             List<RoleJurisdictionSettingEntry> settingEntries = roleJurisdictionSettingDao.getEntriesByRoleProperty(map.get("roleProperty").toString());
+            List<ObjectId> settingEntryIdList = new ArrayList<ObjectId>();
+            for (RoleJurisdictionSettingEntry settingEntryF : settingEntries){
+                settingEntryIdList.add(settingEntryF.getID());
+            }
             List<UserLogResultDTO> resultDTOs = new ArrayList<UserLogResultDTO>();
             int count = 0 ;
             SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            for (RoleJurisdictionSettingEntry settingEntryF : settingEntries){
                 //roleId 去查找 对应的角色下的用户
-                List<UserLogResultEntry> resultEntriesCount = userLogResultDao.getEntryByRoleId(settingEntryF.getID());//获取数据总量
+                List<UserLogResultEntry> resultEntriesCount = userLogResultDao.getEntryByRoleIdList(settingEntryIdList);//获取数据总量
                 count += resultEntriesCount.size();
                 //获取分页下的数据
-                List<UserLogResultEntry> resultEntries = userLogResultDao.getEntryPageByRoleId(
-                                settingEntryF.getID(),
+                List<UserLogResultEntry> resultEntries = userLogResultDao.getEntryPageByRoleIdList(
+                                settingEntryIdList,
                                 Integer.parseInt(map.get("page").toString()),
                                 Integer.parseInt(map.get("pageSize").toString())
                         );
@@ -115,6 +119,7 @@ public class BackStageAdminManageService {
                         resultDTO.setUserName(userEntry.getUserName());
                         resultDTO.setNickName(userEntry.getNickName());
                         resultDTO.setRegisterTime(sd.format(new Date(userEntry.getRegisterTime())));
+                        resultDTO.setJiaId(userEntry.getGenerateUserCode());
                     }
                     //根据角色和权限绑定 带出角色Id关联的权限信息
                     RoleJurisdictionSettingEntry settingEntry = roleJurisdictionSettingDao.getEntryById(entry.getRoleId());
@@ -131,7 +136,6 @@ public class BackStageAdminManageService {
                     }
                     resultDTOs.add(resultDTO);
                 }
-            }
             result.put("count",count);
             result.put("dto",resultDTOs);
         }else {
@@ -143,8 +147,8 @@ public class BackStageAdminManageService {
                 //根据用户名查询到
                 userId = userEntry.getID();
             }else {
-                //根据用户名查询不到，进而根据用户Id查询
-                userEntry = userDao.findByUserId(new ObjectId(map.get("userInfo").toString()));
+                //根据用户名查询不到，进而根据用户家校美Id查询
+                userEntry = userDao.getGenerateCodeEntry(map.get("userInfo").toString());
                 if (null != userEntry) {
                     userId = userEntry.getID();
                 }else {
@@ -169,6 +173,7 @@ public class BackStageAdminManageService {
                     resultDTO.setUserName(userEntry.getUserName());
                     resultDTO.setNickName(userEntry.getNickName());
                     resultDTO.setRegisterTime(sd.format(new Date(userEntry.getRegisterTime())));
+                    resultDTO.setJiaId(userEntry.getGenerateUserCode());
                 }
                 //根据角色和权限绑定 带出角色Id关联的权限信息
                 RoleJurisdictionSettingEntry settingEntry = roleJurisdictionSettingDao.getEntryById(entry.getRoleId());

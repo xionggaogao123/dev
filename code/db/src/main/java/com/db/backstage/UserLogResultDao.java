@@ -4,6 +4,7 @@ import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.mongodb.Mongo;
 import com.pojo.backstage.UserLogResultEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
@@ -119,10 +120,34 @@ public class UserLogResultDao extends BaseDao {
         return entries;
     }
 
+    public List<UserLogResultEntry> getEntryByRoleIdList(List<ObjectId> settingEntryIdList) {
+        List<UserLogResultEntry> entries = new ArrayList<UserLogResultEntry>();
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
+                new BasicDBObject().append("roleId", new BasicDBObject(Constant.MONGO_IN,settingEntryIdList)),Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new UserLogResultEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
     public List<UserLogResultEntry> getEntryPageByRoleId(ObjectId roleId, int page, int pageSize) {
         List<UserLogResultEntry> entries = new ArrayList<UserLogResultEntry>();
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
                 new BasicDBObject().append("roleId", roleId), Constant.FIELDS, new BasicDBObject(Constant.ID, Constant.DESC), (page - 1) * pageSize, pageSize);
+        if (null != dbObjectList && !dbObjectList.isEmpty()) {
+            for (DBObject dbObject : dbObjectList) {
+                entries.add(new UserLogResultEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+    public List<UserLogResultEntry> getEntryPageByRoleIdList(List<ObjectId> settingEntryIdList, int page, int pageSize) {
+        List<UserLogResultEntry> entries = new ArrayList<UserLogResultEntry>();
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
+                new BasicDBObject().append("roleId", new BasicDBObject(Constant.MONGO_IN,settingEntryIdList)), Constant.FIELDS, new BasicDBObject(Constant.ID, Constant.DESC), (page - 1) * pageSize, pageSize);
         if (null != dbObjectList && !dbObjectList.isEmpty()) {
             for (DBObject dbObject : dbObjectList) {
                 entries.add(new UserLogResultEntry(dbObject));

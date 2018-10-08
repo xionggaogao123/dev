@@ -2955,25 +2955,36 @@ public class ReportCardNewService {
 
             HSSFCell cell = row.createCell(0);
             cell.setCellValue("学生姓名");
+            
+            String scoreName = "";
+            if (detailEntry.getRecordScoreType() == 1) {
+                scoreName = "考试分值";
+            } else {
+                scoreName = "等第分值";
+            }
             for (GroupExamUserRecordDTO g : recordDTOs) {
                 String[] ss = g.getSubjectId().split(",");
                 for (int i =0;i<ss.length;i++) {
                     SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(ss[i]));
-                    cell = row.createCell(1+(i*2));
+                    /*cell = row.createCell(1+(i*2));
                     cell.setCellValue(sc.getName()+"等第分值");
 
                     cell = row.createCell(2+(i*2));
-                    cell.setCellValue(sc.getName()+"考试分值");
+                    cell.setCellValue(sc.getName()+"考试分值");*/
+                    cell = row.createCell(1+i);
+                    cell.setCellValue(sc.getName()+scoreName);
                 }
                 
             }
             String[] sss = recordDTOs.get(0).getSubjectId().split(",");
             if (sss.length>1) {
-                cell = row.createCell(1+((sss.length)*2));
+                /*cell = row.createCell(1+((sss.length)*2));
                 cell.setCellValue("总分等第分值");
 
                 cell = row.createCell(2+((sss.length)*2));
-                cell.setCellValue("总分考试分值");
+                cell.setCellValue("总分考试分值");*/
+                cell = row.createCell(1+sss.length);
+                cell.setCellValue("总分"+scoreName);
             }
           
             int rowLine = 2;
@@ -2991,32 +3002,32 @@ public class ReportCardNewService {
                     String[] ss = g.getSubjectId().split(",");
                     for (int i =0;i<ss.length;i++) {
                         if (detailEntry.getRecordScoreType() == Constant.ONE) {
-                            cellItem = rowItem.createCell(1+(i*2));
-                            cellItem.setCellValue(-1);
+                            /*cellItem = rowItem.createCell(1+(i*2));
+                            cellItem.setCellValue(-1);*/
 
-                            cellItem = rowItem.createCell(2+(i*2));
+                            cellItem = rowItem.createCell(1+i);
                             cellItem.setCellValue(compareScore(scoreStrArry[i]));
                         } else {
-                            cellItem = rowItem.createCell(1+(i*2));
+                            cellItem = rowItem.createCell(1+i);
                             cellItem.setCellValue(compareScoreLevel(Integer.valueOf(scoreLevelStrArry[i])));
 
-                            cellItem = rowItem.createCell(2+(i*2));
-                            cellItem.setCellValue(-1);
+                            /*cellItem = rowItem.createCell(2+(i*2));
+                            cellItem.setCellValue(-1);*/
                         }
                     }
                     if (ss.length>1) {
                         if (detailEntry.getRecordScoreType() == Constant.ONE) {
-                            cellItem = rowItem.createCell(1+((ss.length)*2));
-                            cellItem.setCellValue(-1);
+                            /*cellItem = rowItem.createCell(1+((ss.length)*2));
+                            cellItem.setCellValue(-1);*/
 
-                            cellItem = rowItem.createCell(2+((ss.length)*2));
+                            cellItem = rowItem.createCell(1+ss.length);
                             cellItem.setCellValue(compareScore(scoreStrArry[scoreStrArry.length-1]));
                         } else {
-                            cellItem = rowItem.createCell(1+((ss.length)*2));
+                            cellItem = rowItem.createCell(1+ss.length);
                             cellItem.setCellValue(compareScoreLevel(Integer.valueOf(scoreLevelStrArry[scoreLevelStrArry.length-1])));
 
-                            cellItem = rowItem.createCell(2+((ss.length)*2));
-                            cellItem.setCellValue(-1);
+                            /*cellItem = rowItem.createCell(2+((ss.length)*2));
+                            cellItem.setCellValue(-1);*/
                         }
                         
                     }

@@ -549,8 +549,16 @@ public class BusinessManageService {
         String order2 = "";
 
         String sheetName = "课程《"+excellentCoursesEntry.getTitle()+"》订单列表";
+        
         HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet(sheetName);
+        HSSFSheet sheet;
+        try {
+            sheet = wb.createSheet(sheetName);
+        } catch (Exception e) {
+            // TODO: handle exception
+            sheet = wb.createSheet("课程订单列表");
+        }
+        
         sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
         HSSFRow rowZero = sheet.createRow(0);
         HSSFCell cellZero = rowZero.createCell(0);
@@ -739,7 +747,17 @@ public class BusinessManageService {
         }
 
         HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet(sheetName);
+        HSSFSheet sheet;
+        try {
+            sheet = wb.createSheet(sheetName);
+        } catch (Exception e) {
+            // TODO: handle exception
+            if(status==1){//删除
+                sheet = wb.createSheet("课程删除订单列表");
+            }else{//退课
+                sheet = wb.createSheet("课程退课订单列表");
+            }
+        }
         sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
         HSSFRow rowZero = sheet.createRow(0);
         HSSFCell cellZero = rowZero.createCell(0);

@@ -2456,7 +2456,7 @@ public class ExcellentCoursesService {
             objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
         }
         List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getOldlEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current, objectIdList);
-        int count = excellentCoursesDao.selectCount(subjectId,current,objectIdList);
+        int count = excellentCoursesDao.selectCount(subjectId, current, objectIdList);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
             if(excellentCoursesEntry.getOpen()==1){
@@ -2495,13 +2495,18 @@ public class ExcellentCoursesService {
             //获得家长所在社群
             objectIdList = communityService.getCommunitys3(userId, 1, 100);
             List<ExcellentCoursesEntry> excellentCoursesEntries = new ArrayList<ExcellentCoursesEntry>();
-            if(page ==1){//推荐课在首次查询加入
+            int count = 0;
+            if(page ==1 && priceType==0 && persionType==0 && timeType==0){//推荐课在首次查询加入
                 excellentCoursesEntries = excellentCoursesDao.getMyNewAllEntryList(subjectId,priceType,persionType,timeType,page,pageSize,current,objectIdList);
+                //公开课排序加入
+                List<ExcellentCoursesEntry> excellentCoursesEntries1 = excellentCoursesDao.getNewAllEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current, objectIdList);
+                excellentCoursesEntries.addAll(excellentCoursesEntries1);
+                count = excellentCoursesDao.selectCount(subjectId,current,objectIdList);
+            }else{
+                //公开课排序加入
+                excellentCoursesEntries = excellentCoursesDao.getOldlEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current, objectIdList);
+                count = excellentCoursesDao.selectNewCount(subjectId,current,objectIdList);
             }
-            //公开课排序加入
-            List<ExcellentCoursesEntry> excellentCoursesEntries1 = excellentCoursesDao.getNewAllEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current, objectIdList);
-            excellentCoursesEntries.addAll(excellentCoursesEntries1);
-            int count = excellentCoursesDao.selectCount(subjectId,current,objectIdList);
             List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
             for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
                 List<ObjectId> newCom = excellentCoursesEntry.getCommunityIdList();

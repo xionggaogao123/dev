@@ -327,6 +327,7 @@ public class ExcellentCoursesDao extends BaseDao {
         if(timeType!=0){
             orderQuery.append("ctm",timeType);
         }
+        orderQuery.append("ctm",-1);
         query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
         query.append("clt",new BasicDBObject(Constant.MONGO_IN,objectIdList));//推荐社群
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
@@ -542,13 +543,17 @@ public class ExcellentCoursesDao extends BaseDao {
      * 符合搜索条件的对象个数
      * @return
      */
-    public int selectNewCount(String subjectId,long current) {
+    public int selectNewCount(String subjectId,long current,List<ObjectId> objectIdList) {
         BasicDBObject query =new BasicDBObject("isr",0).append("sta",2);
         if(subjectId!=null && !subjectId.equals("")){
             query.append("sid",new ObjectId(subjectId
             ));
         }
-        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current)).append("ope",Constant.ONE);
+        query.append("etm", new BasicDBObject(Constant.MONGO_GT, current));
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("ope", Constant.ONE));
+        values.add(new BasicDBObject("clt",new BasicDBObject(Constant.MONGO_IN,objectIdList)));
+        query.put(Constant.MONGO_OR, values);
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_EXCELLENT_COURSES,

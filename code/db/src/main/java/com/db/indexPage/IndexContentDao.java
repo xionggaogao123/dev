@@ -37,10 +37,10 @@ public class IndexContentDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_CONTENT, query,updateValue);
     }
     //同步修改已阅
-    public void updateAllEntry(ObjectId id,int count){
+    public void updateAllEntry(ObjectId id,int count,List<ObjectId> readList){
         BasicDBObject query=new BasicDBObject()
                 .append("cid",id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("act",count));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("act",count).append("rlt",readList));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_CONTENT, query,updateValue);
     }
 

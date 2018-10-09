@@ -275,10 +275,9 @@ public class AppNoticeService {
         List<ObjectId> reads=entry.getReaList();
         reads.remove(entry.getUserId());
         List<ObjectId> members=memberDao.getAllMemberIds(entry.getGroupId());
-        //修改首页已阅人数和未阅人数
-
-
         members.remove(entry.getUserId());
+        //修改首页已阅人数和未阅人数
+        int allCount = members.size();
         members.removeAll(reads);
         List<User> read=new ArrayList<User>();
         List<User> unRead=new ArrayList<User>();
@@ -288,7 +287,14 @@ public class AppNoticeService {
         if(members.size()>0){
             saveUser(unRead,members,entry.getGroupId());
         }
-        indexContentDao.updateEntry(id,members.size());
+        IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
+        if(indexContentEntry!=null){
+           // indexContentDao.updateAllEntry(id,allCount,members);
+            indexContentEntry.setAllCount(allCount);
+            indexContentEntry.setReadList(members);
+            indexContentDao.addEntry(indexContentEntry);
+        }
+
         userMap.put("read",read);
         userMap.put("unRead",unRead);
         return userMap;
@@ -474,6 +480,7 @@ public class AppNoticeService {
             }
             dto.setOwner(false);
             List<ObjectId> reads=entry.getReaList();
+            reads.remove(entry.getUserId());
             dto.setReadCount(reads.size());
             if(entry.getUserId().equals(userId)){
                 //设置已阅和未阅的人数

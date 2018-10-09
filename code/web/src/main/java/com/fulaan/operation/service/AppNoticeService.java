@@ -469,14 +469,14 @@ public class AppNoticeService {
                 dto.setIsRead(1);
             }
             dto.setOwner(false);
+            List<ObjectId> reads=entry.getReaList();
+            dto.setReadCount(reads.size());
             if(entry.getUserId().equals(userId)){
                 //设置已阅和未阅的人数
-                List<ObjectId> reads=entry.getReaList();
                 List<ObjectId> members=memberDao.getAllMemberIds(entry.getGroupId());
                 members.remove(userId);
                 dto.setTotalReadCount(members.size());
                 members.removeAll(reads);
-                dto.setReadCount(reads.size());
                 dto.setUnReadCount(members.size());
                 dto.setOwner(true);
             }

@@ -208,7 +208,7 @@ public class ReportCardService {
                 reportCardSignDao.updateTypeByRecordId(userRecordEntry.getID(),mainUserId);
             }
             IndexContentEntry indexContentEntry = indexContentDao.getEntry(groupExamDetailId);
-            if(indexContentEntry!=null){
+            if(indexContentEntry!=null && !indexContentEntry.getUserId().equals(userId)){//防止自己签到
                 List<ObjectId> reList = indexContentEntry.getReaList();
                 if(!reList.contains(mainUserId)) {
                     indexContentDao.pushReadList(mainUserId, groupExamDetailId);

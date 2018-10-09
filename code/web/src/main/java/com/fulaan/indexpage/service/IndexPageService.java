@@ -2073,7 +2073,9 @@ public class IndexPageService {
                     dto.setIsRead(0);
                 }
                 if(indexContentEntry.getReaList()!=null){
-                    dto.setReadCount(indexContentEntry.getReaList().size());
+                    List<ObjectId> rids = indexContentEntry.getReaList();
+                    rids.remove(indexContentEntry.getUserId());
+                    dto.setReadCount(rids.size());
                 }else{
                     dto.setReadCount(0);
                 }
@@ -2126,7 +2128,7 @@ public class IndexPageService {
         IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
         if(indexContentEntry!=null){
             List<ObjectId> reList = indexContentEntry.getReaList();
-            if(!reList.contains(userId)) {
+            if(!reList.contains(userId) && !indexContentEntry.getUserId().equals(userId)) {//自己不可以签到
                 indexContentDao.pushReadList(userId, id);
                 //红点减一
                 redDotService.jianRedDot(userId, ApplyTypeEn.piao.getType());

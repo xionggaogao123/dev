@@ -273,8 +273,11 @@ public class AppNoticeService {
         Map<String,List<User>> userMap=new HashMap<String, List<User>>();
         AppNoticeEntry entry=appNoticeDao.getAppNoticeEntry(id);
         List<ObjectId> reads=entry.getReaList();
+        reads.remove(entry.getUserId());
         List<ObjectId> members=memberDao.getAllMemberIds(entry.getGroupId());
-        indexContentDao.updateEntry(id,members.size());
+        //修改首页已阅人数和未阅人数
+
+
         members.remove(entry.getUserId());
         members.removeAll(reads);
         List<User> read=new ArrayList<User>();
@@ -285,6 +288,7 @@ public class AppNoticeService {
         if(members.size()>0){
             saveUser(unRead,members,entry.getGroupId());
         }
+        indexContentDao.updateEntry(id,members.size());
         userMap.put("read",read);
         userMap.put("unRead",unRead);
         return userMap;
@@ -591,7 +595,7 @@ public class AppNoticeService {
 
     public String pushRead(ObjectId id,ObjectId userId)throws Exception{
         AppNoticeEntry appNoticeEntry=appNoticeDao.getAppNoticeEntry(id);
-        if(null!=appNoticeEntry){
+        if(null!=appNoticeEntry && !appNoticeEntry.getUserId().equals(userId)){//防止自己签到
             List<ObjectId> readList=appNoticeEntry.getReaList();
             if(!readList.contains(userId)) {
                 appNoticeDao.pushReadList(userId, id);

@@ -354,17 +354,19 @@ public class ControlSchoolPhoneService {
     /**
      *    针对上课时间的管控
      */
-    public void addCommunityFreeTime(ObjectId appId,ObjectId communityId,ObjectId userId,String dateTime)throws Exception{
+    public void addCommunityFreeTime(ObjectId appId,ObjectId communityId,ObjectId userId,String dateTime,int freeTime)throws Exception{
         long current = System.currentTimeMillis();
         String string = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,11);
         long etm = 0;
         if(!dateTime.equals("")){
             etm = DateTimeUtils.getStrToLongTime(string+" "+dateTime, "yyyy-MM-dd HH:mm");
         }
-        long time =0;
-        if(etm>0 && etm>current){
+        long time = freeTime*60000;
+        long endTime =current + time;//截止时间
+        if(etm>0 && endTime>etm){
             time = etm -current;
         }
+
         AppDetailEntry appDetailEntry = appDetailDao.findEntryById(appId);
         if(appDetailEntry==null){
             throw new Exception("应用已被删除!");
@@ -1012,7 +1014,7 @@ public class ControlSchoolPhoneService {
         }
         //计算生效的结果
         List<SchoolControlTimeEntry> schoolControlTimeEntrys = map.get("0");
-        if(schoolControlTimeEntrys.size()>0){
+        if(schoolControlTimeEntrys !=null &&  schoolControlTimeEntrys.size()>0){
             SchoolControlTimeEntry schoolControlTimeEntry = null;
             for(SchoolControlTimeEntry schoolControlTimeEntry2 : schoolControlTimeEntrys){
                 if(schoolControlTimeEntry==null){

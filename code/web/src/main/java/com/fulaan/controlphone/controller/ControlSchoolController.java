@@ -87,7 +87,8 @@ public class ControlSchoolController extends BaseController {
     @ResponseBody
     public String addCommunityFreeTime(@ApiParam(name = "communityId", required = true, value = "社群id") @RequestParam(value = "communityId") String communityId,
                                        @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam(value = "appId") String appId,
-                                       @ApiParam(name = "date", required = true, value = "应用id") @RequestParam(value = "date") String date){
+                                       @ApiParam(name = "date", required = true, value = "本日上课时间") @RequestParam(value = "date") String date,
+                                       @ApiParam(name = "freeTime", required = true, value = "自由时间") @RequestParam(value = "freeTime") int freeTime){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -98,7 +99,7 @@ public class ControlSchoolController extends BaseController {
                     dtm= strings[1];
                 }
             }
-            controlSchoolPhoneService.addCommunityFreeTime(new ObjectId(appId),new ObjectId(communityId),getUserId(), dtm);
+            controlSchoolPhoneService.addCommunityFreeTime(new ObjectId(appId),new ObjectId(communityId),getUserId(), dtm,freeTime);
             respObj.setMessage("设置成功");
         } catch (Exception e) {
             e.printStackTrace();

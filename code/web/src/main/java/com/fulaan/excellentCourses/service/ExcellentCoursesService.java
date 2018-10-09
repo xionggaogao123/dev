@@ -2455,7 +2455,7 @@ public class ExcellentCoursesService {
             //获得学生所在社群
             objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
         }
-        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getAllEntryList(subjectId,priceType,persionType,timeType,page,pageSize,current,objectIdList);
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getOldlEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current, objectIdList);
         int count = excellentCoursesDao.selectCount(subjectId,current,objectIdList);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
@@ -2479,30 +2479,48 @@ public class ExcellentCoursesService {
         long current = System.currentTimeMillis();
         NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
-        if(newVersionUserRoleEntry.getNewRole()==3 || newVersionUserRoleEntry.getNewRole()==0){//家长
+        if(newVersionUserRoleEntry.getNewRole()==1 || newVersionUserRoleEntry.getNewRole()==2){//学生
+            //获得学生所在社群
+            //objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
+            List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getAllEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current);
+            int count = excellentCoursesDao.selectOldCount(subjectId, current);
+            List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+            for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
+                dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));
+            }
+            map.put("list", dtos);
+            map.put("count", count);
+            return map;
+        }else{//家长
             //获得家长所在社群
             objectIdList = communityService.getCommunitys3(userId, 1, 100);
-        }else{//学生
-            //获得学生所在社群
-            objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
-        }
-        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getAllEntryList(subjectId,priceType,persionType,timeType,page,pageSize,current,objectIdList);
-        int count = excellentCoursesDao.selectCount(subjectId,current,objectIdList);
-        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
-        for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
-            if(excellentCoursesEntry.getOpen()==1){
-                List<ObjectId> newList = new ArrayList<ObjectId>();
-                newList.addAll(objectIdList);
-                newList.removeAll(excellentCoursesEntry.getCommunityIdList());
-                if(objectIdList.size()!=newList.size()){//推荐
-                    excellentCoursesEntry.setOpen(0);
-                }
+            List<ExcellentCoursesEntry> excellentCoursesEntries = new ArrayList<ExcellentCoursesEntry>();
+            if(page ==1){//推荐课在首次查询加入
+                excellentCoursesEntries = excellentCoursesDao.getMyNewAllEntryList(subjectId,priceType,persionType,timeType,page,pageSize,current,objectIdList);
             }
-            dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));
+            //公开课排序加入
+            List<ExcellentCoursesEntry> excellentCoursesEntries1 = excellentCoursesDao.getNewAllEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current, objectIdList);
+            excellentCoursesEntries.addAll(excellentCoursesEntries1);
+            int count = excellentCoursesDao.selectCount(subjectId,current,objectIdList);
+            List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+            for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
+                List<ObjectId> newCom = excellentCoursesEntry.getCommunityIdList();
+                if(newCom !=null && newCom.size()>0){
+                    int size = newCom.size();
+                    newCom.removeAll(objectIdList);
+                    int size2 =  newCom.size();
+                    if(size!=size2){
+                        excellentCoursesEntry.setOpen(0);
+                    }
+                }
+
+                dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));
+            }
+            map.put("list", dtos);
+            map.put("count", count);
+            return map;
+
         }
-        map.put("list", dtos);
-        map.put("count", count);
-        return map;
     }
 
     /**

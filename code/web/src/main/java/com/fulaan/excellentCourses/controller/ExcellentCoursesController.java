@@ -678,7 +678,7 @@ public class ExcellentCoursesController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> result = excellentCoursesService.myClassList(getUserId(),subjectId, priceType, persionType, timeType, page, pageSize);
+            Map<String,Object> result = excellentCoursesService.myNewClassList(getUserId(),subjectId, priceType, persionType, timeType, page, pageSize);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

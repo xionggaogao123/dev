@@ -210,9 +210,8 @@ public class ExcellentCoursesDao extends BaseDao {
         return entryList;
     }
 
-
     //课程中心
-    public List<ExcellentCoursesEntry> getAllEntryList(String subjectId,int priceType,int persionType,int timeType,int page,int pageSize,long current,List<ObjectId> objectIdList){
+    public List<ExcellentCoursesEntry> getOldlEntryList(String subjectId,int priceType,int persionType,int timeType,int page,int pageSize,long current,List<ObjectId> objectIdList){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
         BasicDBObject query=new BasicDBObject().append("isr",0).append("sta",Constant.TWO);
         if(subjectId!=null && !subjectId.equals("")){
@@ -238,6 +237,98 @@ public class ExcellentCoursesDao extends BaseDao {
         values.add(new BasicDBObject("ope", Constant.ONE));
         values.add(new BasicDBObject("clt",new BasicDBObject(Constant.MONGO_IN,objectIdList)));
         query.put(Constant.MONGO_OR, values);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS, orderQuery,(page-1)*pageSize,pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    //课程中心
+    public List<ExcellentCoursesEntry> getAllEntryList(String subjectId,int priceType,int persionType,int timeType,int page,int pageSize,long current){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr",0).append("sta",Constant.TWO);
+        if(subjectId!=null && !subjectId.equals("")){
+            query.append("sid", new ObjectId(subjectId));
+        }
+        BasicDBObject orderQuery=new BasicDBObject();
+        if(priceType!=0){
+            orderQuery.append("npc", priceType);
+        }
+        if(persionType!=0){
+            orderQuery.append("stn", persionType);
+        }
+        if(timeType!=0){
+            orderQuery.append("ctm",timeType);
+        }
+        if(priceType==0&&persionType==0&&timeType==0){
+            orderQuery.append("ope",1);
+            orderQuery.append("ctm",-1);
+        }
+        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
+        query.append("ope", Constant.ONE);//公开课
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS, orderQuery,(page-1)*pageSize,pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    //课程中心
+    public List<ExcellentCoursesEntry> getNewAllEntryList(String subjectId,int priceType,int persionType,int timeType,int page,int pageSize,long current,List<ObjectId> objectIdList){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr",0).append("sta",Constant.TWO);
+        if(subjectId!=null && !subjectId.equals("")){
+            query.append("sid", new ObjectId(subjectId));
+        }
+        BasicDBObject orderQuery=new BasicDBObject();
+        if(priceType!=0){
+            orderQuery.append("npc", priceType);
+        }
+        if(persionType!=0){
+            orderQuery.append("stn", persionType);
+        }
+        if(timeType!=0){
+            orderQuery.append("ctm",timeType);
+        }
+        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
+        query.append("ope",Constant.ONE);//公开
+        query.append("clt",new BasicDBObject(Constant.MONGO_NOTIN,objectIdList));//非推荐社群
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS, orderQuery,(page-1)*pageSize,pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    //课程中心
+    public List<ExcellentCoursesEntry> getMyNewAllEntryList(String subjectId,int priceType,int persionType,int timeType,int page,int pageSize,long current,List<ObjectId> objectIdList){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr",0).append("sta",Constant.TWO);
+        if(subjectId!=null && !subjectId.equals("")){
+            query.append("sid", new ObjectId(subjectId));
+        }
+        BasicDBObject orderQuery=new BasicDBObject();
+        if(priceType!=0){
+            orderQuery.append("npc", priceType);
+        }
+        if(persionType!=0){
+            orderQuery.append("stn", persionType);
+        }
+        if(timeType!=0){
+            orderQuery.append("ctm",timeType);
+        }
+        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
+        query.append("clt",new BasicDBObject(Constant.MONGO_IN,objectIdList));//推荐社群
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
                 Constant.FIELDS, orderQuery,(page-1)*pageSize,pageSize);
         if (dbList != null && !dbList.isEmpty()) {
@@ -418,11 +509,9 @@ public class ExcellentCoursesDao extends BaseDao {
             query.append("sid",new ObjectId(subjectId
             ));
         }
-        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
-        BasicDBList values = new BasicDBList();
-        values.add(new BasicDBObject("ope", Constant.ONE));
-        values.add(new BasicDBObject("clt",new BasicDBObject(Constant.MONGO_IN,objectIdList)));
-        query.put(Constant.MONGO_OR, values);
+        query.append("etm", new BasicDBObject(Constant.MONGO_GT, current));
+        query.append("ope",Constant.ONE);//公开
+        query.append("clt",new BasicDBObject(Constant.MONGO_NOTIN,objectIdList));//非推荐社群
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_EXCELLENT_COURSES,
@@ -430,5 +519,41 @@ public class ExcellentCoursesDao extends BaseDao {
         return count;
     }
 
+
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int selectOldCount(String subjectId,long current) {
+        BasicDBObject query =new BasicDBObject("isr",0).append("sta",2);
+        if(subjectId!=null && !subjectId.equals("")){
+            query.append("sid",new ObjectId(subjectId
+            ));
+        }
+        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current)).append("ope", Constant.ONE);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_EXCELLENT_COURSES,
+                        query);
+        return count;
+    }
+
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int selectNewCount(String subjectId,long current) {
+        BasicDBObject query =new BasicDBObject("isr",0).append("sta",2);
+        if(subjectId!=null && !subjectId.equals("")){
+            query.append("sid",new ObjectId(subjectId
+            ));
+        }
+        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current)).append("ope",Constant.ONE);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_EXCELLENT_COURSES,
+                        query);
+        return count;
+    }
 
 }

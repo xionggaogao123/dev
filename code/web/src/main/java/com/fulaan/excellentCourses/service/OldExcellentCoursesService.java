@@ -1269,7 +1269,7 @@ public class OldExcellentCoursesService {
     public Map<String,Object> myClassList(ObjectId userId,String subjectId,int priceType,int persionType,int timeType,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         long current = System.currentTimeMillis();
-        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getAllEntryList(subjectId,priceType,persionType,timeType,page,pageSize,current,new ArrayList<ObjectId>());
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getOldlEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current, new ArrayList<ObjectId>());
         int count = excellentCoursesDao.selectCount(subjectId,current,new ArrayList<ObjectId>());
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){

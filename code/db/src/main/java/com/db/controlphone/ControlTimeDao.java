@@ -62,4 +62,10 @@ public class ControlTimeDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("btm",time));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_TIME, query,updateValue);
     }
+    //修改管控状态
+    public void updateTypeEntry(ObjectId id,int type){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("cty",type));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_TIME, query,updateValue);
+    }
 }

@@ -9,9 +9,10 @@ import org.bson.types.ObjectId;
  * 管控基础数据设定表
  * Created by James on 2017/11/6.
  * Id
- userId             用户id                uid
- parentId            父id                 pid
+ userId             用户id               uid
+ parentId            父id                pid
  time              控制时间              tim
+ controlType        管控状态             cty    // 1家管控   2校管控
  backTime           上一次mqtt时间       btm
  */
 public class ControlTimeEntry extends BaseDBObject {
@@ -88,5 +89,13 @@ public class ControlTimeEntry extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+
+    public int getControlType(){
+        return getSimpleIntegerValueDef("cty",0);
+    }
+
+    public void setControlType(int controlType){
+        setSimpleValue("cty",controlType);
     }
 }

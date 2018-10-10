@@ -2,17 +2,23 @@ package com.fulaan.controlphone.service;
 
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.SchoolControlTimeDao;
+import com.db.backstage.SystemMessageDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
+import com.db.indexPage.IndexPageDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.community.dto.CommunityDTO;
-import com.fulaan.controlphone.dto.*;
+import com.fulaan.controlphone.dto.ControlAppUserDTO;
+import com.fulaan.controlphone.dto.ControlPhoneDTO;
+import com.fulaan.controlphone.dto.PhoneSchoolTimeDTO;
+import com.fulaan.indexpage.dto.IndexPageDTO;
+import com.fulaan.indexpage.dto.SystemMessageDTO;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.pojo.appmarket.AppDetailEntry;
@@ -20,7 +26,9 @@ import com.pojo.backstage.SchoolControlTimeEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
@@ -116,7 +124,6 @@ public class ControlSchoolPhoneService {
             appDetailEntries.addAll(appDetailEntries1);
         }
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
-        Map<ObjectId,AppDetailEntry> map1 = new HashMap<ObjectId, AppDetailEntry>();
         for(AppDetailEntry appDetailEntry:appDetailEntries){
             objectIdList.add(appDetailEntry.getID());
         }
@@ -803,6 +810,10 @@ public class ControlSchoolPhoneService {
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         //必须加入系统推荐
         if(trueSchoolIds.size()==0){
+            if(controlTimeEntry.getControlType()==2 || controlTimeEntry.getControlType()==0){//以前为校管控或为管控
+                this.sendMessage(parentId,1);
+                controlTimeDao.updateTypeEntry(controlTimeEntry.getID(),1);
+            }
             //走家长端家管控
             map.put("loginType",1);
             //家管控实行家长推荐应用
@@ -849,6 +860,10 @@ public class ControlSchoolPhoneService {
             //获取默认应用管控
             this.getAppControlTime(entries2,current,map);
         }else{
+            if(controlTimeEntry.getControlType()==1 || controlTimeEntry.getControlType()==0){//以前为家管控或为管控
+                this.sendMessage(parentId,2);
+                controlTimeDao.updateTypeEntry(controlTimeEntry.getID(),2);
+            }
             //走老师端校管控
             map.put("loginType",2);
             //获得各个社区的推送应用记录
@@ -885,6 +900,42 @@ public class ControlSchoolPhoneService {
             this.getMoreAppControlTime(entries2, current, map, obList,zero);
         }
         return map;
+    }
+    //发送管控状态切换消息
+    public void sendMessage(final ObjectId userId,final int type){
+        new Thread(){
+            public void run(){
+
+                SystemMessageDao systemMessageDao = new SystemMessageDao();
+                IndexPageDao indexPageDao = new IndexPageDao();
+                //添加系统信息
+                SystemMessageDTO dto = new SystemMessageDTO();
+                dto.setType(5);
+                dto.setAvatar("");
+                dto.setName("");
+                dto.setFileUrl("");
+                dto.setSourceId("");
+                if(type==2){
+                    dto.setContent("您的小孩已进入校管控！");
+                }else{
+                    dto.setContent("您的小孩已进入家管控！");
+                }
+                dto.setFileType(1);
+                dto.setSourceName("");
+                dto.setSourceType(0);
+                dto.setTitle("");
+                String id = systemMessageDao.addEntry(dto.buildAddEntry());
+
+                //添加首页记录
+                IndexPageDTO dto1 = new IndexPageDTO();
+                dto1.setType(CommunityType.system.getType());
+                dto1.setUserId(userId.toString());
+                dto1.setCommunityId(userId.toString());
+                dto1.setContactId(id.toString());
+                IndexPageEntry entry = dto1.buildAddEntry();
+                indexPageDao.addEntry(entry);
+            }
+        }.start();
     }
     //多社群应用管控
     //获得默认应用管控时间

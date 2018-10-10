@@ -637,6 +637,7 @@ public class ControlSchoolPhoneService {
             Map<String,Object>  dto  = new HashMap<String, Object>();
             if(controlAppSchoolEntry!=null){
                 dto.put("freeTime",0);
+                dto.put("appName",appDetailEntry.getAppName());
                 dto.put("packageName",appDetailEntry.getAppPackageName());
                 dto.put("id",appDetailEntry.getID().toString());
                 dto.put("markStartFreeTime",current);
@@ -647,6 +648,7 @@ public class ControlSchoolPhoneService {
                 dto.put("controlType",controlAppSchoolEntry.getControlType());
             }else {
                 dto.put("freeTime", 0);
+                dto.put("appName",appDetailEntry.getAppName());
                 dto.put("packageName", appDetailEntry.getAppPackageName());
                 dto.put("id", appDetailEntry.getID().toString());
                 dto.put("markStartFreeTime", current);
@@ -687,8 +689,11 @@ public class ControlSchoolPhoneService {
                 phoneTimeDTO.setCurrentTime(entry.getDateFrom()+"="+entry.getDateTo());
                 phoneTimeDTO.setType(3);
             }
-
-            phoneTimeDTO.setClassTime(entry.getSchoolTimeFrom()+"-"+entry.getSchoolTimeTo());
+            if(entry.getSchoolTimeFrom().equals("") && entry.getSchoolTimeTo().equals("")){
+                phoneTimeDTO.setClassTime(entry.getBedTimeTo()+"-"+entry.getBedTimeTo());
+            }else{
+                phoneTimeDTO.setClassTime(entry.getSchoolTimeFrom()+"-"+entry.getSchoolTimeTo());
+            }
             phoneTimeDTO.setBedTime(entry.getBedTimeFrom()+"-"+entry.getBedTimeTo());
             phoneTimeDTO.setStart("");
             phoneTimeDTO.setEnd("");
@@ -700,8 +705,15 @@ public class ControlSchoolPhoneService {
             objectMap.put("schoolTime",schoolControlTimeEntry.getSchoolTimeFrom()+"-"+schoolControlTimeEntry.getSchoolTimeTo());
             objectMap.put("bedTime",schoolControlTimeEntry.getBedTimeFrom()+"-"+schoolControlTimeEntry.getBedTimeTo());
             if(schoolControlTimeEntry.getSchoolTimeFrom().equals("") && schoolControlTimeEntry.getSchoolTimeTo().equals("")){
-                objectMap.put("schoolTime","07:30-07:30");
+                objectMap.put("schoolTime",schoolControlTimeEntry.getBedTimeTo()+"-"+schoolControlTimeEntry.getBedTimeTo());
                 objectMap.put("homeTime",schoolControlTimeEntry.getBedTimeTo()+"-"+schoolControlTimeEntry.getBedTimeFrom());
+            }else{
+                if(schoolControlTimeEntry.getSchoolTimeFrom().equals(schoolControlTimeEntry.getBedTimeTo())){//一段
+                    objectMap.put("homeTime",schoolControlTimeEntry.getSchoolTimeTo()+"-"+schoolControlTimeEntry.getBedTimeFrom());
+                }else{//两段
+                    objectMap.put("homeTime",schoolControlTimeEntry.getBedTimeTo()+"-"+schoolControlTimeEntry.getSchoolTimeFrom()+" "+schoolControlTimeEntry.getSchoolTimeTo()+"-"+schoolControlTimeEntry.getBedTimeFrom());
+                }
+
             }
             long ssm = dateTime;
             if(schoolControlTimeEntry.getSchoolTimeFrom()!=null&& !schoolControlTimeEntry.getSchoolTimeFrom().equals("")){
@@ -720,10 +732,16 @@ public class ControlSchoolPhoneService {
             SchoolControlTimeEntry schoolControlTimeEntry2 = map.get(week+"");
             if(schoolControlTimeEntry2!=null){
                 objectMap.put("schoolTime",schoolControlTimeEntry2.getSchoolTimeFrom()+"-"+schoolControlTimeEntry2.getSchoolTimeTo());
-                objectMap.put("homeTime",schoolControlTimeEntry2.getBedTimeFrom()+"-"+schoolControlTimeEntry2.getBedTimeTo());
+                objectMap.put("bedTime",schoolControlTimeEntry2.getBedTimeFrom()+"-"+schoolControlTimeEntry2.getBedTimeTo());
                 if(schoolControlTimeEntry2.getSchoolTimeFrom().equals("") && schoolControlTimeEntry2.getSchoolTimeTo().equals("")){
-                    objectMap.put("schoolTime","07:30-07:30");
+                    objectMap.put("schoolTime",schoolControlTimeEntry2.getBedTimeTo()+"-"+schoolControlTimeEntry2.getBedTimeTo());
                     objectMap.put("homeTime",schoolControlTimeEntry2.getBedTimeTo()+"-"+schoolControlTimeEntry2.getBedTimeFrom());
+                }else{
+                    if(schoolControlTimeEntry2.getSchoolTimeFrom().equals(schoolControlTimeEntry2.getBedTimeTo())){//一段
+                        objectMap.put("homeTime",schoolControlTimeEntry2.getSchoolTimeTo()+"-"+schoolControlTimeEntry2.getBedTimeFrom());
+                    }else{//两段
+                        objectMap.put("homeTime",schoolControlTimeEntry2.getBedTimeTo()+"-"+schoolControlTimeEntry2.getSchoolTimeFrom()+" "+schoolControlTimeEntry2.getSchoolTimeTo()+"-"+schoolControlTimeEntry2.getBedTimeFrom());
+                    }
                 }
                 long ssm = dateTime;
                 if(schoolControlTimeEntry2.getSchoolTimeFrom()!=null&& !schoolControlTimeEntry2.getSchoolTimeFrom().equals("")){
@@ -739,7 +757,8 @@ public class ControlSchoolPhoneService {
                 }
             }else{
                 objectMap.put("schoolTime","07:30-17:30");
-                objectMap.put("homeTime","22:00-07:30");
+                objectMap.put("bedTime","22:00-07:30");
+                objectMap.put("homeTime","17:30-22:00");
                 long ssm = DateTimeUtils.getStrToLongTime(string+" 07:30", "yyyy-MM-dd HH:mm");
                 long sem = DateTimeUtils.getStrToLongTime(string+" 17:30", "yyyy-MM-dd HH:mm");
                 objectMap.put("isControl",false);
@@ -965,7 +984,7 @@ public class ControlSchoolPhoneService {
             Map<String,Object>  dto  = new HashMap<String, Object>();
             dto.put("packageName",appDetailEntry.getAppPackageName());
             dto.put("id",appDetailEntry.getID().toString());
-
+            dto.put("appName",appDetailEntry.getAppName());
             // 判断上课时间
             if(controlAppSchoolResultEntry1!=null){
                 dto.put("freeTime",controlAppSchoolResultEntry1.getFreeTime()/60000);
@@ -1148,8 +1167,14 @@ public class ControlSchoolPhoneService {
             objectMap.put("schoolTime",schoolControlTimeEntry.getSchoolTimeFrom()+"-"+schoolControlTimeEntry.getSchoolTimeTo());
             objectMap.put("bedTime",schoolControlTimeEntry.getBedTimeFrom()+"-"+schoolControlTimeEntry.getBedTimeTo());
             if(schoolControlTimeEntry.getSchoolTimeFrom().equals("") && schoolControlTimeEntry.getSchoolTimeTo().equals("")){
-                objectMap.put("schoolTime","07:30-07:30");
+                objectMap.put("schoolTime",schoolControlTimeEntry.getBedTimeTo()+"-"+schoolControlTimeEntry.getBedTimeTo());
                 objectMap.put("homeTime",schoolControlTimeEntry.getBedTimeTo()+"-"+schoolControlTimeEntry.getBedTimeFrom());
+            }else{
+                if(schoolControlTimeEntry.getSchoolTimeFrom().equals(schoolControlTimeEntry.getBedTimeTo())){//一段
+                    objectMap.put("homeTime",schoolControlTimeEntry.getSchoolTimeTo()+"-"+schoolControlTimeEntry.getBedTimeFrom());
+                }else{//两段
+                    objectMap.put("homeTime",schoolControlTimeEntry.getBedTimeTo()+"-"+schoolControlTimeEntry.getSchoolTimeFrom()+" "+schoolControlTimeEntry.getSchoolTimeTo()+"-"+schoolControlTimeEntry.getBedTimeFrom());
+                }
             }
             long ssm = dateTime;
             if(schoolControlTimeEntry.getSchoolTimeFrom()!=null&& !schoolControlTimeEntry.getSchoolTimeFrom().equals("")){
@@ -1222,10 +1247,16 @@ public class ControlSchoolPhoneService {
             }
             if(schoolControlTimeEntry2!=null){
                 objectMap.put("schoolTime",schoolControlTimeEntry2.getSchoolTimeFrom()+"-"+schoolControlTimeEntry2.getSchoolTimeTo());
-                objectMap.put("homeTime",schoolControlTimeEntry2.getBedTimeFrom()+"-"+schoolControlTimeEntry2.getBedTimeTo());
+                objectMap.put("bedTime",schoolControlTimeEntry2.getBedTimeFrom()+"-"+schoolControlTimeEntry2.getBedTimeTo());
                 if(schoolControlTimeEntry2.getSchoolTimeFrom().equals("") && schoolControlTimeEntry2.getSchoolTimeTo().equals("")){
-                    objectMap.put("schoolTime","07:30-07:30");
+                    objectMap.put("schoolTime",schoolControlTimeEntry2.getBedTimeTo()+"-"+schoolControlTimeEntry2.getBedTimeTo());
                     objectMap.put("homeTime",schoolControlTimeEntry2.getBedTimeTo()+"-"+schoolControlTimeEntry2.getBedTimeFrom());
+                }else{
+                    if(schoolControlTimeEntry2.getSchoolTimeFrom().equals(schoolControlTimeEntry2.getBedTimeTo())){//一段
+                        objectMap.put("homeTime",schoolControlTimeEntry2.getSchoolTimeTo()+"-"+schoolControlTimeEntry2.getBedTimeFrom());
+                    }else{//两段
+                        objectMap.put("homeTime",schoolControlTimeEntry2.getBedTimeTo()+"-"+schoolControlTimeEntry2.getSchoolTimeFrom()+" "+schoolControlTimeEntry2.getSchoolTimeTo()+"-"+schoolControlTimeEntry2.getBedTimeFrom());
+                    }
                 }
                 long ssm = dateTime;
                 if(schoolControlTimeEntry2.getSchoolTimeFrom()!=null&& !schoolControlTimeEntry2.getSchoolTimeFrom().equals("")){
@@ -1242,6 +1273,7 @@ public class ControlSchoolPhoneService {
             }else{
                 objectMap.put("schoolTime","07:30-17:30");
                 objectMap.put("homeTime","22:00-07:30");
+                objectMap.put("homeTime","17:30-22:00");
                 long ssm = DateTimeUtils.getStrToLongTime(string+" 07:30", "yyyy-MM-dd HH:mm");
                 long sem = DateTimeUtils.getStrToLongTime(string+" 17:30", "yyyy-MM-dd HH:mm");
                 objectMap.put("isControl",false);

@@ -280,6 +280,14 @@ public class ControlPhoneService {
         if(null == entry){
             ControlAppDTO dto = new ControlAppDTO();
             List<String> olist = new ArrayList<String>();
+            //校管控加入系统推送
+            ControlAppSystemEntry controlAppSystemEntry = controlAppSystemDao.getEntry();
+            if(controlAppSystemEntry != null){
+                List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
+                for(ObjectId obid : ids){
+                    olist.add(obid.toString());
+                }
+            }
             olist.add(appId.toString());
             dto.setAppIdList(olist);
             dto.setCommunityId(communityId.toString());
@@ -4773,6 +4781,92 @@ public class ControlPhoneService {
 
     //获取新班级管控版本
     public Map<String,Object> getNewCommunityVersionList(ObjectId communityId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ControlVersionDTO> dtos = new ArrayList<ControlVersionDTO>();
+        List<ControlVersionEntry> entries = controlVersionDao.getCommunityVersionList(communityId);
+        ControlVersionEntry entry = null;
+        Map<String,ControlVersionEntry> cmap = new HashMap<String, ControlVersionEntry>();
+        if(entries.size()>0){
+            entry = entries.get(0);
+        }
+        List<String> objectIdList4 = newVersionBindService.getStudentIdListByCommunityId(communityId);
+        List<ObjectId> objectIdList5 = new ArrayList<ObjectId>();
+        for(String string : objectIdList4){
+            objectIdList5.add(new ObjectId(string));
+        }
+        long current = System.currentTimeMillis()-7*24*60*60*1000;
+        List<ControlVersionEntry> entries3 = controlVersionDao.getAllStudentVersionList(objectIdList5,current);
+        for(ControlVersionEntry controlVersionEntry3 : entries3){
+            ControlVersionEntry controlVersionEntry4 = cmap.get(controlVersionEntry3.getUserId().toString());
+            if(controlVersionEntry4!=null){
+                if(controlVersionEntry4.getDateTime()<controlVersionEntry3.getDateTime()){
+                    cmap.put(controlVersionEntry3.getUserId().toString(),controlVersionEntry3);
+                }
+            }else{
+                cmap.put(controlVersionEntry3.getUserId().toString(),controlVersionEntry3);
+            }
+        }
+        List<UserDetailInfoDTO> unList = userService.findUserInfoByUserIds(objectIdList4);
+        for(UserDetailInfoDTO ddto:unList){
+            ControlVersionEntry controlVersionEntry2 = cmap.get(ddto.getId());
+            if(controlVersionEntry2 !=null){
+                ControlVersionDTO dto = new ControlVersionDTO(controlVersionEntry2);
+                boolean flag = false;
+                String cacheUserKey= CacheHandler.getUserKey(controlVersionEntry2.getUserId().toString());
+                if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
+                    SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
+                    if (null != sv && !sv.isEmpty()) {
+                        flag = true;
+                    }
+                }
+                if(flag){
+
+                }else{
+                    dto.setVersion("已退出");
+                }
+                if(entry != null && controlVersionEntry2.getVersion().equals(entry.getVersion())){
+                    dto.setLevel(3);//匹配
+                }else{
+                    dto.setLevel(2);//不匹配
+                }
+                String name = StringUtils.isNotEmpty(ddto.getNickName())?ddto.getNickName():ddto.getUserName();
+                dto.setUserName(name);
+                dto.setDateTime(0l);
+                dtos.add(dto);
+            }else{
+                ControlVersionDTO dto = new ControlVersionDTO();
+                String name = StringUtils.isNotEmpty(ddto.getNickName())?ddto.getNickName():ddto.getUserName();
+                dto.setUserName(name);
+                dto.setVersion("暂无数据");
+                dto.setLevel(2);
+                dto.setCommunityId(communityId.toString());
+                dto.setDateTime(0l);
+                dto.setId("");
+                dto.setType(1);
+                dto.setUserId(ddto.getId());
+                dtos.add(dto);
+            }
+        }
+        if(entry!=null){
+            map.put("dto",new ControlVersionDTO(entry));
+        }else{
+            ControlVersionDTO dto = new ControlVersionDTO();
+            dto.setUserName("");
+            dto.setVersion("暂无数据");
+            dto.setLevel(1);
+            dto.setCommunityId(communityId.toString());
+            dto.setDateTime(0l);
+            dto.setId("");
+            dto.setType(2);
+            dto.setUserId("");
+            map.put("dto",dto);
+        }
+        map.put("list",dtos);
+        return map;
+    }
+
+    //获取新班级管控版本
+    public Map<String,Object> getThreeCommunityVersionList(ObjectId communityId){
         Map<String,Object> map = new HashMap<String, Object>();
         List<ControlVersionDTO> dtos = new ArrayList<ControlVersionDTO>();
         List<ControlVersionEntry> entries = controlVersionDao.getCommunityVersionList(communityId);

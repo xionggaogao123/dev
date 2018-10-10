@@ -2,6 +2,7 @@ package com.db.controlphone;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.controlphone.ControlPhoneEntry;
@@ -124,6 +125,28 @@ public class ControlPhoneDao extends BaseDao {
         }
         return entryList;
     }
+    //优化查询
+    public List<ControlPhoneEntry> getSonAllList(ObjectId parentId,ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("uid",userId).append("pid",parentId));
+        values.add(new BasicDBObject("typ",Constant.ONE));
+        query.append(Constant.MONGO_OR,values);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_PHONE,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ControlPhoneEntry> entryList = new ArrayList<ControlPhoneEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ControlPhoneEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     //修改
     public void updEntry(ControlPhoneEntry e) {
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());

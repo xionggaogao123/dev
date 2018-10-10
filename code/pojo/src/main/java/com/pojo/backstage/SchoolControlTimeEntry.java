@@ -140,4 +140,7 @@ public class SchoolControlTimeEntry extends BaseDBObject {
     public String getHolidayName(){
         return getSimpleStringValue("holidayName");
     }
+    public void setSchoolId(ObjectId schoolId){
+        setSimpleValue("schoolId",schoolId);
+    }
 }

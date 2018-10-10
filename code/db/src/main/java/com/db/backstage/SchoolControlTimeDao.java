@@ -83,4 +83,12 @@ public class SchoolControlTimeDao extends BaseDao {
         }
         return entryList;
     }
+
+    /**
+     * 新增学校增加默认校管控时间
+     * @param schoolControlBasicDBObjectList
+     */
+    public void saveNewSchoolAddControlTime(List<DBObject> schoolControlBasicDBObjectList) {
+        save(MongoFacroty.getAppDB(),Constant.COLLECTION_SCHOOL_CONTROL_TIME,schoolControlBasicDBObjectList);
+    }
 }

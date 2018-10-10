@@ -22,9 +22,12 @@ import com.fulaan.dto.MemberDTO;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.jiaschool.dto.SchoolCommunityDTO;
 import com.fulaan.utils.HSSFUtils;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.pojo.backstage.LogMessageType;
 import com.pojo.backstage.SchoolControlTimeEntry;
 import com.pojo.backstage.TeacherApproveEntry;
+import com.pojo.base.BaseDBObject;
 import com.pojo.business.ModuleTimeEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
@@ -192,6 +195,18 @@ public class BackStageSchoolManageService {
                             Arrays.asList(dto.getSchoolParagraphStr().split("-"))
                     )
             );
+            //新增学校增加默认校管控时间
+            //获取默认时间
+            List<SchoolControlTimeEntry> schoolControlTimeEntryList = schoolControlTimeDao.getDefaultSchoolControlSettingList();
+            List<DBObject> schoolControlDBObjectList = new ArrayList<DBObject>();
+            if (schoolControlTimeEntryList.size() >0){
+                for (SchoolControlTimeEntry entry : schoolControlTimeEntryList){
+                    entry.setSchoolId(oid);//封装进schoolId
+                    entry.setID(new ObjectId());//封装进新主键Id
+                    schoolControlDBObjectList.add(entry.getBaseEntry());
+                }
+                schoolControlTimeDao.saveNewSchoolAddControlTime(schoolControlDBObjectList);
+            }
             return oid.toString();
         }
 

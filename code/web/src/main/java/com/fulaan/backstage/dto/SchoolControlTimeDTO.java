@@ -170,7 +170,7 @@ public class SchoolControlTimeDTO {
 
     public String getBedTime() {
         String bedTime = "";
-        if ("0".equals(this.bedTimeTo.charAt(0)+"")){
+        if (!"".equals(this.bedTimeTo) && "0".equals(this.bedTimeTo.charAt(0) + "")) {
             bedTime = this.bedTimeFrom+"-次日"+this.bedTimeTo;
         }else {
             bedTime = this.bedTimeFrom+"-"+this.bedTimeTo;

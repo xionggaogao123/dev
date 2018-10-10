@@ -1949,7 +1949,9 @@ public class DefaultCommunityController extends BaseController {
             RemarkEntry entry = new RemarkEntry(userId, new ObjectId(endUserId), remark);
             communityService.saveRemark(entry);
         }
-        return RespObj.SUCCESS;
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        respObj.setMessage("添加成功！");
+        return respObj;
     }
 
     @RequestMapping("/communityMessageList")

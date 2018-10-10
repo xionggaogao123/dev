@@ -2279,7 +2279,7 @@ public class IndexPageService {
                 ob1.put("id",dto8.getId());
                 ob1.put("userName","家校美小助手");
                 ob1.put("subject","");
-                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178508126103aac1a705d.png");
+                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5bbd73f00a9d324192d17850.png");
                 ob1.put("title","系统通知");
                 ob1.put("time",dto8.getCreateTime());
                 ob1.put("content","您的小孩已进入校管控！");
@@ -2296,6 +2296,8 @@ public class IndexPageService {
                 ob1.put("isOwner",true);
                 ob1.put("allContent","");
                 obmap.add(ob1);
+            }else{
+
             }
         }
     }
@@ -2761,6 +2763,31 @@ public class IndexPageService {
                     ob1.put("title","登录提醒");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
+                    ob1.put("imageList",new ArrayList<Attachement>());
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",0);
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression","");
+                    ob1.put("isOwner",true);
+                    ob1.put("allContent","");
+                    list.add(ob1);
+                }else if(entry.getType()==6){
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("cardType",3);
+                    ob1.put("groupName","复兰教育");
+                    ob1.put("id",dto8.getId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject","");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5bbd73f00a9d324192d17850.png");
+                    ob1.put("title","系统通知");
+                    ob1.put("time",dto8.getCreateTime());
+                    ob1.put("content","您的小孩已进入校管控！");
                     ob1.put("imageList",new ArrayList<Attachement>());
                     ob1.put("commentCount",0);
                     ob1.put("videoList",new ArrayList<VideoDTO>());

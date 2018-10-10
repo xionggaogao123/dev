@@ -156,9 +156,10 @@ public class ControlSchoolPhoneService {
                 //持续时间
                 long freeTime = controlAppSchoolResultEntry.getFreeTime();
                 if(markStartFreeTime+freeTime>current){
+                    long htm = markStartFreeTime+freeTime-current;
                     //自由时间
                     appMap.put("isControl",0);
-                    appMap.put("freeTime",freeTime);
+                    appMap.put("freeTime",htm);
                     appMap.put("markStartFreeTime",markStartFreeTime);
                 }else{
                     appMap.put("isControl",1);

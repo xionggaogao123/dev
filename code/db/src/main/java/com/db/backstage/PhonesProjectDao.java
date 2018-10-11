@@ -17,8 +17,9 @@ import java.util.List;
  */
 public class PhonesProjectDao extends BaseDao {
 
-    public void saveProjectEntry(PhonesProjectEntry phonesProjectEntry) {
+    public String saveProjectEntry(PhonesProjectEntry phonesProjectEntry) {
         save(MongoFacroty.getAppDB(),Constant.COLLECTION_PHONES_PROJECT,phonesProjectEntry.getBaseEntry());
+        return phonesProjectEntry.getID().toString();
     }
 
     public List<PhonesProjectEntry> getAllProjects() {

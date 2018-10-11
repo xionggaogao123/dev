@@ -204,6 +204,7 @@ public class BackStageStorageManageService {
                         "",
                         "",
                         "",
+                        "",
                         "0",//新机入库
                         "",
                         needRepairComment

@@ -40,8 +40,9 @@ public class BackStageInOutStorageService {
          * 对项目信息新增或者更新
          */
         //没有projectId 就新增
+        String projectId = "";
         if (map.get("projectId") != null && map.get("projectId").toString() == "" ){
-            phonesProjectDao.saveProjectEntry(new PhonesProjectEntry(
+            projectId = phonesProjectDao.saveProjectEntry(new PhonesProjectEntry(
                     //构造无Id
                     map.get("projectName").toString(),
                     map.get("projectDockPeople").toString(),
@@ -52,7 +53,7 @@ public class BackStageInOutStorageService {
                     map.get("address").toString()
             ));
         }else {
-            phonesProjectDao.saveProjectEntry(new PhonesProjectEntry(
+            projectId = phonesProjectDao.saveProjectEntry(new PhonesProjectEntry(
                     //构造有Id
                     new ObjectId(map.get("projectId").toString()),
                     map.get("projectName").toString(),
@@ -65,6 +66,7 @@ public class BackStageInOutStorageService {
             ));
         }
         //增加项目出库信息
+        map.put("projectId", projectId);
         addProjectOutStorageRecord(map);
 
         //对库存手机状态更新成出库状态 5
@@ -100,6 +102,7 @@ public class BackStageInOutStorageService {
                         tjsonIn.get("inStorageMonth") == null ? "" : tjsonIn.get("inStorageMonth").toString(),
                         tjsonIn.get("storageStatus") == null ? "" : tjsonIn.get("storageStatus").toString(),
                         tjsonIn.get("comment") == null ? "" : tjsonIn.get("comment").toString(),
+                        map.get("projectId") == null ? "" : map.get("projectId").toString(),
                         map.get("projectName") == null ? "" : map.get("projectName").toString(),
                         map.get("projectDockPeople") == null ? "" : map.get("projectDockPeople").toString(),
                         map.get("schoolName") == null ? "" : map.get("schoolName").toString(),

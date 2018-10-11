@@ -38,6 +38,7 @@ import java.util.List;
  * expressNo	物流单号
  * deliveryMethod	发货方式
  * ================项目信息============
+ * projectId	项目Id
  * projectName	项目名称
  * projectDockPeople		项目对接人
  * schoolName	学校名称
@@ -85,6 +86,7 @@ public class InOutStorageEntry extends BaseDBObject {
                              String inStorageMonth,
                              String storageStatus,
                              String comment,
+                             String projectId,
                              String projectName,
                              String projectDockPeople,
                              String schoolName,
@@ -119,6 +121,7 @@ public class InOutStorageEntry extends BaseDBObject {
                 .append("inStorageMonth", inStorageMonth)
                 .append("storageStatus", storageStatus)
                 .append("comment", comment)
+                .append("projectId", projectId)
                 .append("projectName", projectName)
                 .append("projectDockPeople", projectDockPeople)
                 .append("schoolName", schoolName)

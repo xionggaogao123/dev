@@ -242,4 +242,29 @@ public class HomeSchoolDao extends BaseDao {
         map.put("count",dbListCount.size());
         return map;
     }
+
+    /**
+     * 获取所有学校Id（除去设置过校管控时间的学校Id集合）
+     * @param schoolControlIdList
+     * @return
+     */
+    public List<ObjectId> getSchoolNotControlIdList(List<ObjectId> schoolControlIdList) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        query.append(Constant.ID, new BasicDBObject(Constant.MONGO_NOTIN, schoolControlIdList));
+
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_HOME_SCHOOL,
+                        query);
+        List<ObjectId> schoolNotControlIdList = new ArrayList<ObjectId>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                if (!schoolNotControlIdList.contains(new HomeSchoolEntry((BasicDBObject) obj).getID())){
+                    schoolNotControlIdList.add(new HomeSchoolEntry((BasicDBObject) obj).getID());
+                }
+            }
+        }
+        return schoolNotControlIdList;
+    }
 }

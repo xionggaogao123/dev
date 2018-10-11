@@ -91,4 +91,25 @@ public class SchoolControlTimeDao extends BaseDao {
     public void saveNewSchoolAddControlTime(List<DBObject> schoolControlBasicDBObjectList) {
         save(MongoFacroty.getAppDB(),Constant.COLLECTION_SCHOOL_CONTROL_TIME,schoolControlBasicDBObjectList);
     }
+
+    /**
+     * 获取已经设置过校管控时间的学校Id集合
+     * @return
+     */
+    public List<ObjectId> getSchoolControlIdList() {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("schoolId", new BasicDBObject(Constant.MONGO_NE,null));
+
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(),Constant.COLLECTION_SCHOOL_CONTROL_TIME,query);
+        List<ObjectId> schoolControlIdList = new ArrayList<ObjectId>();
+        for (DBObject dbObject : dbObjectList){
+            if (dbObject != null){
+                if (new SchoolControlTimeEntry(dbObject).getSchoolId() != null && !schoolControlIdList.contains(new ObjectId(new SchoolControlTimeEntry(dbObject).getSchoolId()))) {
+                    schoolControlIdList.add(new ObjectId(new SchoolControlTimeEntry(dbObject).getSchoolId()));
+                }
+            }
+        }
+        return schoolControlIdList;
+    }
 }

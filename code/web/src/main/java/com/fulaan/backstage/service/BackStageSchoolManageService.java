@@ -749,4 +749,39 @@ public class BackStageSchoolManageService {
         }
         return schoolControlTimeDTOList;
     }
+
+    /**
+     * 修复存在学校没有默认管控时间
+     */
+    public String fixOldSchoolControlTimeSetting() {
+        String result = "";
+        try {
+            //获取已经设置过校管控时间的学校Id集合
+            List<ObjectId> schoolControlIdList = schoolControlTimeDao.getSchoolControlIdList();
+            if (schoolControlIdList.size()>0){
+                //获取所有学校Id（除去设置过校管控时间的学校Id集合）
+                List<ObjectId> schoolNotControlIdList = homeSchoolDao.getSchoolNotControlIdList(schoolControlIdList);
+                //获取默认时间
+                List<SchoolControlTimeEntry> schoolControlTimeEntryList = schoolControlTimeDao.getDefaultSchoolControlSettingList();
+
+                List<DBObject> schoolControlDBObjectList = new ArrayList<DBObject>();
+                if (schoolControlTimeEntryList.size() >0){
+                    for (ObjectId sid : schoolNotControlIdList){
+                        for (SchoolControlTimeEntry entry : schoolControlTimeEntryList){
+                            entry.setSchoolId(sid);//封装进schoolId
+                            System.out.println(new ObjectId());
+                            entry.setID(new ObjectId());//封装进新主键Id
+                            schoolControlDBObjectList.add(entry.getBaseEntry());
+                        }
+                        schoolControlTimeDao.saveNewSchoolAddControlTime(schoolControlDBObjectList);
+                    }
+                }
+            }
+            result = "修复成功！";
+        }catch (Exception e){
+            e.printStackTrace();
+            result = "修复失败！";
+        }
+        return result;
+    }
 }

@@ -2522,6 +2522,9 @@ public class ExcellentCoursesService {
                 dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));
             }
             map.put("list", dtos);
+            if(count==0 && dtos.size()>0){
+                count = 1;
+            }
             map.put("count", count);
             return map;
 

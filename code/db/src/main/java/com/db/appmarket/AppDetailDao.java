@@ -106,7 +106,11 @@ public class AppDetailDao extends BaseDao {
                 query,Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
-                entries.add(new AppDetailEntry(dbObject));
+                AppDetailEntry appDetailEntry = new AppDetailEntry(dbObject);
+                //除去个人中心
+                if(!"com.fulan.usercenter".equals(appDetailEntry.getAppPackageName())){
+                    entries.add(appDetailEntry);
+                }
             }
         }
         return entries;

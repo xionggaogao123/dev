@@ -58,7 +58,7 @@ public class ControlAppSchoolResultDao extends BaseDao {
     //单查询
     public ControlAppSchoolResultEntry getHomeEntry(int type,ObjectId communityId,ObjectId appId,int week) {
         BasicDBObject query =new BasicDBObject();
-        query.append("isr", Constant.ZERO) .append("cid", communityId) .append("aid", appId).append("typ",type).append("wek",week);
+        query.append("isr", Constant.ZERO) .append("cid", communityId) .append("aid", appId).append("typ",type).append("osr",week);
         DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_SCHOOL_RESULT, query, Constant.FIELDS);
         if(null!=dbo)
         {

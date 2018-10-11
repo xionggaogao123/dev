@@ -181,7 +181,12 @@ public class ControlSchoolPhoneService {
             appMap.put("id",appDetailEntry.getID().toString());
             ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*"+startNum);
             if(controlAppSchoolResultEntry==null){
-                controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*"+week);
+                if(week<6){
+                    controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*1");
+                }else{
+                    controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*6");
+                }
+
             }
             appMap.put("isControl",1);//管控中
             appMap.put("freeTime",0);
@@ -1001,7 +1006,7 @@ public class ControlSchoolPhoneService {
             int i =0;
             //判断放学时间
             if(controlAppSchoolResultEntry2!=null){
-                timeStr.append(controlAppSchoolResultEntry2.getFreeTime()/60000);
+                timeStr.append(controlAppSchoolResultEntry2.getOutSchoolCanUseTime()/60000);
                 timeStr.append("#");
                 i++;
             }else{
@@ -1009,7 +1014,7 @@ public class ControlSchoolPhoneService {
                 timeStr.append("#");
             }
             if(controlAppSchoolResultEntry3!=null){
-                timeStr.append(controlAppSchoolResultEntry3.getFreeTime()/60000);
+                timeStr.append(controlAppSchoolResultEntry3.getOutSchoolCanUseTime()/60000);
                 timeStr.append("#");
                 i++;
             }else{
@@ -1018,7 +1023,7 @@ public class ControlSchoolPhoneService {
             }
 
             if(controlAppSchoolResultEntry4!=null){
-                timeStr.append(controlAppSchoolResultEntry3.getFreeTime()/60000);
+                timeStr.append(controlAppSchoolResultEntry3.getOutSchoolCanUseTime()/60000);
                 i++;
             }else{
                 timeStr.append("0");

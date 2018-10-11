@@ -2481,9 +2481,9 @@ public class ExcellentCoursesService {
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         if(newVersionUserRoleEntry.getNewRole()==1 || newVersionUserRoleEntry.getNewRole()==2){//学生
             //获得学生所在社群
-            //objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
-            List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getAllEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current);
-            int count = excellentCoursesDao.selectOldCount(subjectId, current);
+            objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
+            List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getOldlEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current,objectIdList);
+            int count = excellentCoursesDao.selectNewCount(subjectId, current,objectIdList);
             List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
             for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
                 dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));

@@ -9,6 +9,7 @@ import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.RemarkDao;
 import com.db.groupchatrecord.RecordChatPersonalDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolAppDao;
@@ -30,6 +31,7 @@ import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.business.VersionOpenEntry;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.jiaschool.SchoolAppEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
@@ -110,6 +112,7 @@ public class ControlPhoneService {
     @Autowired
     private UserService userService;
 
+    private RemarkDao remarkDao = new RemarkDao();
 
 
     //添加可用电话
@@ -4866,7 +4869,7 @@ public class ControlPhoneService {
     }
 
     //获取新班级管控版本
-    public Map<String,Object> getThreeCommunityVersionList(ObjectId communityId){
+    public Map<String,Object> getThreeCommunityVersionList(ObjectId communityId,ObjectId userId){
         Map<String,Object> map = new HashMap<String, Object>();
         List<ControlVersionDTO> dtos = new ArrayList<ControlVersionDTO>();
         List<ControlVersionEntry> entries = controlVersionDao.getCommunityVersionList(communityId);
@@ -4893,6 +4896,7 @@ public class ControlPhoneService {
             }
         }
         List<UserDetailInfoDTO> unList = userService.findUserInfoByUserIds(objectIdList4);
+        Map<ObjectId,RemarkEntry> remarkEntryMap=remarkDao.find(userId, objectIdList5);
         for(UserDetailInfoDTO ddto:unList){
             ControlVersionEntry controlVersionEntry2 = cmap.get(ddto.getId());
             if(controlVersionEntry2 !=null){
@@ -4916,12 +4920,20 @@ public class ControlPhoneService {
                     dto.setLevel(2);//不匹配
                 }
                 String name = StringUtils.isNotEmpty(ddto.getNickName())?ddto.getNickName():ddto.getUserName();
+                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+                if(null!=remarkEntry){
+                    name = remarkEntry.getRemark();
+                }
                 dto.setUserName(name);
                 dto.setDateTime(0l);
                 dtos.add(dto);
             }else{
                 ControlVersionDTO dto = new ControlVersionDTO();
                 String name = StringUtils.isNotEmpty(ddto.getNickName())?ddto.getNickName():ddto.getUserName();
+                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+                if(null!=remarkEntry){
+                    name = remarkEntry.getRemark();
+                }
                 dto.setUserName(name);
                 dto.setVersion("暂无数据");
                 dto.setLevel(2);

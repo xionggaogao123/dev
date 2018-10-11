@@ -1,6 +1,7 @@
 package com.fulaan.personalcenter;
 
 import com.db.backstage.TeacherApproveDao;
+import com.db.business.BusinessRoleDao;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.experience.service.ExperienceService;
@@ -10,6 +11,7 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.utils.QiniuFileUtils;
 import com.pojo.app.SessionValue;
 import com.pojo.backstage.TeacherApproveEntry;
+import com.pojo.business.BusinessRoleEntry;
 import com.pojo.forum.FScoreDTO;
 import com.pojo.user.ExpLogType;
 import com.pojo.user.UserEntry;
@@ -60,6 +62,8 @@ public class DefaultPersonalCenterController extends BaseController {
     private MemberService memberService;
 
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
+    private BusinessRoleDao businessRoleDao = new BusinessRoleDao();
 
     @ApiOperation(value = "letterPage", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
@@ -227,20 +231,42 @@ public class DefaultPersonalCenterController extends BaseController {
         SessionValue sv = getSessionValue();
         TeacherApproveEntry entry = teacherApproveDao.getEntry(new ObjectId(sv.getId()));
         if(entry != null){
-            if(entry.getType()==2){
-                if(!imgpath1.contains("-headv1")){
+            BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(getUserId());
+            if(businessRoleEntry!=null){
+                if(!imgpath1.contains("-headv1") && !imgpath1.contains("-blueheadv1")){
                     String oldUrl = imgpath1;
-                    imgpath1 = imgpath1+"-headv1";
-                    teacherApproveDao.updateEntry4(new ObjectId(sv.getId()), entry.getType(), oldUrl, imgpath1);
+                    imgpath1 = imgpath1+"-blueheadv1";
+                    businessRoleEntry.setOldAvatar(oldUrl);
+                    businessRoleEntry.setNewAvatar(imgpath1);
+                    businessRoleDao.updEntry(businessRoleEntry);
                 }else{
                     String imagpage2 = imgpath1.replaceAll("-headv1","");
-                    String oldUrl = imagpage2;
-                    imagpage2 = imagpage2+"-headv1";
-                    teacherApproveDao.updateEntry4(new ObjectId(sv.getId()), entry.getType(), oldUrl, imagpage2);
-                    imgpath1 = imagpage2;
+                    String imagpage3 = imagpage2.replaceAll("-blueheadv1","");
+                    String oldUrl = imagpage3;
+                    imagpage3 = imagpage3+"-blueheadv1";
+                    businessRoleEntry.setOldAvatar(oldUrl);
+                    businessRoleEntry.setNewAvatar(imagpage3);
+                    businessRoleDao.updEntry(businessRoleEntry);
+                    imgpath1 = imagpage3;
                 }
+            }else{
+                if(entry.getType()==2){
+                    if(!imgpath1.contains("-headv1") && !imgpath1.contains("-blueheadv1")){
+                        String oldUrl = imgpath1;
+                        imgpath1 = imgpath1+"-headv1";
+                        teacherApproveDao.updateEntry4(new ObjectId(sv.getId()), entry.getType(), oldUrl, imgpath1);
+                    }else{
+                        String imagpage3 = imgpath1.replaceAll("-headv1","");
+                        String imagpage2 = imagpage3.replaceAll("-blueheadv1","");
+                        String oldUrl = imagpage2;
+                        imagpage2 = imagpage2+"-headv1";
+                        teacherApproveDao.updateEntry4(new ObjectId(sv.getId()), entry.getType(), oldUrl, imagpage2);
+                        imgpath1 = imagpage2;
+                    }
 
+                }
             }
+
         }
 
         userService.updateAvatar(sv.getId(), imgpath1);

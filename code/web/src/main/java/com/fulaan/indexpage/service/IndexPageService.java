@@ -2074,7 +2074,9 @@ public class IndexPageService {
                 }
                 if(indexContentEntry.getReaList()!=null){
                     List<ObjectId> rids = indexContentEntry.getReaList();
-                    rids.remove(indexContentEntry.getUserId());
+                    if(indexContentEntry.getContactType()!=8){
+                        rids.remove(indexContentEntry.getUserId());
+                    }
                     dto.setReadCount(rids.size());
                 }else{
                     dto.setReadCount(0);
@@ -2082,7 +2084,9 @@ public class IndexPageService {
                 if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(uid)){
                     dto.setTotalReadCount(indexContentEntry.getAllCount());
                 }else{
-                    dto.setTotalReadCount(indexContentEntry.getAllCount()-1);
+                    if(indexContentEntry.getContactType()!=8) {
+                        dto.setTotalReadCount(indexContentEntry.getAllCount() - 1);
+                    }
                 }
 
                 UserEntry userEntry = userEntryMap.get(uid);

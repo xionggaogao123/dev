@@ -28,6 +28,7 @@ import com.fulaan.utils.HSSFUtils;
 import com.mongodb.DBObject;
 import com.pojo.backstage.LogMessageType;
 import com.pojo.backstage.PushMessageEntry;
+import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.business.*;
 import com.pojo.excellentCourses.*;
 import com.pojo.fcommunity.CommunityEntry;
@@ -1629,13 +1630,25 @@ public class BusinessManageService {
         //加入基础权限
         BusinessRoleEntry businessRoleEntry2 = businessRoleDao.getEntry(roleId);
         if (businessRoleEntry2 != null) {
-            String oldUrl = "";
-            if (StringUtils.isNotBlank(businessRoleEntry2.getOldAvatar())) {
-                oldUrl = businessRoleEntry2.getOldAvatar();
-              //加运营人员大v
-                userDao.updateAvater(roleId,oldUrl);
-                memberDao.updateAllAvatar(roleId, oldUrl);
-            } 
+            String imgpath1 = businessRoleEntry2.getOldAvatar();
+            TeacherApproveEntry entry = teacherApproveDao.getEntry(roleId);
+            if(entry!=null && entry.getType()==2){
+                String imagpage3 = imgpath1.replaceAll("-headv1","");
+                String imagpage2 = imagpage3.replaceAll("-blueheadv1","");
+                imagpage2 = imagpage2+"-headv1";
+                teacherApproveDao.updateEntry4(roleId, entry.getType(), imgpath1, imagpage2);
+                //加运营人员大v
+                userDao.updateAvater(roleId,imagpage2);
+                memberDao.updateAllAvatar(roleId, imagpage2);
+            }else{
+                if (StringUtils.isNotBlank(businessRoleEntry2.getOldAvatar())) {
+                    String oldUrl = businessRoleEntry2.getOldAvatar();
+                    //加运营人员大v
+                    userDao.updateAvater(roleId,oldUrl);
+                    memberDao.updateAllAvatar(roleId, oldUrl);
+                }
+            }
+
             businessRoleDao.delEntry(roleId);
         }
         

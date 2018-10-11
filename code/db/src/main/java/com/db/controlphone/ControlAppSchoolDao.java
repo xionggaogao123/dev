@@ -8,6 +8,7 @@ import com.pojo.controlphone.ControlAppSchoolEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,26 @@ public class ControlAppSchoolDao extends BaseDao {
             }
         }
         return map;
+    }
+
+    //查找不受管控的应用
+    public List<ObjectId> getNoAppList() {
+        BasicDBObject query = new BasicDBObject()
+                .append("cty", 2)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_APP_SCHOOL,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ObjectId> list = new ArrayList<ObjectId>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                ControlAppSchoolEntry controlAppSchoolEntry = new ControlAppSchoolEntry((BasicDBObject) obj);
+                list.add(controlAppSchoolEntry.getAppId());
+            }
+        }
+        return list;
     }
 
     public Map<String,ControlAppSchoolEntry> getEntryMap(List<ObjectId> appIds) {

@@ -4920,7 +4920,7 @@ public class ControlPhoneService {
                     dto.setLevel(2);//不匹配
                 }
                 String name = StringUtils.isNotEmpty(ddto.getNickName())?ddto.getNickName():ddto.getUserName();
-                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+                RemarkEntry remarkEntry=remarkEntryMap.get(new ObjectId(ddto.getId()));
                 if(null!=remarkEntry){
                     name = remarkEntry.getRemark();
                 }
@@ -4930,7 +4930,7 @@ public class ControlPhoneService {
             }else{
                 ControlVersionDTO dto = new ControlVersionDTO();
                 String name = StringUtils.isNotEmpty(ddto.getNickName())?ddto.getNickName():ddto.getUserName();
-                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+                RemarkEntry remarkEntry=remarkEntryMap.get(new ObjectId(ddto.getId()));
                 if(null!=remarkEntry){
                     name = remarkEntry.getRemark();
                 }

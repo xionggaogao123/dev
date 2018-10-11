@@ -174,45 +174,49 @@ public class ControlSchoolPhoneService {
         }
         //放学记录
         List<Map<String,Object>> mapList2 = new ArrayList<Map<String, Object>>();
+        //不受管控的类型
+        List<ObjectId> objectIdList1 = controlAppSchoolDao.getNoAppList();
         for(AppDetailEntry appDetailEntry:appDetailEntries){
-            Map<String,Object> appMap = new HashMap<String, Object>();
-            appMap.put("logo",appDetailEntry.getLogo());
-            appMap.put("name",appDetailEntry.getAppName());
-            appMap.put("id",appDetailEntry.getID().toString());
-            ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*"+startNum);
-            if(controlAppSchoolResultEntry==null){
-                if(week<6){
-                    controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*1");
-                }else{
-                    controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*6");
-                }
+            if(!objectIdList1.contains(appDetailEntry.getID())){//过滤放学后不受管控的类型
+                Map<String,Object> appMap = new HashMap<String, Object>();
+                appMap.put("logo",appDetailEntry.getLogo());
+                appMap.put("name",appDetailEntry.getAppName());
+                appMap.put("id",appDetailEntry.getID().toString());
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*"+startNum);
+                if(controlAppSchoolResultEntry==null){
+                    if(week<6){
+                        controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*1");
+                    }else{
+                        controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*6");
+                    }
 
-            }
-            appMap.put("isControl",1);//管控中
-            appMap.put("freeTime",0);
-            appMap.put("today",0);
-            appMap.put("controlType",1);
-            if(controlAppSchoolResultEntry!=null){
-                appMap.put("controlType",controlAppSchoolResultEntry.getControlType());
-                appMap.put("freeTime",controlAppSchoolResultEntry.getOutSchoolCanUseTime());
-                if(controlAppSchoolResultEntry.getOutSchoolRule()==0){
-                    appMap.put("today",1);
                 }
-                if(controlAppSchoolResultEntry.getControlType()==2 || controlAppSchoolResultEntry.getFreeTime()!=0){
-                    appMap.put("isControl",0);
-                }
-
-            }else{
-                ControlAppSchoolEntry controlAppSchoolEntry = schoolEntryMap.get(appDetailEntry.getID().toString()+"*"+0);
-                if(controlAppSchoolEntry!=null){//暂时都开放
-                    appMap.put("controlType",controlAppSchoolEntry.getControlType());
-                    appMap.put("freeTime",controlAppSchoolEntry.getFreeTime());
-                    if(controlAppSchoolEntry.getControlType()==2 || controlAppSchoolEntry.getFreeTime()!=0){
+                appMap.put("isControl",1);//管控中
+                appMap.put("freeTime",0);
+                appMap.put("today",0);
+                appMap.put("controlType",1);
+                if(controlAppSchoolResultEntry!=null){
+                    appMap.put("controlType",controlAppSchoolResultEntry.getControlType());
+                    appMap.put("freeTime",controlAppSchoolResultEntry.getOutSchoolCanUseTime());
+                    if(controlAppSchoolResultEntry.getOutSchoolRule()==0){
+                        appMap.put("today",1);
+                    }
+                    if(controlAppSchoolResultEntry.getControlType()==2 || controlAppSchoolResultEntry.getFreeTime()!=0){
                         appMap.put("isControl",0);
                     }
+
+                }else{
+                    ControlAppSchoolEntry controlAppSchoolEntry = schoolEntryMap.get(appDetailEntry.getID().toString()+"*"+0);
+                    if(controlAppSchoolEntry!=null){//暂时都开放
+                        appMap.put("controlType",controlAppSchoolEntry.getControlType());
+                        appMap.put("freeTime",controlAppSchoolEntry.getFreeTime());
+                        if(controlAppSchoolEntry.getControlType()==2 || controlAppSchoolEntry.getFreeTime()!=0){
+                            appMap.put("isControl",0);
+                        }
+                    }
                 }
+                mapList2.add(appMap);
             }
-            mapList2.add(appMap);
         }
         map.put("schoolList",mapList1);
         map.put("homeList",mapList2);
@@ -637,6 +641,8 @@ public class ControlSchoolPhoneService {
         //获取默认配置
         Map<String,ControlAppSchoolEntry> schoolEntryMap =  controlAppSchoolDao.getEntryList(objectIdList);
         List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
+        //不受管控的类型
+        List<ObjectId> objectIdList1 = controlAppSchoolDao.getNoAppList();
         for(AppDetailEntry appDetailEntry:appDetailEntries){
             ControlAppSchoolEntry controlAppSchoolEntry = schoolEntryMap.get(appDetailEntry.getID().toString()+"*0");
             Map<String,Object>  dto  = new HashMap<String, Object>();
@@ -660,7 +666,11 @@ public class ControlSchoolPhoneService {
                 dto.put("saveTime", current);
                 dto.put("outSchoolCanUseTime", "0#0#0");
                 dto.put("outSchoolRule", "0#1#6");
-                dto.put("controlType", 1);
+                if(objectIdList1.contains(appDetailEntry.getID())){
+                    dto.put("controlType", 2);
+                }else{
+                    dto.put("controlType", 1);
+                }
             }
             mapList.add(dto);
         }
@@ -977,6 +987,8 @@ public class ControlSchoolPhoneService {
         //获取默认配置
         Map<String,ControlAppSchoolEntry> schoolEntryMap =  controlAppSchoolDao.getEntryList(objectIdList);
         List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
+        //不受管控的类型
+        List<ObjectId> objectIdList1 = controlAppSchoolDao.getNoAppList();
         for(AppDetailEntry appDetailEntry:appDetailEntries){
             //获得 上课时间的数据
             ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+1+"*");
@@ -995,12 +1007,21 @@ public class ControlSchoolPhoneService {
                 dto.put("freeTime",controlAppSchoolResultEntry1.getFreeTime()/60000);
                 dto.put("markStartFreeTime",current);
                 dto.put("saveTime",current);
-                dto.put("controlType",controlAppSchoolResultEntry1.getControlType());
+                if(objectIdList1.contains(appDetailEntry.getID())){
+                    dto.put("controlType",2);
+                }else{
+                    dto.put("controlType",controlAppSchoolResultEntry1.getControlType());
+                }
+
             }else {
                 dto.put("freeTime", 0);
                 dto.put("markStartFreeTime", current);
                 dto.put("saveTime", current);
-                dto.put("controlType", 1);
+                if(objectIdList1.contains(appDetailEntry.getID())){
+                    dto.put("controlType", 2);
+                }else{
+                    dto.put("controlType", 1);
+                }
             }
             StringBuffer timeStr = new StringBuffer();
             int i =0;

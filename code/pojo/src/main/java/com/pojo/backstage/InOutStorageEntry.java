@@ -7,6 +7,7 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
  * inStorageTime  入库时间    String
  * inStorageYear  入库年    String
  * inStorageMonth  入库月    String
- * storageStatus 入库状态( 参考小兰退货 "serviceVersion":2, 维修(不入库)    "serviceVersion":1, 退货  "serviceVersion":3, 换货     4 回收入库     0 新机入库 5 出库) String
+ * storageStatus 入库状态( 参考小兰退货 "serviceVersion":2, 维修(入库)    "serviceVersion":1, 退货  "serviceVersion":3, 换货     4 回收入库     0 新机入库 5 出库) String
  * comment 备注   String
  * commentType 备注类型   String
  * needRepairComment    故障维修    List<String>
@@ -54,7 +55,12 @@ import java.util.List;
  * recycleComment	回收备注
  * repairRange		维修范围
  * repairCost		维修价格
- * storageRecordStatus 记录出入库状态( 0 新机入库 参考小兰退货 "serviceVersion":1, 退货 "serviceVersion":2, 维修(入库)      "serviceVersion":3, 换货     4 回收入库    5 出库(数据存在物流信息表示发货))
+ * storageRecordStatus 记录出入库状态( 0 新机入库 参考小兰退货 "serviceVersion":1, 退货 "serviceVersion":2, 维修(入库)      "serviceVersion":3, 换货     4 回收入库    5 出库(数据存在物流信息表示发货) 6, 待维修)
+ *维修入库新加字段
+ * isPay 是否已付款
+ * payFrom 付款方
+ * afterRepair 维修完成后
+ * repairType  维修类型
  */
 public class InOutStorageEntry extends BaseDBObject {
 
@@ -139,6 +145,89 @@ public class InOutStorageEntry extends BaseDBObject {
                 .append("storageRecordStatus", storageRecordStatus)
                 .append("commentType", commentType)
                 .append("needRepairComment", needRepairComment)
+                .append("isr", Constant.ZERO);
+        setBaseEntry(basicDBObject);
+    }
+
+
+    //维修新增构造
+    public InOutStorageEntry(String imeiNo,
+                             String phoneModel,
+                             String color,
+                             String manufacturer,
+                             String inStorageTime,
+                             String inStorageYear,
+                             String inStorageMonth,
+                             String storageStatus,
+                             String comment,
+                             String projectName,
+                             String projectDockPeople,
+                             String schoolName,
+                             String accessClass,
+                             String accessObj,
+                             String contactInfo,
+                             String address,
+                             String deliveryTime,
+                             String deliveryMethod,
+                             String excompanyNo,
+                             String expressNo,
+                             String parentName,
+                             String parentMobile,
+                             String parentId,
+                             String studentName,
+                             String studentMobile,
+                             String studentId,
+                             String recycleComment,
+                             String repairRange,
+                             String repairCost,
+                             String storageRecordStatus,
+                             String commentType,
+                             List<String> needRepairComment,
+                             String isPay,
+                             String payFrom,
+                             String afterRepair,
+                             String repairType
+    ) {
+        BasicDBObject basicDBObject = new BasicDBObject()
+                .append("imeiNo", imeiNo)
+                .append("phoneModel", phoneModel)
+                .append("color", color)
+                .append("manufacturer", manufacturer)
+                .append("inStorageTime", dateFormat.format(new Date()))
+                .append("inStorageYear", calendar.get(Calendar.YEAR)+"")
+                .append("inStorageMonth", (calendar.get(Calendar.MONTH) + 1)+"")
+                .append("storageStatus", storageStatus)
+                .append("comment", comment)
+                .append("projectName", projectName)
+                .append("projectDockPeople", projectDockPeople)
+                .append("schoolName", schoolName)
+                .append("accessClass", accessClass)
+                .append("accessObj", accessObj)
+                .append("contactInfo", contactInfo)
+                .append("address", address)
+                .append("outStorageTime", "")
+                .append("outStorageYear", "")
+                .append("outStorageMonth", "")
+                .append("deliveryTime", deliveryTime)
+                .append("deliveryMethod", deliveryMethod)
+                .append("excompanyNo", excompanyNo)
+                .append("expressNo", expressNo)
+                .append("parentName", parentName)
+                .append("parentMobile", parentMobile)
+                .append("parentId", parentId)
+                .append("studentName", studentName)
+                .append("studentMobile", studentMobile)
+                .append("studentId", studentId)
+                .append("recycleComment", recycleComment)
+                .append("repairRange", repairRange)
+                .append("repairCost", repairCost)
+                .append("storageRecordStatus", storageRecordStatus)
+                .append("commentType", commentType)
+                .append("needRepairComment", needRepairComment)
+                .append("isPay", isPay)
+                .append("payFrom", payFrom)
+                .append("afterRepair", afterRepair)
+                .append("repairType", repairType)
                 .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -299,6 +388,26 @@ public class InOutStorageEntry extends BaseDBObject {
 
     public String getOutStorageMonth() {
         return getSimpleStringValue("outStorageMonth");
+    }
+
+    public List<String> getNeedRepairComment() {
+        return (ArrayList)getSimpleObjectValue("needRepairComment");
+    }
+
+    public String getIsPay() {
+        return getSimpleStringValue("isPay");
+    }
+
+    public String getPayFrom() {
+        return getSimpleStringValue("payFrom");
+    }
+
+    public String getAfterRepair() {
+        return getSimpleStringValue("afterRepair");
+    }
+
+    public String getRepairType() {
+        return getSimpleStringValue("repairType");
     }
 
 }

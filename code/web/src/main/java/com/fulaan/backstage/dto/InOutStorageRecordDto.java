@@ -3,6 +3,8 @@ package com.fulaan.backstage.dto;
 import com.pojo.backstage.InOutStorageEntry;
 import com.pojo.backstage.StorageManageEntry;
 
+import java.util.List;
+
 /**
  * Created by taotao.chan on 2018年9月20日13:45:36
  */
@@ -41,6 +43,11 @@ public class InOutStorageRecordDto {
     private String outStorageTime;
     private String outStorageYear;
     private String outStorageMonth;
+    private List<String> needRepairComment;
+    private String isPay;
+    private String payFrom;
+    private String afterRepair;
+    private String repairType;
 
 
     public InOutStorageRecordDto(InOutStorageEntry entry){
@@ -78,6 +85,11 @@ public class InOutStorageRecordDto {
         this.outStorageTime = entry.getOutStorageTime();
         this.outStorageYear = entry.getOutStorageYear();
         this.outStorageMonth = entry.getOutStorageMonth();
+        this.needRepairComment = entry.getNeedRepairComment();
+        this.isPay = entry.getIsPay();
+        this.payFrom = entry.getPayFrom();
+        this.afterRepair = entry.getAfterRepair();
+        this.repairType = entry.getRepairType();
     }
 
     public String getId() {
@@ -350,5 +362,45 @@ public class InOutStorageRecordDto {
 
     public void setOutStorageMonth(String outStorageMonth) {
         this.outStorageMonth = outStorageMonth;
+    }
+
+    public List<String> getNeedRepairComment() {
+        return needRepairComment;
+    }
+
+    public void setNeedRepairComment(List<String> needRepairComment) {
+        this.needRepairComment = needRepairComment;
+    }
+
+    public String getIsPay() {
+        return isPay;
+    }
+
+    public void setIsPay(String isPay) {
+        this.isPay = isPay;
+    }
+
+    public String getPayFrom() {
+        return payFrom;
+    }
+
+    public void setPayFrom(String payFrom) {
+        this.payFrom = payFrom;
+    }
+
+    public String getAfterRepair() {
+        return afterRepair;
+    }
+
+    public void setAfterRepair(String afterRepair) {
+        this.afterRepair = afterRepair;
+    }
+
+    public String getRepairType() {
+        return repairType;
+    }
+
+    public void setRepairType(String repairType) {
+        this.repairType = repairType;
     }
 }

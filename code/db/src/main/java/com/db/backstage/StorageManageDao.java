@@ -140,7 +140,7 @@ public class StorageManageDao extends BaseDao {
         if (map.get("commentType") != null) {
             updateParam.append("commentType",map.get("commentType").toString());
         }
-        //对拼接的Id做处理
+        //对拼接的维修范围做处理
         List<String> needRepairCommentList = new ArrayList<String>();
         if (map.get("needRepairComments") != null){
             for (String needRepairComment : map.get("needRepairComments").toString().split(",")){
@@ -279,5 +279,55 @@ public class StorageManageDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE,query,updateValue);
 
         return map.get("imeiNo").toString();
+    }
+
+    public List<String> getPhoneModel() {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        //可用
+        query.append("useStatus", "1");
+        //出库不展示
+        List<String> outStorageStatusList = new ArrayList<String>();
+        outStorageStatusList.add("5");
+        query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
+
+        //查询
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE, query, Constant.FIELDS);
+        List<String> stringList = new ArrayList<String>();
+        for (DBObject dbObject : dbObjects){
+            if (!stringList.contains(new StorageManageEntry(dbObject).getPhoneModel())){
+                stringList.add(new StorageManageEntry(dbObject).getPhoneModel());
+            }
+        }
+        return stringList;
+    }
+
+    /**
+     * 维修入库
+     * @param imeiNo
+     * @param storageStatus
+     * @param useStatus
+     * @param inStorageTime
+     * @param inStorageYear
+     * @param inStorageMonth
+     * @return
+     */
+    public String updateStorageInfoByImeiNo(String imeiNo, String storageStatus, String useStatus, String inStorageTime, String inStorageYear, String inStorageMonth) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("imeiNo", imeiNo);
+
+        //更新内容
+        BasicDBObject updateParam = new BasicDBObject();
+        updateParam.append("storageStatus",storageStatus);
+        updateParam.append("useStatus",useStatus);
+        updateParam.append("inStorageTime",inStorageTime);
+        updateParam.append("inStorageYear",inStorageYear);
+        updateParam.append("inStorageMonth",inStorageMonth);
+
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE,query,updateValue);
+
+        return imeiNo;
     }
 }

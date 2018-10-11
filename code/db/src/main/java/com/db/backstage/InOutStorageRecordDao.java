@@ -10,10 +10,8 @@ import com.pojo.backstage.StorageManageEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Auther: taotao.chan
@@ -220,5 +218,115 @@ public class InOutStorageRecordDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
         return map.get("ids").toString();
 
+    }
+
+    public String addRepairManage(InOutStorageEntry inOutStorageEntry) {
+        save(MongoFacroty.getAppDB(),Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,inOutStorageEntry.getBaseEntry());
+        return inOutStorageEntry.getID().toString();
+    }
+
+    public Map<String,Object> getRepairManageList(int page, int pageSize, String inputParams, String year, String month, int isr) {
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", isr);
+
+        if (!"".equals(year)) {
+            query.append("inStorageYear", year);
+        }
+        if (!"".equals(month)) {
+            query.append("inStorageMonth", month);
+        }
+        if (!"".equals(inputParams)) {
+            BasicDBList values = new BasicDBList();
+            BasicDBObject query1 = new BasicDBObject().append("imeiNo", inputParams);
+            BasicDBObject query2 = new BasicDBObject().append("parentId", inputParams);
+            BasicDBObject query3 = new BasicDBObject().append("parentName", inputParams);
+            values.add(query1);
+            values.add(query2);
+            values.add(query3);
+            query.put(Constant.MONGO_OR, values);
+        }
+        //待维修（isr 0 待处理 isr 1 已完成）
+        query.append("storageRecordStatus", "6");
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query, Constant.FIELDS,
+                new BasicDBObject("inStorageTime", Constant.DESC),(page-1)*pageSize,pageSize);
+        List<InOutStorageEntry> inOutStorageEntryList = new ArrayList<InOutStorageEntry>();
+        for (DBObject dbObject : dbObjects){
+            inOutStorageEntryList.add(new InOutStorageEntry(dbObject));
+        }
+        Map<String,Object> result = new HashMap<String, Object>();
+        result.put("entryList",inOutStorageEntryList);
+        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query);
+        result.put("count",count);
+        return result;
+    }
+
+    /**
+     * 维修管理-修改
+     * @param map
+     * @return
+     */
+    public String updateRepairManage(Map map) {
+        BasicDBObject query = new BasicDBObject();
+        query.append(Constant.ID, new ObjectId(map.get("id").toString()));
+
+        BasicDBObject updateParam = new BasicDBObject();
+        if (map.get("repairType") != null) {
+            updateParam.append("repairType",map.get("repairType").toString());
+        }
+        //对拼接的维修范围做处理
+        List<String> needRepairCommentList = new ArrayList<String>();
+        if (map.get("repairCommentList") != null){
+            for (String needRepairComment : map.get("repairCommentList").toString().split(",")){
+                if (needRepairComment != ""){
+                    needRepairCommentList.add(needRepairComment);
+                }
+            }
+            updateParam.append("needRepairComment",needRepairCommentList);
+        }
+        if (map.get("repairCommentList") != null) {
+            updateParam.append("repairCommentList",map.get("repairCommentList").toString());
+        }
+
+        if (map.get("repairCost") != null) {
+            updateParam.append("repairCost",map.get("repairCost").toString());
+        }
+
+        if (map.get("isPay") != null) {
+            updateParam.append("isPay",map.get("isPay").toString());
+        }
+        if (map.get("payFrom") != null) {
+            updateParam.append("payFrom",map.get("payFrom").toString());
+        }
+        if (map.get("afterRepair") != null) {
+            updateParam.append("afterRepair",map.get("afterRepair").toString());
+        }
+        if (map.get("isr") != null) {
+            updateParam.append("isr",Integer.parseInt(map.get("isr").toString()));
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
+        updateParam.append("inStorageTime",inStorageTime);
+        updateParam.append("inStorageYear",inStorageYear);
+        updateParam.append("inStorageMonth",inStorageMonth);
+
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
+
+        return map.get("id").toString();
+    }
+
+    /**
+     * 新增单个记录
+     * @param inOutStorageEntry
+     * @return
+     */
+    public String addProjectOutStorageRecord(InOutStorageEntry inOutStorageEntry) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, inOutStorageEntry.getBaseEntry());
+        return inOutStorageEntry.getID().toString();
     }
 }

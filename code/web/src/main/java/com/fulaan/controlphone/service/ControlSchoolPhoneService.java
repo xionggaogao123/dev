@@ -203,7 +203,7 @@ public class ControlSchoolPhoneService {
                     if(controlAppSchoolResultEntry.getOutSchoolRule()==0){
                         appMap.put("today",1);
                     }
-                    if(controlAppSchoolResultEntry.getControlType()==2 || controlAppSchoolResultEntry.getFreeTime()!=0){
+                    if(controlAppSchoolResultEntry.getControlType()==2 || controlAppSchoolResultEntry.getOutSchoolCanUseTime()!=0){
                         appMap.put("isControl",0);
                     }
 
@@ -413,7 +413,7 @@ public class ControlSchoolPhoneService {
         //向学生端推送消息
         List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(communityId);
         try {
-            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(), objectIdList, current);
+            MQTTSendMsg.sendMessageList(MQTTType.mi.getEname(), objectIdList, current);
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
             String dateString = formatter.format(new Date(current));
             String scontent = dateString + MQTTType.mi.getEname();
@@ -468,7 +468,7 @@ public class ControlSchoolPhoneService {
         //向学生端推送消息
         List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(communityId);
         try {
-            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(), objectIdList, current);
+            MQTTSendMsg.sendMessageList(MQTTType.mi.getEname(), objectIdList, current);
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
             String dateString = formatter.format(new Date(current));
             String scontent = dateString + MQTTType.mi.getEname();
@@ -577,7 +577,7 @@ public class ControlSchoolPhoneService {
         //向学生端推送消息
         List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(communityId);
         try {
-            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(), objectIdList, current);
+            MQTTSendMsg.sendMessageList(MQTTType.mi.getEname(), objectIdList, current);
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
             String dateString = formatter.format(new Date(current));
             String scontent = dateString + MQTTType.mi.getEname();

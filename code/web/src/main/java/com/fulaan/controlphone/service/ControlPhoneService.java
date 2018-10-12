@@ -4876,7 +4876,19 @@ public class ControlPhoneService {
         ControlVersionEntry entry = null;
         Map<String,ControlVersionEntry> cmap = new HashMap<String, ControlVersionEntry>();
         if(entries.size()>0){
-            entry = entries.get(0);
+            int index = 0;
+            for(ControlVersionEntry controlVersionEntry:entries){
+                index++;
+                if(index==1){
+                    entry = controlVersionEntry;
+                }else{
+                    if(controlVersionEntry.getDateTime()>entry.getDateTime()){
+                        entry = controlVersionEntry;
+                    }
+                }
+            }
+
+
         }
         List<String> objectIdList4 = newVersionBindService.getStudentIdListByCommunityId(communityId);
         List<ObjectId> objectIdList5 = new ArrayList<ObjectId>();

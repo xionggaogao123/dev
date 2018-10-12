@@ -1133,7 +1133,7 @@ public class BusinessManageService {
         if(excellentCoursesEntry==null){
             return;
         }
-        List<ObjectId> hourClassEntries = hourClassDao.getObjectIdList(id);
+       // List<ObjectId> hourClassEntries = hourClassDao.getObjectIdList(id);
         double price = 0;
         String orderId = "";
         int orderType = 0;
@@ -1144,6 +1144,7 @@ public class BusinessManageService {
         //获得要删除的订单
         List<ClassOrderEntry> classOrderEntries = classOrderDao.getAllEntryIdList(userId, id);
         int number = 0;
+        Set<ObjectId> oids = new HashSet<ObjectId>();
         for(ClassOrderEntry classOrderEntry:classOrderEntries){
             price = sum(price, classOrderEntry.getPrice());
             number++;
@@ -1153,6 +1154,7 @@ public class BusinessManageService {
                 money = classOrderEntry.getMoney();
                 role = classOrderEntry.getRole();
             }
+            oids.add(classOrderEntry.getParentId());
             orderIds.add(classOrderEntry.getID());
 
         }
@@ -1171,7 +1173,9 @@ public class BusinessManageService {
             }
         }
         //1. 添加删除订单记录
-        BackOrderEntry backOrderEntry = new BackOrderEntry(id,userId,uid,hourClassEntries,orderIds,price,orderId,orderType,status,role,money);
+        List<ObjectId> hourList = new ArrayList<ObjectId>();
+        hourList.addAll(oids);
+        BackOrderEntry backOrderEntry = new BackOrderEntry(id,userId,uid,hourList,orderIds,price,orderId,orderType,status,role,money);
         backOrderDao.addEntry(backOrderEntry);
         //2. 删除订单，并添加说明
         classOrderDao.delOrderEntry(id, userId);

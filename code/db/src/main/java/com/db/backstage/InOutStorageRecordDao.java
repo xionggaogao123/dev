@@ -329,4 +329,158 @@ public class InOutStorageRecordDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, inOutStorageEntry.getBaseEntry());
         return inOutStorageEntry.getID().toString();
     }
+
+    /**
+     * 出库跟踪-按项目查找
+     * @param page
+     * @param pageSize
+     * @param inputParams
+     * @param projectId
+     * @return
+     */
+    public Map<String, Object> getOutStorageListByProject(int page, int pageSize, String inputParams, String projectId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+        query.append("storageRecordStatus","5");//出库
+        if (!"".equals(inputParams)) {
+            BasicDBList values = new BasicDBList();
+            BasicDBObject query1 = new BasicDBObject().append("imeiNo", inputParams);
+            BasicDBObject query2 = new BasicDBObject().append("parentId", inputParams);
+            BasicDBObject query3 = new BasicDBObject().append("parentName", inputParams);
+            values.add(query1);
+            values.add(query2);
+            values.add(query3);
+            query.put(Constant.MONGO_OR, values);
+        }
+        if (!"".equals(projectId)){
+            query.append("projectId",projectId);
+        }
+        query.append("excompanyNo", new BasicDBObject(Constant.MONGO_NE,""));
+        //isr 为1 已回收
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query, Constant.FIELDS,
+                new BasicDBObject("inStorageTime", Constant.DESC),(page-1)*pageSize,pageSize);
+        List<InOutStorageEntry> inOutStorageEntryList = new ArrayList<InOutStorageEntry>();
+        for (DBObject dbObject : dbObjects){
+            inOutStorageEntryList.add(new InOutStorageEntry(dbObject));
+        }
+        result.put("entryList",inOutStorageEntryList);
+        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query);
+        result.put("count",count);
+        return result;
+    }
+
+    /**
+     * 出库跟踪-手机IMEI查验，如果未在出库状态则跳过，并告知前台
+     * @param imeiNo
+     * @return
+     */
+    public int findOutStorageByImeiNo(String imeiNo) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+        query.append("imeiNo",imeiNo);
+        query.append("storageRecordStatus","5");//出库
+        query.append("isr", 0);//未回收
+        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query);
+        return count;
+    }
+
+    /**
+     * 出库跟踪-更新用户信息
+     * @param imeiNo
+     * @param parentName
+     * @param parentId
+     * @param parentMobile
+     * @param studentName
+     * @param studentId
+     * @param studentMobile
+     * @param schoolName
+     * @param accessClass
+     * @param address
+     */
+    public void updateOutOutStorageByImeiNo(String imeiNo, String parentName, String parentId, String parentMobile,
+                                            String studentName, String studentId, String studentMobile,
+                                            String schoolName, String accessClass, String address) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+        query.append("imeiNo",imeiNo);
+        query.append("storageRecordStatus","5");//出库
+        query.append("isr", 0);//未回收
+
+        BasicDBObject updateParam = new BasicDBObject();
+        if (!"".equals(parentName)){
+            updateParam.append("parentName",parentName);
+        }
+        if (!"".equals(parentId)){
+            updateParam.append("parentId",parentId);
+        }
+        if (!"".equals(parentMobile)){
+            updateParam.append("parentMobile",parentMobile);
+        }
+        if (!"".equals(studentName)){
+            updateParam.append("studentName",studentName);
+        }
+        if (!"".equals(studentId)){
+            updateParam.append("studentId",studentId);
+        }
+        if (!"".equals(studentMobile)){
+            updateParam.append("studentMobile",studentMobile);
+        }
+        if (!"".equals(schoolName)){
+            updateParam.append("schoolName",schoolName);
+        }
+        if (!"".equals(accessClass)){
+            updateParam.append("accessClass",accessClass);
+        }
+        if (!"".equals(address)){
+            updateParam.append("address",address);
+        }
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
+    }
+
+    /**
+     * 出库跟踪-单个回收
+     * 更改选中数据为已回收 即isr 为 1
+     * @param id
+     */
+    public void singleRecycleInStorageById(String id) {
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+        query.append(Constant.ID,new ObjectId(id));
+
+        BasicDBObject updateParam = new BasicDBObject();
+        updateParam.append("isr",1);
+
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
+    }
+
+    /**
+     * 出库跟踪-批量回收
+     * 更改选中数据为已回收 即isr 为 1
+     * @param ids
+     */
+    public void batchRecycleInStorageByIds(String ids) {
+        //封装查询参数
+        List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        if (ids != ""){
+            for (String id : ids.split(",")){
+                if (id != ""){
+                    objectIds.add(new ObjectId(id));
+                }
+            }
+        }
+
+        BasicDBObject query = new BasicDBObject();
+        query.append(Constant.ID,new BasicDBObject(Constant.MONGO_IN, objectIds));
+
+        BasicDBObject updateParam = new BasicDBObject();
+        updateParam.append("isr",1);
+
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
+    }
 }

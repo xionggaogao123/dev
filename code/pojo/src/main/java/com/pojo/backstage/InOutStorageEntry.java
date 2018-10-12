@@ -62,6 +62,7 @@ import java.util.List;
  * payFrom 付款方
  * afterRepair 维修完成后
  * repairType  维修类型
+ * storageRecordStatus 为5 出库的数据 isr 为1 表示 已回收
  */
 public class InOutStorageEntry extends BaseDBObject {
 
@@ -412,5 +413,10 @@ public class InOutStorageEntry extends BaseDBObject {
     public String getRepairType() {
         return getSimpleStringValue("repairType");
     }
+
+    public String getIsr() {
+        return getSimpleStringValue("isr");
+    }
+
 
 }

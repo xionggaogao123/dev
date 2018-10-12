@@ -48,6 +48,7 @@ public class InOutStorageRecordDto {
     private String payFrom;
     private String afterRepair;
     private String repairType;
+    private String isr;
 
 
     public InOutStorageRecordDto(InOutStorageEntry entry){
@@ -90,6 +91,7 @@ public class InOutStorageRecordDto {
         this.payFrom = entry.getPayFrom();
         this.afterRepair = entry.getAfterRepair();
         this.repairType = entry.getRepairType();
+        this.isr = entry.getIsr();
     }
 
     public String getId() {
@@ -402,5 +404,13 @@ public class InOutStorageRecordDto {
 
     public void setRepairType(String repairType) {
         this.repairType = repairType;
+    }
+
+    public String getIsr() {
+        return isr;
+    }
+
+    public void setIsr(String isr) {
+        this.isr = isr;
     }
 }

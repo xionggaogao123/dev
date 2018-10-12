@@ -2496,8 +2496,10 @@ public class ExcellentCoursesService {
             objectIdList = communityService.getCommunitys3(userId, 1, 100);
             List<ExcellentCoursesEntry> excellentCoursesEntries = new ArrayList<ExcellentCoursesEntry>();
             int count = 0;
-            if(page ==1 && priceType==0 && persionType==0 && timeType==0){//推荐课在首次查询加入
-                excellentCoursesEntries = excellentCoursesDao.getMyNewAllEntryList(subjectId,priceType,persionType,timeType,page,pageSize,current,objectIdList);
+            if(priceType==0 && persionType==0 && timeType==0){//推荐课在首次查询加入(智能排序)
+                if(page ==1){
+                    excellentCoursesEntries = excellentCoursesDao.getMyNewAllEntryList(subjectId,priceType,persionType,timeType,page,pageSize,current,objectIdList);
+                }
                 //公开课排序加入
                 List<ExcellentCoursesEntry> excellentCoursesEntries1 = excellentCoursesDao.getNewAllEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current, objectIdList);
                 excellentCoursesEntries.addAll(excellentCoursesEntries1);

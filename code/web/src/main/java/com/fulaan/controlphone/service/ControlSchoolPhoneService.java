@@ -648,6 +648,7 @@ public class ControlSchoolPhoneService {
             Map<String,Object>  dto  = new HashMap<String, Object>();
             if(controlAppSchoolEntry!=null){
                 dto.put("freeTime",0);
+                dto.put("today","");
                 dto.put("appName",appDetailEntry.getAppName());
                 dto.put("packageName",appDetailEntry.getAppPackageName());
                 dto.put("id",appDetailEntry.getID().toString());
@@ -659,6 +660,7 @@ public class ControlSchoolPhoneService {
                 dto.put("controlType",controlAppSchoolEntry.getControlType());
             }else {
                 dto.put("freeTime", 0);
+                dto.put("today","");
                 dto.put("appName",appDetailEntry.getAppName());
                 dto.put("packageName", appDetailEntry.getAppPackageName());
                 dto.put("id", appDetailEntry.getID().toString());
@@ -932,7 +934,7 @@ public class ControlSchoolPhoneService {
             List<PhoneSchoolTimeDTO> phoneTimeDTOs = new ArrayList<PhoneSchoolTimeDTO>();
             this.getMoreSchoolControlTime(current, dateNowStr, week, zero, map, phoneTimeDTOs, trueSchoolIds);
             map.put("controlList",phoneTimeDTOs);
-            this.getMoreAppControlTime(entries2, current, map, obList,zero);
+            this.getMoreAppControlTime(entries2, current, map, obList,zero,dateNowStr);
         }
         return map;
     }
@@ -974,7 +976,7 @@ public class ControlSchoolPhoneService {
     }
     //多社群应用管控
     //获得默认应用管控时间
-    public void getMoreAppControlTime(List<AppDetailEntry> appDetailEntries,long current,Map<String,Object> map,List<ObjectId> communityIds,long startNum){
+    public void getMoreAppControlTime(List<AppDetailEntry> appDetailEntries,long current,Map<String,Object> map,List<ObjectId> communityIds,long startNum,String dateNowStr){
         //获取所有非三方应用
         List<AppDetailEntry> appDetailEntries2 =  appDetailDao.getNoThreeAppList();
         appDetailEntries.addAll(appDetailEntries2);
@@ -1002,6 +1004,7 @@ public class ControlSchoolPhoneService {
             dto.put("packageName",appDetailEntry.getAppPackageName());
             dto.put("id",appDetailEntry.getID().toString());
             dto.put("appName",appDetailEntry.getAppName());
+            dto.put("today","");
             // 判断上课时间
             if(controlAppSchoolResultEntry1!=null){
                 dto.put("freeTime",controlAppSchoolResultEntry1.getFreeTime()/60000);
@@ -1027,6 +1030,7 @@ public class ControlSchoolPhoneService {
             int i =0;
             //判断放学时间
             if(controlAppSchoolResultEntry2!=null){
+                dto.put("today",dateNowStr);
                 timeStr.append(controlAppSchoolResultEntry2.getOutSchoolCanUseTime()/60000);
                 timeStr.append("#");
                 i++;

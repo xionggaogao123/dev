@@ -1007,9 +1007,32 @@ public class ControlSchoolPhoneService {
             dto.put("today","");
             // 判断上课时间
             if(controlAppSchoolResultEntry1!=null){
+                //生效时间
+                /*long markStartFreeTime = controlAppSchoolResultEntry1.getMarkStartFreeTime();
+                //持续时间
+                long freeTime = controlAppSchoolResultEntry1.getFreeTime();
+                if(markStartFreeTime+freeTime>current){//生效阶段
+                    dto.put("freeTime",controlAppSchoolResultEntry1.getFreeTime()/60000);
+                    dto.put("markStartFreeTime",controlAppSchoolResultEntry1.getMarkStartFreeTime());
+                    dto.put("saveTime",controlAppSchoolResultEntry1.getSaveTime());
+                    if(objectIdList1.contains(appDetailEntry.getID())){
+                        dto.put("controlType",2);
+                    }else{
+                        dto.put("controlType",controlAppSchoolResultEntry1.getControlType());
+                    }
+                }else{
+                    dto.put("freeTime","0");
+                    dto.put("markStartFreeTime",controlAppSchoolResultEntry1.getMarkStartFreeTime());
+                    dto.put("saveTime",controlAppSchoolResultEntry1.getSaveTime());
+                    if(objectIdList1.contains(appDetailEntry.getID())){
+                        dto.put("controlType",2);
+                    }else{
+                        dto.put("controlType",controlAppSchoolResultEntry1.getControlType());
+                    }
+                }*/
                 dto.put("freeTime",controlAppSchoolResultEntry1.getFreeTime()/60000);
-                dto.put("markStartFreeTime",current);
-                dto.put("saveTime",current);
+                dto.put("markStartFreeTime",controlAppSchoolResultEntry1.getMarkStartFreeTime());
+                dto.put("saveTime",controlAppSchoolResultEntry1.getSaveTime());
                 if(objectIdList1.contains(appDetailEntry.getID())){
                     dto.put("controlType",2);
                 }else{
@@ -1018,7 +1041,7 @@ public class ControlSchoolPhoneService {
 
             }else {
                 dto.put("freeTime", 0);
-                dto.put("markStartFreeTime", current);
+                dto.put("markStartFreeTime", 0);
                 dto.put("saveTime", current);
                 if(objectIdList1.contains(appDetailEntry.getID())){
                     dto.put("controlType", 2);

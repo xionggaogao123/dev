@@ -538,6 +538,9 @@ liveid	直播id*/
                             map.put("message","登陆成功");
                             userMap.put("id",viewerToken);
                             String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                            if(viewerName !=null && !viewerName.equals("")){
+                                name = viewerName;
+                            }
                             userMap.put("name",name);
                             userMap.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
                             userMap.put("customua","");

@@ -844,6 +844,30 @@ public class ControlPhoneController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getFiveMapNow")
+    @ResponseBody
+    public String getFiveMapNow(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dto = controlPhoneService.getFiveMapNow(getUserId(), new ObjectId(sonId));
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取孩子信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 获取孩子地图信息（改版家长首页）
+     */
+    @ApiOperation(value = "定时接受孩子的位置信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getShareFourMapNow")
     @ResponseBody
     public String getShareFourMapNow(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
@@ -852,6 +876,31 @@ public class ControlPhoneController extends BaseController {
             respObj.setCode(Constant.SUCCESS_CODE);
             ObjectId parentId = controlPhoneService.getMainUserId(new ObjectId(sonId));
             Map<String,Object> dto = controlPhoneService.getFourMapNow(parentId, new ObjectId(sonId));
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取孩子信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 获取孩子地图信息（改版家长首页）
+     */
+    @ApiOperation(value = "定时接受孩子的位置信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getShareFiveMapNow")
+    @ResponseBody
+    public String getShareFiveMapNow(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            ObjectId parentId = controlPhoneService.getMainUserId(new ObjectId(sonId));
+            Map<String,Object> dto = controlPhoneService.getFiveMapNow(parentId, new ObjectId(sonId));
             respObj.setMessage(dto);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1654,7 +1703,7 @@ public class ControlPhoneController extends BaseController {
                                            @ApiParam(name = "isCheck", required = true, value = "1 卸载 2 推送") @RequestParam("isCheck") int isCheck){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            controlPhoneService.addAppToChildOrCommunity(getUserId(), new ObjectId(contactId), type, new ObjectId(appId),isCheck);
+            int status = controlPhoneService.addAppToChildOrCommunity(getUserId(), new ObjectId(contactId), type, new ObjectId(appId),isCheck);
             respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> map = new HashMap<String, Object>();
             if(isCheck==1){
@@ -1662,9 +1711,19 @@ public class ControlPhoneController extends BaseController {
             }else{
                 map.put("msg","推送应用成功");
             }
-            int score = integralSufferService.addIntegral(getUserId(), IntegralType.find,4,1);
-            map.put("score",score);
+            if(status!=0){
+                int score = integralSufferService.addIntegral(getUserId(), IntegralType.find, 4, 1);
+                map.put("score", score);
+            }
             respObj.setMessage(map);
+            if(status==0){
+                respObj.setCode(Constant.FAILD_CODE);
+                if(isCheck==1){
+                    respObj.setErrorMessage("您的小孩已进入“校管控”，如需推送应用，请联系老师！");
+                }else{
+                    respObj.setErrorMessage("您的小孩已进入“校管控”，如需卸载应用，请联系老师！");
+                }
+            }
         } catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

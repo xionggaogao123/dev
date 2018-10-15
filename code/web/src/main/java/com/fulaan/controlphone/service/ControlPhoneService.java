@@ -1426,6 +1426,162 @@ public class ControlPhoneService {
         return map;
     }
 
+    public Map<String,Object> getFiveMapNow(ObjectId parentId,ObjectId sonId) {
+        //地图信息
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得当前时间
+        long current = System.currentTimeMillis();
+        //获得时间批次
+        //long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        //分割点
+        long jiedian = zero+8*60*60*1000;//今天零点零分零秒的毫秒数
+        //修改  todo
+      /*  long startTime = 0l;
+        long endTime = 0l;
+        if(current>=jiedian){
+            startTime = jiedian;
+            endTime = jiedian+ 24*60*60*1000;
+        }else{
+            startTime = jiedian - 24*60*60*1000;
+            endTime = jiedian;
+        }*/
+        long datetime = 0l;
+        if(current>=jiedian){
+            //今日
+            datetime = zero;
+        }else{
+            //昨日
+            datetime = zero- 24*60*60*1000;
+        }
+        // ControlMapEntry entry = controlMapDao.getEntryByParentId(parentId, sonId, zero);
+       /* if (entry != null) {
+            map.put("dto",new ControlMapDTO(entry));
+        } else {*/
+        //废弃数据
+        ControlMapDTO controlMapDTO =new ControlMapDTO();
+        controlMapDTO.setId("");
+        controlMapDTO.setUserId("");
+        controlMapDTO.setParentId("");
+        controlMapDTO.setLongitude("");
+        controlMapDTO.setLatitude("");
+        controlMapDTO.setAngle("");
+        controlMapDTO.setCreateTime("");
+        controlMapDTO.setDistance("");
+        map.put("dto",controlMapDTO);
+        //}
+        //亲情电话个数
+        int count = controlPhoneDao.getParentNumber(parentId, sonId);
+        map.put("phoneCount",count);
+        //已推送应用数量
+        //获得绑定的社区id
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
+
+        //所在学校
+        List<ObjectId> schoolIdsList = schoolCommunityDao.getSchoolIdsList(obList);
+        //真实学校
+        List<ObjectId> trueSchoolIds =  homeSchoolDao.getSchoolObjectList(schoolIdsList);
+        if(trueSchoolIds.size()>0){
+            map.put("loginType",2);
+        }else{
+            map.put("loginType",1);
+        }
+        map.put("appCount",obList.size());
+        //获得各个社区的推送应用记录
+        int size = 0;
+        if(obList.size()>0){
+            List<ControlAppEntry> entries = controlAppDao.getEntryListByCommunityId(obList);
+            ControlAppUserEntry entryList2 = controlAppUserDao.getEntry(parentId,sonId);
+            Set<ObjectId> set = new HashSet<ObjectId>();
+            for(ControlAppEntry entry1:entries){
+                if(entry1 !=null && entry1.getAppIdList() != null) {
+                    set.addAll(entry1.getAppIdList());
+                }
+            }
+            if(entryList2 !=null && entryList2.getAppIdList() != null){
+                set.addAll(entryList2.getAppIdList());
+            }
+            List<ObjectId> objectIds = new ArrayList<ObjectId>();
+            objectIds.addAll(set);
+            List<AppDetailEntry> detailEntries3 =  appDetailDao.getEntriesByIds(objectIds);
+            size = detailEntries3.size();
+        }else{
+            ControlAppUserEntry entryList2 = controlAppUserDao.getEntry(parentId,sonId);
+            Set<ObjectId> set = new HashSet<ObjectId>();
+            if(entryList2 !=null && entryList2.getAppIdList() != null){
+                set.addAll(entryList2.getAppIdList());
+            }
+            size = set.size();
+        }
+        // map.put("appCount",size);
+        //防沉迷时间
+        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
+        long timecu = 30*60*1000;
+        if(controlTimeEntry != null){
+            timecu = controlTimeEntry.getTime();
+
+        }
+        map.put("time",timecu/60000);
+        //使用时间
+        // long useTime  = controlAppResultDao.getUserAllTime(sonId, startTime,endTime);
+        ControlStudentResultEntry controlStudentResultEntry = controlStudentResultDao.getEntry(sonId,parentId,datetime);
+        long useTime = 0l;
+        if(controlStudentResultEntry!=null){
+            useTime = controlStudentResultEntry.getNewAppUser();
+        }
+        map.put("useTime",useTime/60000);
+        //剩余时间
+        if(timecu/60000-useTime/60000 <0){
+            map.put("reTime",0);
+        }else{
+            map.put("reTime",timecu/60000-useTime/60000);
+        }
+        UserDetailInfoDTO dto = userService.getUserInfoById(sonId.toString());
+        if(dto!= null){
+            String name = dto.getNickName()!=null?dto.getNickName():dto.getName();
+            map.put("userName",name);
+        }else{
+            map.put("userName","");
+        }
+        int count2=recordChatPersonalDao.countChatEntries(sonId);
+        map.put("chatCount",count2);
+        //当前版本
+        ControlVersionDTO controlVersionDTO = getSimpleUserVersion(parentId, sonId);
+        ControlVersionDTO controlVersionDTO2 = getStudentVersion(sonId);
+        String ver1 = controlVersionDTO.getVersion();
+        String ver2 = controlVersionDTO2.getVersion();
+        if(controlVersionDTO ==null || controlVersionDTO2==null){//记录不存在
+            map.put("status",5);//未在线
+        }else{
+            if(ver1==null || ver2==null){//版本号不存在
+                map.put("status",5);//未在线
+            }else{
+                if(ver1.equals("已退出")||ver2.equals("已退出") || ver1.equals("暂无数据")|| ver2.equals("暂无数据")){
+                    map.put("status",5);//未在线
+                }else{
+                    if(getVersionLong(ver2)>=getVersionLong(ver1)){//版本号已更新
+                        //判断mqtt状态
+                        if(controlVersionDTO2.getStatus()==0){//离线
+                            map.put("status",2);//版本号一致   离线
+                        }else{
+                            map.put("status",1);//版本号一致   在线
+                        }
+                    }else{
+                        //判断mqtt状态
+                        if(controlVersionDTO2.getStatus()==0){//离线
+                            map.put("status",4);//版本号不一致   离线
+                        }else{
+                            map.put("status",3);//版本号不一致   在线
+                        }
+                    }
+                }
+            }
+        }
+        map.put("version",controlVersionDTO.getVersion());
+        return map;
+    }
+
     //版本号转换
     public long getVersionLong(String version){
         String vs = version.substring(0,14);
@@ -4530,12 +4686,22 @@ public class ControlPhoneService {
         return dtos;
     }
 
-    public void addAppToChildOrCommunity(ObjectId parentId,ObjectId contactId,int type,ObjectId appId,int isCheckId){
+    public int addAppToChildOrCommunity(ObjectId parentId,ObjectId contactId,int type,ObjectId appId,int isCheckId){
         if(type==1){//孩子
+            //所在社群
+            List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(contactId);
+            //所在学校
+            List<ObjectId> schoolIdsList = schoolCommunityDao.getSchoolIdsList(obList);
+            //真实学校
+            List<ObjectId> trueSchoolIds =  homeSchoolDao.getSchoolObjectList(schoolIdsList);
+            if(trueSchoolIds.size()>0){
+                return 0;
+            }
             this.addParentAppList(parentId,contactId,appId,isCheckId);
         }else if(type==2){//社区
             this.addTeaCommunityAppList(parentId,contactId,appId,isCheckId);
         }
+        return 1;
     }
 
 

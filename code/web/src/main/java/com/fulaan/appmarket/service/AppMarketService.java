@@ -68,6 +68,14 @@ public class AppMarketService {
     @Autowired
     private UserService userService;
 
+    //默认手机系统
+    public static final String APP_PACKAGE_NAME = "com.zhuoyi.security.lite&" +
+            "com.android.freeme.calendar&" +
+            "com.android.soundrecorder&" +
+            "com.android.gallery3d&"+
+            "com.freeme.ota&"+
+            "com.android.settings&"+
+            "com.freeme.gallery";
 
     public void saveAppDetail(AppDetailDTO appDetailDTO, ObjectId userId) {
         appDetailDao.saveAppDetailEntry(appDetailDTO.buildEntry(userId));
@@ -150,6 +158,9 @@ public class AppMarketService {
             }else{
                 dto.setOrder(1);
                 dto.setAppSize(0);
+            }
+            if(APP_PACKAGE_NAME.contains(dto.getAppPackageName())){
+                dto.setType(4);
             }
         }
         return detailDTOs;

@@ -214,7 +214,6 @@ public class DefaultUserController extends BaseController {
 
     @ApiOperation(value = "注册可用的测试账号", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @SessionNeedless
     @RequestMapping("/registerUser")
     @ResponseBody
     public RespObj registerUser(String userName, String phoneNumber,
@@ -223,6 +222,9 @@ public class DefaultUserController extends BaseController {
                                 HttpServletRequest request){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
+            //限定注册用户
+            ObjectId id = getUserId();
+
             String userId=userService.registerAvailableUser(request, userName, phoneNumber,newRole,nickName);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(userId);

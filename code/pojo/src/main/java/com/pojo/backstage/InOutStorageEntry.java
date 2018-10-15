@@ -170,6 +170,7 @@ public class InOutStorageEntry extends BaseDBObject {
                              String inStorageMonth,
                              String storageStatus,
                              String comment,
+                             String projectId,
                              String projectName,
                              String projectDockPeople,
                              String schoolName,
@@ -208,6 +209,7 @@ public class InOutStorageEntry extends BaseDBObject {
                 .append("inStorageMonth", (calendar.get(Calendar.MONTH) + 1)+"")
                 .append("storageStatus", storageStatus)
                 .append("comment", comment)
+                .append("projectId", projectId)
                 .append("projectName", projectName)
                 .append("projectDockPeople", projectDockPeople)
                 .append("schoolName", schoolName)

@@ -171,13 +171,17 @@ public class ExcellentCoursesService {
             excellentCoursesEntry.setTitle(dto.getTitle());
             excellentCoursesEntry.setTarget(dto.getTarget());
             excellentCoursesEntry.setOpen(dto.getOpen());
+            excellentCoursesEntry.setCover(dto.getCover());
+            excellentCoursesEntry.setBigCover(dto.getBigCover());
             str = excellentCoursesDao.addEntry(excellentCoursesEntry);
         }else{
             dto.setUserId(userId.toString());
             Random random = new Random();
-            int i1 = random.nextInt(10)+1;
+            /*int i1 = random.nextInt(10)+1;
             dto.setCover(arg2[i1]);
-            dto.setBigCover(arg1[i1]);
+            dto.setBigCover(arg1[i1]);*/
+            dto.setCover(dto.getCover());
+            dto.setBigCover(dto.getBigCover());
             //初次创建   状态为  未发布
             dto.setStatus(0);
             ExcellentCoursesEntry excellentCoursesEntry = dto.buildAddEntry();

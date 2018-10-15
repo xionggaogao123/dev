@@ -123,7 +123,7 @@ public class AppDetailDao extends BaseDao {
             for(DBObject dbObject:dbObjectList){
                 AppDetailEntry appDetailEntry = new AppDetailEntry(dbObject);
                 //除去个人中心
-                if(!"com.fulan.usercenter".equals(appDetailEntry.getAppPackageName())){
+                if(!"com.fulan.usercenter".equals(appDetailEntry.getAppPackageName()) && !"com.fulan.contact".equals(appDetailEntry.getAppPackageName())){
                     entries.add(appDetailEntry);
                 }
             }

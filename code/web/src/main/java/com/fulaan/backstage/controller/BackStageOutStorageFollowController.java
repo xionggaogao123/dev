@@ -160,4 +160,41 @@ public class BackStageOutStorageFollowController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 出库跟踪-按手机查找
+     * 手机列表展示
+     * @param page
+     * @param pageSize
+     * @param inputParams
+     * @param year
+     * @param month
+     * @param imeiNo//用来查详情的入参
+     * @return
+     */
+    @ApiOperation(value = "出库跟踪-按手机查找手机列表展示", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getOutStorageListByPhone")
+    @ResponseBody
+    public RespObj getOutStorageListByPhone(
+            @ApiParam(name = "page", required = true, value = "page") @RequestParam(value = "page", defaultValue = "1") int page,
+            @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @ApiParam(name = "inputParams", required = false, value = "inputParams") @RequestParam(value = "inputParams", defaultValue = "") String inputParams,
+            @ApiParam(name = "year", required = false, value = "year") @RequestParam(value = "year", defaultValue = "") String year,
+            @ApiParam(name = "month", required = false, value = "month") @RequestParam(value = "month", defaultValue = "") String month,
+            @ApiParam(name = "imeiNo", required = false, value = "imeiNo") @RequestParam(value = "imeiNo", defaultValue = "") String imeiNo
+    ) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String, Object> result = backStageOutStorageFollowService.getOutStorageListByPhone(page, pageSize, inputParams, year, month, imeiNo);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 }

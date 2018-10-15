@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.db.backstage.InOutStorageRecordDao;
 import com.db.backstage.StorageManageDao;
 import com.fulaan.backstage.dto.InOutStorageRecordDto;
+import com.fulaan.backstage.dto.StorageManageDto;
 import com.fulaan.utils.HSSFUtils;
 import com.mongodb.DBObject;
 import com.pojo.backstage.InOutStorageEntry;
+import com.pojo.backstage.StorageManageEntry;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -914,6 +916,43 @@ public class BackStageOutStorageFollowService {
         storageManageDao.updateStorageInfoByImeiNoList(imeiNoList, storageStatus, useStatus, inStorageTime, inStorageYear, inStorageMonth);
         result += "回收入库:";
         result += "success";
+        return result;
+    }
+
+    /**
+     * 出库跟踪-按手机查找
+     * 手机列表展示
+     * @param page
+     * @param pageSize
+     * @param inputParams
+     * @param year
+     * @param month
+     * @param imeiNo//用来查详情的入参
+     * @return
+     */
+    public Map<String,Object> getOutStorageListByPhone(int page, int pageSize, String inputParams, String year, String month, String imeiNo) {
+        Map<String,Object> result = inOutStorageRecordDao.getOutStorageListByPhone(page, pageSize, inputParams, year, month, imeiNo);
+        List<InOutStorageRecordDto> inOutStorageRecordDtos = new ArrayList<InOutStorageRecordDto>();
+        List<InOutStorageEntry> inOutStorageEntries = (ArrayList)result.get("entryList");
+
+        List<String> imeiNoList = new ArrayList<String>();
+        for (InOutStorageEntry inOutStorageEntry : inOutStorageEntries){
+            if (inOutStorageEntry != null){
+                if (!"".equals(imeiNo)){
+                    inOutStorageRecordDtos.add(new InOutStorageRecordDto(inOutStorageEntry));
+                }else {
+                    //imeiNo为空 即展示左边列表 需去重
+                    if (!imeiNoList.contains(inOutStorageEntry.getImeiNo())){
+                        inOutStorageRecordDtos.add(new InOutStorageRecordDto(inOutStorageEntry));
+                        imeiNoList.add(inOutStorageEntry.getImeiNo());
+                    }
+                }
+
+            }
+        }
+        result.put("dtos",inOutStorageRecordDtos);
+        result.put("count",inOutStorageRecordDtos.size());
+        result.remove("entryList");
         return result;
     }
 }

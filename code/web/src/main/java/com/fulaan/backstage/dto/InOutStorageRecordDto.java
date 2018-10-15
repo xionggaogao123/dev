@@ -49,6 +49,7 @@ public class InOutStorageRecordDto {
     private String afterRepair;
     private String repairType;
     private String isr;
+    private String creationTime;
 
 
     public InOutStorageRecordDto(InOutStorageEntry entry){
@@ -92,6 +93,7 @@ public class InOutStorageRecordDto {
         this.afterRepair = entry.getAfterRepair();
         this.repairType = entry.getRepairType();
         this.isr = entry.getIsr();
+        this.creationTime = entry.getCreationTime();
     }
 
     public String getId() {
@@ -412,5 +414,13 @@ public class InOutStorageRecordDto {
 
     public void setIsr(String isr) {
         this.isr = isr;
+    }
+
+    public String getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(String creationTime) {
+        this.creationTime = creationTime;
     }
 }

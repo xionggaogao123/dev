@@ -483,4 +483,53 @@ public class InOutStorageRecordDao extends BaseDao {
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
     }
+
+    /**
+     * 出库跟踪-按手机查找
+     * 手机列表展示
+     * @param page
+     * @param pageSize
+     * @param inputParams
+     * @param year
+     * @param month
+     * @param imeiNo//用来查详情的入参
+     * @return
+     */
+    public Map<String,Object> getOutStorageListByPhone(int page, int pageSize, String inputParams, String year, String month, String imeiNo) {
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+//        query.append("isr", Constant.ZERO);
+        if (!"".equals(imeiNo)){
+            query.append("imeiNo", imeiNo);
+        }
+        if (!"".equals(year)) {
+            query.append("creationYear", year);
+        }
+        if (!"".equals(month)) {
+            query.append("creationMonth", month);
+        }
+
+        if (!"".equals(inputParams)) {
+            BasicDBList values = new BasicDBList();
+            BasicDBObject query1 = new BasicDBObject().append("imeiNo", inputParams);
+            BasicDBObject query2 = new BasicDBObject().append("parentId", inputParams);
+            BasicDBObject query3 = new BasicDBObject().append("parentName", inputParams);
+            values.add(query1);
+            values.add(query2);
+            values.add(query3);
+            query.put(Constant.MONGO_OR, values);
+        }
+
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query, Constant.FIELDS,
+                new BasicDBObject("creationTime", Constant.ASC)/*,(page-1)*pageSize,pageSize*/);
+        List<InOutStorageEntry> inOutStorageEntries = new ArrayList<InOutStorageEntry>();
+        for (DBObject dbObject : dbObjects){
+            inOutStorageEntries.add(new InOutStorageEntry(dbObject));
+        }
+        Map<String,Object> result = new HashMap<String, Object>();
+        result.put("entryList",inOutStorageEntries);
+/*        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query);
+        result.put("count",count);*/
+        return result;
+    }
 }

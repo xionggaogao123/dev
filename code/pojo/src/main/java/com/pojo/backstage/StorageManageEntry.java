@@ -31,6 +31,9 @@ import java.util.List;
  * useStatus	是否可用状态(0不可用 1可用)    String
  * commentType 备注类型   String
  * needRepairComment    故障维修    List<String>
+ * creationTime 数据创建时间
+ * creationYear 数据创建年
+ * creationMonth 数据创建月
  */
 public class StorageManageEntry extends BaseDBObject {
 
@@ -72,6 +75,9 @@ public class StorageManageEntry extends BaseDBObject {
                 .append("useStatus", useStatus)
                 .append("commentType", commentType)
                 .append("needRepairComment", needRepairComment)
+                .append("creationTime", dateFormat.format(new Date()))
+                .append("creationYear", calendar.get(Calendar.YEAR)+"")
+                .append("creationMonth", (calendar.get(Calendar.MONTH)+1)+"")
                 .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -167,4 +173,7 @@ public class StorageManageEntry extends BaseDBObject {
         setSimpleValue("needRepairComment", needRepairComment);
     }
 
+    public String getCreationTime() {
+        return getSimpleStringValue("creationTime");
+    }
 }

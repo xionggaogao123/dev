@@ -21,6 +21,7 @@ public class StorageManageDto {
     private String inStorageMonth;
     private String commentType;
     private List<String> needRepairComment;
+    private String creationTime;
 
     public StorageManageDto(StorageManageEntry entry){
         this.id = entry.getID().toString();
@@ -36,6 +37,7 @@ public class StorageManageDto {
         this.inStorageMonth = entry.getInStorageMonth();
         this.commentType = entry.getCommentType();
         this.needRepairComment = entry.getNeedRepairComment();
+        this.creationTime = entry.getCreationTime();
     }
 
     public String getId() {
@@ -140,5 +142,13 @@ public class StorageManageDto {
 
     public void setNeedRepairComment(List<String> needRepairComment) {
         this.needRepairComment = needRepairComment;
+    }
+
+    public String getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(String creationTime) {
+        this.creationTime = creationTime;
     }
 }

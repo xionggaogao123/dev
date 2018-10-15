@@ -63,6 +63,9 @@ import java.util.List;
  * afterRepair 维修完成后
  * repairType  维修类型
  * storageRecordStatus 为5 出库的数据 isr 为1 表示 已回收
+ * creationTime 数据创建时间
+ * creationYear 数据创建年
+ * creationMonth 数据创建月
  */
 public class InOutStorageEntry extends BaseDBObject {
 
@@ -149,6 +152,9 @@ public class InOutStorageEntry extends BaseDBObject {
                 .append("storageRecordStatus", storageRecordStatus)
                 .append("commentType", commentType)
                 .append("needRepairComment", needRepairComment)
+                .append("creationTime", dateFormat.format(new Date()))
+                .append("creationYear", calendar.get(Calendar.YEAR)+"")
+                .append("creationMonth", (calendar.get(Calendar.MONTH)+1)+"")
                 .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -232,6 +238,9 @@ public class InOutStorageEntry extends BaseDBObject {
                 .append("payFrom", payFrom)
                 .append("afterRepair", afterRepair)
                 .append("repairType", repairType)
+                .append("creationTime", dateFormat.format(new Date()))
+                .append("creationYear", calendar.get(Calendar.YEAR)+"")
+                .append("creationMonth", (calendar.get(Calendar.MONTH)+1)+"")
                 .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -418,5 +427,8 @@ public class InOutStorageEntry extends BaseDBObject {
         return getSimpleStringValue("isr");
     }
 
+    public String getCreationTime() {
+        return getSimpleStringValue("creationTime");
+    }
 
 }

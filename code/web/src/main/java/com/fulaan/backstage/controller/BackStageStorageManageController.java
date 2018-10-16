@@ -194,4 +194,52 @@ public class BackStageStorageManageController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 库存管理-单个冻结
+     * @param map
+     * @return
+     */
+    @ApiOperation(value = "库存管理-单个冻结", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/freezeStorageInfoById")
+    @ResponseBody
+    public RespObj freezeStorageInfoById(@RequestParam Map<String, Object> map) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            String result = backStageStorageManageService.freezeStorageInfoById(map);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 库存管理-批量冻结
+     * @param map
+     * @return
+     */
+    @ApiOperation(value = "库存管理-批量冻结", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/freezeStorageInfoByIds")
+    @ResponseBody
+    public RespObj freezeStorageInfoByIds(@RequestParam Map<String, Object> map) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            String result = backStageStorageManageService.freezeStorageInfoByIds(map);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 }

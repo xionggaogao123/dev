@@ -35,6 +35,13 @@ import java.util.*;
 @Service
 public class BackStageStorageManageService {
 
+    private static List<String> stringlist = new ArrayList<String>();
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static Calendar calendar = Calendar.getInstance();
+    private static String inStorageTime = dateFormat.format(new Date());
+    private static String inStorageYear = calendar.get(Calendar.YEAR)+"";
+    private static String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
+
     private StorageManageDao storageManageDao = new StorageManageDao();
 
     private InOutStorageRecordDao inOutStorageRecordDao = new InOutStorageRecordDao();
@@ -311,5 +318,154 @@ public class BackStageStorageManageService {
 
     public String updateStorageInfoByIds(Map map) {
         return storageManageDao.updateStorageInfoByIds(map);
+    }
+
+    /**
+     * 库存管理-单个冻结
+     * @param map
+     * @return
+     */
+    public String freezeStorageInfoById(Map<String,Object> map) {
+        String result = "库存数据：";
+        result += storageManageDao.updateStorageInfoById(map);
+        if ("1".equals(map.get("commentType").toString())){
+            //需要维修 添加维修记录
+            result += addSingleRepair(map);
+        }
+        return result;
+    }
+
+    //冻结需维修 添加单个维修记录
+    private String addSingleRepair(Map<String,Object> params) {
+        String result = "";
+        //解析数据
+        String rowPojoIn = params.get("rowPojoIn").toString();
+        JSONObject jsonObject = JSONObject.parseObject(rowPojoIn);
+        JSONObject tjsonIn = (JSONObject)jsonObject.get("dataIn");
+        System.out.println(tjsonIn);
+
+        //添加到维修管理
+        InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(
+                tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString(),
+                tjsonIn.get("phoneModel") == null ? "" : tjsonIn.get("phoneModel").toString(),
+                tjsonIn.get("color") == null ? "" : tjsonIn.get("color").toString(),
+                tjsonIn.get("manufacturer") == null ? "" : tjsonIn.get("manufacturer").toString(),
+                inStorageTime,
+                inStorageYear,
+                inStorageMonth,
+                tjsonIn.get("storageStatus") == null ? "" : tjsonIn.get("storageStatus").toString(),
+                "由库存入维修，维修完入库。",
+                tjsonIn.get("projectId") == null ? "" : tjsonIn.get("projectId").toString(),
+                tjsonIn.get("projectName") == null ? "" : tjsonIn.get("projectName").toString(),
+                tjsonIn.get("projectDockPeople") == null ? "" : tjsonIn.get("projectDockPeople").toString(),
+                tjsonIn.get("schoolName") == null ? "" : tjsonIn.get("schoolName").toString(),
+                tjsonIn.get("accessClass") == null ? "" : tjsonIn.get("accessClass").toString(),
+                tjsonIn.get("accessObj") == null ? "" : tjsonIn.get("accessObj").toString(),
+                tjsonIn.get("contactInfo") == null ? "" : tjsonIn.get("contactInfo").toString(),
+                tjsonIn.get("address") == null ? "" : tjsonIn.get("address").toString(),
+                tjsonIn.get("deliveryTime") == null ? "" : tjsonIn.get("deliveryTime").toString(),
+                "",
+                "",
+                "",
+                tjsonIn.get("parentName") == null ? "" : tjsonIn.get("parentName").toString(),
+                tjsonIn.get("parentMobile") == null ? "" : tjsonIn.get("parentMobile").toString(),
+                tjsonIn.get("parentId") == null ? "" : tjsonIn.get("parentId").toString(),
+                tjsonIn.get("studentName") == null ? "" : tjsonIn.get("studentName").toString(),
+                tjsonIn.get("studentMobile") == null ? "" : tjsonIn.get("studentMobile").toString(),
+                tjsonIn.get("studentId") == null ? "" : tjsonIn.get("studentId").toString(),
+                "由库存入维修，维修完入库。",
+                params.get("needRepairComments") == null ? "" : params.get("needRepairComments").toString(),
+                params.get("repairCost") == null ? "" : params.get("repairCost").toString(),
+                "6",//待维修
+                params.get("commentType") == null ? "" : params.get("commentType").toString(),
+                params.get("needRepairComments") == null ? stringlist : jsontoList(params.get("needRepairComments"))
+        );
+        result += "维修管理:";
+        result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
+        return result;
+    }
+
+    /**
+     * 库存管理-批量冻结
+     * @param map
+     * @return
+     */
+    public String freezeStorageInfoByIds(Map<String,Object> map) {
+        String result = "库存数据：";
+        result += storageManageDao.updateStorageInfoByIds(map);
+        if ("1".equals(map.get("commentType").toString())){
+            //需要维修 添加维修记录
+            result += addBatchleRepair(map);
+        }
+        return result;
+    }
+
+    //冻结需维修 添加多个维修记录
+    private String addBatchleRepair(Map<String,Object> params) {
+        String result = "";
+        //解析数据
+        String rowPojoIn = params.get("rowPojoIn").toString();
+        JSONObject jsonObject = JSONObject.parseObject(rowPojoIn);
+        JSONArray jsonArray = (JSONArray)jsonObject.get("dataIn");
+        System.out.println(jsonArray);
+
+        //并封装
+        List<DBObject> dbObjectList = new ArrayList<DBObject>();
+        for (int i = 0; i < jsonArray.size(); i++){
+            JSONObject tjsonIn = (JSONObject)jsonArray.get(i);
+            InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(
+                    tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString(),
+                    tjsonIn.get("phoneModel") == null ? "" : tjsonIn.get("phoneModel").toString(),
+                    tjsonIn.get("color") == null ? "" : tjsonIn.get("color").toString(),
+                    tjsonIn.get("manufacturer") == null ? "" : tjsonIn.get("manufacturer").toString(),
+                    inStorageTime,
+                    inStorageYear,
+                    inStorageMonth,
+                    tjsonIn.get("storageStatus") == null ? "" : tjsonIn.get("storageStatus").toString(),
+                    "由库存入维修，维修完入库。",
+                    tjsonIn.get("projectId") == null ? "" : tjsonIn.get("projectId").toString(),
+                    tjsonIn.get("projectName") == null ? "" : tjsonIn.get("projectName").toString(),
+                    tjsonIn.get("projectDockPeople") == null ? "" : tjsonIn.get("projectDockPeople").toString(),
+                    tjsonIn.get("schoolName") == null ? "" : tjsonIn.get("schoolName").toString(),
+                    tjsonIn.get("accessClass") == null ? "" : tjsonIn.get("accessClass").toString(),
+                    tjsonIn.get("accessObj") == null ? "" : tjsonIn.get("accessObj").toString(),
+                    tjsonIn.get("contactInfo") == null ? "" : tjsonIn.get("contactInfo").toString(),
+                    tjsonIn.get("address") == null ? "" : tjsonIn.get("address").toString(),
+                    tjsonIn.get("deliveryTime") == null ? "" : tjsonIn.get("deliveryTime").toString(),
+                    "",
+                    "",
+                    "",
+                    tjsonIn.get("parentName") == null ? "" : tjsonIn.get("parentName").toString(),
+                    tjsonIn.get("parentMobile") == null ? "" : tjsonIn.get("parentMobile").toString(),
+                    tjsonIn.get("parentId") == null ? "" : tjsonIn.get("parentId").toString(),
+                    tjsonIn.get("studentName") == null ? "" : tjsonIn.get("studentName").toString(),
+                    tjsonIn.get("studentMobile") == null ? "" : tjsonIn.get("studentMobile").toString(),
+                    tjsonIn.get("studentId") == null ? "" : tjsonIn.get("studentId").toString(),
+                    "由库存入维修，维修完入库。",
+                    params.get("needRepairComments") == null ? "" : params.get("needRepairComments").toString(),
+                    params.get("repairCost") == null ? "" : params.get("repairCost").toString(),
+                    "6",//待维修
+                    params.get("commentType") == null ? "" : params.get("commentType").toString(),
+                    params.get("needRepairComments") == null ? stringlist : jsontoList(params.get("needRepairComments"))
+            );
+            dbObjectList.add(inOutStorageEntry.getBaseEntry());
+        }
+        inOutStorageRecordDao.addProjectOutStorageRecordList(dbObjectList);
+        result += "批量维修入库:";
+        result += "success";
+        return result;
+    }
+
+    private List<String> jsontoList(Object needRepairComment) {
+        List<String> stringList = new ArrayList<String>();
+
+        String needRepairCommentString = needRepairComment.toString().replace("[","").replace("]","");
+//        System.out.println(needRepairCommentString);
+        String[] strings= needRepairCommentString.split(",");
+        for (String string : strings){
+            stringList.add(string);
+        }
+        System.out.println(stringList);
+        return stringList;
     }
 }

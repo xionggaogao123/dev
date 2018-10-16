@@ -291,7 +291,7 @@ public class AppNoticeService {
         if(indexContentEntry!=null){
            // indexContentDao.updateAllEntry(id,allCount,members);
             indexContentEntry.setAllCount(allCount);
-            indexContentEntry.setReadList(members);
+            indexContentEntry.setReadList(reads);
             indexContentDao.addEntry(indexContentEntry);
         }
 

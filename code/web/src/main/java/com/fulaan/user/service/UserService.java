@@ -882,7 +882,7 @@ public class UserService extends BaseService {
      *
      * */
     public UserDetailInfoDTO getUserInfoById(String id) {
-        UserEntry userEntry = userDao.getGenerateCodeEntry(id);
+        UserEntry userEntry = userDao.getUserEntry(new ObjectId(id),Constant.FIELDS);
         return userEntry == null ? null : new UserDetailInfoDTO(userEntry);
     }
 

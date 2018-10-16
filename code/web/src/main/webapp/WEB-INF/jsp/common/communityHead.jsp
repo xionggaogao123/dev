@@ -114,7 +114,7 @@
         <p class="dp2">UID:100123</p>
     </div>
     <div class="d2">
-        <img src="http://7xiclj.com1.z0.glb.clouddn.com/5846026bde04cb17e0693f7b" class="ddimg">
+        <img src="http://doc.k6kt.com/5846026bde04cb17e0693f7b" class="ddimg">
     </div>
     <div class="d3">
         <p style="text-align: center">请使用“复兰教育社区APP”扫描二维码<br>添加玩伴

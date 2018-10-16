@@ -309,7 +309,7 @@ define(function (require, exports, module) {
 
         //var name = 'ss';
         //directory = '56f357112947cd1a81589a82';
-        //srcs[0] = {id:"56f4b16729473aa2785f8074", value:"http://7xiclj.com1.z0.glb.clouddn.com/56f4b16729473aa2785f8074.doc"};
+        //srcs[0] = {id:"56f4b16729473aa2785f8074", value:"http://doc.k6kt.com/56f4b16729473aa2785f8074.doc"};
 
         if (checkData(name, directory)) {
             dto.name = name;

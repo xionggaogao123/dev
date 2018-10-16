@@ -335,7 +335,7 @@
             <div class="com-left-s" id="vote">
                 <%--<div class="com-tit"  style="cursor: pointer">投票 <span class="i-newtips">7</span></div>--%>
                 <%--<div class="notice-container clearfix">--%>
-                    <%--<div class="notice-holder"><img src="http://7xiclj.com1.z0.glb.clouddn.com/head-0.47150365147468287.jpg">--%>
+                    <%--<div class="notice-holder"><img src="http://doc.k6kt.com/head-0.47150365147468287.jpg">--%>
                         <%--<p>凯特老师</p>--%>
                         <%--<p class="p1">副社长</p></div>--%>
                     <%--<div class="notice-cont">--%>

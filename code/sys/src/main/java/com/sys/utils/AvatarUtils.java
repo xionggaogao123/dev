@@ -20,17 +20,17 @@ public class AvatarUtils {
     public static final String MAX_AVATAR_FORMAT = Resources.getProperty("max.avatar.format");
 
     public static final String USER_AVATAR_FORMAT =Resources.getProperty("max.avatar.format");
-    public static final String DEFAULT_AVATOR_FORMAT="http://7xiclj.com1.z0.glb.clouddn.com/d_{0}_{1}.png";
-    public static final String DEFAULT_NEW_AVATOR_FORMAT="http://7xiclj.com1.z0.glb.clouddn.com/d_{0}_{1}.png";
+    public static final String DEFAULT_AVATOR_FORMAT="http://doc.k6kt.com/d_{0}_{1}.png";
+    public static final String DEFAULT_NEW_AVATOR_FORMAT="http://doc.k6kt.com/d_{0}_{1}.png";
     public static final String DEFAULT_FORMAT="head-default-head.jpg";
-    public static final String DEFAULT_PREV="http://7xiclj.com1.z0.glb.clouddn.com";
+    public static final String DEFAULT_PREV="http://doc.k6kt.com";
 
     public static final int DEFAULT_ROLE=1;
     public static final int DEFAULT_SEX=1;
-    //男     学生  http://7xiclj.com1.z0.glb.clouddn.com/head-0.7453231568799419.jpg
-    //女     学生  http://7xiclj.com1.z0.glb.clouddn.com/head-0.3171187819843335.jpg
-    //男     家长  http://7xiclj.com1.z0.glb.clouddn.com/head-0.31379172537414024.jpg
-    //女     家长  http://7xiclj.com1.z0.glb.clouddn.com/head-0.9670962144527113.jpg
+    //男     学生  http://doc.k6kt.com/head-0.7453231568799419.jpg
+    //女     学生  http://doc.k6kt.com/head-0.3171187819843335.jpg
+    //男     家长  http://doc.k6kt.com/head-0.31379172537414024.jpg
+    //女     家长  http://doc.k6kt.com/head-0.9670962144527113.jpg
 
     /**
      * 得到头像
@@ -80,22 +80,22 @@ public class AvatarUtils {
     public static String getAvatar(String avatar,int role,int sex){
         if(avatar == null ||  avatar.equals("") || avatar.contains("head-default-head.jpg")){
             if(role == 1 && sex == 1){//男学生
-                return "http://7xiclj.com1.z0.glb.clouddn.com/head-0.7453231568799419.jpg";
+                return "http://doc.k6kt.com/head-0.7453231568799419.jpg";
             }else if (role ==1 && sex==0){//女学生
-                return "http://7xiclj.com1.z0.glb.clouddn.com/head-0.3171187819843335.jpg";
+                return "http://doc.k6kt.com/head-0.3171187819843335.jpg";
             }else if(role ==2 && sex== 1){//男老师
-                return "http://7xiclj.com1.z0.glb.clouddn.com/head-0.31379172537414024.jpg";
+                return "http://doc.k6kt.com/head-0.31379172537414024.jpg";
             }else if(role ==2 && sex== 0){
-                return "http://7xiclj.com1.z0.glb.clouddn.com/head-0.9670962144527113.jpg";
+                return "http://doc.k6kt.com/head-0.9670962144527113.jpg";
             }else{
-                return "http://7xiclj.com1.z0.glb.clouddn.com/5a3722270a9d3251e386c4a0.png";
+                return "http://doc.k6kt.com/5a3722270a9d3251e386c4a0.png";
             }
         }
 
-        if(avatar.contains("http://7xiclj.com1.z0.glb.clouddn.com")){
+        if(avatar.contains("http://doc.k6kt.com")){
 
         }else{
-            avatar = "http://7xiclj.com1.z0.glb.clouddn.com/"+ avatar;
+            avatar = "http://doc.k6kt.com/"+ avatar;
         }
 
         return avatar;

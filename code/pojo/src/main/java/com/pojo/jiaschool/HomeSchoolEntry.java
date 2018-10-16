@@ -72,7 +72,7 @@ public class HomeSchoolEntry extends BaseDBObject {
                 .append("inp", initialPassword)
                 .append("pr", province)
                 .append("add", address)
-                .append("logo", "http://7xiclj.com1.z0.glb.clouddn.com/5a2674e3b0573026f932759b.png")
+                .append("logo", "http://doc.k6kt.com/5a2674e3b0573026f932759b.png")
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -107,7 +107,7 @@ public class HomeSchoolEntry extends BaseDBObject {
                 .append("inp", initialPassword)
                 .append("pr", province)
                 .append("add", address)
-                .append("logo", "http://7xiclj.com1.z0.glb.clouddn.com/5a2674e3b0573026f932759b.png")
+                .append("logo", "http://doc.k6kt.com/5a2674e3b0573026f932759b.png")
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -139,7 +139,7 @@ public class HomeSchoolEntry extends BaseDBObject {
                 .append("city", city)
                 .append("creationDate", creationDate)
                 .append("schoolParagraph", schoolParagraph)
-                .append("logo", "http://7xiclj.com1.z0.glb.clouddn.com/5a2674e3b0573026f932759b.png")
+                .append("logo", "http://doc.k6kt.com/5a2674e3b0573026f932759b.png")
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -173,7 +173,7 @@ public class HomeSchoolEntry extends BaseDBObject {
                 .append("city", city)
                 .append("creationDate", creationDate)
                 .append("schoolParagraph", schoolParagraph)
-                .append("logo", "http://7xiclj.com1.z0.glb.clouddn.com/5a2674e3b0573026f932759b.png")
+                .append("logo", "http://doc.k6kt.com/5a2674e3b0573026f932759b.png")
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }

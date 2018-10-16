@@ -28,7 +28,7 @@
         <div class="com-left">
 
             <div class="com-rlt com-rlt2" <c:if test="${menuItem==0}">style="display: none" </c:if>>
-                <img class="img1" src="http://7xiclj.com1.z0.glb.clouddn.com/582effea3d4df91126ff2b9a.png">
+                <img class="img1" src="http://doc.k6kt.com/582effea3d4df91126ff2b9a.png">
                 <p class="p1">复兰社区</p>
                 <p class="p4">
                     <c:if test="${operation!=1&&fuflaan!=1}"><em class="em1 quit">退出社区</em></c:if>

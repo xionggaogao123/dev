@@ -138,9 +138,9 @@
         <div class="post-left fl">
             <div class="post-headpic">
                 <img onclick="window.open('/forum/userCenter/user.do')" style="cursor: pointer"
-                <c:if test="${avatar ==null||avatar =='http://7xiclj.com1.z0.glb.clouddn.com/'}"> width="120"
+                <c:if test="${avatar ==null||avatar =='http://doc.k6kt.com/'}"> width="120"
                      height="120" src="/static/images/forum/lt_top_banner.png"</c:if>
-                <c:if test="${avatar !=null&&avatar !='http://7xiclj.com1.z0.glb.clouddn.com/'}"> src="${avatar}"
+                <c:if test="${avatar !=null&&avatar !='http://doc.k6kt.com/'}"> src="${avatar}"
                      </c:if>width="120" height="120">
             </div>
         </div>
@@ -902,10 +902,10 @@
         <p class="best-an">最佳答案</p>
         <div class="best-cont">
             <div class="best-peo">
-                {{?value.personImage!=null&&value.imageStr !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+                {{?value.personImage!=null&&value.imageStr !='http://doc.k6kt.com/'}}
                 <img src="{{=value.personImage}}">
                 {{?}}
-                {{?value.personImage==null||value.personImage =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+                {{?value.personImage==null||value.personImage =='http://doc.k6kt.com/'}}
                 <img src="/static/images/forum/head_picture1.png">
                 {{?}}
                 <span class="sp1">{{=value.solNickName}}</span>
@@ -953,12 +953,12 @@
             {{~value.fReplyDTOList:fReplyDTO:i}}
             <li>
                 {{?fReplyDTO.remove!=1}}
-                {{?fReplyDTO.imageSrc!=null&&fReplyDTO.imageSrc !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+                {{?fReplyDTO.imageSrc!=null&&fReplyDTO.imageSrc !='http://doc.k6kt.com/'}}
                 <img src="{{=fReplyDTO.imageSrc}}"
                      onclick="location.href='/forum/redirectFloor.do?Id={{=fReplyDTO.fReplyId}}'" width="10"
                      height="10">
                 {{?}}
-                {{?fReplyDTO.imageSrc==null||fReplyDTO.imageSrc =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+                {{?fReplyDTO.imageSrc==null||fReplyDTO.imageSrc =='http://doc.k6kt.com/'}}
                 <img src="/static/images/forum/head_picture1.png"
                      onclick="location.href='/forum/redirectFloor.do?Id={{=fReplyDTO.fReplyId}}'" width="10"
                      height="10">
@@ -1049,10 +1049,10 @@
     {{~it:value:index}}
     {{?index<=4}}
     <div class="lol clearfix">
-        {{?value.imageStr!=null&&value.imageStr !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.imageStr!=null&&value.imageStr !='http://doc.k6kt.com/'}}
         <img src="{{=value.imageStr}}" width="30" height="30">
         {{?}}
-        {{?value.imageStr==null||value.imageStr =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.imageStr==null||value.imageStr =='http://doc.k6kt.com/'}}
         <img src="/static/images/forum/head_picture1.png" width="30" height="30">
         {{?}}
         <p class="p1"><em>{{=value.nickName}}&nbsp;:</em>
@@ -1064,10 +1064,10 @@
     {{?}}
     {{?index>4}}
     <div class="lol clearfix llp">
-        {{?value.imageStr!=null&&value.imageStr !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.imageStr!=null&&value.imageStr !='http://doc.k6kt.com/'}}
         <img src="{{=value.imageStr}}" width="30" height="30">
         {{?}}
-        {{?value.imageStr==null||value.imageStr =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.imageStr==null||value.imageStr =='http://doc.k6kt.com/'}}
         <img src="/static/images/forum/head_picture1.png" width="30" height="30">
         {{?}}
         <p class="p1"><em>{{=value.nickName}}&nbsp;:</em>
@@ -1088,10 +1088,10 @@
     {{~it:value:index}}
     {{?index<=4}}
     <div class="lol clearfix">
-        {{?value.imageStr!=null&&value.imageStr !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.imageStr!=null&&value.imageStr !='http://doc.k6kt.com/'}}
         <img src="{{=value.imageStr}}" width="30" height="30">
         {{?}}
-        {{?value.imageStr==null||value.imageStr =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.imageStr==null||value.imageStr =='http://doc.k6kt.com/'}}
         <img src="/static/images/forum/head_picture1.png" width="30" height="30">
         {{?}}
         <p class="p1"><em>{{=value.nickName}}&nbsp;:</em>
@@ -1103,10 +1103,10 @@
     {{?}}
     {{?index>4}}
     <div class="lol clearfix llp">
-        {{?value.imageStr!=null&&value.imageStr !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.imageStr!=null&&value.imageStr !='http://doc.k6kt.com/'}}
         <img src="{{=value.imageStr}}" width="30" height="30">
         {{?}}
-        {{?value.imageStr==null||value.imageStr =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.imageStr==null||value.imageStr =='http://doc.k6kt.com/'}}
         <img src="/static/images/forum/head_picture1.png" width="30" height="30">
         {{?}}
         <p class="p1"><em>{{=value.nickName}}&nbsp;:</em>

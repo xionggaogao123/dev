@@ -501,7 +501,7 @@
 <div id="wrapper">
 
     <h1>Audio Player:</strong> Responsive <em>&amp;</em> Touch-friendly</h1>
-    <%--http://7xiclj.com1.z0.glb.clouddn.com/57c553ad71f0561158867920.wav--%>
+    <%--http://doc.k6kt.com/57c553ad71f0561158867920.wav--%>
     <audio preload="auto" controls>
         <source src="${musicUrl}"/>
     </audio>

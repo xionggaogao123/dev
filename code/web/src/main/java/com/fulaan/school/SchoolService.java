@@ -16,8 +16,6 @@ import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.MD5Utils;
-import com.sys.utils.ValidationUtils;
-
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -592,7 +590,7 @@ public class SchoolService {
                 UserEntry userEntry = userMap.get(new ObjectId(interestClassDTO.getTeacherId()));
                 if (userEntry != null) {
                     interestClassDTO.setTeacherName(userEntry.getUserName());
-                    interestClassDTO.setTeacherAvatar("http://7xiclj.com1.z0.glb.clouddn.com/" + userEntry.getAvatar());
+                    interestClassDTO.setTeacherAvatar("http://doc.k6kt.com/" + userEntry.getAvatar());
                 }
 
                 Integer lessonCount = getLessonCount(new ObjectId(interestClassDTO.getId()), termType);
@@ -678,7 +676,7 @@ public class SchoolService {
             UserEntry userEntry = userMap.get(new ObjectId(interestClassDTO.getTeacherId()));
             if (userEntry != null) {
                 interestClassDTO.setTeacherName(userEntry.getUserName());
-                interestClassDTO.setTeacherAvatar("http://7xiclj.com1.z0.glb.clouddn.com/" + userEntry.getAvatar());
+                interestClassDTO.setTeacherAvatar("http://doc.k6kt.com/" + userEntry.getAvatar());
             }
             Integer lessonCount = getLessonCount(new ObjectId(interestClassDTO.getId()), termType);
             interestClassDTO.setLessonCount(lessonCount == null ? 0 : lessonCount);

@@ -857,19 +857,19 @@ public class FReplyService {
                 }
             }
             String[] filePaths = filePathsStr.split(",");
-            if (filePaths[0].contains("http://7sbrbl.com1.z0.glb.clouddn.com")) {
+            if (filePaths[0].contains("http://store.k6kt.com")) {
                 in = QiniuFileUtils.downFileByUrl(filePaths[0]);
             } else {
-                in = QiniuFileUtils.downFileByUrl("http://7sbrbl.com1.z0.glb.clouddn.com/" + filePaths[0]);
+                in = QiniuFileUtils.downFileByUrl("http://store.k6kt.com/" + filePaths[0]);
             }
 
             if (filePaths.length > 1) {
                 for (int k = 1; k < filePaths.length; k++) {
                     String tempPath = "";
-                    if (filePaths[k].contains("http://7sbrbl.com1.z0.glb.clouddn.com")) {
+                    if (filePaths[k].contains("http://store.k6kt.com")) {
                         tempPath = filePaths[k];
                     } else {
-                        tempPath = "http://7sbrbl.com1.z0.glb.clouddn.com/" + filePaths[k];
+                        tempPath = "http://store.k6kt.com/" + filePaths[k];
                     }
                     //tempPath=filePaths[k];
                     InputStream in2 = QiniuFileUtils.downFileByUrl(tempPath);

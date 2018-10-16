@@ -156,10 +156,10 @@
             {{~value.fReplyDTOList:fReplyDTO:i}}
             <div class="zan-li">
                 {{?fReplyDTO.remove!=1}}
-                {{?fReplyDTO.imageSrc!=null&&fReplyDTO.imageSrc !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+                {{?fReplyDTO.imageSrc!=null&&fReplyDTO.imageSrc !='http://doc.k6kt.com/'}}
                 <img src="{{=fReplyDTO.imageSrc}}">
                 {{?}}
-                {{?fReplyDTO.imageSrc==null||fReplyDTO.imageSrc =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+                {{?fReplyDTO.imageSrc==null||fReplyDTO.imageSrc =='http://doc.k6kt.com/'}}
                 <img src="/static/images/forum/head_picture1.png">
                 {{?}}
                 <p>{{=fReplyDTO.replyNickName}}</p>

@@ -5,12 +5,12 @@ import com.fulaan.base.BaseController;
 import com.fulaan.communityValidate.service.ValidateInfoService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.activity.FriendApply;
+import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
-
 import io.swagger.annotations.*;
-
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,8 +45,15 @@ public class DefaultFriendController extends BaseController {
     @RequestMapping("/getFriends")
     @ResponseBody
     public RespObj getFriends() {
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         ObjectId uid = getUserId();
-        return RespObj.SUCCESS(friendService.getFrinds(uid));
+       // long start = System.currentTimeMillis();
+        List<User> userList = friendService.getFrinds(uid);
+       // System.out.println(userList.size());
+       // long end = System.currentTimeMillis();
+      //  System.out.print(end-start);
+        respObj.setMessage(userList);
+        return respObj;
     }
 
 

@@ -120,7 +120,7 @@ public class FriendService {
 
                 activity.setOrganizerName(userInfo.getUserName());
                 activity.setOrganizerRole(userInfo.getRole());
-                activity.setOrganizerImageUrl("http://7xiclj.com1.z0.glb.clouddn.com/" + userInfo.getAvatar());
+                activity.setOrganizerImageUrl("http://doc.k6kt.com/" + userInfo.getAvatar());
                 activityList.add(activity);
             }
         }
@@ -439,8 +439,9 @@ public class FriendService {
         List<User> users = new ArrayList<User>();
         Map<ObjectId,RemarkEntry> map=remarkDao.find(userId,uids);
         Map<ObjectId,Integer> userRoleMap = newVersionUserRoleDao.getUserRoleMap(uids);
+        Map<ObjectId,UserEntry> userEntryMap = userDao.getUserEntryMap(uids, Constant.FIELDS);
         for (ObjectId oid : uids) {
-            UserEntry userEntry = userDao.findByUserId(oid);
+            UserEntry userEntry = userEntryMap.get(oid);
             if (userEntry != null) {
                 User user = new User();
                 user.setId(userEntry.getID().toString());

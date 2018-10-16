@@ -93,9 +93,9 @@
             </div>
             <div class="personal-c clearfix" <c:if test="${login == false}">style="display: none;" </c:if>>
                 <img onclick="window.open('/forum/personal.do?personId=${userId}')" style="cursor: pointer"
-                <c:if test="${avatar ==null||avatar =='http://7xiclj.com1.z0.glb.clouddn.com/'}">
+                <c:if test="${avatar ==null||avatar =='http://doc.k6kt.com/'}">
                      src="/static/images/forum/head_picture.png"</c:if>
-                <c:if test="${avatar !=null&&avatar !='http://7xiclj.com1.z0.glb.clouddn.com/'}"> src="${avatar}"
+                <c:if test="${avatar !=null&&avatar !='http://doc.k6kt.com/'}"> src="${avatar}"
                      </c:if>width="53" height="53">
                 <span onclick="window.open('/forum/userCenter/user.do')" style="cursor: pointer"
                       class="span1">${userName}</span>

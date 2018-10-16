@@ -117,30 +117,30 @@
             <div class="div1">
                 <div class="doudiv mb8">
                     <img src="/static/images/forum/comp01.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/579ac9b03d4df94c677d4f8d.mp4.m3u8')"></i>
+                    <i onclick="tryPlayYCourse('http://store.k6kt.com/m3u8/579ac9b03d4df94c677d4f8d.mp4.m3u8')"></i>
                     <div class="bg20" ></div>
                 </div>
                 <div class="doudiv">
                     <img src="/static/images/forum/comp02.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57ac8ba7de04cb644c2430c1.mp4.m3u8')"></i>
+                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.gstore.k6kt.com04cb644c2430c1.mp4.m3u8')"></i>
                     <div class="bg20"></div>
                 </div>
             </div>
             <div class="div2">
                 <div class="trediv mb8">
                     <img src="/static/images/forum/comp03.png">
-                    <a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/57b6c46ede04cb06131ced0d.JPG" data-fancybox-group="home" title="预览"><i>
+                    <a class="fancybox" href="http://doc.k6kt.com/57b6c46ede04cb06131ced0d.JPG" data-fancybox-group="home" title="预览"><i>
                     </i> </a>
                     <div class="bg20"></div>
                 </div>
                 <div class="trediv mb8">
                     <img src="/static/images/forum/comp04.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57ae5eb2de04cb5082f8ede3.mp4.m3u8')"></i>
+                    <i onclick="tryPlayYCourse('http://store.k6kt.com/mstore.k6kt.comp4.m3u8')"></i>
                     <div class="bg20"></div>
                 </div>
                 <div class="trediv">
                     <img src="/static/images/forum/comp05.png">
-                    <a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/58656c823d4df96ad47517a3.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
+                    <a class="fancybox" href="http://doc.k6kt.com/58656c823d4df96ad47517a3.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
                     </i></a>
                     <div class="bg20"></div>
                 </div>
@@ -148,59 +148,52 @@
             <div class="div1">
                 <div class="doudiv mb8">
                     <img src="/static/images/forum/comp06.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57a45540de04cb45ae60bc7c.mp4.m3u8')"></i>
-                    <div class="bg20"></div>
+                    <i onclick="tryPlayYCourse('http://store.k6kt.com/m3u8/57a45540de04store.k6kt.com                    <div class="bg20"></div>
                 </div>
                 <div class="doudiv">
                     <img src="/static/images/forum/comp07.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57aebf8d3d4df92a03183502.mp4.m3u8')"></i>
-                    <div class="bg20"></div>
+                    <i onclick="tryPlayYCourse('http://store.k6kt.com/m3u8/57aebf8d3d4df92a03183502.mp4store.k6kt.com    <div class="bg20"></div>
                 </div>
             </div>
             <div class="div2">
                 <div class="trediv mb8">
                     <img src="/static/images/forum/comp08.png">
-                    <a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/57a493543d4df9703fd54c37.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
+                    <a class="fancybox" href="http://doc.k6kt.com/57a493543d4df9703fd54c37.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
                     </i></a>
                     <div class="bg20"></div>
                 </div>
                 <div class="trediv mb8">
                     <img src="/static/images/forum/comp09.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57bbcda93d4df95eda9bc7ea.mp4.m3u8')"></i>
-                    <div class="bg20"></div>
+                    <i onclick="tryPlayYCourse('http://store.k6kt.com/m3u8/57bbcda93d4df95eda9bc7ea.mp4.m3u8')"></i>
+  store.k6kt.combg20"></div>
                 </div>
                 <div class="trediv">
                     <img src="/static/images/forum/comp10.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57a5133d3d4df9703fd55161.mp4.m3u8')"></i>
-                    <div class="bg20"></div>
-                </div>
+                    <i onclick="tryPlayYCourse('http://store.k6kt.com/m3u8/57a5133d3d4df9703fd55161.mp4.m3u8')"></i>
+                  store.k6kt.com             </div>
             </div>
             <div class="div1">
                 <div class="doudiv mb8">
                     <img src="/static/images/forum/comp11.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/5873638fcab6ec204895f1e4.m3u8')"></i>
-                    <div class="bg20"></div>
-                </div>
-                <div class="doudiv">
+                    <i onclick="tryPlayYCourse('http://store.k6kt.com/m3u8/5873638fcab6ec204895f1e4.m3u8')"></i>
+                    <div class="bg20">store.k6kt.com                <div class="doudiv">
                     <img src="/static/images/forum/comp12.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57a5ee3a3d4df9703fd57bff.mp4.m3u8')"></i>
+                    <i onclick="tryPlayYCourse('http://store.k6kt.com/m3u8/57a5ee3a3d4df9703fd57bff.mp4.m3u8')"></i>
                     <div class="bg20"></div>
-                </div>
-            </div>
+     store.k6kt.com</div>
             <div class="div2 mr0">
                 <div class="trediv mb8">
                     <img src="/static/images/forum/comp13.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57a4609b3d4df9703fd53a0f.mp4.m3u8')"></i>
+                    <i onclick="tryPlayYCourse('http://store.k6kt.com/m3u8/57a4609b3d4df9703fd53a0f.mp4.m3u8')"></i>
                     <div class="bg20"></div>
-                </div>
-                <div class="trediv mb8">
+                </divstore.k6kt.comtrediv mb8">
                     <img src="/static/images/forum/comp14.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57a09f683d4df94e7349721f.mp4.m3u8')"></i>
+                    <i onclick="tryPlayYCourse('http://store.k6kt.com/m3u8/57a09f683d4df94e7349721f.mp4.m3u8')"></i>
                     <div class="bg20"></div>
                 </div>
                 <div class="trediv">
                     <img src="/static/images/forum/comp15.png">
-                    <a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/57a51bab3d4df9703fd552a1.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
+                    <a class="fancybox" href="http://doc.k6kt.com/57a51bab3d4df9703fd552a1.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
                     </i></a>
                     <div class="bg20"></div>
                 </div>

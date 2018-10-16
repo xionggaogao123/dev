@@ -496,7 +496,7 @@ public class DefaultFPostController extends BaseController {
             }
         }
 
-        if (null != avatar && !"http://7xiclj.com1.z0.glb.clouddn.com/".equals(avatar)) {
+        if (null != avatar && !"http://doc.k6kt.com/".equals(avatar)) {
             model.put("imf", true);
         } else {
             model.put("imf", false);

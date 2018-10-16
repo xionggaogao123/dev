@@ -129,7 +129,7 @@
             <div class="div2">
                 <div class="trediv mb8">
                     <img src="/static/images/forum/comp03.png">
-                    <a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/57b6c46ede04cb06131ced0d.JPG" data-fancybox-group="home" title="预览"><i>
+                    <a class="fancybox" href="http://doc.k6kt.com/57b6c46ede04cb06131ced0d.JPG" data-fancybox-group="home" title="预览"><i>
                     </i> </a>
                     <div class="bg20"></div>
                 </div>
@@ -140,7 +140,7 @@
                 </div>
                 <div class="trediv">
                     <img src="/static/images/forum/comp05.png">
-                    <a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/58656c823d4df96ad47517a3.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
+                    <a class="fancybox" href="http://doc.k6kt.com/58656c823d4df96ad47517a3.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
                     </i></a>
                     <div class="bg20"></div>
                 </div>
@@ -160,7 +160,7 @@
             <div class="div2">
                 <div class="trediv mb8">
                     <img src="/static/images/forum/comp08.png">
-                    <a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/57a493543d4df9703fd54c37.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
+                    <a class="fancybox" href="http://doc.k6kt.com/57a493543d4df9703fd54c37.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
                     </i></a>
                     <div class="bg20"></div>
                 </div>
@@ -200,7 +200,7 @@
                 </div>
                 <div class="trediv">
                     <img src="/static/images/forum/comp15.png">
-                    <a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/57a51bab3d4df9703fd552a1.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
+                    <a class="fancybox" href="http://doc.k6kt.com/57a51bab3d4df9703fd552a1.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"><i>
                     </i></a>
                     <div class="bg20"></div>
                 </div>

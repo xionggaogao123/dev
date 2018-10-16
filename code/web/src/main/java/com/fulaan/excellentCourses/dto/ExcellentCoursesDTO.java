@@ -51,7 +51,7 @@ public class ExcellentCoursesDTO {
             if(e.getBigCouver()!=null){
                 this.bigCover=e.getBigCouver();
             }else{
-                this.bigCover="http://7xiclj.com1.z0.glb.clouddn.com/5b2cd1613d4df93a938a0b54.jpg";
+                this.bigCover="http://doc.k6kt.com/5b2cd1613d4df93a938a0b54.jpg";
             }
             this.subjectName = e.getSubjectName();
             this.cover = e.getCover();

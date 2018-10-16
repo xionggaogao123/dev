@@ -3398,7 +3398,7 @@ public class AppCommentService {
         ObjectId oid = new ObjectId();
         ParentChildConnectionEntry entry = parentChildConnectionDao.getEntryByById(parentId,name,communityId);
         if(entry==null){
-            parentChildConnectionDao.saveAppNoticeEntry(new ParentChildConnectionEntry(parentId,communityId,oid,name,"http://7xiclj.com1.z0.glb.clouddn.com/5a3722270a9d3251e386c4a0.png"));
+            parentChildConnectionDao.saveAppNoticeEntry(new ParentChildConnectionEntry(parentId,communityId,oid,name,"http://doc.k6kt.com/5a3722270a9d3251e386c4a0.png"));
         }else{
             return "不能添加同名的孩子";
         }

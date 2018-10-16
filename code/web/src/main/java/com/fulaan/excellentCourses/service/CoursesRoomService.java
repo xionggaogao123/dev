@@ -553,7 +553,7 @@ liveid	直播id*/
                         userMap.put("id",new ObjectId().toString());
                         String name = "用户";
                         userMap.put("name",name);
-                        userMap.put("avatar", "http://7xiclj.com1.z0.glb.clouddn.com/head-0.7453231568799419.jpg");
+                        userMap.put("avatar", "http://doc.k6kt.com/head-0.7453231568799419.jpg");
                         userMap.put("customua","");
                         userMap.put("viewercustommark","");
                         userMap.put("marquee","");
@@ -564,7 +564,7 @@ liveid	直播id*/
                     userMap.put("id",new ObjectId().toString());
                     String name = "用户";
                     userMap.put("name",name);
-                    userMap.put("avatar", "http://7xiclj.com1.z0.glb.clouddn.com/head-0.7453231568799419.jpg");
+                    userMap.put("avatar", "http://doc.k6kt.com/head-0.7453231568799419.jpg");
                     userMap.put("customua","");
                     userMap.put("viewercustommark","");
                     userMap.put("marquee","");

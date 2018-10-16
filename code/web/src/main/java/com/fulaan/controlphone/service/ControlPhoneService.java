@@ -4837,8 +4837,8 @@ public class ControlPhoneService {
         if(url != null && url.contains("/static/images/community/upload.png")){
             str = str.replace("upload.png", "head_group.png");
         }
-        //http://7xiclj.com1.z0.glb.clouddn.com/585b344ade04cb0539a32724.JPG
-        if(url != null && url.contains("http://7xiclj.com1.z0.glb.clouddn.com")){
+        //http://doc.k6kt.com/585b344ade04cb0539a32724.JPG
+        if(url != null && url.contains("http://doc.k6kt.com")){
             str = url + "-head";
         }
         return str;

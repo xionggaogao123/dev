@@ -156,7 +156,7 @@ public class BackStageService {
 
 
 
-    private static String imageUrl = "http://7xiclj.com1.z0.glb.clouddn.com/5a1bdcfd27fddd15c8649dea.png";
+    private static String imageUrl = "http://doc.k6kt.com/5a1bdcfd27fddd15c8649dea.png";
 
 
     public static void main(String[] args){
@@ -194,7 +194,7 @@ public class BackStageService {
         entry1.setAppTime(15);
         controlSetBackDao.addEntry(entry1);*/
       /*  JxmAppVersionDTO dto = new JxmAppVersionDTO();
-        dto.setFileUrl("http://7xiclj.com1.z0.glb.clouddn.com/5a16432794b5ea7a4cbde78e.apk");
+        dto.setFileUrl("http://doc.k6kt.com/5a16432794b5ea7a4cbde78e.apk");
         dto.setName("cn.lt.appstore");
         dto.setVersion("4.3.0");*/
         //dto.setName("2011-11-23 17:04:00");

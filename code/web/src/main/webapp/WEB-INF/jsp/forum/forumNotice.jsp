@@ -101,10 +101,10 @@
     </p>
     {{~it:value:index}}
     <div class="myt-msg clearfix">
-        {{?value.imageSrc!=null&&value.imageSrc !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.imageSrc!=null&&value.imageSrc !='http://doc.k6kt.com/'}}
         <img src="{{=value.imageSrc}}">
         {{?}}
-        {{?value.imageSrc==null||value.imageSrc =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.imageSrc==null||value.imageSrc =='http://doc.k6kt.com/'}}
         <img src="/static/images/forum/head_picture1.png">
         {{?}}
         <div class="tz-right">
@@ -127,10 +127,10 @@
     </p>
     {{~it:value:index}}
     <div class="myt-msg clearfix">
-        {{?value.avatar!=null&&value.avatar !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.avatar!=null&&value.avatar !='http://doc.k6kt.com/'}}
         <img src="{{=value.avatar}}">
         {{?}}
-        {{?value.avatar==null||value.avatar =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+        {{?value.avatar==null||value.avatar =='http://doc.k6kt.com/'}}
         <img src="/static/images/forum/head_picture1.png">
         {{?}}
         <div class="tz-right">
@@ -163,10 +163,10 @@
     {{~it:value:index}}
     <div class="li-sr clearfix">
         <div class="img-sr-f">
-            {{?value.imageSrc!=null&&value.imageSrc !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+            {{?value.imageSrc!=null&&value.imageSrc !='http://doc.k6kt.com/'}}
             <img src="{{=value.imageSrc}}">
             {{?}}
-            {{?value.imageSrc==null||value.imageSrc =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+            {{?value.imageSrc==null||value.imageSrc =='http://doc.k6kt.com/'}}
             <img src="/static/images/forum/head_picture1.png">
             {{?}}
             {{?value.count>=2}}
@@ -204,10 +204,10 @@
     {{~it:value:index}}
     <div class="li-sr clearfix">
         <div class="img-sr-f">
-            {{?value.imageSrc!=null&&value.imageSrc !='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+            {{?value.imageSrc!=null&&value.imageSrc !='http://doc.k6kt.com/'}}
             <img src="{{=value.imageSrc}}">
             {{?}}
-            {{?value.imageSrc==null||value.imageSrc =='http://7xiclj.com1.z0.glb.clouddn.com/'}}
+            {{?value.imageSrc==null||value.imageSrc =='http://doc.k6kt.com/'}}
             <img src="/static/images/forum/head_picture1.png">
             {{?}}
         </div>

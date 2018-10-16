@@ -39,7 +39,7 @@ public class ImageAsyncScanRequestSample extends BaseSample {
         List<Map<String, Object>> tasks = new ArrayList<Map<String, Object>>();
         Map<String, Object> task1 = new LinkedHashMap<String, Object>();
         task1.put("dataId", UUID.randomUUID().toString());
-        task1.put("url", "http://7xiclj.com1.z0.glb.clouddn.com/head-0.3171187819843335.jpg");
+        task1.put("url", "http://doc.k6kt.com/head-0.3171187819843335.jpg");
         task1.put("time", new Date());
 
         tasks.add(task1);

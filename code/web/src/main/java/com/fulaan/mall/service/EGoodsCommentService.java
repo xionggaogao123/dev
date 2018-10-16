@@ -63,7 +63,7 @@ public class EGoodsCommentService {
                     dto.setUserAvatar(user.getImgUrl());
                 } else {
                     dto.setUserName("匿名");
-                    dto.setUserAvatar("http://7xiclj.com1.z0.glb.clouddn.com/head-default-head.jpg");
+                    dto.setUserAvatar("http://doc.k6kt.com/head-default-head.jpg");
                 }
 
             }

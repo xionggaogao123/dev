@@ -529,7 +529,7 @@ public class AppNoticeService {
                 dto.setTimeExpression(TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
                 dto.setCardType(2);//特殊
                 dto.setSubject(entry.getSubject());
-                dto.setAvatar("http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                dto.setAvatar("http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
             }else{
                 UserEntry userEntry=userEntryMap.get(entry.getUserId());
                 if(null!=userEntry){

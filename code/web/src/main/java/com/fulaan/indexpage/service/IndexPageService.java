@@ -275,7 +275,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","家校美使用向导");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","家校美，一款富有魔力的产品！");
@@ -305,7 +305,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","恭喜您创建了一个新社群");
                     ob1.put("time",dto8.getCreateTime());
                     if(dto8.getContent()!=null && !dto8.getContent().equals("")){
@@ -472,7 +472,7 @@ public class IndexPageService {
                         ob1.put("subject","家长");
                     }*/
                     ob1.put("subject",dto8.getSubject());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title",dto8.getTitle());
                     ob1.put("time",dto8.getTime());
                     ob1.put("content",dto8.getContent());
@@ -549,7 +549,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","家校美使用向导");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","家校美，一款富有魔力的产品！");
@@ -578,7 +578,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","恭喜您创建了一个新社群");
                     ob1.put("time",dto8.getCreateTime());
                     if(dto8.getContent()!=null && !dto8.getContent().equals("")){
@@ -847,7 +847,7 @@ public class IndexPageService {
                         ob1.put("subject","家长");
                     }*/
                     ob1.put("subject",dto8.getSubject());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title",dto8.getTitle());
                     ob1.put("time",dto8.getTime());
                     ob1.put("content",dto8.getContent());
@@ -924,7 +924,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","家校美使用向导");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","家校美，一款富有魔力的产品！");
@@ -953,7 +953,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","恭喜您创建了一个新社群");
                     ob1.put("time",dto8.getCreateTime());
                     if(dto8.getContent()!=null && !dto8.getContent().equals("")){
@@ -990,7 +990,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getSourceId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject",dto8.getTitle());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","您的留言被选为精选留言了");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
@@ -1015,7 +1015,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","直播课堂提醒");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
@@ -1204,7 +1204,7 @@ public class IndexPageService {
                         ob1.put("subject","家长");
                     }*/
                     ob1.put("subject",dto8.getSubject());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title",dto8.getTitle());
                     ob1.put("time",dto8.getTime());
                     ob1.put("content",dto8.getContent());
@@ -1350,7 +1350,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","家校美使用向导");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","家校美，一款富有魔力的产品！");
@@ -1380,7 +1380,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","恭喜您创建了一个新社群");
                     ob1.put("time",dto8.getCreateTime());
                     if(dto8.getContent()!=null && !dto8.getContent().equals("")){
@@ -1418,7 +1418,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getSourceId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject",dto8.getTitle());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","您的留言被选为精选留言了");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
@@ -1444,7 +1444,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","直播课堂提醒");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
@@ -1644,7 +1644,7 @@ public class IndexPageService {
                         ob1.put("subject","家长");
                     }*/
                     ob1.put("subject",dto8.getSubject());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title",dto8.getTitle());
                     ob1.put("time",dto8.getTime());
                     ob1.put("content",dto8.getContent());
@@ -1826,7 +1826,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5b6177aa8126103aac1a705b.png");
                     ob1.put("title","家校美使用向导");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","家校美，一款富有魔力的产品！");
@@ -1856,7 +1856,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5b6177aa8126103aac1a705b.png");
                     ob1.put("title","班级社群");
                     ob1.put("time",dto8.getCreateTime());
                     if(dto8.getContent()!=null && !dto8.getContent().equals("")){
@@ -1893,7 +1893,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getSourceId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject",dto8.getTitle());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5b6177aa8126103aac1a705b.png");
                     ob1.put("title","热点话题");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","您的留言被选为精选留言了");
@@ -1919,7 +1919,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5b6177aa8126103aac1a705b.png");
                     ob1.put("title","直播课堂");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
@@ -1945,7 +1945,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178508126103aac1a705d.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5b6178508126103aac1a705d.png");
                     ob1.put("title","登录提醒");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
@@ -2152,7 +2152,7 @@ public class IndexPageService {
                 ob1.put("id",dto8.getId());
                 ob1.put("userName","家校美小助手");
                 ob1.put("subject","");
-                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                ob1.put("avatar","http://doc.k6kt.com/5b6177aa8126103aac1a705b.png");
                 ob1.put("title","家校美使用向导");
                 ob1.put("time",dto8.getCreateTime());
                 ob1.put("content","家校美，一款富有魔力的产品！");
@@ -2177,7 +2177,7 @@ public class IndexPageService {
                 ob1.put("id",dto8.getId());
                 ob1.put("userName","家校美小助手");
                 ob1.put("subject","");
-                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                ob1.put("avatar","http://doc.k6kt.com/5b6177aa8126103aac1a705b.png");
                 ob1.put("title","班级社群");
                 ob1.put("time",dto8.getCreateTime());
                 if(dto8.getContent()!=null && !dto8.getContent().equals("")){
@@ -2208,7 +2208,7 @@ public class IndexPageService {
                 ob1.put("id",dto8.getSourceId());
                 ob1.put("userName","家校美小助手");
                 ob1.put("subject",dto8.getTitle());
-                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                ob1.put("avatar","http://doc.k6kt.com/5b6177aa8126103aac1a705b.png");
                 ob1.put("title","热点话题");
                 ob1.put("time",dto8.getCreateTime());
                 ob1.put("content","您的留言被选为精选留言了");
@@ -2233,7 +2233,7 @@ public class IndexPageService {
                 ob1.put("id",dto8.getId());
                 ob1.put("userName","家校美小助手");
                 ob1.put("subject","");
-                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                ob1.put("avatar","http://doc.k6kt.com/5b6177aa8126103aac1a705b.png");
                 ob1.put("title","直播课堂");
                 ob1.put("time",dto8.getCreateTime());
                 ob1.put("content",dto8.getContent());
@@ -2258,7 +2258,7 @@ public class IndexPageService {
                 ob1.put("id",dto8.getId());
                 ob1.put("userName","家校美小助手");
                 ob1.put("subject","");
-                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178508126103aac1a705d.png");
+                ob1.put("avatar","http://doc.k6kt.com/5b6178508126103aac1a705d.png");
                 ob1.put("title","登录提醒");
                 ob1.put("time",dto8.getCreateTime());
                 ob1.put("content",dto8.getContent());
@@ -2283,7 +2283,7 @@ public class IndexPageService {
                 ob1.put("id",dto8.getId());
                 ob1.put("userName","家校美小助手");
                 ob1.put("subject","");
-                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5bbd73f00a9d324192d17850.png");
+                ob1.put("avatar","http://doc.k6kt.com/5bbd73f00a9d324192d17850.png");
                 ob1.put("title","系统通知");
                 ob1.put("time",dto8.getCreateTime());
                 ob1.put("content","您的小孩已进入校管控！");
@@ -2644,7 +2644,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","家校美使用向导");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","家校美，一款富有魔力的产品！");
@@ -2674,7 +2674,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178508126103aac1a705d.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5b6178508126103aac1a705d.png");
                     ob1.put("title","班级社群");
                     ob1.put("time",dto8.getCreateTime());
                     if(dto8.getContent()!=null && !dto8.getContent().equals("")){
@@ -2712,7 +2712,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getSourceId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject",dto8.getTitle());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178838126103aac1a705e.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5b6178838126103aac1a705e.png");
                     ob1.put("title","热点话题");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","恭喜！您的留言被选为精选留言了！");
@@ -2738,7 +2738,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b61781e8126103aac1a705c.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5b61781e8126103aac1a705c.png");
                     ob1.put("title","直播课堂");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
@@ -2763,7 +2763,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178508126103aac1a705d.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5b6178508126103aac1a705d.png");
                     ob1.put("title","登录提醒");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
@@ -2788,7 +2788,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5bbd73f00a9d324192d17850.png");
+                    ob1.put("avatar","http://doc.k6kt.com/5bbd73f00a9d324192d17850.png");
                     ob1.put("title","系统通知");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","您的小孩已进入校管控！");

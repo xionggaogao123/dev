@@ -10,6 +10,7 @@ import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.jiaschool.service.HomeSchoolService;
 import com.fulaan.user.service.UserService;
 import com.pojo.user.UserDetailInfoDTO;
+import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -124,7 +125,9 @@ public class BackStageSchoolManageController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            UserDetailInfoDTO userDetailInfoDTO = userService.getUserInfoById(userId);
+//            UserDetailInfoDTO userDetailInfoDTO = userService.getUserInfoById(userId);
+            UserEntry userEntry = userService.findByGenerateCode(userId);
+            UserDetailInfoDTO userDetailInfoDTO = new UserDetailInfoDTO(userEntry);
             respObj.setMessage(userDetailInfoDTO);
         } catch (Exception e) {
             e.printStackTrace();

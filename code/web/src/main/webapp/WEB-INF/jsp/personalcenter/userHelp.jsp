@@ -127,7 +127,7 @@
                             <span><a class="student help">学生手册</a></span>
                             <span><a class="admin help">管理员手册</a></span>
                             <span><a
-                                    onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/5680e4fa0cf2df401c14b1ea.mp4.m3u8')">
+                                    onclick="playMovie('http://store.k6kt.com/m3u8/5680e4fa0cf2df401c14b1ea.mp4.m3u8')">
                                 使用介绍 </a></span>
                         </div>
                         <div id="account-right-content" class="account-right-content" style="max-height: 800px;">
@@ -142,7 +142,7 @@
                                 </div>
                                 <ul>
                                     <li>
-										<span class="tip-title">1、如何登陆全向互动K6KT-智慧校园？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b844a40cf2a7f1af42dd4d.mp4.m3u8')">
+										<span class="tip-title">1、如何登陆全向互动K6KT-智慧校园？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.gstore.k6kt.comf2a7f1af42dd4d.mp4.m3u8')">
                                             【观看演示视频】 </a>-->
                                         </span>
 
@@ -154,7 +154,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <span class="tip-title">2、如何更改完善个人头像？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
+                                        <span class="tip-title">2、如何更改完善个人头像？<!--<a onclick="playMovie('http://store.k6kt.com/mstore.k6kt.comp4.m3u8')">
                                             【观看演示视频】 </a>-->
                                         </span>
 
@@ -166,8 +166,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <span class="tip-title">3、如何修改个人密码？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
-                                            【观看演示视频】 </a>-->
+                                        <span class="tip-title">3、如何修改个人密码？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2store.k6kt.com                                        【观看演示视频】 </a>-->
                                         </span>
 
                                         <div>
@@ -178,8 +177,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <span class="tip-title">4、如何发送私信？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
-                                            【观看演示视频】 </a>-->
+                                        <span class="tip-title">4、如何发送私信？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2a7f1af42dd50.mp4store.k6kt.com                        【观看演示视频】 </a>-->
                                         </span>
 
                                         <div>
@@ -190,8 +188,8 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <span class="tip-title">5、校领导如何在微校园里发布主题帖?<!--a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
-                                            【观看演示视频】 </a>-->
+                                        <span class="tip-title">5、校领导如何在微校园里发布主题帖?<!--a onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
+      store.k6kt.com        【观看演示视频】 </a>-->
                                         </span>
 
                                         <div>
@@ -202,8 +200,8 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <span class="tip-title">6、校领导如何查看全校各个班级的在线教学情况？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
-                                            【观看演示视频】 </a>-->
+                                        <span class="tip-title">6、校领导如何查看全校各个班级的在线教学情况？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
+                      store.k6kt.com </a>-->
                                         </span>
 
                                         <div>
@@ -214,9 +212,8 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <span class="tip-title">7、校领导如何给全校的师生发通知？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
-                                            【观看演示视频】 </a>-->
-                                        </span>
+                                        <span class="tip-title">7、校领导如何给全校的师生发通知？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
+                                      store.k6kt.com                                 </span>
 
                                         <div>
                                             <pre>进入“家校互动”页面后点击“学校通知”，可点击“通讯录”勾选“全校”通过文本、语音、附件的形式通知全校师生以及家长。也可以针对某一个或多个班级及不同群体发送通知，编辑好后点击“发送”，老师、学生、家长们即刻就能收到通知。</pre>
@@ -226,9 +223,8 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <span class="tip-title">8、如何参加K6KT平台运营活动赢取大奖或现金？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
-                                            【观看演示视频】 </a>-->
-                                        </span>
+                                        <span class="tip-title">8、如何参加K6KT平台运营活动赢取大奖或现金？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
+                                            【观看演示视频】 <store.k6kt.com                 </span>
 
                                         <div>
                                             <pre>进入“火热活动”中“平台运营活动”，即可查看活动列表，点击其中一个活动，查看活动规则，即可参加并赢取奖品或现金。</pre>
@@ -238,9 +234,9 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <span class="tip-title">9、校领导如何进行教师管理，建立教师成长档案？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
+                                        <span class="tip-title">9、校领导如何进行教师管理，建立教师成长档案？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
                                             【观看演示视频】 </a>-->
-                                        </span>
+         store.k6kt.com </span>
 
                                         <div>
                                             <pre>A.在“平台管理”页面点击“教师管理”，可新添加老师，可以编辑教师基本信息、修改权限、重置密码、删除教师，可增加教师课程项目，形成教师成长档案。</pre>
@@ -250,11 +246,9 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <span class="tip-title">10、如何在平板电脑及手机移动终端，使用K6KT-智慧校园？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
+                                        <span class="tip-title">10、如何在平板电脑及手机移动终端，使用K6KT-智慧校园？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
                                             【观看演示视频】 </a>-->
-                                        </span>
-
-                                        <div>
+                         store.k6kt.com                                  <div>
                                             <pre>A.安卓和苹果系统如何下载APP软件 ？<br>通过浏览器打开<a href="http://www.k6kt.com"
                                                                                    target="_blank">www.k6kt.com</a>，点击“手机客户端APP”，扫描二维码安装。或者在APP Store里搜索“K6KT”安装。</pre>
                                         </div>
@@ -264,22 +258,20 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <span class="tip-title">11、利用移动终端，我们都能做些什么？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
+                                        <span class="tip-title">11、利用移动终端，我们都能做些什么？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
                                             【观看演示视频】 </a>-->
-                                        </span>
-
-                                        <div>
+                                        <store.k6kt.com                  <div>
                                             <pre>*可以随时接收和在线提交学校发布的家庭作业<br>*可以随时接收学校发布的各类通知<br>*可以随时和学校老师家长进行私信交流，掌握孩子动态*可以随时拍照，上传到“微校园”进行分享<br>*随时随地，家校互动，在线学习，虚拟社区全分享。</pre>
                                         </div>
 
                                     </li>
                                     <!--<li>
                                          <span class="tip-title">3、如何修改个人密码？<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846da0cf2a7f1af42dd53.mp4.m3u8')">
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b846da0cf2a7f1af42dd53.mp4.m3u8')">
 
                                              <%--【观看演示视频】--%> </a>
                                          </span>
-                                        <span class="tip-tw">
+ store.k6kt.com         <span class="tip-tw">
                                             1.如何发布一条校园安全隐患警示？
                                         </span>
 
@@ -292,11 +284,11 @@
                                     </li>
                                     <li>
                                         <span class="tip-title">四、家校互动<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b8472f0cf2a7f1af42dd57.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b8472f0cf2a7f1af42dd57.mp4.m3u8')">
 
                                             <%--【观看演示视频】--%> </a>
                                         </span>
-                                        <span class="tip-tw">
+                   store.k6kt.comss="tip-tw">
                                             1.如何使用微校园、微家园社区发帖和评论?
                                         </span>
                                         <div>
@@ -351,12 +343,11 @@
                                     </li>
                                     <li>
                                         <span class="tip-title">五、资源中心<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b8706d0cf2a7f1af42dda5.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b8706d0cf2a7f1af42dda5.mp4.m3u8')">
 
                                             <%--【观看演示视频】--%> </a>
                                         </span>
-                                        <span class="tip-tw">
-                                          1.如何观看云课程并把云课程推送到备课空间？
+                                   store.k6kt.com                                       1.如何观看云课程并把云课程推送到备课空间？
                                         </span>
                                         <div>
                                             <pre>进入“资源中心”页面的“云课程”，可从中根据条件选择视频课件，点击该视频下方“试看”观看该云课程，点击“推送”将其推送到“备课空间”。推送之后的课程可以在“备课空间”内找到并可进行二次编辑加工。</pre>
@@ -452,13 +443,12 @@
                                     </li>
                                     <li>
                                         <span class="tip-title">六、翻转课堂<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b872ac0cf2a7f1af42dda8.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b872ac0cf2a7f1af42dda8.mp4.m3u8')">
 
                                             <%--【观看演示视频】--%> </a>
                                         </span>
 
-                                         <span class="tip-tw">
-                                          1.如何给所带班级发布作业？
+                                         <span clastore.k6kt.com                         1.如何给所带班级发布作业？
                                         </span>
                                         <div>
                                             <pre>在“翻转课堂”页面点击“作业”，即可针对特定班级以文字、语音、附件形式布置家庭作业。</pre>
@@ -569,13 +559,13 @@
                                     </li>
                                     <li>
                                         <span class="tip-title">七、电子超市<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b873070cf2a7f1af42ddab.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b873070cf2a7f1af42ddab.mp4.m3u8')">
 
                                             <%--【观看演示视频】--%> </a>
                                         </span>
 
                                         <span class="tip-tw">
-                                        1.如何在电子超市中售出自己的课程？
+    store.k6kt.com      1.如何在电子超市中售出自己的课程？
                                         </span>
                                         <div>
                                             <pre><span class="tip-c">方式一，</span>进入“资源中心”页面的“备课空间”，点击某一课程下方的“推送”，选择“推送到电子超市”。</pre>
@@ -604,13 +594,13 @@
                                     </li>
                                     <li>
                                         <span class="tip-title">八、群组交流<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b873650cf2a7f1af42ddae.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b873650cf2a7f1af42ddae.mp4.m3u8')">
 
                                             <%--【观看演示视频】 --%></a>
                                         </span>
 
                                          <span class="tip-tw">
-                                          1.如何组建一个群组进行交流？
+                   store.k6kt.com个群组进行交流？
                                         </span>
                                         <div>
                                             <pre>进入“群组交流”点击“新建群组”，输入群组名称后，可以点击“我的好友”左边的三角形按键逐个添加好友成员，也可以点击“我的好友”右边的加号一次将“我的好友”全部添加进入群组进行交流。同时可以在群组里发表情、共享文件、查看历史聊天记录、管理群组成员、或者解散该群组。</pre>
@@ -621,13 +611,13 @@
                                     </li>
                                     <li>
                                          <span class="tip-title">九、火热活动<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b874440cf2a7f1af42ddb1.mp4.m3u8')">
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b874440cf2a7f1af42ddb1.mp4.m3u8')">
 
                                              <%--【观看演示视频】--%> </a>
                                         </span>
 
                                          <span class="tip-tw">
-                                          1.如何参加K6KT平台运营活动赢取大奖或现金？
+                                  store.k6kt.com金？
                                         </span>
                                         <div>
                                             <pre>进入“火热活动”即可查看活动列表，点击其中一个活动，查看活动规则，即可参加并赢取奖品或现金。</pre>
@@ -638,14 +628,13 @@
                                     </li>
                                     <li>
                                          <span class="tip-title">十、学校管理<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b875aa0cf2a7f1af42ddb4.mp4.m3u8')">
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b875aa0cf2a7f1af42ddb4.mp4.m3u8')">
 
                                              <%--【观看演示视频】--%> </a>
                                         </span>
 
                                         <span class="tip-tw">
-                                          1.如何进行公文流转？
-                                        </span>
+                                          1.如何进行公文流store.k6kt.com             </span>
                                         <div>
                                             <pre>进入“学校管理”页面的“公文流转”，点击“发布新公文流转”即可以文字、语音、附件的形式发布公文，并在通讯录中选择接收公文流转的人群。</pre>
                                         </div>
@@ -786,14 +775,14 @@
                                     </li>
                                     <li>
                                          <span class="tip-title">十一、平台管理<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b874440cf2a7f1af42ddb1.mp4.m3u8')">
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b874440cf2a7f1af42ddb1.mp4.m3u8')">
 
                                              <%--【观看演示视频】--%> </a>
                                         </span>
 
                                          <span class="tip-tw">
                                           1.如何设置学科？
-                                        </span>
+              store.k6kt.coman>
                                         <div>
                                             <pre>进入“平台管理”中的“设置学科”，点击右上角的“新建科目”，在对话框中填写相应的科目名称和从属年级，点击确定即可。</pre>
                                         </div>
@@ -940,13 +929,13 @@ C, 利用移动终端，我们都能做些什么？
                                 <ul>
                                     <li>
                                         <span class="tip-title">一、如何登录智慧校园-K6KT快乐课堂平台？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b98bd50cf2a7f1af42de08.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b98bd50cf2a7f1af42de08.mp4.m3u8')">
 
                                             【观看演示视频】 </a>
                                         </span>
 
                                         <div>
-                                            <pre>用户登录<a href="http://www.k6kt.com" target="_blank">www.k6kt.com</a>, 在页面右上方填入学校分配的用户名与密码，即可登录全向互动K6KT-快乐课堂。登录后根据需要点击相应版块即可进入使用界面。</pre>
+                                            <pre>用户登录<a href="http://www.k6kt.com" target="_blank">www.k6kt.store.k6kt.com可登录全向互动K6KT-快乐课堂。登录后根据需要点击相应版块即可进入使用界面。</pre>
                                         </div>
                                         <div class="tip-uim">
                                             <img src="/img/userhelp/images/I_dl.jpg" alt="" class="I_I" width="750">
@@ -954,21 +943,20 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                         <span class="tip-title">二、如何更改个人设置？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
 
                                             【观看演示视频】 </a>
                                         </span>
 
                                         <div>
-                                            <pre>登录后，进入个人中心，点击“个人设置”，点击“修改密码”可设置您的登陆密码。点击“修改头像”下的“点击上传图片”即可上传已有照片或者拍摄照片来修改头像</pre>
-                                        </div>
+                                            <pre>登录后，进入个人中心，点击“个人设置”，点击“修改密码”可设置您的登陆密码。点击“修改头像”下的“点击上传图片”即可上传已有照片或者拍摄照片来修改头像store.k6kt.com                 </div>
                                         <div class="tip-uim">
                                             <img src="/img/userhelp/images/tip-grzx.png" alt="" class="I_I" width="750">
                                         </div>
                                     </li>
                                     <li>
                                          <span class="tip-title">三、校园安全关注<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846da0cf2a7f1af42dd53.mp4.m3u8')">
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b846da0cf2a7f1af42dd53.mp4.m3u8')">
 
                                              <%--【观看演示视频】--%> </a>
                                          </span>
@@ -976,7 +964,7 @@ C, 利用移动终端，我们都能做些什么？
                                             1.如何发布一条校园安全隐患警示？
                                         </span>
 
-                                        <div>
+    store.k6kt.com      <div>
                                             <pre>进入“校园安全关注”，在文本框中输入文字说明，还可上传图片，点击“提交”即可发表，误报可删除。如果隐患已被处理好，点击“处理”即可。</pre>
                                         </div>
                                         <div class="tip-uim">
@@ -985,15 +973,14 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                         <span class="tip-title">四、家校互动<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b8472f0cf2a7f1af42dd57.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b8472f0cf2a7f1af42dd57.mp4.m3u8')">
 
                                             <%--【观看演示视频】--%> </a>
                                         </span>
                                         <span class="tip-tw">
                                             1.如何使用微校园、微家园社区发帖和评论?
                                         </span>
-                                        <div>
-                                            <pre>在“家校互动”页面点击“微校园”，即可发表自己的新鲜事或者对别人的新鲜事进行回复、点赞，还可选择帖子发表范围：本校、本年级或者本班，以及查看最新、最热和自己发的帖子。</pre>
+                   store.k6kt.com                                         <pre>在“家校互动”页面点击“微校园”，即可发表自己的新鲜事或者对别人的新鲜事进行回复、点赞，还可选择帖子发表范围：本校、本年级或者本班，以及查看最新、最热和自己发的帖子。</pre>
                                             <pre>在“家校互动”页面点击“微家园”即可查看学生、家长发的帖子并进行留言和点赞。</pre>
                                         </div>
                                         <div class="tip-uim">
@@ -1046,15 +1033,14 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                         <span class="tip-title">五、资源中心<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b8706d0cf2a7f1af42dda5.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b8706d0cf2a7f1af42dda5.mp4.m3u8')">
 
                                             <%--【观看演示视频】--%> </a>
                                         </span>
                                         <span class="tip-tw">
                                           1.如何观看云课程并把云课程推送到备课空间？
                                         </span>
-                                        <div>
-                                            <pre>进入“资源中心”页面的“云课程”，可从中根据条件选择视频课件，点击该视频下方“试看”观看该云课程，点击“推送”将其推送到“备课空间”。推送之后的课程可以在“备课空间”内找到并可进行二次编辑加工。</pre>
+                                    store.k6kt.com                        <pre>进入“资源中心”页面的“云课程”，可从中根据条件选择视频课件，点击该视频下方“试看”观看该云课程，点击“推送”将其推送到“备课空间”。推送之后的课程可以在“备课空间”内找到并可进行二次编辑加工。</pre>
                                         </div>
                                         <div class="tip-uim">
                                             <img src="/img/userhelp/images/tip-zyzx.png" alt="" class="I_I" width="750">
@@ -1154,7 +1140,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                         <span class="tip-title">六、翻转课堂<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b872ac0cf2a7f1af42dda8.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b872ac0cf2a7f1af42dda8.mp4.m3u8')">
 
                                             <%--【观看演示视频】--%> </a>
                                         </span>
@@ -1163,7 +1149,7 @@ C, 利用移动终端，我们都能做些什么？
                                           1.如何给所带班级发布作业？
                                         </span>
                                         <div>
-                                            <pre>在“翻转课堂”页面点击“作业”，即可针对特定班级以文字、语音、附件形式布置家庭作业。</pre>
+             store.k6kt.com <pre>在“翻转课堂”页面点击“作业”，即可针对特定班级以文字、语音、附件形式布置家庭作业。</pre>
                                         </div>
                                         <div class="tip-uim">
                                             <img src="/img/userhelp/images/tip-ZY.png" alt="" class="I_I" width="750">
@@ -1273,7 +1259,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                         <span class="tip-title">七、电子超市<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b873070cf2a7f1af42ddab.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b873070cf2a7f1af42ddab.mp4.m3u8')">
 
                                             <%--【观看演示视频】--%> </a>
                                         </span>
@@ -1282,7 +1268,7 @@ C, 利用移动终端，我们都能做些什么？
                                         1.如何在电子超市中售出自己的课程？
                                         </span>
                                         <div>
-                                            <pre><span class="tip-c">方式一，</span>进入“资源中心”页面的“备课空间”，点击某一课程下方的“推送”，选择“推送到电子超市”。</pre>
+                           store.k6kt.comass="tip-c">方式一，</span>进入“资源中心”页面的“备课空间”，点击某一课程下方的“推送”，选择“推送到电子超市”。</pre>
                                         </div>
                                         <div>
                                             <pre><span class="tip-c">方式二，</span>进入“电子超市”的“电子超市首页”，点击右上角的“快速上传至电子超市”，按照提示填写相关信息并编辑课程，即可在电子超市中出售自己的课程。</pre>
@@ -1308,7 +1294,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                         <span class="tip-title">八、群组交流<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b873650cf2a7f1af42ddae.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b873650cf2a7f1af42ddae.mp4.m3u8')">
 
                                             <%--【观看演示视频】 --%></a>
                                         </span>
@@ -1317,7 +1303,7 @@ C, 利用移动终端，我们都能做些什么？
                                           1.如何组建一个群组进行交流？
                                         </span>
                                         <div>
-                                            <pre>进入“群组交流”点击“新建群组”，输入群组名称后，可以点击“我的好友”左边的三角形按键逐个添加好友成员，也可以点击“我的好友”右边的加号一次将“我的好友”全部添加进入群组进行交流。同时可以在群组里发表情、共享文件、查看历史聊天记录、管理群组成员、或者解散该群组。</pre>
+                                            store.k6kt.com可以点击“我的好友”左边的三角形按键逐个添加好友成员，也可以点击“我的好友”右边的加号一次将“我的好友”全部添加进入群组进行交流。同时可以在群组里发表情、共享文件、查看历史聊天记录、管理群组成员、或者解散该群组。</pre>
                                         </div>
                                         <div class="tip-uim">
                                             <img src="/img/userhelp/images/tip-qzjl.jpg" alt="" class="I_I" width="750">
@@ -1325,7 +1311,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                          <span class="tip-title">九、火热活动<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b874440cf2a7f1af42ddb1.mp4.m3u8')">
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b874440cf2a7f1af42ddb1.mp4.m3u8')">
 
                                              <%--【观看演示视频】--%> </a>
                                         </span>
@@ -1334,7 +1320,7 @@ C, 利用移动终端，我们都能做些什么？
                                           1.如何参加K6KT平台运营活动赢取大奖或现金？
                                         </span>
                                         <div>
-                                            <pre>进入“火热活动”即可查看活动列表，点击其中一个活动，查看活动规则，即可参加并赢取奖品或现金。</pre>
+                                            <pre>进store.k6kt.com则，即可参加并赢取奖品或现金。</pre>
                                         </div>
                                         <div class="tip-uim">
                                             <img src="/img/userhelp/images/tip-hrhd.jpg" alt="" class="I_I" width="750">
@@ -1342,7 +1328,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                          <span class="tip-title">十、学校管理<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b875aa0cf2a7f1af42ddb4.mp4.m3u8')">
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b875aa0cf2a7f1af42ddb4.mp4.m3u8')">
 
                                              <%--【观看演示视频】--%> </a>
                                         </span>
@@ -1351,7 +1337,7 @@ C, 利用移动终端，我们都能做些什么？
                                           1.如何进行公文流转？
                                         </span>
                                         <div>
-                                            <pre>进入“学校管理”页面的“公文流转”，点击“发布新公文流转”即可以文字、语音、附件的形式发布公文，并在通讯录中选择接收公文流转的人群。</pre>
+                                            <pre>进入“学校管理”页面的“公文流转”，点击“发布新公文流转”即store.k6kt.com流转的人群。</pre>
                                         </div>
                                         <div class="tip-uim">
                                             <img src="/img/userhelp/images/tip-gwlz.png" alt="" class="I_I" width="750">
@@ -1439,7 +1425,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <%--<li>
                                         <span class="tip-title">11、如何使用录课神器录制微课？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b8760d0cf2a7f1af42ddb7.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b8760d0cf2a7f1af42ddb7.mp4.m3u8')">
 
                                             【观看演示视频】 </a>
                                         </span>
@@ -1447,13 +1433,13 @@ C, 利用移动终端，我们都能做些什么？
                                         <div>
                                             <pre>按照10进入课程编辑页面，点击“录制微课”或者录课神器图标即可下载安装K6KT录课神器，安装完成后再次点击“录制微课”即可启动。点击右上角绿色的“点击录制”圆形图标开始录课，再次点击停止录课。录制完成后可回看微课，保存并上传或者再录。</pre>
                                         </div>
-                                        <img src="/img/userhelp/images/I_lzwk.jpg" alt="" class="I_I">
+                                        <img srcstore.k6kt.comjpg" alt="" class="I_I">
                                         <img src="/img/userhelp/images/I_lzwk2.jpg" alt="">
                                         <img src="/img/userhelp/images/I_lzwk3.jpg" alt="">
                                     </li>
                                     <li>
                                         <span class="tip-title">12、可以上传哪些学习资源供学生进行自主学习？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b876c70cf2a7f1af42ddba.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b876c70cf2a7f1af42ddba.mp4.m3u8')">
 
                                             【观看演示视频】 </a>
                                         </span>
@@ -1462,10 +1448,9 @@ C, 利用移动终端，我们都能做些什么？
                                             <pre>按照10进入课程编辑页面，可以上传视频、辅助学习资料以及课后练习供学生进行自主习。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I_zzxx.jpg" alt="" class="I_I">
-                                    </li>
-                                    <li name="teacherScore" id="teacherScore">
+                                    <store.k6kt.com           <li name="teacherScore" id="teacherScore">
                                          <span class="tip-title">13、如何配置课程的微课进阶练习？<a
-                                                 onclick="playMovie('7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b877a20cf2a7f1af42ddc0.mp4.m3u8')">
+                                                 onclick="playMovie('store.k6kt.com/m3u8/55b877a20cf2a7f1af42ddc0.mp4.m3u8')">
 
                                              【观看演示视频】 </a>
                                         </span>
@@ -1473,7 +1458,7 @@ C, 利用移动终端，我们都能做些什么？
                                         <div>
                                             <pre>按照10进入课程编辑页面，在“微课进阶练习”中填写习题名称，选择一份习题文档（doc或者docx格式）和解析文档（doc或者docx格式；可选），点击“上传并配置”进入配置页面。在配置页面中设置考试时间，题目数量，每题的题型、分值、答案等参数，最后点击右上角“完成并发布”即可。</pre>
                                         </div>
-                                        <img src="/img/userhelp/images/I_khlx1.jpg" alt="" class="I_I">
+                                        <img src="/img/usstore.k6kt.com="" class="I_I">
                                         <img src="/img/userhelp/images/I_khlx2.jpg" alt="">
                                     </li>
                                     <li>
@@ -1487,7 +1472,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                          <span class="tip-title">15、如何将课程从备课空间推送到班级课程？推送到校本资源？<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b878b60cf2a7f1af42ddc9.mp4.m3u8')">
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b878b60cf2a7f1af42ddc9.mp4.m3u8')">
 
                                              【观看演示视频】 </a>
                                          </span>
@@ -1498,13 +1483,13 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I_bjkh1.jpg" alt="" class="I_I">
 
                                         <div>
-                                            <pre>方式二，在“备课空间”页面下，点击某一课程下方的“推送到班级课程”可以将该课程推送给该班级的所有同学，点击某一课程下方的“推送到校本资源”可以将该课程推送给全校的其他老师。</pre>
+             store.k6kt.com <pre>方式二，在“备课空间”页面下，点击某一课程下方的“推送到班级课程”可以将该课程推送给该班级的所有同学，点击某一课程下方的“推送到校本资源”可以将该课程推送给全校的其他老师。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I_bjkh2.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
                                         <span class="tip-title">16、如何使用在线备课空间？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b879260cf2a7f1af42ddcc.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b879260cf2a7f1af42ddcc.mp4.m3u8')">
 
                                             【观看演示视频】 </a></span>
 
@@ -1515,7 +1500,7 @@ C, 利用移动终端，我们都能做些什么？
                                             <pre>B.“备课空间”是老师所有教学课程的“中转站”。</pre>
                                         </div>
                                         <div>
-                                            <pre>C.老师可以从“云课程”推送优质课件到自己的“备课空间”，或者上传自己录制的“微课”到“备课空间”留存。</pre>
+         store.k6kt.com     <pre>C.老师可以从“云课程”推送优质课件到自己的“备课空间”，或者上传自己录制的“微课”到“备课空间”留存。</pre>
                                         </div>
                                         <div>
                                             <pre>D.老师在“备课空间”里自己定义目录进行分类课件管理，并且选择这里的课件，推送到“班级课程”供本班学生使用，或者推送到“校本资源”供全校老师参考使用。</pre>
@@ -1523,7 +1508,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                          <span class="tip-title">17、如何查看某一课程的学习统计？<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b879840cf2a7f1af42ddcf.mp4.m3u8')">
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b879840cf2a7f1af42ddcf.mp4.m3u8')">
 
                                              【观看演示视频】 </a>
                                          </span>
@@ -1532,12 +1517,12 @@ C, 利用移动终端，我们都能做些什么？
                                             <pre>进入“学习中心”页面的“翻转课堂”，点击“班级课程”，点击某一课程下方的“统计”，即可查看该课程所含视频的学习统计及听取学生留言、查看该课程微课进阶练习的习题统计并对主观题进行批改。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I_kctj1.jpg" alt="" class="I_I">
-                                        <img src="/img/userhelp/images/I_kctj2.jpg" alt="">
+                                        <img srcstore.k6kt.com.jpg" alt="">
                                         <img src="/img/userhelp/images/I_kctj3.jpg" alt="">
                                     </li>
                                     <li>
                                          <span class="tip-title">18、如何发布在线考试？批改在线考试？<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b879e30cf2a7f1af42ddd2.mp4.m3u8')">
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b879e30cf2a7f1af42ddd2.mp4.m3u8')">
 
                                              【观看演示视频】 </a>
                                          </span>
@@ -1547,9 +1532,8 @@ C, 利用移动终端，我们都能做些什么？
                                         </div>
                                         <img src="/img/userhelp/images/I_zxks.jpg" alt="" class="I_I">
                                     </li>
-                                    <li>
-                                         <span class="tip-title">19、如何使用K6KT的题库资源在线组卷？<a
-                                                 onclick="playMovie('7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87a6e0cf2a7f1af42ddd5.mp4.m3u8')">
+                            store.k6kt.com                        <span class="tip-title">19、如何使用K6KT的题库资源在线组卷？<a
+                                                 onclick="playMovie('store.k6kt.com/m3u8/55b87a6e0cf2a7f1af42ddd5.mp4.m3u8')">
 
                                              【观看演示视频】 </a>
                                          </span>
@@ -1558,7 +1542,7 @@ C, 利用移动终端，我们都能做些什么？
                                             <pre>一、手工组卷</pre>
                                         </div>
                                         <div>
-                                            <pre>进入“学习中心”的“题库/组卷”点击“手工组卷”，完整填写本次考试的基本信息后点击“下一步”进入选题页面，点击“综合知识点选题”并通过右边的“请选择知识点”筛选出符合本次测试的题目，也可以点击“同步教材选题”从页面右边的“选择章节”按钮根据出版社筛选题库。然后根据“题型”和“难度”将题目“加入试卷”，题目添加完成后点击“确定生成”试卷，再点击“推送”到班级，学生即可在线考试。同时在“我的组卷”列表中可以对已发布的试卷进行编辑、预览、删除。</pre>
+                                            <pre>进入“学习中心”的“题库/组卷”点击“手工组卷”，完整填写本次考试的基本信息后点击“下一步”进入选题页面，点击“综合知识点选题”并通过右边的“请选择知识点”筛选出符合本次测试的题目，也可以点击“同步教材选题”从页面右边的“选择章节”按钮根据出版社筛选题库。然后根据“题型”和“难度”将题目“加入试卷”，题目添加完成后点击“确定生成”试卷，再点击“推store.k6kt.com已发布的试卷进行编辑、预览、删除。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I-ZJ.jpg" alt="" class="I_I">
                                         <img src="/img/userhelp/images/I-ZJ-2.jpg" alt="" class="I_I">
@@ -1574,7 +1558,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                          <span class="tip-title">20、如何录入一份考试成绩<a
-                                                 onclick="playMovie('7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87ae00cf2a7f1af42ddd8.mp4.m3u8')">
+                                                 onclick="playMovie('store.k6kt.com/m3u8/55b87ae00cf2a7f1af42ddd8.mp4.m3u8')">
 
                                              【观看演示视频】 </a>
                                          </span>
@@ -1585,8 +1569,8 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I-kscj.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">21、如何查看本班级考试成绩的统计分析？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87b710cf2a7f1af42dddb.mp4.m3u8')">
+                   store.k6kt.comss="tip-title">21、如何查看本班级考试成绩的统计分析？<a
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b87b710cf2a7f1af42dddb.mp4.m3u8')">
 
                                             【观看演示视频】 </a>
                                          </span>
@@ -1596,13 +1580,13 @@ C, 利用移动终端，我们都能做些什么？
                                         </div>
                                         <img src="/img/userhelp/images/I-tjfx.jpg" alt="" class="I_I">
                                         <div>
-                                            <pre> 同时进入“学期成绩”亦可了解一个学期本年级所有班级的“班级成绩对比”、本班本学期的“成绩统计”和“学生列表”</pre>
+                                            <pre> 同时进入“学期成绩”亦可了解一个学期本年级store.k6kt.com列表”</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I-tjfx2.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
                                         <span class="tip-title">22、如何了解所带班级的学生的德育情况？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87bfc0cf2a7f1af42ddde.mp4.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b87bfc0cf2a7f1af42ddde.mp4.m3u8')">
 
                                             【观看演示视频】 </a>
                                          </span>
@@ -1612,11 +1596,10 @@ C, 利用移动终端，我们都能做些什么？
                                         </pre>
                                         </div>
                                         <img src="/img/userhelp/images/I-dyqk1.jpg" alt="" class="I_I">
-                                        <img src="/img/userhelp/images/I-dyqk2.jpg" alt="" class="I_I">
-                                    </li>
+                                        <img src="/img/userhelp/images/I-dyqk2.jpg" alt="" class="store.k6kt.com            </li>
                                     <li>
                                         <span class="tip-title">23、如何将班级学生的学号和职务导出或导入系统？
-                                            <a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87c850cf2a7f1af42dde1.mp4.m3u8')">【观看演示视频】</a>
+                                            <a onclick="playMovie('http://store.k6kt.com/m3u8/55b87c850cf2a7f1af42dde1.mp4.m3u8')">【观看演示视频】</a>
                                         </span>
 
                                         <div>
@@ -1626,8 +1609,8 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I-drdc.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                         <span class="tip-title">24、如何在系统中记录学生缺勤情况？<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87d130cf2a7f1af42dde4.mp4.m3u8')">
+              store.k6kt.coman class="tip-title">24、如何在系统中记录学生缺勤情况？<a
+                                                 onclick="playMovie('http://store.k6kt.com/m3u8/55b87d130cf2a7f1af42dde4.mp4.m3u8')">
 
                                              【观看演示视频】 </a>
                                          </span>
@@ -1639,7 +1622,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                          <span class="tip-title">25、如何获取班级学生在线学习情况？<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87da80cf2a7f1af42dde7.mp4.m3u8')">
+store.k6kt.com                   onclick="playMovie('http://store.k6kt.com/m3u8/55b87da80cf2a7f1af42dde7.mp4.m3u8')">
 
                                              【观看演示视频】 </a>
                                          </span>
@@ -1651,8 +1634,8 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I-zxxx2.png" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">26、如何给学生增加素质教育经验值？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87e5f0cf2a7f1af42ddea.mp4.m3u8')">
+                          store.k6kt.com-title">26、如何给学生增加素质教育经验值？<a
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b87e5f0cf2a7f1af42ddea.mp4.m3u8')">
 
                                             【观看演示视频】 </a>
                                          </span>
@@ -1666,9 +1649,8 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I_szjy1.jpg" alt="" class="I_I">
                                         <img src="/img/userhelp/images/I_szjy2.jpg" alt="" class="I_I">
                                     </li>
-                                    <li>
-                                        <span class="tip-title">27、老师如何获得经验值？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87ec00cf2a7f1af42dded.mp4.m3u8')">
+           store.k6kt.com                                        <span class="tip-title">27、老师如何获得经验值？<a
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/55b87ec00cf2a7f1af42dded.mp4.m3u8')">
 
                                             【观看演示视频】 </a>
                                          </span>
@@ -1686,8 +1668,7 @@ C, 利用移动终端，我们都能做些什么？
                                         </div>
                                     </li>
                                     <li>
-                                         <span class="tip-title">28、如何对才艺课的学生进行打分以及管理？<a
-                                                 onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87f2e0cf2a7f1af42ddf0.mp4.m3u8')">
+                                         <span class="tip-title">28、store.k6kt.com                                        onclick="playMovie('http://store.k6kt.com/m3u8/55b87f2e0cf2a7f1af42ddf0.mp4.m3u8')">
 
                                              【观看演示视频】 </a>
                                          </span>
@@ -1699,9 +1680,9 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I-cygl2.png" alt="">
                                     </li>
                                     <li>
-                                        <span class="tip-title">
+                                  store.k6kt.com
                                             29、如何邀请好友一起组织活动？
-                                            <a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b87fa00cf2a7f1af42ddf3.mp4.m3u8')"></a>
+                                            <a onclick="playMovie('http://store.k6kt.com/m3u8/55b87fa00cf2a7f1af42ddf3.mp4.m3u8')"></a>
                                         </span>
 
                                         <div>
@@ -1715,14 +1696,14 @@ C, 利用移动终端，我们都能做些什么？
                                         </span>
 
                                         <div>
-                                            <pre>进入“群组交流”点击“新建群组”，输入群组名称后，可以点击“我的好友”左边的三角形按键逐个添加好友成员，也可以点击“我的好友”右边的加号一次将“我的好友”全部添加进入群组进行交流。同时可以在群组里发表情、共享文件、查看历史聊天记录、管理群组成员、或者解散该群组。</pre>
+     store.k6kt.com         <pre>进入“群组交流”点击“新建群组”，输入群组名称后，可以点击“我的好友”左边的三角形按键逐个添加好友成员，也可以点击“我的好友”右边的加号一次将“我的好友”全部添加进入群组进行交流。同时可以在群组里发表情、共享文件、查看历史聊天记录、管理群组成员、或者解散该群组。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I-qzjl.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
                                         <span class="tip-title">
                                             31、如何发起投票？查看投票结果？
-                                            <a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b8803c0cf2a7f1af42ddf6.mp4.m3u8')"></a>
+                                            <a onclick="playMovie('http://store.k6kt.com/m3u8/55b8803c0cf2a7f1af42ddf6.mp4.m3u8')"></a>
                                         </span>
 
                                         <div>
@@ -1734,7 +1715,7 @@ C, 利用移动终端，我们都能做些什么？
                                     <li>
                                         <span class="tip-title">
                                             32、如何发起问卷调查？
-                                            <a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b880b50cf2a7f1af42ddf9.mp4.m3u8')"></a>
+                     store.k6kt.comick="playMovie('http://store.k6kt.com/m3u8/55b880b50cf2a7f1af42ddf9.mp4.m3u8')"></a>
                                         </span>
 
                                         <div>
@@ -1746,7 +1727,7 @@ C, 利用移动终端，我们都能做些什么？
                                     <li>
                                         <span class="tip-title">
                                             33、如何参加K6KT平台运营活动赢取大奖或现金？
-                                            <a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b881fd0cf2a7f1af42ddfc.mp4.m3u8')"></a>
+                                      store.k6kt.comttp://store.k6kt.com/m3u8/55b881fd0cf2a7f1af42ddfc.mp4.m3u8')"></a>
                                         </span>
 
                                         <div>
@@ -1757,8 +1738,8 @@ C, 利用移动终端，我们都能做些什么？
                                     <li>
                                         <span class="tip-title">
                                             34、如何发布一条校园安全隐患警示？
-                                            <a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b882590cf2a7f1af42ddff.mp4.m3u8')"></a>
-                                        </span>
+                                            <a onclick="playMovie('http://store.k6kt.com/m3u8/55b882590cf2a7f1af42ddff.mp4.m3u8')"></a>
+              store.k6kt.coman>
 
                                         <div>
                                             <pre>进入“校园安全”，在文本框中输入说明，还可以上传安全隐患的图片，点击“提交”即可，同时可以删除本条消息。其他人发布的隐患消息，如果已经被清除隐患，点击“处理”即可。</pre>
@@ -1768,8 +1749,7 @@ C, 利用移动终端，我们都能做些什么？
                                     <li>
                                         <span class="tip-title">
                                             35、如何在平板电脑及手机移动终端，使用K6KT-快乐课堂？
-                                            <a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b882e60cf2a7f1af42de02.mp4.m3u8')"></a>
-                                        </span>
+                                            <a onclick="playMovie('http://store.k6kt.com/m3u8/55b882e60cf2a7f1af42de02.mp4.m3u8')"><store.k6kt.com              </span>
 
                                         <div>
                                             <pre> A.安卓和苹果系统如何下载APP软件 ？
@@ -1787,7 +1767,7 @@ C, 利用移动终端，我们都能做些什么？
   *随时随地，家校互动，在线学习，虚拟社区全分享。
                                             </pre>
                                         </div>
-                                    </li>--%>
+    store.k6kt.com  </li>--%>
                                 </ul>
                             </div>
                             <!-- teacher end -->
@@ -1799,7 +1779,7 @@ C, 利用移动终端，我们都能做些什么？
                                 </div>
                                 <ul>
                                     <li>
-                                        <span class="tip-title">1、如何登陆全向互动K6KT-快乐课堂？<%--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429690227633lkYsnk.m3u8')">
+                                        <span class="tip-title">1、如何登陆全向互动K6KT-快乐课堂？<%--<a onclick="playMovie('http://store.k6kt.com/m3u8/user/1429690227633lkYsnk.m3u8')">
                                             【观看演示视频】 </a>--%>
                                         </span>
 
@@ -1809,9 +1789,9 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I_dl.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">2、如何更改完善个人头像？<%--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429690385784HDvRnt.m3u8')">
+                                        <span class="tip-title">2、如何更改完善个人头像？<%--<a onclick="playMovie('http://store.k6kt.com/m3u8/user/1429690385784HDvRnt.m3u8')">
                                             【观看演示视频】 </a>--%>
-                                        </span>
+ store.k6kt.com         </span>
 
                                         <div>
                                             <pre>登录后，点击头像右侧的笔形图标，即可进入个人设置，点击“修改头像”下的“点击上传图片”即可上传已有照片或者拍摄照片来修改头像。</pre>
@@ -1819,31 +1799,31 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I_tx.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">3、如何修改个人密码？<%--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429868553456eKNcmT.m3u8')">
+                                        <span class="tip-title">3、如何修改个人密码？<%--<a onclick="playMovie('http://store.k6kt.com/m3u8/user/1429868553456eKNcmT.m3u8')">
                                             【观看演示视频】 </a>--%>
                                         </span>
 
-                                        <div>
+             store.k6kt.comv>
                                             <pre>登录后，点击头像右侧的笔形图标，进入个人设置，点击“修改密码”即可操作。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I_xgmm.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">4、如何发送私信？<%--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429868601984VwbIEk.m3u8')">
+                                        <span class="tip-title">4、如何发送私信？<%--<a onclick="playMovie('http://store.k6kt.com/m3u8/user/1429868601984VwbIEk.m3u8')">
                                             【观看演示视频】 </a>--%>
                                         </span>
 
                                         <div>
-                                            <pre>进入个人中心的“我的私信”，点击“发私信”，选择收信人名单，即可与学生、家长、老师、校领导进行私信交流。</pre>
+          store.k6kt.com    <pre>进入个人中心的“我的私信”，点击“发私信”，选择收信人名单，即可与学生、家长、老师、校领导进行私信交流。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I_fsx.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">5、如何使用微家园、微校园社区发帖和评论?<%--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429868670765WjYvHh.m3u8')">
+                                        <span class="tip-title">5、如何使用微家园、微校园社区发帖和评论?<%--<a onclick="playMovie('http://store.k6kt.com/m3u8/user/1429868670765WjYvHh.m3u8')">
                                             【观看演示视频】 </a>--%>
                                         </span>
 
-                                        <div><pre>在“家校互动”页面点击“微家园”，即可发表自己的新鲜事或者对别人的新鲜事进行留言、点赞，与他人进行公开交流互动，还可选择帖子发表范围：本校、本年级或者本班，以及查看最新、最热和自己发的帖子。
+                                        <div>store.k6kt.com鲜事或者对别人的新鲜事进行留言、点赞，与他人进行公开交流互动，还可选择帖子发表范围：本校、本年级或者本班，以及查看最新、最热和自己发的帖子。
 在“家校互动”页面点击“微校园”即可查看老师们发的帖子并进行留言和点赞。
                                         </pre>
                                         </div>
@@ -1853,7 +1833,7 @@ C, 利用移动终端，我们都能做些什么？
                                         <span class="tip-title">6、如何查看通知？<%--<a onclick="playMovie('http://player.polyv.net/videos/1a9bb5bed592ff8a0255bb306c2bae45_1.swf')" class="vedio">&lt;%&ndash;【观看演示视频】&ndash;%&gt;</a>--%></span>
 
                                         <div>
-                                            <pre>在“家校互动”页面点击“通知”，即可查看所有通知，最新的通知排列在最上方。</pre>
+    store.k6kt.com          <pre>在“家校互动”页面点击“通知”，即可查看所有通知，最新的通知排列在最上方。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I_tz.jpg" alt="" class="I_I">
                                     </li>
@@ -1918,7 +1898,7 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                         <span class="tip-title">14、如何邀请好友一起组织活动？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429869685181UAUcyC.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/user/1429869685181UAUcyC.m3u8')">
                                             【观看演示视频】 </a>
                                         </span>
 
@@ -1929,12 +1909,11 @@ C, 利用移动终端，我们都能做些什么？
                                     </li>
                                     <li>
                                         <span class="tip-title">15、如何组建一个群组进行交流？<a
-                                                onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429869766830UtLIRH.m3u8')">
+                                                onclick="playMovie('http://store.k6kt.com/m3u8/user/1429869766830UtLIRH.m3u8')">
                                             【观看演示视频】 </a>
                                         </span>
 
-                                        <div>
-                                            <pre>进入“群组交流”点击“新建群组”，输入群组名称后，可以点击“我的好友”等组左边的三角形按键逐个添加好友成员，也可以点击“我的好友”等组右边的加号一次将该组全部成员添加进入群组进行交流。同时可以在群组里发表情、共享文件、查看历史聊天记录、管理群组成员、或者退出该群组。</pre>
+                 store.k6kt.com                                           <pre>进入“群组交流”点击“新建群组”，输入群组名称后，可以点击“我的好友”等组左边的三角形按键逐个添加好友成员，也可以点击“我的好友”等组右边的加号一次将该组全部成员添加进入群组进行交流。同时可以在群组里发表情、共享文件、查看历史聊天记录、管理群组成员、或者退出该群组。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I_qzjl.jpg" alt="" class="I_I">
                                     </li>
@@ -1944,7 +1923,7 @@ C, 利用移动终端，我们都能做些什么？
                                         <div>
                                             <pre>进入“投票选举”即可查看所有的投票选举列表。</pre>
                                         </div>
-                                        <img src="/img/userhelp/images/I_tpjg.jpg" alt="" class="I_I">
+                                        <img src="/imgstore.k6kt.comlt="" class="I_I">
                                     </li>
                                     <li>
                                         <span class="tip-title">17、如何参与学校发起的问卷调查？</span>
@@ -1993,7 +1972,7 @@ C, 利用移动终端，我们都能做些什么？
                                 </div>
                                 <ul>
                                     <li>
-                                        <span class="tip-title">1、如何登陆全向互动K6KT-快乐课堂？<%--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429690227633lkYsnk.m3u8')">
+                                        <span class="tip-title">1、如何登陆全向互动K6KT-快乐课堂？<%--<a onclick="playMovie('http://store.k6kt.com/m3u8/user/1429690227633lkYsnk.m3u8')">
                                             【观看演示视频】 </a>--%>
                                         </span>
 
@@ -2003,43 +1982,41 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I_dl.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">2、如何更改完善个人头像？<%--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429690385784HDvRnt.m3u8')">
+                                        <span class="tip-title">2、如何更改完善个人头像？<%--<a onclick="playMovie('http://store.k6kt.com/m3u8/user/1429690385784HDvRnt.m3u8')">
                                             【观看演示视频】 </a>--%>
                                         </span>
 
                                         <div>
-                                            <pre>登录后，点击头像右侧的笔形图标，即可进入个人设置，点击“修改头像”下的“点击上传图片”即可上传已有照片或者拍摄照片来修改头像。</pre>
+                  store.k6kt.com>登录后，点击头像右侧的笔形图标，即可进入个人设置，点击“修改头像”下的“点击上传图片”即可上传已有照片或者拍摄照片来修改头像。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I_tx.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">3、如何修改个人密码？<%--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429868553456eKNcmT.m3u8')">
+                                        <span class="tip-title">3、如何修改个人密码？<%--<a onclick="playMovie('http://store.k6kt.com/m3u8/user/1429868553456eKNcmT.m3u8')">
                                               【观看演示视频】 </a>--%>
                                         </span>
 
                                         <div>
-                                            <pre>登录后，点击头像右侧的笔形图标，进入个人设置，点击“修改密码”即可操作。</pre>
-                                        </div>
+                                            <pre>登录后，点击头像右侧的笔形图标，进入个人设置，点击“修改store.k6kt.com                         </div>
                                         <img src="/img/userhelp/images/I_xgmm.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">4、如何发送私信？<%--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429868601984VwbIEk.m3u8')">
+                                        <span class="tip-title">4、如何发送私信？<%--<a onclick="playMovie('http://store.k6kt.com/m3u8/user/1429868601984VwbIEk.m3u8')">
                                             【观看演示视频】 </a>--%>
                                         </span>
 
                                         <div>
                                             <pre>进入个人中心的“我的私信”，点击“发私信”，选择收信人名单，即可与学生、家长、老师、校领导进行私信交流。</pre>
-                                        </div>
+            store.k6kt.comdiv>
                                         <img src="/img/userhelp/images/I_fsx.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                         <span class="tip-title">5、如何使用微家园、微校园社区发帖和评论?<%--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/user/1429868670765WjYvHh.m3u8')">
+                                         <span class="tip-title">5、如何使用微家园、微校园社区发帖和评论?<%--<a onclick="playMovie('http://store.k6kt.com/m3u8/user/1429868670765WjYvHh.m3u8')">
                                              【观看演示视频】 </a>--%>
                                          </span>
 
                                         <div>
-											<pre>在“家校互动”页面点击“微家园”，即可发表自己的新鲜事或者对别人的新鲜事进行留言、点赞，与他人进行公开交流互动，还可选择帖子发表范围：本校、本年级或者本班，以及查看最新、最热和自己发的帖子。
-在“家校互动”页面点击“微校园”即可查看老师们发的帖子并进行留言和点赞。
+											<pre>在“家校互动”页面点击“微家园”，即可发表自己的新鲜事或者对别人的新鲜事进行留言、点赞，与他人进行公开交流互动，还可选择帖子发表范围：本校、本年级或者本班，以及查看最新、最热和自己发的store.k6kt.com子并进行留言和点赞。
 											</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I_dz.jpg" alt="" class="I_I">
@@ -2052,7 +2029,7 @@ C, 利用移动终端，我们都能做些什么？
                                         </div>
                                         <img src="/img/userhelp/images/I_tz.jpg" alt="" class="I_I">
                                     </li>
-                                    <li>
+store.k6kt.com      <li>
                                         <span class="tip-title">7、如何完成老师布置的作业？<a
                                                 onclick="playMovie('http://player.polyv.net/videos/1a9bb5bed592ff8a0255bb306c2bae45_1.swf')"
                                                 class="vedio"><%--【观看演示视频】--%></a></span>
@@ -2227,7 +2204,7 @@ C, 利用移动终端，我们都能做些什么？
                                 </div>
                                 <ul>
                                     <li>
-                                        <span class="tip-title">1、如何登陆全向互动K6KT-智慧校园？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55becec30cf23fde5708c7a2.mp4.m3u8')">
+                                        <span class="tip-title">1、如何登陆全向互动K6KT-智慧校园？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55becec30cf23fde5708c7a2.mp4.m3u8')">
                                             【观看演示视频】 </a>-->
                                          </span>
 
@@ -2237,64 +2214,60 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I_dl.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">2、如何更改完善管理员个人头像？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
+                                        <span class="tip-title">2、如何更改完善管理员个人头像？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b846770cf2a7f1af42dd50.mp4.m3u8')">
                                             【观看演示视频】 </a>-->
                                          </span>
 
                                         <div>
-                                            <pre>登录后，进入个人中心，点击“个人设置”，再点击“修改头像”下的“点击上传图片”即可上传已有照片或者拍摄照片来修改头像。</pre>
-                                        </div>
+                                            <pre>登录后，进入个人中心，点击“个人设置”，再点击“修改头像”下的“点击上传图片”store.k6kt.com                                     </div>
                                         <img src="/img/userhelp/images/I_tx.jpg" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">3、如何修改管理员个人密码？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b846da0cf2a7f1af42dd53.mp4.m3u8')">
+                                        <span class="tip-title">3、如何修改管理员个人密码？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b846da0cf2a7f1af42dd53.mp4.m3u8')">
                                             【观看演示视频】 </a>-->
                                          </span>
 
                                         <div>
                                             <pre>登录后，进入个人中心，点击“个人设置”，点击“修改密码”即可操作。</pre>
                                         </div>
-                                        <img src="/img/userhelp/images/I_xgmm.jpg" alt="" class="I_I">
+                store.k6kt.comrc="/img/userhelp/images/I_xgmm.jpg" alt="" class="I_I">
                                     </li>
                                     <!-- <li>
-                                         <span class="tip-title">4、如何发送私信？<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b8472f0cf2a7f1af42dd57.mp4.m3u8')">
+                                         <span class="tip-title">4、如何发送私信？<a onclick="playMovie('http://store.k6kt.com/m3u8/55b8472f0cf2a7f1af42dd57.mp4.m3u8')">
                                              【观看演示视频】 </a></span>
 
                                          <div>
                                              <pre>进入个人中心的“我的私信”，点击“发私信”，选择收信人名单，即可与学生、家长、老师进行私信交流。</pre>
                                          </div>
-                                         <img src="/img/userhelp/images/I_fsx.jpg" alt="" class="I_I">
-                                     </li>-->
+                                         <img src="/img/userhelp/images/I_fsx.jpg" alstore.k6kt.com                         </li>-->
                                     <li>
-                                        <span class="tip-title">4、如何新增、删除、修改一门学科？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b84db00cf2a7f1af42dd7d.mp4.m3u8')">
+                                        <span class="tip-title">4、如何新增、删除、修改一门学科？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b84db00cf2a7f1af42dd7d.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>
                                             <pre>进入“平台管理”的“设置学科”，点击“新建科目”可以实现新增一门新学科，点击笔形图标可以修改这门学科的从属年级和名称，点击垃圾桶图标可以一键删除这门学科。</pre>
                                         </div>
-                                        <img src="/img/userhelp/images/I_czxk.jpg" alt="" class="I_I">
-                                    </li
+                                        <img src="/img/userhelp/images/I_czxk.jpg" alt=""store.k6kt.com                    </li
                                     <li>
-                                        <span class="tip-title">5、如何批量导入老师学生信息？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b84db00cf2a7f1af42dd7d.mp4.m3u8')">
+                                        <span class="tip-title">5、如何批量导入老师学生信息？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b84db00cf2a7f1af42dd7d.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>
                                             <pre>A.在“平台管理”的“设置班级学生”页面，点击“批量导入人员”，“下载模版”后，根据操作提示在模版表格中填入相应的教师和学生基本信息，点击“选择文件”，找到已填写完毕的“师生基本信息模版”，点击“开始导入”即可批量导入师生信息。（请严格按模版格式填写，避免导入失败）</pre>
                                         </div>
-                                        <img src="/img/userhelp/images/I-pldr1.png" alt="" class="I_I">
+                            store.k6kt.comrhelp/images/I-pldr1.png" alt="" class="I_I">
                                         <img src="/img/userhelp/images/I-pldr2.png" alt="" class="I_I">
                                     </li
                                     <li>
-                                        <span class="tip-title">6、如何给新建的用户设置一个统一的默认密码？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b86e2f0cf2a7f1af42dd96.mp4.m3u8')">
+                                        <span class="tip-title">6、如何给新建的用户设置一个统一的默认密码？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b86e2f0cf2a7f1af42dd96.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>
                                             <pre>A.进入“平台管理”的“设置班级学生”，点击“设置新建用户默认密码”即可。</pre>
-                                        </div>
-                                        <img src="/img/userhelp/images/I_mrmm.png" alt="" class="I_I">
+                   store.k6kt.com                                      <img src="/img/userhelp/images/I_mrmm.png" alt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">7、如何还原老师、学生、家长的初始密码？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b86e2f0cf2a7f1af42dd96.mp4.m3u8')">
+                                        <span class="tip-title">7、如何还原老师、学生、家长的初始密码？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b86e2f0cf2a7f1af42dd96.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>
@@ -2303,53 +2276,48 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I-hymm.png" alt="" class="I_I">
                                     </li>
 
-                                    <li>
-                                        <span class="tip-title">8、如何进行教师管理，建立教师成长档案？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b86e2f0cf2a7f1af42dd96.mp4.m3u8')">
+                    store.k6kt.com                               <span class="tip-title">8、如何进行教师管理，建立教师成长档案？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b86e2f0cf2a7f1af42dd96.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>
                                             <pre>A.在“平台管理”页面点击“教师管理”，可新添加老师，可以编辑教师基本信息、修改权限、重置密码、删除教师，点击“编辑”可增加教师课程项目，形成教师成长档案。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I-jsgl.png" alt="" class="I_I">
-                                    </li>
-                                    <li>
-                                        <span class="tip-title">9、如何新增、删除、修改年级信息？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b84e1f0cf2a7f1af42dd80.mp4.m3u8')">
+                                    <store.k6kt.com           <li>
+                                        <span class="tip-title">9、如何新增、删除、修改年级信息？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b84e1f0cf2a7f1af42dd80.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>
                                             <pre>A.进入“平台管理”的“设置班级学生”的年级列表，点击“新建年级”可以实现新增一个年级，点击笔形图标可以修改这个年级的相关信息，点击垃圾桶图标可以一键删除这个年级。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I-njxx.png" alt="" class="I_I">
-                                    </li>
-                                    <li>
-                                        <span class="tip-title">10、如何新增、删除、修改班级信息？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b84ed00cf2a7f1af42dd83.mp4.m3u8')">
+                                    store.k6kt.com            <li>
+                                        <span class="tip-title">10、如何新增、删除、修改班级信息？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b84ed00cf2a7f1af42dd83.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>
                                             <pre>A. 进入“平台管理”的“设置班级学生”的年级列表，点击需要新建或编辑的班级所在的年级，点击“新建班级”可以实现新增一个班级，点击笔形图标可以修改这个班级的相关信息，点击垃圾桶图标可以一键删除这个班级。</pre>
                                         </div>
                                         <img src="/img/userhelp/images/I-bjxx.png" alt="" class="I_I">
-                                    </li>
-                                    <li>
-                                        <span class="tip-title">11、新增、删除、修改班级师生信息？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b84f440cf2a7f1af42dd86.mp4.m3u8')">
+                            store.k6kt.com                    <li>
+                                        <span class="tip-title">11、新增、删除、修改班级师生信息？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b84f440cf2a7f1af42dd86.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>
                                             <pre>进入“平台管理”的“设置班级学生”的年级列表，点击需要编辑的班级，点击“添加老师”添加一名新任课教师信息。点击该老师姓名后面的笔形图标，可以编辑该老师的信息。点击该老师姓名后面的垃圾桶图标可以删除该老师的信息。点击“新建学生”添加一名新生信息。点击该学生姓名后面的笔形图标，可以编辑该名学生的信息。点击该学生姓名后面的垃圾桶图标可以删除该名学生的信息。</pre>
                                         </div>
-                                        <img src="/img/userhelp/images/I-ssxx.png" alt="" class="I_I">
+                                        <img src="/imstore.k6kt.comalt="" class="I_I">
                                     </li>
                                     <li>
-                                        <span class="tip-title">12、如何给学生更换班级？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b86c120cf2a7f1af42dd8d.mp4.m3u8')">
+                                        <span class="tip-title">12、如何给学生更换班级？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b86c120cf2a7f1af42dd8d.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>
                                             <pre>A. 进入“平台管理”的“设置班级学生”的年级列表，点击该学生所从属的班级，进入该班级的学生列表，点击该学生姓名后面的人像图标，可将学生调换至新的班级。</pre>
                                         </div>
-                                        <img src="/img/userhelp/images/I-ghbj.png" alt="" class="I_I">
-                                    </li>
+                                        <img src="/img/userhelp/images/I-ghbj.png" alt="" class="I_store.k6kt.com          </li>
                                     <li>
-                                        <span class="tip-title">13、如何开设一门新的拓展课？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b86d800cf2a7f1af42dd90.mp4.m3u8')">
+                                        <span class="tip-title">13、如何开设一门新的拓展课？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b86d800cf2a7f1af42dd90.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>
@@ -2358,14 +2326,14 @@ C, 利用移动终端，我们都能做些什么？
                                         <img src="/img/userhelp/images/I-ktzk.png" alt="" class="I_I">
 
                                        <%-- <div>
-                                            <pre>学生、家长初始密码还原：进入“我的学校”的“管理校园”的年级列表，点击需要还原初始密码的学生或家长（家长的孩子）所从属的班级，进入该班级的学生列表，点击该学生姓名后面的笔形按钮，点击“还原学生初始密码”、“还原家长初始密码”即可完成操作。</pre>
+                                            <pre>学生、家长初始密码还原：进入“我的学store.k6kt.com长（家长的孩子）所从属的班级，进入该班级的学生列表，点击该学生姓名后面的笔形按钮，点击“还原学生初始密码”、“还原家长初始密码”即可完成操作。</pre>
                                         </div>--%>
                                         <%--<img src="/img/userhelp/images/I_hymm2.jpg" alt="">--%>
                                     </li>
 
 
                                     <li>
-                                        <span class="tip-title">14、如何管理学校新闻的发布？<!--<a onclick="playMovie('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/55b86e860cf2a7f1af42dd99.mp4.m3u8')">
+                                        <span class="tip-title">14、如何管理学校新闻的发布？<!--<a onclick="playMovie('http://store.k6kt.com/m3u8/55b86e860cf2a7f1af42dd99.mp4.m3u8')">
                                             【观看演示视频】 </a></span>-->
 
                                         <div>

@@ -174,7 +174,7 @@ public class StorageManageDao extends BaseDao {
             updateParam.append("storageStatus",map.get("storageStatus").toString());
         }
         if (map.get("comment") != null) {
-            updateParam.append("comment",new ObjectId(map.get("comment").toString()));
+            updateParam.append("comment",map.get("comment").toString());
         }
         if (map.get("useStatus") != null) {
             updateParam.append("useStatus",map.get("useStatus").toString());

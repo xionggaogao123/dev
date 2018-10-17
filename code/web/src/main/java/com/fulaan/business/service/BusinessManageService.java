@@ -438,10 +438,16 @@ public class BusinessManageService {
         //自主分页
         for(ClassOrderEntry classOrderEntry:classOrderEntries){
             userIds.add(classOrderEntry.getUserId());
-            if(start<=userIds.size()&& userIds.size() <= end){
-                ids.add(classOrderEntry.getUserId());
+        }
+        int index = 0;
+        for(ObjectId i : userIds){
+            index++;
+            if(start<=index && index <= end){
+                ids.add(i);
             }
-            if(start<=userIds.size()&& userIds.size() <=end || ids.contains(classOrderEntry.getUserId())){
+        }
+        for(ClassOrderEntry classOrderEntry:classOrderEntries){
+            if(ids.contains(classOrderEntry.getUserId())){
                 entries.add(classOrderEntry);
             }
         }

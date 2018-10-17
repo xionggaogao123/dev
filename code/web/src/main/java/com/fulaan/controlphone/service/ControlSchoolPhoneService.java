@@ -433,13 +433,13 @@ public class ControlSchoolPhoneService {
                     sem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
                 }
                 long bsm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getBedTimeFrom(), "yyyy-MM-dd HH:mm");
-                long bem = DateTimeUtils.getStrToLongTime(string+" 23:59", "yyyy-MM-dd HH:mm");
+                long bem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getBedTimeTo(), "yyyy-MM-dd HH:mm");
                 objectMap.put("type",2);
                 if(current>ssm && current<sem){//上课时间，跳1
                     objectMap.put("type",1);
                     type=1;
                 }
-                if(current>bsm && current<bem){//睡眠时间，跳1
+                if(current>bsm || current<bem){// 睡眠时间，跳1
                     objectMap.put("type",3);
                     type=3;
                 }
@@ -449,13 +449,13 @@ public class ControlSchoolPhoneService {
                 long ssm = DateTimeUtils.getStrToLongTime(string+" 07:30", "yyyy-MM-dd HH:mm");
                 long sem = DateTimeUtils.getStrToLongTime(string+" 17:30", "yyyy-MM-dd HH:mm");
                 long bsm = DateTimeUtils.getStrToLongTime(string+" 22:00", "yyyy-MM-dd HH:mm");
-                long bem = DateTimeUtils.getStrToLongTime(string+" 23:59", "yyyy-MM-dd HH:mm");
+                long bem = DateTimeUtils.getStrToLongTime(string+" 07:30", "yyyy-MM-dd HH:mm");
                 objectMap.put("type",2);
                 if(current>ssm && current<sem){//上课时间，跳1
                     objectMap.put("type",1);
                     type=1;
                 }
-                if(current>bsm && current<bem){//睡眠时间，跳1
+                if(current>bsm || current<bem){//睡眠时间，跳1
                     objectMap.put("type",3);
                     type=3;
                 }
@@ -700,7 +700,7 @@ public class ControlSchoolPhoneService {
     }
 
     //设置社群放学阶段应用
-    public void updateHomeAppTime(ObjectId appId,ObjectId communityId,ObjectId userId,int time,int type)throws Exception{//type =1 type=6  type=0
+    public void updateHomeAppTime(ObjectId appId,ObjectId communityId,ObjectId userId,int time,int type)throws Exception{// freeeTime -1 (关闭) type =1 type=6  type=0
         AppDetailEntry appDetailEntry = appDetailDao.findEntryById(appId);
         if(appDetailEntry==null){
             throw new Exception("应用已被删除!");
@@ -720,11 +720,48 @@ public class ControlSchoolPhoneService {
                 ObjectId appId1 = appDetailEntry1.getID();
                 ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getHomeEntry(Constant.ZERO, communityId, appId1, type);
                 if(controlAppSchoolResultEntry==null){
+                    if(time<0){
+                        //误操作
+                    }else{
+                        //无记录添加新纪录
+                        ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                                appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,0,
+                                time*60*1000,type,startNum,current,current,Constant.ZERO);
+                        controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                    }
+
+                }else{
+                    if(time<0){
+                        //删除今日
+                        controlAppSchoolResultDao.delEntry(controlAppSchoolResultEntry.getID());
+                    }else{
+                        //有记录，更新记录
+                        controlAppSchoolResultEntry.setOutSchoolCanUseTime(time*60*1000);
+                        controlAppSchoolResultEntry.setDateTime(startNum);
+                        controlAppSchoolResultEntry.setSaveTime(current);
+                        controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                    }
+
+                }
+            }
+        }else{
+            //1.获取社群状态并添加记录
+            ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getHomeEntry(Constant.ZERO, communityId, appId, type);
+            if(controlAppSchoolResultEntry==null){
+                if(time<0){
+                    //误操作
+                }else{
                     //无记录添加新纪录
                     ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
-                            appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,0,
+                            appId,communityId,appDetailEntry.getAppPackageName(),Constant.ONE,0,
                             time*60*1000,type,startNum,current,current,Constant.ZERO);
                     controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                }
+
+            }else{
+                if(time<0){
+                    //删除今日
+                    controlAppSchoolResultDao.delEntry(controlAppSchoolResultEntry.getID());
                 }else{
                     //有记录，更新记录
                     controlAppSchoolResultEntry.setOutSchoolCanUseTime(time*60*1000);
@@ -732,22 +769,7 @@ public class ControlSchoolPhoneService {
                     controlAppSchoolResultEntry.setSaveTime(current);
                     controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
                 }
-            }
-        }else{
-            //1.获取社群状态并添加记录
-            ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getHomeEntry(Constant.ZERO, communityId, appId, type);
-            if(controlAppSchoolResultEntry==null){
-                //无记录添加新纪录
-                ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
-                        appId,communityId,appDetailEntry.getAppPackageName(),Constant.ONE,0,
-                        time*60*1000,type,startNum,current,current,Constant.ZERO);
-                controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
-            }else{
-                //有记录，更新记录
-                controlAppSchoolResultEntry.setOutSchoolCanUseTime(time*60*1000);
-                controlAppSchoolResultEntry.setDateTime(startNum);
-                controlAppSchoolResultEntry.setSaveTime(current);
-                controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+
             }
         }
         //2 添加用户操作记录
@@ -1447,55 +1469,57 @@ public class ControlSchoolPhoneService {
             //计算生效的结果
             List<SchoolControlTimeEntry> schoolControlTimeEntryMap = map.get(week+"");
             SchoolControlTimeEntry schoolControlTimeEntry2 = null;
-            for(SchoolControlTimeEntry schoolControlTimeEntry : schoolControlTimeEntryMap){
-                if(schoolControlTimeEntry2==null){
-                    schoolControlTimeEntry2 = schoolControlTimeEntry;
-                }else{
-                    long nstm = dateTime;
-                    long netm = dateTime;
-                    long nbsm = dateTime;
-                    long nbem = dateTime;
-                    long ostm = dateTime;
-                    long oetm = dateTime;
-                    long obsm = dateTime;
-                    long obem = dateTime;
-                    if(schoolControlTimeEntry.getSchoolTimeFrom()!=null && !schoolControlTimeEntry.getSchoolTimeFrom().equals("")){
-                        nstm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
-                    }
-                    if(schoolControlTimeEntry.getSchoolTimeTo()!=null && !schoolControlTimeEntry.getSchoolTimeTo().equals("")){
-                        netm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
-                    }
-                    if(schoolControlTimeEntry.getBedTimeFrom()!=null && !schoolControlTimeEntry.getBedTimeFrom().equals("")){
-                        nbsm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getBedTimeFrom(), "yyyy-MM-dd HH:mm");
-                    }
-                    if(schoolControlTimeEntry.getBedTimeTo()!=null && !schoolControlTimeEntry.getBedTimeTo().equals("")){
-                        nbem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getBedTimeTo(), "yyyy-MM-dd HH:mm");
-                    }
-                    if(schoolControlTimeEntry2.getSchoolTimeFrom()!=null && !schoolControlTimeEntry2.getSchoolTimeFrom().equals("")){
-                        ostm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
-                    }
-                    if(schoolControlTimeEntry2.getSchoolTimeTo()!=null && !schoolControlTimeEntry2.getSchoolTimeTo().equals("")){
-                        oetm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
-                    }
-                    if(schoolControlTimeEntry2.getBedTimeFrom()!=null && !schoolControlTimeEntry2.getBedTimeFrom().equals("")){
-                        obsm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getBedTimeFrom(), "yyyy-MM-dd HH:mm");
-                    }
-                    if(schoolControlTimeEntry2.getBedTimeTo()!=null && !schoolControlTimeEntry2.getBedTimeTo().equals("")){
-                        obem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getBedTimeTo(), "yyyy-MM-dd HH:mm");
-                    }
-                    if(nstm<ostm){
-                        schoolControlTimeEntry2.setSchoolTimeFrom(schoolControlTimeEntry.getSchoolTimeFrom());
-                    }
-                    if(netm>oetm){
-                        schoolControlTimeEntry2.setSchoolTimeTo(schoolControlTimeEntry.getSchoolTimeTo());
-                    }
-                    if(nbsm<obsm){
-                        schoolControlTimeEntry2.setBedTimeFrom(schoolControlTimeEntry.getBedTimeFrom());
-                    }
-                    if(nbem>obem){
-                        schoolControlTimeEntry2.setBedTimeTo(schoolControlTimeEntry.getBedTimeTo());
-                    }
+            if(schoolControlTimeEntryMap!=null){
+                for(SchoolControlTimeEntry schoolControlTimeEntry : schoolControlTimeEntryMap){
+                    if(schoolControlTimeEntry2==null){
+                        schoolControlTimeEntry2 = schoolControlTimeEntry;
+                    }else{
+                        long nstm = dateTime;
+                        long netm = dateTime;
+                        long nbsm = dateTime;
+                        long nbem = dateTime;
+                        long ostm = dateTime;
+                        long oetm = dateTime;
+                        long obsm = dateTime;
+                        long obem = dateTime;
+                        if(schoolControlTimeEntry.getSchoolTimeFrom()!=null && !schoolControlTimeEntry.getSchoolTimeFrom().equals("")){
+                            nstm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
+                        }
+                        if(schoolControlTimeEntry.getSchoolTimeTo()!=null && !schoolControlTimeEntry.getSchoolTimeTo().equals("")){
+                            netm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
+                        }
+                        if(schoolControlTimeEntry.getBedTimeFrom()!=null && !schoolControlTimeEntry.getBedTimeFrom().equals("")){
+                            nbsm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getBedTimeFrom(), "yyyy-MM-dd HH:mm");
+                        }
+                        if(schoolControlTimeEntry.getBedTimeTo()!=null && !schoolControlTimeEntry.getBedTimeTo().equals("")){
+                            nbem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry.getBedTimeTo(), "yyyy-MM-dd HH:mm");
+                        }
+                        if(schoolControlTimeEntry2.getSchoolTimeFrom()!=null && !schoolControlTimeEntry2.getSchoolTimeFrom().equals("")){
+                            ostm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getSchoolTimeFrom(), "yyyy-MM-dd HH:mm");
+                        }
+                        if(schoolControlTimeEntry2.getSchoolTimeTo()!=null && !schoolControlTimeEntry2.getSchoolTimeTo().equals("")){
+                            oetm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
+                        }
+                        if(schoolControlTimeEntry2.getBedTimeFrom()!=null && !schoolControlTimeEntry2.getBedTimeFrom().equals("")){
+                            obsm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getBedTimeFrom(), "yyyy-MM-dd HH:mm");
+                        }
+                        if(schoolControlTimeEntry2.getBedTimeTo()!=null && !schoolControlTimeEntry2.getBedTimeTo().equals("")){
+                            obem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getBedTimeTo(), "yyyy-MM-dd HH:mm");
+                        }
+                        if(nstm<ostm){
+                            schoolControlTimeEntry2.setSchoolTimeFrom(schoolControlTimeEntry.getSchoolTimeFrom());
+                        }
+                        if(netm>oetm){
+                            schoolControlTimeEntry2.setSchoolTimeTo(schoolControlTimeEntry.getSchoolTimeTo());
+                        }
+                        if(nbsm<obsm){
+                            schoolControlTimeEntry2.setBedTimeFrom(schoolControlTimeEntry.getBedTimeFrom());
+                        }
+                        if(nbem>obem){
+                            schoolControlTimeEntry2.setBedTimeTo(schoolControlTimeEntry.getBedTimeTo());
+                        }
 
+                    }
                 }
             }
             if(schoolControlTimeEntry2!=null){

@@ -435,7 +435,7 @@ public class BackStageOutStorageFollowService {
                 tjsonIn.get("contactInfo") == null ? "" : tjsonIn.get("contactInfo").toString(),
                 tjsonIn.get("address") == null ? "" : tjsonIn.get("address").toString(),
                 tjsonIn.get("deliveryTime") == null ? "" : tjsonIn.get("deliveryTime").toString(),
-                "",
+                "快递",
                 "",
                 "",
                 tjsonIn.get("parentName") == null ? "" : tjsonIn.get("parentName").toString(),

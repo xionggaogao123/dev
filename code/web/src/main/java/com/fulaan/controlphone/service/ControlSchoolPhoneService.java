@@ -700,7 +700,7 @@ public class ControlSchoolPhoneService {
     }
 
     //设置社群放学阶段应用
-    public void updateHomeAppTime(ObjectId appId,ObjectId communityId,ObjectId userId,int time,int type)throws Exception{//type =1 type=6  type=0
+    public void updateHomeAppTime(ObjectId appId,ObjectId communityId,ObjectId userId,int time,int type)throws Exception{//type =1 type=6  type=0  type=-1(关闭)
         AppDetailEntry appDetailEntry = appDetailDao.findEntryById(appId);
         if(appDetailEntry==null){
             throw new Exception("应用已被删除!");
@@ -720,11 +720,48 @@ public class ControlSchoolPhoneService {
                 ObjectId appId1 = appDetailEntry1.getID();
                 ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getHomeEntry(Constant.ZERO, communityId, appId1, type);
                 if(controlAppSchoolResultEntry==null){
+                    if(type<0){
+                        //误操作
+                    }else{
+                        //无记录添加新纪录
+                        ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                                appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,0,
+                                time*60*1000,type,startNum,current,current,Constant.ZERO);
+                        controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                    }
+
+                }else{
+                    if(type<0){
+                        //删除今日
+                        controlAppSchoolResultDao.delEntry(controlAppSchoolResultEntry.getID());
+                    }else{
+                        //有记录，更新记录
+                        controlAppSchoolResultEntry.setOutSchoolCanUseTime(time*60*1000);
+                        controlAppSchoolResultEntry.setDateTime(startNum);
+                        controlAppSchoolResultEntry.setSaveTime(current);
+                        controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                    }
+
+                }
+            }
+        }else{
+            //1.获取社群状态并添加记录
+            ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getHomeEntry(Constant.ZERO, communityId, appId, type);
+            if(controlAppSchoolResultEntry==null){
+                if(type<0){
+                    //误操作
+                }else{
                     //无记录添加新纪录
                     ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
-                            appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,0,
+                            appId,communityId,appDetailEntry.getAppPackageName(),Constant.ONE,0,
                             time*60*1000,type,startNum,current,current,Constant.ZERO);
                     controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                }
+
+            }else{
+                if(type<0){
+                    //删除今日
+                    controlAppSchoolResultDao.delEntry(controlAppSchoolResultEntry.getID());
                 }else{
                     //有记录，更新记录
                     controlAppSchoolResultEntry.setOutSchoolCanUseTime(time*60*1000);
@@ -732,22 +769,7 @@ public class ControlSchoolPhoneService {
                     controlAppSchoolResultEntry.setSaveTime(current);
                     controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
                 }
-            }
-        }else{
-            //1.获取社群状态并添加记录
-            ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getHomeEntry(Constant.ZERO, communityId, appId, type);
-            if(controlAppSchoolResultEntry==null){
-                //无记录添加新纪录
-                ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
-                        appId,communityId,appDetailEntry.getAppPackageName(),Constant.ONE,0,
-                        time*60*1000,type,startNum,current,current,Constant.ZERO);
-                controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
-            }else{
-                //有记录，更新记录
-                controlAppSchoolResultEntry.setOutSchoolCanUseTime(time*60*1000);
-                controlAppSchoolResultEntry.setDateTime(startNum);
-                controlAppSchoolResultEntry.setSaveTime(current);
-                controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+
             }
         }
         //2 添加用户操作记录

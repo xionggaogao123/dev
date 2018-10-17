@@ -23,6 +23,16 @@ public class ControlAppSchoolResultDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_SCHOOL_RESULT, entry.getBaseEntry());
         return entry.getID().toString() ;
     }
+
+    //删除作业
+    public void delEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject();
+        query.append(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_SCHOOL_RESULT, query,updateValue);
+    }
+
+
     //单查询
     public ControlAppSchoolResultEntry getEntry(int type,ObjectId communityId,ObjectId appId) {
         BasicDBObject query =new BasicDBObject();

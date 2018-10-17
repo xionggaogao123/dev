@@ -988,7 +988,7 @@ public class Constant {
     //管控地图信息记录表
     public static final String COLLECTION_CONTROL_MAP = "controlmap";
     //管控应用使用记录表
-    public static final String COLLECTION_CONTROL_APP_RESULT = "controlappresult";
+    public static final String COLLECTION_CONTROL_APP_RESULT = "controlappresult_2018-10-20";
     //管控应用使用记录缓存表
     public static final String COLLECTION_CONTROL_APP_RESULT_CURRENT = "controlappresult_current2";
     //信息表

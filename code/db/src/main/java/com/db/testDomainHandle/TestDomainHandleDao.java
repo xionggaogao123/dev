@@ -19,7 +19,7 @@ public class TestDomainHandleDao extends BaseDao {
 
     public int getDBObjectCount(String dbName, String tableName, String selField, String childField) {
         BasicDBObject query = new BasicDBObject();
-        if(!StringUtils.isBlank(childField)){
+        if(StringUtils.isBlank(childField)){
             query.append(selField, MongoUtils.buildRegex("http"));
         }else{
             BasicDBList list =new BasicDBList();
@@ -47,7 +47,7 @@ public class TestDomainHandleDao extends BaseDao {
     public List<DBObject> getDBObjectList (String dbName, String tableName, String selField, String childField, int skip, int limit)
     {
         BasicDBObject query = new BasicDBObject();
-        if(!StringUtils.isBlank(childField)){
+        if(StringUtils.isBlank(childField)){
             query.append(selField, MongoUtils.buildRegex("http"));
         }else{
             BasicDBList list =new BasicDBList();

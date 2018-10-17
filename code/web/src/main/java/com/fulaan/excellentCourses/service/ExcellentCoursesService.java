@@ -137,6 +137,34 @@ public class ExcellentCoursesService {
                                         "http://doc.k6kt.com/5b2cd0f73d4df93a938a064e.jpg",
                                         "http://doc.k6kt.com/5b2cd15f3d4df93a938a0b35.jpg",
                                         "http://doc.k6kt.com/5b2cd1633d4df93a938a0b5f.jpg"};//小图
+   public static final Map<String, String> bigCoverMap = new HashMap<String, String>();
+   public static final Map<String, String> coverMap = new HashMap<String, String>();
+   
+   {
+       bigCoverMap.put("语文", "http://doc.k6kt.com/5b2cd0143d4df93a9389fa73.jpg");
+       bigCoverMap.put("数学", "http://doc.k6kt.com/5b2cd0493d4df93a9389fde3.jpg");
+       bigCoverMap.put("英语", "http://doc.k6kt.com/5b2cd04e3d4df93a9389fdfe.jpg");
+       bigCoverMap.put("政治", "http://doc.k6kt.com/5b2cd0543d4df93a9389fe56.jpg");
+       bigCoverMap.put("历史", "http://doc.k6kt.com/5b2cd0e53d4df93a938a05b6.jpg");
+       bigCoverMap.put("地理", "http://doc.k6kt.com/5b2cd0ed3d4df93a938a05cb.jpg");
+       bigCoverMap.put("物理", "http://doc.k6kt.com/5b2cd0f13d4df93a938a0609.jpg");
+       bigCoverMap.put("化学", "http://doc.k6kt.com/5b2cd0f53d4df93a938a0639.jpg");
+       bigCoverMap.put("生物", "http://doc.k6kt.com/5b2cd15d3d4df93a938a0b25.jpg");
+       bigCoverMap.put("未知", "http://doc.k6kt.com/5b2cd1613d4df93a938a0b54.jpg");
+       
+       coverMap.put("语文", "http://doc.k6kt.com/5b2cd0463d4df93a9389fddb.jpg");
+       coverMap.put("数学", "http://doc.k6kt.com/5b2cd04c3d4df93a9389fdfc.jpg");
+       coverMap.put("英语", "http://doc.k6kt.com/5b2cd0503d4df93a9389fe0b.jpg");
+       coverMap.put("政治", "http://doc.k6kt.com/5b2cd0563d4df93a9389fe7c.jpg");
+       coverMap.put("历史", "http://doc.k6kt.com/5b2cd0e73d4df93a938a05b7.jpg");
+       coverMap.put("地理", "http://doc.k6kt.com/5b2cd0ef3d4df93a938a05f1.jpg");
+       coverMap.put("物理", "http://doc.k6kt.com/5b2cd0f33d4df93a938a061c.jpg");
+       coverMap.put("化学", "http://doc.k6kt.com/5b2cd0f73d4df93a938a064e.jpg");
+       coverMap.put("生物", "http://doc.k6kt.com/5b2cd15f3d4df93a938a0b35.jpg");
+       coverMap.put("未知", "http://doc.k6kt.com/5b2cd1633d4df93a938a0b5f.jpg");
+   }
+   
+   
 
 
     /**
@@ -171,8 +199,8 @@ public class ExcellentCoursesService {
             excellentCoursesEntry.setTitle(dto.getTitle());
             excellentCoursesEntry.setTarget(dto.getTarget());
             excellentCoursesEntry.setOpen(dto.getOpen());
-            excellentCoursesEntry.setCover(dto.getCover());
-            excellentCoursesEntry.setBigCover(dto.getBigCover());
+            /*excellentCoursesEntry.setCover(dto.getCover());
+            excellentCoursesEntry.setBigCover(dto.getBigCover());*/
             str = excellentCoursesDao.addEntry(excellentCoursesEntry);
         }else{
             dto.setUserId(userId.toString());
@@ -180,8 +208,15 @@ public class ExcellentCoursesService {
             /*int i1 = random.nextInt(10)+1;
             dto.setCover(arg2[i1]);
             dto.setBigCover(arg1[i1]);*/
-            dto.setCover(dto.getCover());
-            dto.setBigCover(dto.getBigCover());
+            /*dto.setCover(dto.getCover());
+            dto.setBigCover(dto.getBigCover());*/
+            if(StringUtils.isNotBlank(bigCoverMap.get(dto.getSubjectName()))) {
+                dto.setBigCover(bigCoverMap.get(dto.getSubjectName()));
+                dto.setCover(coverMap.get(dto.getSubjectName()));
+            } else {
+                dto.setBigCover(bigCoverMap.get("未知"));
+                dto.setCover(coverMap.get("未知"));
+            }
             //初次创建   状态为  未发布
             dto.setStatus(0);
             ExcellentCoursesEntry excellentCoursesEntry = dto.buildAddEntry();

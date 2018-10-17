@@ -66,6 +66,7 @@ import java.util.List;
  * creationTime 数据创建时间
  * creationYear 数据创建年
  * creationMonth 数据创建月
+ * isr 为2 废弃数据
  */
 public class InOutStorageEntry extends BaseDBObject {
 

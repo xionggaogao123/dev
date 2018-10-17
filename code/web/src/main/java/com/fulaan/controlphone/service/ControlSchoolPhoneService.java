@@ -433,13 +433,13 @@ public class ControlSchoolPhoneService {
                     sem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getSchoolTimeTo(), "yyyy-MM-dd HH:mm");
                 }
                 long bsm = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getBedTimeFrom(), "yyyy-MM-dd HH:mm");
-                long bem = DateTimeUtils.getStrToLongTime(string+" 23:59", "yyyy-MM-dd HH:mm");
+                long bem = DateTimeUtils.getStrToLongTime(string+" "+schoolControlTimeEntry2.getBedTimeTo(), "yyyy-MM-dd HH:mm");
                 objectMap.put("type",2);
                 if(current>ssm && current<sem){//上课时间，跳1
                     objectMap.put("type",1);
                     type=1;
                 }
-                if(current>bsm && current<bem){//睡眠时间，跳1
+                if(current>bsm || current<bem){// 睡眠时间，跳1
                     objectMap.put("type",3);
                     type=3;
                 }
@@ -449,13 +449,13 @@ public class ControlSchoolPhoneService {
                 long ssm = DateTimeUtils.getStrToLongTime(string+" 07:30", "yyyy-MM-dd HH:mm");
                 long sem = DateTimeUtils.getStrToLongTime(string+" 17:30", "yyyy-MM-dd HH:mm");
                 long bsm = DateTimeUtils.getStrToLongTime(string+" 22:00", "yyyy-MM-dd HH:mm");
-                long bem = DateTimeUtils.getStrToLongTime(string+" 23:59", "yyyy-MM-dd HH:mm");
+                long bem = DateTimeUtils.getStrToLongTime(string+" 07:30", "yyyy-MM-dd HH:mm");
                 objectMap.put("type",2);
                 if(current>ssm && current<sem){//上课时间，跳1
                     objectMap.put("type",1);
                     type=1;
                 }
-                if(current>bsm && current<bem){//睡眠时间，跳1
+                if(current>bsm || current<bem){//睡眠时间，跳1
                     objectMap.put("type",3);
                     type=3;
                 }

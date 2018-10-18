@@ -768,13 +768,25 @@ public class BackStageSchoolManageService {
                 if (schoolControlTimeEntryList.size() >0){
                     for (ObjectId sid : schoolNotControlIdList){
                         for (SchoolControlTimeEntry entry : schoolControlTimeEntryList){
-                            entry.setSchoolId(sid);//封装进schoolId
-                            System.out.println(new ObjectId());
-                            entry.setID(new ObjectId());//封装进新主键Id
-                            schoolControlDBObjectList.add(entry.getBaseEntry());
+                            SchoolControlTimeEntry entryTemp = new SchoolControlTimeEntry();
+                            entryTemp.setSchoolId(sid);//封装进schoolId
+                            entryTemp.setBedTimeFrom(entry.getBedTimeFrom());
+                            entryTemp.setBedTimeTo(entry.getBedTimeTo());
+                            entryTemp.setSchoolTimeFrom(entry.getSchoolTimeFrom());
+                            entryTemp.setSchoolTimeTo(entry.getSchoolTimeTo());
+                            entryTemp.setType(entry.getType());
+                            entryTemp.setWeek(entry.getWeek());
+                            entryTemp.setDateFrom(entry.getDateFrom());
+                            entryTemp.setDateTo(entry.getDateTo());
+                            entryTemp.setHolidayName(entry.getHolidayName());
+//                            entry.setSchoolId(sid);//封装进schoolId
+//                            System.out.println(new ObjectId());
+//                            entry.setID(new ObjectId());//封装进新主键Id
+                            schoolControlDBObjectList.add(entryTemp.getBaseEntry());
                         }
-                        schoolControlTimeDao.saveNewSchoolAddControlTime(schoolControlDBObjectList);
+//                        schoolControlTimeDao.saveNewSchoolAddControlTime(schoolControlDBObjectList);
                     }
+                    schoolControlTimeDao.saveNewSchoolAddControlTime(schoolControlDBObjectList);
                 }
             }
             result = "修复成功！";

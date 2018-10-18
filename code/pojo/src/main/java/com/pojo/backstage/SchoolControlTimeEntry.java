@@ -96,15 +96,29 @@ public class SchoolControlTimeEntry extends BaseDBObject {
     public int getType(){
         return getSimpleIntegerValue("type");
     }
+    public void setType(int type){
+        setSimpleValue("type",type);
+    }
     public int getWeek(){
         return getSimpleIntegerValue("week");
+    }
+    public void setWeek(int week){
+        setSimpleValue("week",week);
     }
 
     public String getDateFrom(){
         return getSimpleStringValue("dateFrom");
     }
+    public void setDateFrom(String dateFrom){
+        setSimpleValue("dateFrom",dateFrom);
+
+    }
     public String getDateTo(){
         return getSimpleStringValue("dateTo");
+    }
+    public void setDateTo(String dateTo){
+        setSimpleValue("dateTo",dateTo);
+
     }
     public String getSchoolTimeFrom(){
         return getSimpleStringValue("schoolTimeFrom");
@@ -139,6 +153,10 @@ public class SchoolControlTimeEntry extends BaseDBObject {
     }
     public String getHolidayName(){
         return getSimpleStringValue("holidayName");
+    }
+    public void setHolidayName(String holidayName){
+        setSimpleValue("holidayName",holidayName);
+
     }
     public void setSchoolId(ObjectId schoolId){
         setSimpleValue("schoolId",schoolId);

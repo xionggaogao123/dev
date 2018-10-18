@@ -706,6 +706,32 @@ public class BackStageController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "导入复兰apk(兼容多系统版)", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/importMoreFulanControl")
+    @ResponseBody
+    public RespObj importMoreFulanControl(HttpServletRequest servletRequest)throws Exception{
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        MultipartRequest request=(MultipartRequest)servletRequest;
+        try {
+            MultiValueMap<String, MultipartFile> fileMap = request.getMultiFileMap();
+            for (List<MultipartFile> multipartFiles : fileMap.values()) {
+                for(MultipartFile file:multipartFiles) {
+                    System.out.println("----" + file.getOriginalFilename());
+                    appMarketService.importApkFile2(file, file.getInputStream(), file.getOriginalFilename(),getUserId());
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("导入模板成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
     @ApiOperation(value = "导入学校apk", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),

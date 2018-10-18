@@ -657,6 +657,7 @@ public class ControlSchoolPhoneService {
         int week = getWeek(startNum);
         Map<String,Object> dto3 = null;
         List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
+        boolean falg = true;
         for(ControlAppSchoolResultEntry controlAppSchoolResultEntry:controlAppSchoolResultEntrys){
             if(controlAppSchoolResultEntry.getOutSchoolRule()==1){//1-5
                 Map<String,Object> dto = new HashMap<String, Object>();
@@ -667,6 +668,7 @@ public class ControlSchoolPhoneService {
                 if(week<6){
                     dto2.put("type",controlAppSchoolResultEntry.getOutSchoolRule());
                     dto2.put("freeTime",controlAppSchoolResultEntry.getOutSchoolCanUseTime()/60000);
+                    falg = false;
                 }
             }
             if(controlAppSchoolResultEntry.getOutSchoolRule()==6){//6-7
@@ -678,6 +680,7 @@ public class ControlSchoolPhoneService {
                 if(week>5){
                     dto2.put("type",controlAppSchoolResultEntry.getOutSchoolRule());
                     dto2.put("freeTime",controlAppSchoolResultEntry.getOutSchoolCanUseTime()/60000);
+                    falg = false;
                 }
             }
 
@@ -687,12 +690,23 @@ public class ControlSchoolPhoneService {
                     dto.put("type",controlAppSchoolResultEntry.getOutSchoolRule());
                     dto.put("freeTime",controlAppSchoolResultEntry.getOutSchoolCanUseTime()/60000);
                     dto3 = dto;
+                    falg = false;
                 }
             }
 
         }
         if(dto3!=null){
             dto2=dto3;
+        }else{
+            if(falg){
+                ControlAppSchoolEntry controlAppSchoolEntry = controlAppSchoolDao.getEntry(appId);
+                if(controlAppSchoolEntry!=null){
+                    Map<String,Object> dto = new HashMap<String, Object>();
+                    dto.put("type",1);
+                    dto.put("freeTime",controlAppSchoolEntry.getFreeTime()/60000);
+                    dto2 = dto;
+                }
+            }
         }
         map.put("list",mapList);
         map.put("today",dto2);

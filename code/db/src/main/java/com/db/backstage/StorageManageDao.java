@@ -284,12 +284,12 @@ public class StorageManageDao extends BaseDao {
     public List<String> getPhoneModel() {
         BasicDBObject query = new BasicDBObject();
         query.append("isr", Constant.ZERO);
-        //可用
-        query.append("useStatus", "1");
-        //出库不展示
-        List<String> outStorageStatusList = new ArrayList<String>();
-        outStorageStatusList.add("5");
-        query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
+//        //可用
+//        query.append("useStatus", "1");
+//        //出库不展示
+//        List<String> outStorageStatusList = new ArrayList<String>();
+//        outStorageStatusList.add("5");
+//        query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
 
         //查询
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE, query, Constant.FIELDS);
@@ -355,5 +355,31 @@ public class StorageManageDao extends BaseDao {
 
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE,query,updateValue);
+    }
+
+    /**
+     * 维修管理-获取当前型号库存手机颜色
+     * @return
+     */
+    public List<String> getCurrentModelColorForRepair(String phoneModel) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("phoneModel", phoneModel);
+//        //可用
+//        query.append("useStatus", "1");
+//        //出库不展示
+//        List<String> outStorageStatusList = new ArrayList<String>();
+//        outStorageStatusList.add("5");
+//        query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
+
+        //查询
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE, query, Constant.FIELDS);
+        List<String> stringList = new ArrayList<String>();
+        for (DBObject dbObject : dbObjects){
+            if (!stringList.contains(new StorageManageEntry(dbObject).getColor())){
+                stringList.add(new StorageManageEntry(dbObject).getColor());
+            }
+        }
+        return stringList;
     }
 }

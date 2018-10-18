@@ -36,8 +36,8 @@ public class BackStageRepairManageService {
      * 维修管理-获取当前型号库存手机颜色
      * @return
      */
-    public List<String> getCurrentModelColor(String phoneModel) {
-        return storageManageDao.getCurrentModelColor(phoneModel);
+    public List<String> getCurrentModelColorForRepair(String phoneModel) {
+        return storageManageDao.getCurrentModelColorForRepair(phoneModel);
     }
 
 

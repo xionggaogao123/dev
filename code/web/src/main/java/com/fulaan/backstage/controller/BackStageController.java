@@ -639,12 +639,12 @@ public class BackStageController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/deleteApk/{apkId}")
+    @RequestMapping("/deleteApk/{apkId}/{type}")
     @ResponseBody
-    public RespObj deleteApk(@PathVariable @ObjectIdType ObjectId apkId){
+    public RespObj deleteApk(@PathVariable @ObjectIdType ObjectId apkId,@PathVariable  int type){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            appMarketService.deleteApk(apkId,getUserId());
+            appMarketService.deleteApk(apkId,getUserId(),type);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除apk文件成功");
         }catch (Exception e){

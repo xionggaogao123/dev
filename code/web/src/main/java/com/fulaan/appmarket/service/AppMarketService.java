@@ -290,18 +290,32 @@ public class AppMarketService {
         }
     }
 
-    public void deleteApk(ObjectId apkId,ObjectId userId)throws Exception{
+    public void deleteApk(ObjectId apkId,ObjectId userId,int type)throws Exception{
         AppDetailEntry appDetailEntry=appDetailDao.findEntryById(apkId);
+
         if(null!=appDetailEntry){
-            appDetailDao.removeById(apkId);
-            backStageService.addLogMessage(apkId.toString(), "删除应用："+appDetailEntry.getAppName(), LogMessageType.table.getDes(), userId.toString());
-        }
-        if(appDetailEntry.getType()==1){
-            JxmAppVersionEntry entry1 = jxmAppVersionDao.getEntry(appDetailEntry.getAppPackageName());
-            if(entry1 !=null){
-                jxmAppVersionDao.removeById(entry1.getID());
+            List<JxmAppVersionEntry> jxmAppVersionEntries = jxmAppVersionDao.getListByName(appDetailEntry.getAppPackageName());
+            if(jxmAppVersionEntries.size()>1){//有两个，仅删除复兰记录
+                backStageService.addLogMessage(apkId.toString(), "删除系统复兰应用："+appDetailEntry.getAppName(), LogMessageType.table.getDes(), userId.toString());
+                if(appDetailEntry.getType()==1) {
+                    JxmAppVersionEntry entry1 = jxmAppVersionDao.getEntryByType(appDetailEntry.getAppPackageName(), type);
+                    if (entry1 != null) {
+                        jxmAppVersionDao.removeById(entry1.getID());
+                    }
+                }
+            }else{
+                appDetailDao.removeById(apkId);
+                backStageService.addLogMessage(apkId.toString(), "删除系统复兰应用："+appDetailEntry.getAppName(), LogMessageType.table.getDes(), userId.toString());
+                if(appDetailEntry.getType()==1){
+                    JxmAppVersionEntry entry1 = jxmAppVersionDao.getEntry(appDetailEntry.getAppPackageName());
+                    if(entry1 !=null){
+                        jxmAppVersionDao.removeById(entry1.getID());
+                    }
+                }
             }
+
         }
+
 
     }
 

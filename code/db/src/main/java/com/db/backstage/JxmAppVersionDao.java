@@ -58,6 +58,21 @@ public class JxmAppVersionDao extends BaseDao {
         return retList;
     }
 
+    public List<JxmAppVersionEntry> getListByName(String name) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("nam",name);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_VERSION, query, Constant.FIELDS);
+        List<JxmAppVersionEntry> retList =new ArrayList<JxmAppVersionEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new JxmAppVersionEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
     //包名查询
     public List<JxmAppVersionEntry> getListByAppPackName(List<String> names) {
         BasicDBObject query =new BasicDBObject();

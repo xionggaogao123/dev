@@ -281,6 +281,10 @@ public class ExcellentCoursesService {
             excellentCoursesEntry.setOldPrice(oldPrice);
             excellentCoursesEntry.setStartTime(st);
             excellentCoursesEntry.setEndTime(et);
+            if(excellentCoursesEntry.getTeacherIdList()!=null && excellentCoursesEntry.getTeacherIdList().size()>1){
+                excellentCoursesEntry.setBigCover(bigCoverMap.get("未知"));
+                excellentCoursesEntry.setCover(coverMap.get("未知"));
+            }
             excellentCoursesDao.addEntry(excellentCoursesEntry);
         }else{
             throw new Exception("课程不存在！");

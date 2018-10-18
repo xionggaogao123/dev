@@ -389,7 +389,7 @@ public class ControlSchoolPhoneService {
         SchoolControlTimeEntry schoolControlTimeEntry = map.get("0");
         if(schoolControlTimeEntry!=null){
             if(schoolControlTimeEntry.getSchoolTimeTo()!=null&& schoolControlTimeEntry.getSchoolTimeTo().equals("")){
-                objectMap.put("schoolTime","未设置");
+                objectMap.put("schoolTime","休息中");
                 objectMap.put("homeTime",schoolControlTimeEntry.getBedTimeTo()+"-" +schoolControlTimeEntry.getBedTimeFrom());
             }else{
                 objectMap.put("schoolTime",schoolControlTimeEntry.getSchoolTimeFrom()+"-"+schoolControlTimeEntry.getSchoolTimeTo());

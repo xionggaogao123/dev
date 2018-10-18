@@ -712,7 +712,7 @@ public class BackStageController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/importMoreFulanControl")
     @ResponseBody
-    public RespObj importMoreFulanControl(HttpServletRequest servletRequest)throws Exception{
+    public RespObj importMoreFulanControl(HttpServletRequest servletRequest,int type)throws Exception{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         MultipartRequest request=(MultipartRequest)servletRequest;
         try {
@@ -720,7 +720,7 @@ public class BackStageController extends BaseController {
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for(MultipartFile file:multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    appMarketService.importApkFile2(file, file.getInputStream(), file.getOriginalFilename(),getUserId());
+                    //appMarketService.importApkFile2(file, file.getInputStream(), file.getOriginalFilename(),getUserId());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);

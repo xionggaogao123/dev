@@ -3231,7 +3231,9 @@ public class ControlPhoneService {
         if(oids.size()>0){
             List<CommunityEntry> communityEntries = communityDao.findByObjectIds(oids);
             for(CommunityEntry com : communityEntries){
-                dtos.add(new CommunityDTO(com));
+                CommunityDTO communityDTO = new CommunityDTO(com);
+                communityDTO.setLogo("http://doc.k6kt.com/5bc826c6c4a727797c1c355a.png");
+                dtos.add(communityDTO);
             }
             map.put("list",dtos);
             map.put("isTeacher",true);

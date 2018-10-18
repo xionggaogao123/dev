@@ -356,7 +356,7 @@ public class InOutStorageRecordDao extends BaseDao {
         if (!"".equals(projectId)){
             query.append("projectId",projectId);
         }
-        query.append("excompanyNo", new BasicDBObject(Constant.MONGO_NE,""));
+//        query.append("excompanyNo", new BasicDBObject(Constant.MONGO_NE,""));
         //isr 为1 已回收
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query, Constant.FIELDS,
                 new BasicDBObject("inStorageTime", Constant.DESC),(page-1)*pageSize,pageSize);

@@ -126,13 +126,15 @@ public class ControlSchoolPhoneService {
     public Map<String,Object> getOneCommunityMessageForTea(ObjectId communityId,ObjectId userId){
         Map<String,Object> map = new HashMap<String, Object>();
         //获取所有非三方应用
-        List<AppDetailEntry> appDetailEntries =  appDetailDao.getNoThreeAppList();
+        List<AppDetailEntry> appDetailEntries1 =  appDetailDao.getNoThreeAppList();
         //获取该用户在该社群的推送app
         ControlAppEntry entry = controlAppDao.getEntry(userId, communityId);
+        List<AppDetailEntry> appDetailEntries = new ArrayList<AppDetailEntry>();
         if(entry!=null && entry.getAppIdList()!=null && entry.getAppIdList().size() >0){
-            List<AppDetailEntry> appDetailEntries1 = appDetailDao.getEntriesByIds(entry.getAppIdList());
-            appDetailEntries.addAll(appDetailEntries1);
+            appDetailEntries = appDetailDao.getEntriesByIds(entry.getAppIdList());
+            //appDetailEntries.addAll(appDetailEntries1);
         }
+        appDetailEntries.addAll(appDetailEntries1);
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         for(AppDetailEntry appDetailEntry:appDetailEntries){
             objectIdList.add(appDetailEntry.getID());

@@ -118,7 +118,7 @@ public class AppDetailDao extends BaseDao {
         BasicDBObject query=new BasicDBObject()
                 .append("ir",Constant.ZERO).append("ty",new BasicDBObject(Constant.MONGO_IN,integers));
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_MARKET_DETAIL,
-                query,Constant.FIELDS);
+                query,Constant.FIELDS,new BasicDBObject("ty",-1));
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 AppDetailEntry appDetailEntry = new AppDetailEntry(dbObject);

@@ -264,7 +264,7 @@ public class AppMarketController extends BaseController{
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            List<AppDetailDTO> appDetailDTOs=appMarketService.searchFulanAppByCondition(regular);
+            List<AppDetailDTO> appDetailDTOs=appMarketService.searchNewFulanAppByCondition(regular);
             respObj.setMessage(appDetailDTOs);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

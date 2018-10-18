@@ -77,11 +77,37 @@ public class AppDetailDao extends BaseDao {
         }
     }
 
+    public AppDetailEntry getEntryByApkPackageNameAndType(String packageName,int type){
+        BasicDBObject query=new BasicDBObject()
+                .append("apn",packageName).append("iu",type);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new AppDetailEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
     public List<AppDetailEntry> getEntryByApkPackageNames(List<String> packageNames){
 
         List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
         BasicDBObject query=new BasicDBObject()
                 .append("ir",Constant.ZERO).append("apn",new BasicDBObject(Constant.MONGO_IN,packageNames));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_MARKET_DETAIL,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppDetailEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+    public List<AppDetailEntry> getEntryByApkPackageNamesAndType(List<String> packageNames,int type){
+
+        List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO).append("apn",new BasicDBObject(Constant.MONGO_IN,packageNames)).append("iu",type);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_MARKET_DETAIL,
                 query,Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

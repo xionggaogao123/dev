@@ -1061,7 +1061,16 @@ public class BackStageService {
 
     public List<JxmAppVersionDTO> getAllAppVersion(){
         List<JxmAppVersionDTO> dtos = new ArrayList<JxmAppVersionDTO>();
-        List<JxmAppVersionEntry> entries = jxmAppVersionDao.getIsNewObjectId();
+        List<JxmAppVersionEntry> entries = jxmAppVersionDao.getNewObjectId(Constant.ZERO);
+        for(JxmAppVersionEntry entry : entries){
+            dtos.add(new JxmAppVersionDTO(entry));
+        }
+        return dtos;
+    }
+
+    public List<JxmAppVersionDTO> getNewAllAppVersion(int type){
+        List<JxmAppVersionDTO> dtos = new ArrayList<JxmAppVersionDTO>();
+        List<JxmAppVersionEntry> entries = jxmAppVersionDao.getNewObjectId(type);
         for(JxmAppVersionEntry entry : entries){
             dtos.add(new JxmAppVersionDTO(entry));
         }

@@ -43,9 +43,52 @@ public class JxmAppVersionDao extends BaseDao {
         return retList;
     }
 
+    public List<JxmAppVersionEntry> getNewObjectId(int type) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("typ",type);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_VERSION, query, Constant.FIELDS);
+        List<JxmAppVersionEntry> retList =new ArrayList<JxmAppVersionEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new JxmAppVersionEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
+    //包名查询
+    public List<JxmAppVersionEntry> getListByAppPackName(List<String> names) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("nam",new BasicDBObject(Constant.MONGO_IN,names));
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_VERSION, query, Constant.FIELDS);
+        List<JxmAppVersionEntry> retList =new ArrayList<JxmAppVersionEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new JxmAppVersionEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
+
     public JxmAppVersionEntry getEntry(String packageName) {
         BasicDBObject query = new BasicDBObject("nam",packageName);
-        query.append("isr",Constant.ZERO);
+        query.append("isr", Constant.ZERO);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_VERSION, query, Constant.FIELDS);
+        if (obj != null) {
+            return new JxmAppVersionEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
+
+    public JxmAppVersionEntry getEntryByType(String packageName,int type) {
+        BasicDBObject query = new BasicDBObject("nam",packageName).append("typ",type);
+        query.append("isr", Constant.ZERO);
         DBObject obj =
                 findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_VERSION, query, Constant.FIELDS);
         if (obj != null) {

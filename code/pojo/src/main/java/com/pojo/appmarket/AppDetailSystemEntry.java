@@ -13,19 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by scott on 2017/10/10.
- *whiteOrBlack: 管控是是否禁用（黑名单）
- *type 0 系统 1 复兰 2 第三方 3 校本资源
- * whiteOrBlack 1 黑 2 白
- * iu  0  freeme    1   sugar     6 全部
+ * Created by James on 2018-10-18.
  */
-public class AppDetailEntry extends BaseDBObject{
+public class AppDetailSystemEntry extends BaseDBObject {
 
-    public AppDetailEntry(DBObject dbObject){
+
+    public AppDetailSystemEntry(DBObject dbObject){
         setBaseEntry((BasicDBObject)dbObject);
     }
 
-    public AppDetailEntry(ObjectId id,
+    public AppDetailSystemEntry(ObjectId id,
                           String appPackageName,
                           String logo,
                           int type,
@@ -64,7 +61,7 @@ public class AppDetailEntry extends BaseDBObject{
         setBaseEntry(basicDBObject);
     }
 
-    public AppDetailEntry(String appPackageName,
+    public AppDetailSystemEntry(String appPackageName,
                           String logo,
                           int type,
                           long appSize,
@@ -251,6 +248,4 @@ public class AppDetailEntry extends BaseDBObject{
     public void setAppPackageName(String appPackageName){
         setSimpleValue("apn",appPackageName);
     }
-
-
 }

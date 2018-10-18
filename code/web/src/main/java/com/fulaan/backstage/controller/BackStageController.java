@@ -720,7 +720,7 @@ public class BackStageController extends BaseController {
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for(MultipartFile file:multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    //appMarketService.importApkFile2(file, file.getInputStream(), file.getOriginalFilename(),getUserId());
+                    appMarketService.importMoreApkFile2(file, file.getInputStream(), file.getOriginalFilename(), getUserId(), type);
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -728,6 +728,25 @@ public class BackStageController extends BaseController {
         }catch (Exception e){
             e.printStackTrace();
             respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "添加复兰应用系统字段", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addSystemWord")
+    @ResponseBody
+    public RespObj addSystemWord(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            appMarketService.addSystemWord();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("添加复兰应用系统字段成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
     }

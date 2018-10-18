@@ -1187,7 +1187,7 @@ public class ControlSchoolPhoneService {
                 IndexPageDao indexPageDao = new IndexPageDao();
                 //添加系统信息
                 SystemMessageDTO dto = new SystemMessageDTO();
-                dto.setType(5);
+                dto.setType(6);
                 dto.setAvatar("");
                 dto.setName("");
                 dto.setFileUrl("");
@@ -1311,7 +1311,7 @@ public class ControlSchoolPhoneService {
             }
 
             if(controlAppSchoolResultEntry4!=null){
-                timeStr.append(controlAppSchoolResultEntry3.getOutSchoolCanUseTime()/60000);
+                timeStr.append(controlAppSchoolResultEntry4.getOutSchoolCanUseTime()/60000);
                 i++;
             }else{
                 timeStr.append("0");

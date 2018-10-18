@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
  * name
  * version
  * url
- *
+ *type   0   freeme系统   1  sugar系统       6 全部
  */
 public class JxmAppVersionEntry extends BaseDBObject{
 
@@ -29,13 +29,15 @@ public class JxmAppVersionEntry extends BaseDBObject{
             String name,
             String fileUrl,
             String version,
-            int versionCode
+            int versionCode,
+            int type
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("nam", name)
                 .append("url", fileUrl)
                 .append("ver",version)
                 .append("vco",versionCode)
+                .append("typ",type)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -46,7 +48,8 @@ public class JxmAppVersionEntry extends BaseDBObject{
             String name,
             String fileUrl,
             String version,
-            int versionCode
+            int versionCode,
+            int type
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
@@ -54,6 +57,7 @@ public class JxmAppVersionEntry extends BaseDBObject{
                 .append("url", fileUrl)
                 .append("ver",version)
                 .append("vco",versionCode)
+                .append("typ",type)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -97,5 +101,13 @@ public class JxmAppVersionEntry extends BaseDBObject{
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+
+    public int getType(){
+        return getSimpleIntegerValueDef("typ",0);
+    }
+
+    public void setType(int type){
+        setSimpleValue("typ",type);
     }
 }

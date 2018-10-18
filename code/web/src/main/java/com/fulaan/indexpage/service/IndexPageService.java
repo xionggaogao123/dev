@@ -2286,7 +2286,7 @@ public class IndexPageService {
                 ob1.put("avatar","http://doc.k6kt.com/5bbd73f00a9d324192d17850.png");
                 ob1.put("title","系统通知");
                 ob1.put("time",dto8.getCreateTime());
-                ob1.put("content","您的小孩已进入校管控！");
+                ob1.put("content",dto8.getContent());
                 ob1.put("imageList",new ArrayList<Attachement>());
                 ob1.put("commentCount",0);
                 ob1.put("videoList",new ArrayList<VideoDTO>());

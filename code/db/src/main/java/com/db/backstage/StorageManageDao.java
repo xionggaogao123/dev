@@ -239,10 +239,11 @@ public class StorageManageDao extends BaseDao {
      * 发货管理-配置手机检测可用
      * @return
      */
-    public int checkPhoneInfoValid(String imeiNo) {
+    public int checkPhoneInfoValid(String imeiNo, String color) {
         BasicDBObject query = new BasicDBObject();
         query.append("isr", Constant.ZERO);
         query.append("imeiNo", imeiNo);
+        query.append("color", color);
         //可用
         query.append("useStatus", "1");
         //出库不展示

@@ -102,8 +102,8 @@ public class BackStageDeliveryManageService {
      * 发货管理-配置手机检测可用
      * @return
      */
-    public int checkPhoneInfoValid(String imeiNo) {
-        return storageManageDao.checkPhoneInfoValid(imeiNo);
+    public int checkPhoneInfoValid(String imeiNo, String color) {
+        return storageManageDao.checkPhoneInfoValid(imeiNo, color);
     }
 
     /**

@@ -160,10 +160,12 @@ public class BackStageDeliveryManageController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/checkPhoneInfoValid")
     @ResponseBody
-    public RespObj checkPhoneInfoValid(@ApiParam(name = "imeiNo", required = false, value = "imeiNo") @RequestParam(value = "imeiNo", defaultValue = "") String imeiNo) {
+    public RespObj checkPhoneInfoValid(@ApiParam(name = "imeiNo", required = false, value = "imeiNo") @RequestParam(value = "imeiNo", defaultValue = "") String imeiNo,
+                                       @ApiParam(name = "color", required = false, value = "color") @RequestParam(value = "color", defaultValue = "") String color
+    ) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
-            int result = backStageDeliveryManageService.checkPhoneInfoValid(imeiNo);
+            int result = backStageDeliveryManageService.checkPhoneInfoValid(imeiNo,color);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         }catch (Exception e){

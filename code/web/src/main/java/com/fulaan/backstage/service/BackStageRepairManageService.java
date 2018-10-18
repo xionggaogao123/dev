@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.db.backstage.InOutStorageRecordDao;
 import com.db.backstage.StorageManageDao;
 import com.fulaan.backstage.dto.InOutStorageRecordDto;
+import com.mongodb.DBObject;
 import com.pojo.backstage.InOutStorageEntry;
+import com.pojo.backstage.StorageManageEntry;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -57,6 +59,13 @@ public class BackStageRepairManageService {
     public String addRepairManage(Map map) {
         String result = "";
             //新增
+        int existCount = storageManageDao.findDataByImeiNo(map.get("imeiNo").toString());
+        //查看当前IMEI是否存在库存表
+        // 存在不可在此处添加维修
+        if(existCount > 0){
+            result = "exist";
+            return result;
+        }
         //对拼接的维修范围做处理
         List<String> repairCommentList = new ArrayList<String>();
         if (map.get("repairCommentList") != null){
@@ -66,6 +75,69 @@ public class BackStageRepairManageService {
                 }
             }
         }
+        //查看当前IMEI是否存在库存表
+        // 不存在即可添加
+        if (existCount == 0){
+            List<DBObject> dbObjectList = new ArrayList<DBObject>();
+            //封装新增进库存数据
+            StorageManageEntry storageManageEntry = new StorageManageEntry(
+                    map.get("imeiNo") == null ? "" : map.get("imeiNo").toString(),
+                    map.get("phoneModel") == null ? "" : map.get("phoneModel").toString(),
+                    map.get("color") == null ? "" : map.get("color").toString(),
+                    "",
+                    "0",//新机入库
+                    map.get("comment") == null ? "" : map.get("comment").toString(),
+                    "0",//不可用
+                    "",
+                    repairCommentList
+            );
+            dbObjectList.add(storageManageEntry.getBaseEntry());
+            storageManageDao.saveList(dbObjectList);
+            //封装出入库记录数据
+            //封装出入库记录数据声明
+            List<DBObject> inOutDbObjectList = new ArrayList<DBObject>();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar calendar = Calendar.getInstance();
+            InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(
+                    map.get("imeiNo") == null ? "" : map.get("imeiNo").toString(),
+                    map.get("phoneModel") == null ? "" : map.get("phoneModel").toString(),
+                    map.get("color") == null ? "" : map.get("color").toString(),
+                    "",
+                    dateFormat.format(new Date()),
+                    calendar.get(Calendar.YEAR)+"",
+                    (calendar.get(Calendar.MONTH) + 1)+"",
+                    "0",
+                    map.get("comment") == null ? "" : map.get("comment").toString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "0",//新机入库
+                    "",
+                    repairCommentList
+            );
+            inOutDbObjectList.add(inOutStorageEntry.getBaseEntry());
+            inOutStorageRecordDao.addProjectOutStorageRecordList(inOutDbObjectList);
+        }
+
+
         InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(
                 map.get("imeiNo") == null ? "" : map.get("imeiNo").toString(),
                 map.get("phoneModel") == null ? "" : map.get("phoneModel").toString(),

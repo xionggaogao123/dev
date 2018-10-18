@@ -124,7 +124,8 @@ public class ExcellentCoursesService {
                                         "http://doc.k6kt.com/5b2cd0f13d4df93a938a0609.jpg",
                                         "http://doc.k6kt.com/5b2cd0f53d4df93a938a0639.jpg",
                                         "http://doc.k6kt.com/5b2cd15d3d4df93a938a0b25.jpg",
-                                        "http://doc.k6kt.com/5b2cd1613d4df93a938a0b54.jpg"};//大图
+                                        "http://doc.k6kt.com/5b2cd1613d4df93a938a0b54.jpg",
+                                        "http://doc.k6kt.com/5bc83c63ed2c0f7ca0e42db0.jpg"};//大图
 
    public static final String[] arg2 = {"http://doc.k6kt.com/5b2cd0463d4df93a9389fddb.jpg",
                                         "http://doc.k6kt.com/5b2cd0463d4df93a9389fddb.jpg",
@@ -136,7 +137,8 @@ public class ExcellentCoursesService {
                                         "http://doc.k6kt.com/5b2cd0f33d4df93a938a061c.jpg",
                                         "http://doc.k6kt.com/5b2cd0f73d4df93a938a064e.jpg",
                                         "http://doc.k6kt.com/5b2cd15f3d4df93a938a0b35.jpg",
-                                        "http://doc.k6kt.com/5b2cd1633d4df93a938a0b5f.jpg"};//小图
+                                        "http://doc.k6kt.com/5b2cd1633d4df93a938a0b5f.jpg",
+                                        "http://doc.k6kt.com/5bc83c56ed2c0f7ca0e42daf.jpg"};//小图
    public static final Map<String, String> bigCoverMap = new HashMap<String, String>();
    public static final Map<String, String> coverMap = new HashMap<String, String>();
    
@@ -150,7 +152,8 @@ public class ExcellentCoursesService {
        bigCoverMap.put("物理", "http://doc.k6kt.com/5b2cd0f13d4df93a938a0609.jpg");
        bigCoverMap.put("化学", "http://doc.k6kt.com/5b2cd0f53d4df93a938a0639.jpg");
        bigCoverMap.put("生物", "http://doc.k6kt.com/5b2cd15d3d4df93a938a0b25.jpg");
-       bigCoverMap.put("未知", "http://doc.k6kt.com/5b2cd1613d4df93a938a0b54.jpg");
+       bigCoverMap.put("其他1", "http://doc.k6kt.com/5b2cd1613d4df93a938a0b54.jpg");
+       bigCoverMap.put("其他2", "http://doc.k6kt.com/5bc83c63ed2c0f7ca0e42db0.jpg");
        
        coverMap.put("语文", "http://doc.k6kt.com/5b2cd0463d4df93a9389fddb.jpg");
        coverMap.put("数学", "http://doc.k6kt.com/5b2cd04c3d4df93a9389fdfc.jpg");
@@ -161,7 +164,8 @@ public class ExcellentCoursesService {
        coverMap.put("物理", "http://doc.k6kt.com/5b2cd0f33d4df93a938a061c.jpg");
        coverMap.put("化学", "http://doc.k6kt.com/5b2cd0f73d4df93a938a064e.jpg");
        coverMap.put("生物", "http://doc.k6kt.com/5b2cd15f3d4df93a938a0b35.jpg");
-       coverMap.put("未知", "http://doc.k6kt.com/5b2cd1633d4df93a938a0b5f.jpg");
+       coverMap.put("其他1", "http://doc.k6kt.com/5b2cd1633d4df93a938a0b5f.jpg");
+       coverMap.put("其他2", "http://doc.k6kt.com/5bc83c56ed2c0f7ca0e42daf.jpg");
    }
    
    
@@ -204,7 +208,7 @@ public class ExcellentCoursesService {
             str = excellentCoursesDao.addEntry(excellentCoursesEntry);
         }else{
             dto.setUserId(userId.toString());
-            Random random = new Random();
+            //Random random = new Random();
             /*int i1 = random.nextInt(10)+1;
             dto.setCover(arg2[i1]);
             dto.setBigCover(arg1[i1]);*/
@@ -214,8 +218,16 @@ public class ExcellentCoursesService {
                 dto.setBigCover(bigCoverMap.get(dto.getSubjectName()));
                 dto.setCover(coverMap.get(dto.getSubjectName()));
             } else {
-                dto.setBigCover(bigCoverMap.get("未知"));
-                dto.setCover(coverMap.get("未知"));
+                Random random = new Random();
+                int i2 = random.nextInt(2);
+                if (i2 == 0) {
+                    dto.setBigCover(bigCoverMap.get("其他1"));
+                    dto.setCover(coverMap.get("其他1"));
+                } else {
+                    dto.setBigCover(bigCoverMap.get("其他2"));
+                    dto.setCover(coverMap.get("其他2"));
+                }
+                
             }
             //初次创建   状态为  未发布
             dto.setStatus(0);
@@ -282,8 +294,16 @@ public class ExcellentCoursesService {
             excellentCoursesEntry.setStartTime(st);
             excellentCoursesEntry.setEndTime(et);
             if(excellentCoursesEntry.getTeacherIdList()!=null && excellentCoursesEntry.getTeacherIdList().size()>1){
-                excellentCoursesEntry.setBigCover(bigCoverMap.get("未知"));
-                excellentCoursesEntry.setCover(coverMap.get("未知"));
+                Random random = new Random();
+                int i2 = random.nextInt(2);
+                if (i2 == 0) {
+                    excellentCoursesEntry.setBigCover(bigCoverMap.get("其他1"));
+                    excellentCoursesEntry.setCover(coverMap.get("其他1"));
+                } else {
+                    excellentCoursesEntry.setBigCover(bigCoverMap.get("其他2"));
+                    excellentCoursesEntry.setCover(coverMap.get("其他2"));
+                }
+                
             }
             excellentCoursesDao.addEntry(excellentCoursesEntry);
         }else{

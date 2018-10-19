@@ -48,7 +48,7 @@ public class CoursesOrderResultEntry extends BaseDBObject {
             int source
     ){
         BasicDBObject dbObject=new BasicDBObject()
-                .append("otm",orderTime)
+                .append("otm", orderTime)
                 .append("uid", userId)
                 .append("cid", schoolId)
                 .append("snm", schoolName)
@@ -62,11 +62,11 @@ public class CoursesOrderResultEntry extends BaseDBObject {
                 .append("isr", Constant.ZERO);
         setBaseEntry(dbObject);
     }
-    public String getRoomId(){
-        return getSimpleStringValue("rid");
+    public long getOrderTime(){
+        return getSimpleLongValue("otm");
     }
-    public void setRoomId(String roomId){
-        setSimpleValue("rid",roomId);
+    public void setOrderTime(String orderTime){
+        setSimpleValue("otm",orderTime);
     }
 
     public ObjectId getUserId(){

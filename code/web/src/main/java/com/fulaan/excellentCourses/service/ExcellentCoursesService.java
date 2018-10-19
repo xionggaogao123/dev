@@ -2561,7 +2561,7 @@ public class ExcellentCoursesService {
             int count = 0;
             if(priceType==0 && persionType==0 && timeType==0){//推荐课在首次查询加入(智能排序)
                 if(page ==1){
-                    excellentCoursesEntries = excellentCoursesDao.getMyNewAllEntryList(subjectId,priceType,persionType,timeType,page,pageSize,current,objectIdList);
+                    excellentCoursesEntries = excellentCoursesDao.getMyNewAllEntryList(subjectId,priceType,persionType,timeType,page,100,current,objectIdList);
                 }
                 //公开课排序加入
                 List<ExcellentCoursesEntry> excellentCoursesEntries1 = excellentCoursesDao.getNewAllEntryList(subjectId, priceType, persionType, timeType, page, pageSize, current, objectIdList);

@@ -159,7 +159,11 @@ public class ControlSchoolPhoneService {
         for(AppDetailEntry appDetailEntry:appDetailEntries){
             if(!APP_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){
                 Map<String,Object> appMap = new HashMap<String, Object>();
-                appMap.put("logo",appDetailEntry.getLogo());
+                if(appDetailEntry.getLogo()==null || appDetailEntry.getLogo().equals("") || appDetailEntry.getLogo().contains("/static")){
+                    appMap.put("logo","http://doc.k6kt.com/5bc96f99c4a72769500cc6e1.png");
+                }else{
+                    appMap.put("logo",appDetailEntry.getLogo());
+                }
                 appMap.put("name",appDetailEntry.getAppName());
                 appMap.put("id",appDetailEntry.getID().toString());
                 ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+1+"*");
@@ -190,7 +194,7 @@ public class ControlSchoolPhoneService {
             }else{
                 if(index==0){
                     Map<String,Object> appMap = new HashMap<String, Object>();
-                    appMap.put("logo",appDetailEntry.getLogo());
+                    appMap.put("logo","http://doc.k6kt.com/5bc96f99c4a72769500cc6e1.png");
                     appMap.put("name","手机系统");
                     appMap.put("id",appDetailEntry.getID().toString());
                     ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+1+"*");
@@ -231,7 +235,11 @@ public class ControlSchoolPhoneService {
             if(!objectIdList1.contains(appDetailEntry.getID())){//过滤放学后不受管控的类型
                 if(!APP_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){
                     Map<String,Object> appMap = new HashMap<String, Object>();
-                    appMap.put("logo",appDetailEntry.getLogo());
+                    if(appDetailEntry.getLogo()==null || appDetailEntry.getLogo().equals("")|| appDetailEntry.getLogo().contains("/static")){
+                        appMap.put("logo","http://doc.k6kt.com/5bc96f99c4a72769500cc6e1.png");
+                    }else{
+                        appMap.put("logo",appDetailEntry.getLogo());
+                    }
                     appMap.put("name",appDetailEntry.getAppName());
                     appMap.put("id",appDetailEntry.getID().toString());
                     ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*"+startNum);
@@ -271,7 +279,7 @@ public class ControlSchoolPhoneService {
                 }else{
                     if(index2==0){
                         Map<String,Object> appMap = new HashMap<String, Object>();
-                        appMap.put("logo",appDetailEntry.getLogo());
+                        appMap.put("logo","http://doc.k6kt.com/5bc96f99c4a72769500cc6e1.png");
                         appMap.put("name","手机系统");
                         appMap.put("id",appDetailEntry.getID().toString());
                         ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*"+startNum);

@@ -342,6 +342,7 @@ public class InOutStorageRecordDao extends BaseDao {
         Map<String, Object> result = new HashMap<String, Object>();
         //封装查询参数
         BasicDBObject query = new BasicDBObject();
+        query.append("isr",0);
         query.append("storageRecordStatus","5");//出库
         query.append("imeiNo",new BasicDBObject(Constant.MONGO_NE, ""));//imeiNo 不为空
         if (!"".equals(inputParams)) {

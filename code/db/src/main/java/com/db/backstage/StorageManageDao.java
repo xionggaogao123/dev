@@ -41,6 +41,7 @@ public class StorageManageDao extends BaseDao {
                 storageStatusList.add("1");
                 storageStatusList.add("3");
                 storageStatusList.add("4");
+                storageStatusList.add("2");
                 query.append("storageStatus", new BasicDBObject(Constant.MONGO_IN,storageStatusList));
             }
 
@@ -48,6 +49,8 @@ public class StorageManageDao extends BaseDao {
             //出库不展示
             List<String> outStorageStatusList = new ArrayList<String>();
             outStorageStatusList.add("5");
+            //待维修不展示
+            outStorageStatusList.add("6");
             query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
         }
 
@@ -85,6 +88,8 @@ public class StorageManageDao extends BaseDao {
         //出库不展示
         List<String> outStorageStatusList = new ArrayList<String>();
         outStorageStatusList.add("5");
+        //待维修不展示
+        outStorageStatusList.add("6");//待维修
         query.append("storageStatus", new BasicDBObject(Constant.MONGO_NOTIN,outStorageStatusList));
         int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE, query);
         return count;
@@ -149,6 +154,8 @@ public class StorageManageDao extends BaseDao {
                 }
             }
             updateParam.append("needRepairComment",needRepairCommentList);
+            //需要维修的手机 状态改成待维修 6
+            updateParam.append("storageStatus","6");
         }
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE,query,updateValue);
@@ -194,6 +201,8 @@ public class StorageManageDao extends BaseDao {
                 }
             }
             updateParam.append("needRepairComment",needRepairCommentList);
+            //需要维修的手机 状态改成待维修 6
+            updateParam.append("storageStatus","6");
         }
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE,query,updateValue);

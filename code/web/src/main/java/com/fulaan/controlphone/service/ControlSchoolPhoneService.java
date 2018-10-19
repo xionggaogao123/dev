@@ -965,7 +965,7 @@ public class ControlSchoolPhoneService {
             phoneTimeDTOs.add(phoneTimeDTO);
         }
         //计算生效的结果
-        SchoolControlTimeEntry schoolControlTimeEntry = map.get("0");
+        SchoolControlTimeEntry schoolControlTimeEntry = map.get(dateTime+"");
         if(schoolControlTimeEntry!=null){
             objectMap.put("schoolTime",schoolControlTimeEntry.getSchoolTimeFrom()+"-"+schoolControlTimeEntry.getSchoolTimeTo());
             objectMap.put("bedTime",schoolControlTimeEntry.getBedTimeFrom()+"-"+schoolControlTimeEntry.getBedTimeTo());

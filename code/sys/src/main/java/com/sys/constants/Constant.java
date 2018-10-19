@@ -1101,6 +1101,8 @@ public class Constant {
     public static final String COLLECTION_COURSES_BUSINESS="excellent_courses_business";
     //赶考网对接支付通知
     public static final String COLLECTION_GAN_KAO_PAY="excellent_gankao_pay";
+    //每日订单
+    public static final String COLLECTION_COURSES_ORDER_RESULT = "excellent_courses_order_result";
     /*************************************积分商城*****************************************/
     
     //商品

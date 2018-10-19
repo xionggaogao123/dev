@@ -1,10 +1,13 @@
 package com.pojo.excellentCourses;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.pojo.base.BaseDBObject;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +45,7 @@ public class CoursesOrderResultEntry extends BaseDBObject {
             ObjectId coursesId,
             String coursesName,
             int type,
-            List<ObjectId> classIdList,
+            List<ObjectId> classList,
             double price,
             String order,
             int source
@@ -55,7 +58,7 @@ public class CoursesOrderResultEntry extends BaseDBObject {
                 .append("cid", coursesId)
                 .append("cnm", coursesName)
                 .append("typ",type)
-                .append("clt",classIdList)
+                .append("clt",classList)
                 .append("pri",price)
                 .append("ord",order)
                 .append("sou",source)
@@ -75,42 +78,80 @@ public class CoursesOrderResultEntry extends BaseDBObject {
     public void setUserId(ObjectId userId){
         setSimpleValue("uid",userId);
     }
-    public ObjectId getContactId(){
+    public ObjectId getSchoolId(){
+        return getSimpleObjecIDValue("sid");
+    }
+    public void setSchoolId(ObjectId schoolId){
+        setSimpleValue("sid",schoolId);
+    }
+
+    public String getSchoolName(){
+        return getSimpleStringValue("snm");
+    }
+    public void setSchoolName(String schoolName){
+        setSimpleValue("snm",schoolName);
+    }
+
+    public ObjectId getCoursesId(){
         return getSimpleObjecIDValue("cid");
     }
-    public void setContactId(ObjectId contactId){
-        setSimpleValue("cid",contactId);
+    public void setCoursesId(ObjectId coursesId){
+        setSimpleValue("cid",coursesId);
     }
 
-    public String getUserName(){
-        return getSimpleStringValue("unm");
-    }
-    public void setUserName(String userName){
-        setSimpleValue("unm",userName);
+    public String getCoursesName(){
+        return getSimpleStringValue("cnm");
     }
 
-    public String getUserIp(){
-        return getSimpleStringValue("uip");
-    }
-    public void setUserIp(String userIp){
-        setSimpleValue("uip",userIp);
+    public void setCoursesName(long coursesName){
+        setSimpleValue("cnm",coursesName);
     }
 
-    public String getEnterTime(){
-        return getSimpleStringValue("etm");
+    public String getOrder(){
+        return getSimpleStringValue("ord");
     }
 
-    public void setEnterTime(long enterTime){
-        setSimpleValue("etm",enterTime);
+    public void setOrder(long order){
+        setSimpleValue("ord",order);
     }
 
-
-    public String getLeaveTime(){
-        return getSimpleStringValue("ltm");
+    public double getPrice(){
+        return getSimpleDoubleValue("pri");
     }
 
-    public void setLeaveTime(long leaveTime){
-        setSimpleValue("ltm",leaveTime);
+    public void setPrice(double price){
+        setSimpleValue("pri",price);
+    }
+
+    public int getSource(){
+        return getSimpleIntegerValue("sou");
+    }
+
+    public void setSource(int source){
+        setSimpleValue("sou",source);
+    }
+
+    public void setClassList(List<ObjectId> classList){
+        setSimpleValue("clt", MongoUtils.convert(classList));
+    }
+
+    public List<ObjectId> getClassList(){
+        ArrayList<ObjectId> classList = new ArrayList<ObjectId>();
+        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("clt");
+        if(dbList != null && !dbList.isEmpty()){
+            for (Object obj : dbList) {
+                classList.add((ObjectId)obj);
+            }
+        }
+        return classList;
+    }
+
+    public int getType(){
+        return getSimpleIntegerValue("typ");
+    }
+
+    public void setType(int type){
+        setSimpleValue("tyo",type);
     }
 
     public int getIsRemove(){

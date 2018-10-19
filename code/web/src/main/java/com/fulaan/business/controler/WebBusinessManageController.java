@@ -914,4 +914,32 @@ public class WebBusinessManageController extends BaseController {
         }
         return respObj;
     }
+
+
+    /**
+     * 查询每日订单
+     */
+    @ApiOperation(value = "查询每日订单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getDayOrderList")
+    @ResponseBody
+    public RespObj getDayOrderList(@ApiParam(name="type",required = false,value="type") @RequestParam(value="type",defaultValue = "") int type,
+                                   @ApiParam(name="startTime",required = false,value="startTime") @RequestParam(value="startTime",defaultValue = "") String startTime,
+                                   @ApiParam(name="endTime",required = false,value="endTime") @RequestParam(value="endTime",defaultValue = "") String endTime,
+                                   @ApiParam(name="schoolId",required = false,value="schoolId") @RequestParam(value="schoolId",defaultValue = "") String schoolId,
+                                   @ApiParam(name="coursesId",required = false,value="coursesId") @RequestParam(value="coursesId",defaultValue = "") String coursesId,
+                                   @ApiParam(name="page",required = false,value="page") @RequestParam(value="page",defaultValue = "") int page,
+                                   @ApiParam(name="pageSize",required = false,value="pageSize") @RequestParam(value="pageSize",defaultValue = "") int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.getDayOrderList(getUserId(), type, startTime, endTime, schoolId, coursesId, page, pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("同意成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("同意失败!");
+        }
+        return respObj;
+    }
 }

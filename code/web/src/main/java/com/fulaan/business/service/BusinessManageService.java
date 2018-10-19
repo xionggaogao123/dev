@@ -16,6 +16,7 @@ import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.business.dto.BusinessManageDTO;
 import com.fulaan.controlphone.dto.CoursesBusinessDTO;
 import com.fulaan.excellentCourses.dto.BackOrderDTO;
+import com.fulaan.excellentCourses.dto.CoursesOrderResultDTO;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.fulaan.excellentCourses.service.CoursesRoomService;
@@ -111,6 +112,8 @@ public class BusinessManageService {
     private NewVersionUserRoleDao newVersionUserRoleDao= new NewVersionUserRoleDao();
 
     private CoursesBusinessDao coursesBusinessDao = new CoursesBusinessDao();
+
+    private CoursesOrderResultDao coursesOrderResultDao = new CoursesOrderResultDao();
 
 
     @Autowired
@@ -1948,6 +1951,49 @@ public class BusinessManageService {
             }
         }
     }
+
+    //查询每日订单
+    public void getDayOrderList(ObjectId userId,int type,String startTime,String endTime,String schoolId,String coursesId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<CoursesOrderResultEntry> coursesOrderResultEntries = coursesOrderResultDao.getEntryList(userId,type,startTime,endTime,schoolId,coursesId,page,pageSize);
+        int count = coursesOrderResultDao.countEntryList(userId,type,startTime,endTime,schoolId,coursesId);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        for(CoursesOrderResultEntry coursesOrderResultEntry : coursesOrderResultEntries){
+            objectIdList.add(coursesOrderResultEntry.getUserId());
+        }
+        Map<ObjectId, UserEntry> mainUserEntryMap = userDao.getUserEntryMap(objectIdList, Constant.FIELDS);
+        List<CoursesOrderResultDTO>  dtos  =  new ArrayList<CoursesOrderResultDTO>();
+        for(CoursesOrderResultEntry coursesOrderResultEntry: coursesOrderResultEntries){
+            CoursesOrderResultDTO coursesOrderResultDTO = new CoursesOrderResultDTO(coursesOrderResultEntry);
+            UserEntry userEntry = mainUserEntryMap.get(coursesOrderResultEntry.getUserId());
+            String name = "";
+            if(userEntry!=null){
+                name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            }
+            coursesOrderResultDTO.setUserName(name);
+            dtos.add(coursesOrderResultDTO);
+        }
+        map.put("list",dtos);
+        map.put("count",count);
+        List<CoursesOrderResultEntry> coursesOrderResultEntries2 = coursesOrderResultDao.getAllEntryList(userId, type, startTime, endTime, schoolId, coursesId);
+        Set<ObjectId> schoolSet = new HashSet<ObjectId>();
+        Set<ObjectId> coursesSet = new HashSet<ObjectId>();
+        double addPrice = 0;
+        double manPrice = 0;
+        for(CoursesOrderResultEntry coursesOrderResultEntry:coursesOrderResultEntries){
+            schoolSet.add(coursesOrderResultEntry.getSchoolId());
+            coursesSet.add(coursesOrderResultEntry.getCoursesId());
+            if(coursesOrderResultEntry.getType()==1){
+                addPrice = sum(addPrice,coursesOrderResultEntry.getPrice());
+            }else{
+                manPrice = sum(addPrice,coursesOrderResultEntry.getPrice());
+            }
+        }
+
+    }
+
+
+
 
     public boolean booleanUserAgreement(ObjectId userId) {
      /*   UserAgreementEntry userAgreementEntry = userAgreementDao.getEntry(userId);

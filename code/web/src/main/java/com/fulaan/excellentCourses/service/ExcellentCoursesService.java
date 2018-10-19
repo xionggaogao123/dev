@@ -12,6 +12,7 @@ import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.backstage.dto.LogMessageDTO;
+import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.excellentCourses.dto.*;
@@ -51,6 +52,8 @@ import java.util.*;
  */
 @Service
 public class ExcellentCoursesService {
+    @Autowired
+    private BackStageService backStageService;
 
     private ExcellentCoursesDao excellentCoursesDao = new ExcellentCoursesDao();
 
@@ -214,7 +217,8 @@ public class ExcellentCoursesService {
             dto.setBigCover(arg1[i1]);*/
             /*dto.setCover(dto.getCover());
             dto.setBigCover(dto.getBigCover());*/
-            if(StringUtils.isNotBlank(bigCoverMap.get(dto.getSubjectName()))) {
+            int message = backStageService.getRoleFromClass(userId);
+            if(StringUtils.isNotBlank(bigCoverMap.get(dto.getSubjectName())) && message != 1) {
                 dto.setBigCover(bigCoverMap.get(dto.getSubjectName()));
                 dto.setCover(coverMap.get(dto.getSubjectName()));
             } else {
@@ -293,7 +297,7 @@ public class ExcellentCoursesService {
             excellentCoursesEntry.setOldPrice(oldPrice);
             excellentCoursesEntry.setStartTime(st);
             excellentCoursesEntry.setEndTime(et);
-            if(excellentCoursesEntry.getTeacherIdList()!=null && excellentCoursesEntry.getTeacherIdList().size()>1){
+            /*if(excellentCoursesEntry.getTeacherIdList()!=null && excellentCoursesEntry.getTeacherIdList().size()>1){
                 Random random = new Random();
                 int i2 = random.nextInt(2);
                 if (i2 == 0) {
@@ -304,7 +308,7 @@ public class ExcellentCoursesService {
                     excellentCoursesEntry.setCover(coverMap.get("其他2"));
                 }
                 
-            }
+            }*/
             excellentCoursesDao.addEntry(excellentCoursesEntry);
         }else{
             throw new Exception("课程不存在！");

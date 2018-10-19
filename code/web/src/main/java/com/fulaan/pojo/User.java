@@ -14,6 +14,7 @@ public class User {
     private String time;
     private int role; //0:家长,1:学生
     private String mobileNumber;
+    private boolean isActive; //true选中 false未选中
 
     public User(){}
 
@@ -109,6 +110,16 @@ public class User {
 
     public void setTime(String time) {
         this.time = time;
+    }
+    
+    
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     @Override

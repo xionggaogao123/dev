@@ -343,6 +343,7 @@ public class InOutStorageRecordDao extends BaseDao {
         //封装查询参数
         BasicDBObject query = new BasicDBObject();
         query.append("storageRecordStatus","5");//出库
+        query.append("imeiNo",new BasicDBObject(Constant.MONGO_NE, ""));//imeiNo 不为空
         if (!"".equals(inputParams)) {
             BasicDBList values = new BasicDBList();
             BasicDBObject query1 = new BasicDBObject().append("imeiNo", inputParams);
@@ -498,6 +499,7 @@ public class InOutStorageRecordDao extends BaseDao {
     public Map<String,Object> getOutStorageListByPhone(int page, int pageSize, String inputParams, String year, String month, String imeiNo) {
         //封装查询参数
         BasicDBObject query = new BasicDBObject();
+        query.append("imeiNo",new BasicDBObject(Constant.MONGO_NE, ""));//imeiNo 不为空
 //        query.append("isr", Constant.ZERO);
         if (!"".equals(imeiNo)){
             query.append("imeiNo", imeiNo);

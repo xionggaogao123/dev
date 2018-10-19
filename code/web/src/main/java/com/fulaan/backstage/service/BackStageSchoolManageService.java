@@ -779,6 +779,7 @@ public class BackStageSchoolManageService {
                             entryTemp.setDateFrom(entry.getDateFrom());
                             entryTemp.setDateTo(entry.getDateTo());
                             entryTemp.setHolidayName(entry.getHolidayName());
+                            entryTemp.setIsr(0);
 //                            entry.setSchoolId(sid);//封装进schoolId
 //                            System.out.println(new ObjectId());
 //                            entry.setID(new ObjectId());//封装进新主键Id

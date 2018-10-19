@@ -161,4 +161,8 @@ public class SchoolControlTimeEntry extends BaseDBObject {
     public void setSchoolId(ObjectId schoolId){
         setSimpleValue("schoolId",schoolId);
     }
+
+    public void setIsr(int isr){
+        setSimpleValue("isr",isr);
+    }
 }

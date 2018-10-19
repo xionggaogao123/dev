@@ -144,6 +144,10 @@ public class StorageManageDao extends BaseDao {
         }
         if (map.get("commentType") != null) {
             updateParam.append("commentType",map.get("commentType").toString());
+            if ("1".equals(map.get("commentType").toString())){
+                //需要维修的手机 状态改成待维修 6
+                updateParam.append("storageStatus","6");
+            }
         }
         //对拼接的维修范围做处理
         List<String> needRepairCommentList = new ArrayList<String>();
@@ -154,8 +158,6 @@ public class StorageManageDao extends BaseDao {
                 }
             }
             updateParam.append("needRepairComment",needRepairCommentList);
-            //需要维修的手机 状态改成待维修 6
-            updateParam.append("storageStatus","6");
         }
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE,query,updateValue);
@@ -191,6 +193,10 @@ public class StorageManageDao extends BaseDao {
         }
         if (map.get("commentType") != null) {
             updateParam.append("commentType",map.get("commentType").toString());
+            if ("1".equals(map.get("commentType").toString())){
+                //需要维修的手机 状态改成待维修 6
+                updateParam.append("storageStatus","6");
+            }
         }
         //对拼接的Id做处理
         List<String> needRepairCommentList = new ArrayList<String>();
@@ -201,8 +207,6 @@ public class StorageManageDao extends BaseDao {
                 }
             }
             updateParam.append("needRepairComment",needRepairCommentList);
-            //需要维修的手机 状态改成待维修 6
-            updateParam.append("storageStatus","6");
         }
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE,query,updateValue);

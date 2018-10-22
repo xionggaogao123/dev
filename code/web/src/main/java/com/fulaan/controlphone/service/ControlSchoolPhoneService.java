@@ -160,7 +160,7 @@ public class ControlSchoolPhoneService {
             if(!APP_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){
                 Map<String,Object> appMap = new HashMap<String, Object>();
                 if(appDetailEntry.getLogo()==null || appDetailEntry.getLogo().equals("") || appDetailEntry.getLogo().contains("/static")){
-                    appMap.put("logo","http://doc.k6kt.com/5bc96f99c4a72769500cc6e1.png");
+                    appMap.put("logo","/static/images/sm_apk.png");
                 }else{
                     appMap.put("logo",appDetailEntry.getLogo());
                 }
@@ -194,7 +194,7 @@ public class ControlSchoolPhoneService {
             }else{
                 if(index==0){
                     Map<String,Object> appMap = new HashMap<String, Object>();
-                    appMap.put("logo","http://doc.k6kt.com/5bc96f99c4a72769500cc6e1.png");
+                    appMap.put("logo","/static/images/sm_apk.png");
                     appMap.put("name","手机系统");
                     appMap.put("id",appDetailEntry.getID().toString());
                     ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+1+"*");
@@ -236,7 +236,7 @@ public class ControlSchoolPhoneService {
                 if(!APP_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){
                     Map<String,Object> appMap = new HashMap<String, Object>();
                     if(appDetailEntry.getLogo()==null || appDetailEntry.getLogo().equals("")|| appDetailEntry.getLogo().contains("/static")){
-                        appMap.put("logo","http://doc.k6kt.com/5bc96f99c4a72769500cc6e1.png");
+                        appMap.put("logo","/static/images/sm_apk.png");
                     }else{
                         appMap.put("logo",appDetailEntry.getLogo());
                     }
@@ -279,7 +279,7 @@ public class ControlSchoolPhoneService {
                 }else{
                     if(index2==0){
                         Map<String,Object> appMap = new HashMap<String, Object>();
-                        appMap.put("logo","http://doc.k6kt.com/5bc96f99c4a72769500cc6e1.png");
+                        appMap.put("logo","/static/images/sm_apk.png");
                         appMap.put("name","手机系统");
                         appMap.put("id",appDetailEntry.getID().toString());
                         ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+0+"*"+startNum);

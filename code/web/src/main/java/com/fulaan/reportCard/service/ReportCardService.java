@@ -303,6 +303,15 @@ public class ReportCardService {
         result.put("SignListNum",sign.size());
         result.put("UnSignList",unSign);
         result.put("UnSignListNum",unSign.size());
+        IndexContentEntry indexContentEntry = indexContentDao.getEntry(groupExamDetailId);
+        if(indexContentEntry!=null){
+            // indexContentDao.updateAllEntry(id,allCount,members);
+            indexContentEntry.setAllCount(sign.size()+unSign.size());
+            List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+            objectIdList1.addAll(signIds);
+            indexContentEntry.setReadList(objectIdList1);
+            indexContentDao.addEntry(indexContentEntry);
+        }
         return result;
     }
 

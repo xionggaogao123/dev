@@ -932,9 +932,9 @@ public class WebBusinessManageController extends BaseController {
                                    @ApiParam(name="pageSize",required = false,value="pageSize") @RequestParam(value="pageSize",defaultValue = "") int pageSize){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            businessManageService.getDayOrderList(getUserId(), type, startTime, endTime, schoolId, coursesId, page, pageSize);
+            Map<String,Object> map = businessManageService.getDayOrderList(getUserId(), type, startTime, endTime, schoolId, coursesId, page, pageSize);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("同意成功！");
+            respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

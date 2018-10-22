@@ -8,6 +8,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.fcommunity.MemberDao;
 import com.db.jiaschool.HomeSchoolDao;
+import com.db.jiaschool.SchoolCommunityDao;
 import com.db.jiaschool.SchoolPersionDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -114,6 +115,8 @@ public class BusinessManageService {
     private CoursesBusinessDao coursesBusinessDao = new CoursesBusinessDao();
 
     private CoursesOrderResultDao coursesOrderResultDao = new CoursesOrderResultDao();
+
+    private SchoolCommunityDao schoolCommunityDao  = new SchoolCommunityDao();
 
 
     @Autowired
@@ -1953,7 +1956,7 @@ public class BusinessManageService {
     }
 
     //查询每日订单
-    public void getDayOrderList(ObjectId userId,int type,String startTime,String endTime,String schoolId,String coursesId,int page,int pageSize){
+    public Map<String,Object> getDayOrderList(ObjectId userId,int type,String startTime,String endTime,String schoolId,String coursesId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         List<CoursesOrderResultEntry> coursesOrderResultEntries = coursesOrderResultDao.getEntryList(userId,type,startTime,endTime,schoolId,coursesId,page,pageSize);
         int count = coursesOrderResultDao.countEntryList(userId,type,startTime,endTime,schoolId,coursesId);
@@ -1980,7 +1983,7 @@ public class BusinessManageService {
         Set<ObjectId> coursesSet = new HashSet<ObjectId>();
         double addPrice = 0;
         double manPrice = 0;
-        for(CoursesOrderResultEntry coursesOrderResultEntry:coursesOrderResultEntries){
+        for(CoursesOrderResultEntry coursesOrderResultEntry:coursesOrderResultEntries2){
             schoolSet.add(coursesOrderResultEntry.getSchoolId());
             coursesSet.add(coursesOrderResultEntry.getCoursesId());
             if(coursesOrderResultEntry.getType()==1){
@@ -1989,7 +1992,36 @@ public class BusinessManageService {
                 manPrice = sum(addPrice,coursesOrderResultEntry.getPrice());
             }
         }
+        map.put("schoolCount",schoolSet.size());
+        map.put("coursesCount",coursesSet.size());
+        map.put("addPrice",addPrice);
+        map.put("manPrice",manPrice);
 
+        return map;
+    }
+
+    public void addCoursesOrderEntry(ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source){
+        long orderTime = System.currentTimeMillis();
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(coursesId);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
+        ObjectId schoolId = null;
+        String schoolName = "";
+        if(communityIds!=null && communityIds.size()>0){
+            //所在学校
+            List<ObjectId> schoolIdsList = schoolCommunityDao.getSchoolIdsList(communityIds);
+            if(schoolIdsList.size()>0){
+                HomeSchoolEntry homeSchoolEntry =  homeSchoolDao.getEntryById(schoolIdsList.get(0));
+                schoolId = homeSchoolEntry.getID();
+                schoolName = homeSchoolEntry.getName();
+            }
+        }
+        CoursesOrderResultEntry coursesOrderResultEntry = new CoursesOrderResultEntry(
+                orderTime,userId,schoolId,schoolName,coursesId,excellentCoursesEntry.getTitle(),type
+                ,classList,price,order,source);
+        coursesOrderResultDao.addEntry(coursesOrderResultEntry);
     }
 
 

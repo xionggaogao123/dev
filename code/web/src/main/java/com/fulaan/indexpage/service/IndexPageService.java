@@ -2084,9 +2084,12 @@ public class IndexPageService {
                 if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(uid)){
                     dto.setTotalReadCount(indexContentEntry.getAllCount());
                 }else{
-                    if(indexContentEntry.getContactType()!=8) {
+                   /* if(indexContentEntry.getContactType()!=8) {
                         dto.setTotalReadCount(indexContentEntry.getAllCount() - 1);
-                    }
+                    }else{
+                        dto.setTotalReadCount(indexContentEntry.getAllCount());
+                    }*/
+                    dto.setTotalReadCount(indexContentEntry.getAllCount());
                 }
 
                 UserEntry userEntry = userEntryMap.get(uid);

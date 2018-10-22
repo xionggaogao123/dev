@@ -218,9 +218,9 @@ public class InOutStorageEntry extends BaseDBObject {
                 .append("accessObj", accessObj)
                 .append("contactInfo", contactInfo)
                 .append("address", address)
-                .append("outStorageTime", "")
-                .append("outStorageYear", "")
-                .append("outStorageMonth", "")
+                .append("outStorageTime", dateFormat.format(new Date()))
+                .append("outStorageYear", calendar.get(Calendar.YEAR)+"")
+                .append("outStorageMonth", (calendar.get(Calendar.MONTH) + 1)+"")
                 .append("deliveryTime", deliveryTime)
                 .append("deliveryMethod", deliveryMethod)
                 .append("excompanyNo", excompanyNo)
@@ -307,6 +307,10 @@ public class InOutStorageEntry extends BaseDBObject {
 
     public String getComment() {
         return getSimpleStringValue("comment");
+    }
+
+    public String getProjectId() {
+        return getSimpleStringValue("projectId");
     }
 
     public String getProjectName() {

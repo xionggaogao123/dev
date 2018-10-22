@@ -19,6 +19,7 @@ public class InOutStorageRecordDto {
     private String comment;
     private String inStorageYear;
     private String inStorageMonth;
+    private String projectId;
     private String projectName;
     private String projectDockPeople;
     private String schoolName;
@@ -63,6 +64,7 @@ public class InOutStorageRecordDto {
         this.comment = entry.getComment();
         this.inStorageYear = entry.getInStorageYear();
         this.inStorageMonth = entry.getInStorageMonth();
+        this.projectId = entry.getProjectId();
         this.projectName = entry.getProjectName();
         this.projectDockPeople = entry.getProjectDockPeople();
         this.schoolName = entry.getSchoolName();
@@ -422,5 +424,13 @@ public class InOutStorageRecordDto {
 
     public void setCreationTime(String creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 }

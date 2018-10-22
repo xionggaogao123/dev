@@ -1411,7 +1411,7 @@ public class ControlSchoolPhoneService {
             phoneTimeDTOs.add(pen.getValue());
         }
         //计算生效的结果
-        List<SchoolControlTimeEntry> schoolControlTimeEntrys = map.get("0");
+        List<SchoolControlTimeEntry> schoolControlTimeEntrys = map.get(dateTime + "");
         if(schoolControlTimeEntrys !=null &&  schoolControlTimeEntrys.size()>0){
             SchoolControlTimeEntry schoolControlTimeEntry = null;
             for(SchoolControlTimeEntry schoolControlTimeEntry2 : schoolControlTimeEntrys){

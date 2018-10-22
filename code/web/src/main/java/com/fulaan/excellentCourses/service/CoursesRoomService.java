@@ -400,6 +400,46 @@ liveid	直播id*/
         return status;
     }
 
+    /**
+     * 获取直播间回看状况
+     */
+    public int getCoursesBackList(){
+        Map<String,String> map = new TreeMap<String, String>();
+        map.put("userid",CC_USERID);
+        //map.put("recordid","C649821FE31E44509C33DC5901307461");
+        map.put("pageindex","1");
+        map.put("pagenum","1000");
+        //map.put("roomids",roomId);
+        int status = 0;
+        try{
+            map.put("starttime",URLEncoder.encode("2018-10-06 08:00", "utf-8"));
+
+            map.put("endtime",URLEncoder.encode("2018-10-22 08:00", "utf-8"));
+
+            String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
+            String str3 = URLDecoder.decode(sysCode, "utf-8");
+            String str =  CoursesRoomAPI.getRoomBackStatus(str3);
+            JSONObject dataJson = new JSONObject(str);
+            String rows = dataJson.getString("result");
+            if(rows.equals("OK")){
+                JSONArray rows2 = dataJson.getJSONArray("userActions");
+                FileOutputStream bos = new FileOutputStream("D://output2.txt");
+                System.setOut(new PrintStream(bos));
+                System.out.println(rows2.toString());
+                /*JSONArray rows2 = dataJson.getJSONArray("rooms");
+                for(int i = 0;i<rows2.length();i++){
+                    JSONObject rows3 = rows2.getJSONObject(i);
+                    status = rows3.getInt("liveStatus");
+
+                }*/
+            }else{
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return status;
+    }
+
     public boolean checkTime(long stm,long etm,String ostm,String estm){
         if(ostm==null || ostm.equals("")){
             return false;
@@ -433,9 +473,7 @@ liveid	直播id*/
 
     public static void main(String[] args){
         CoursesRoomService coursesRoomService = new CoursesRoomService();
-        long startTime = System.currentTimeMillis();
-
-        coursesRoomService.getUserList();
+        coursesRoomService.getCoursesBackList();
     }
 
 

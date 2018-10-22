@@ -47,4 +47,10 @@ public class CoursesRoomAPI  extends BaseAPI{
         String str = getCCForToken("/rooms/publishing"+"?"+sysCode);
         return str;
     }
+
+    //获取某个直播间的回看情况     http://api.csslcloud.net/api/rooms/publishing
+    public static  String getRoomBackStatus(String sysCode){
+        String str = getCCForToken("/v2/statis/replay"+"?"+sysCode);
+        return str;
+    }
 }

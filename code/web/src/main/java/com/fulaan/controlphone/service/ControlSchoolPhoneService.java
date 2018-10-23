@@ -97,7 +97,9 @@ public class ControlSchoolPhoneService {
     //首页加载社群及判断权限
     public Map<String,Object> getSimpleMessageForTea(ObjectId teacherId){
         Map<String,Object> map = new HashMap<String, Object>();
-        List<ObjectId> oids = getMyRoleList(teacherId);
+        List<ObjectId> oids2 = getMyRoleList(teacherId);
+        //获得在学校中的管控
+        List<ObjectId> oids = schoolCommunityDao.getCommunityIdsListByCommunityIds(oids2);
         List<CommunityDTO> dtos = new ArrayList<CommunityDTO>();
         if(oids.size()>0){
             List<CommunityEntry> communityEntries = communityDao.findByObjectIds(oids);

@@ -303,16 +303,18 @@ public class InOutStorageRecordDao extends BaseDao {
         }
         if (map.get("isr") != null) {
             updateParam.append("isr",Integer.parseInt(map.get("isr").toString()));
+            //维修完成 添加入库时间
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar calendar = Calendar.getInstance();
+            String inStorageTime = dateFormat.format(new Date());
+            String inStorageYear = calendar.get(Calendar.YEAR)+"";
+            String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
+            updateParam.append("inStorageTime",inStorageTime);
+            updateParam.append("inStorageYear",inStorageYear);
+            updateParam.append("inStorageMonth",inStorageMonth);
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar calendar = Calendar.getInstance();
-        String inStorageTime = dateFormat.format(new Date());
-        String inStorageYear = calendar.get(Calendar.YEAR)+"";
-        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
-        updateParam.append("inStorageTime",inStorageTime);
-        updateParam.append("inStorageYear",inStorageYear);
-        updateParam.append("inStorageMonth",inStorageMonth);
+
 
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);

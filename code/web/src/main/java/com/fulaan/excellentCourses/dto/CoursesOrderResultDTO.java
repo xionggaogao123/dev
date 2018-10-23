@@ -23,7 +23,8 @@ public class CoursesOrderResultDTO {
      * price                购买金额                    pri
      * order                订单号                      ord
      * source               来源                        sou*/
-    private String id;
+
+     private String id;
     private String orderTime;
     private String userId;
     private String schoolId;

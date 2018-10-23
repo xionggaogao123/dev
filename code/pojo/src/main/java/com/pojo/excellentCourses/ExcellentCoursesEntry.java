@@ -23,7 +23,7 @@ import java.util.List;
  * bigCover         详情封面                  bco
  * title            课程题目                  tit
  * target           课程目标                  tar
- * communityIdList  选择的社群list            cis  (List<ObjectId>)
+ * communityIdList  选择的社群list            clt  (List<ObjectId>)
  * allClassCount    总课时                    acc
  * createTime       创建时间                  ctm
  * startTime        开始时间                  stm

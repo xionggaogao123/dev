@@ -24,7 +24,7 @@ import java.util.List;
  * List<ObjectId>       购买课节id                  clt
  * price                购买金额                    pri
  * order                订单号                      ord
- * source               来源                        sou
+ * source               来源                        sou/0 美豆余额   1 支付宝   2 微信   3 后台添加   4 系统添加课程附带添加
  */
 public class CoursesOrderResultEntry extends BaseDBObject {
     public CoursesOrderResultEntry(){

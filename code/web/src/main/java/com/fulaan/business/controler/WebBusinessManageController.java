@@ -5,6 +5,7 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.business.service.BusinessManageService;
 import com.fulaan.controlphone.dto.CoursesBusinessDTO;
+import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.pojo.User;
 import com.sys.constants.Constant;
@@ -939,6 +940,23 @@ public class WebBusinessManageController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("同意失败!");
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "查询某个学校下的课程失败", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping(value="/getSchoolCourses")
+    @ResponseBody
+    public RespObj getSchoolCourses(@ApiParam(name="schoolId",required = true,value = "schoolId") @RequestParam(value="schoolId") String schoolId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<ExcellentCoursesDTO> excellentCoursesDTOs = businessManageService.getSchoolCourses(new ObjectId(schoolId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(excellentCoursesDTOs);
+        }catch(Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("查询某个学校下的课程失败");
         }
         return respObj;
     }

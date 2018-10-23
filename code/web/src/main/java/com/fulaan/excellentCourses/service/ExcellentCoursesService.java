@@ -8,6 +8,8 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.jiaschool.HomeSchoolDao;
+import com.db.jiaschool.SchoolCommunityDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -32,6 +34,7 @@ import com.pojo.excellentCourses.*;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.GroupEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
@@ -111,6 +114,12 @@ public class ExcellentCoursesService {
     private CoursesBusinessDao coursesBusinessDao = new CoursesBusinessDao();
 
     private static final Logger logger =Logger.getLogger(DefaultWrongQuestionController.class);
+
+    private SchoolCommunityDao schoolCommunityDao = new SchoolCommunityDao();
+
+    private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
+
+    private CoursesOrderResultDao coursesOrderResultDao = new CoursesOrderResultDao();
 
 
     private static final int  TEACHER_TIME = 24*60*60*1000;  //老师提前时间  ->  60分钟
@@ -1895,6 +1904,10 @@ public class ExcellentCoursesService {
                     addLog(userId,contactId,"添加美豆账户消费记录成功！本次消费："+price);
                     logger.info(userId.toString()+"-"+contactId.toString()+"添加美豆账户消费记录成功！本次消费："+price);
 
+                    //增加每日订单   ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source
+                    String or = "免费购买";
+                    this.addCoursesOrderEntry(sonId,id,Constant.ONE,cIds,price,or,Constant.THREE);
+
                     //修改充值账户余额
                     double newPrice = sub(accountFrashEntry.getAccount(),price);
                     accountFrashDao.updateEntry(accountFrashEntry.getID(),newPrice);
@@ -2124,6 +2137,31 @@ public class ExcellentCoursesService {
             throw  new Exception("订单信息不存在！");
         }
     }
+
+    //添加每日订单
+    public void addCoursesOrderEntry(ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source){
+        long orderTime = System.currentTimeMillis();
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(coursesId);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
+        ObjectId schoolId = null;
+        String schoolName = "";
+        if(communityIds!=null && communityIds.size()>0){
+            //所在学校
+            List<ObjectId> schoolIdsList = schoolCommunityDao.getSchoolIdsList(communityIds);
+            if(schoolIdsList.size()>0){
+                HomeSchoolEntry homeSchoolEntry =  homeSchoolDao.getEntryById(schoolIdsList.get(0));
+                schoolId = homeSchoolEntry.getID();
+                schoolName = homeSchoolEntry.getName();
+            }
+        }
+        CoursesOrderResultEntry coursesOrderResultEntry = new CoursesOrderResultEntry(
+                orderTime,userId,schoolId,schoolName,coursesId,excellentCoursesEntry.getTitle(),type
+                ,classList,price,order,source);
+        coursesOrderResultDao.addEntry(coursesOrderResultEntry);
+    }
     /**
      * 新直接购课
      * @param id
@@ -2244,6 +2282,14 @@ public class ExcellentCoursesService {
                     rechargeResultDao.saveEntry(rechargeResultEntry);
                     addLog(userId,contactId,"添加美豆账户消费记录成功！本次消费："+price2);
                     logger.info(userId.toString()+"-"+contactId.toString()+"添加美豆账户消费记录成功！本次消费："+price2);
+
+                    //增加每日订单   ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source
+                    String or = "后台付费";
+                    if(money!=0){
+                        or = "后台免费";
+                        price2 = 0;
+                    }
+                    this.addCoursesOrderEntry(sonId,id,Constant.ONE,cIds,price2,or,Constant.THREE);
 
                     //修改充值账户余额
                     double newPrice = sub(accountFrashEntry.getAccount(),price);
@@ -2385,6 +2431,10 @@ public class ExcellentCoursesService {
                     rechargeResultDao.saveEntry(rechargeResultEntry);
                     addLog(userId,contactId,"添加美豆账户消费记录成功！本次消费："+price);
                     logger.info(userId.toString()+"-"+contactId.toString()+"添加美豆账户消费记录成功！本次消费："+price);
+
+                    //增加每日订单   ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source
+                    String or = "免费购买";
+                    this.addCoursesOrderEntry(sonId,id,Constant.ONE,cIds,price,or,Constant.THREE);
 
                     //修改充值账户余额
                     double newPrice = sub(accountFrashEntry.getAccount(),price);

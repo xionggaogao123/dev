@@ -1999,7 +1999,7 @@ public class BusinessManageService {
 
         return map;
     }
-
+    //添加每日订单
     public void addCoursesOrderEntry(ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source){
         long orderTime = System.currentTimeMillis();
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(coursesId);
@@ -2024,6 +2024,17 @@ public class BusinessManageService {
         coursesOrderResultDao.addEntry(coursesOrderResultEntry);
     }
 
+    //查询某个学校下的课程信息
+    public List<ExcellentCoursesDTO> getSchoolCourses(ObjectId schoolId){
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        //获得学校下的社群
+        List<ObjectId> communityIds = schoolCommunityDao.getCommunityIdsListBySchoolId(schoolId);
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getNewAllEntryList(communityIds);
+        for(ExcellentCoursesEntry excellentCoursesEntry : excellentCoursesEntries){
+            dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));
+        }
+        return dtos;
+    }
 
 
 

@@ -128,6 +128,25 @@ public class SchoolCommunityDao extends BaseDao {
         }
         return entryList;
     }
+    //获得某个学校下的社群
+    public List<ObjectId> getCommunityIdsListBySchoolId(ObjectId schoolId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        query.append("sid",schoolId);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_COMMUNITY_SCHOOL,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ObjectId> entryList = new ArrayList<ObjectId>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new SchoolCommunityEntry((BasicDBObject) obj).getCommunityId());
+            }
+        }
+        return entryList;
+    }
+
 
     //查询
     public SchoolCommunityEntry getEntryById(ObjectId communityId) {

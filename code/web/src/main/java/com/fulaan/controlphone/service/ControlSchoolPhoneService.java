@@ -1062,6 +1062,14 @@ public class ControlSchoolPhoneService {
         long timecu = 30*60*1000;
         if(controlTimeEntry != null){
             timecu = controlTimeEntry.getTime();
+        }else{
+            ControlTimeEntry entry1 = new ControlTimeEntry();
+            entry1.setParentId(parentId);
+            entry1.setUserId(sonId);
+            entry1.setTime(30*60000);
+            entry1.setIsRemove(0);
+            controlTimeDao.addEntry(entry1);
+            controlTimeEntry = entry1;
         }
         map.put("time",timecu/60000);
         ControlSetBackEntry setBackEntry = controlSetBackDao.getEntry();

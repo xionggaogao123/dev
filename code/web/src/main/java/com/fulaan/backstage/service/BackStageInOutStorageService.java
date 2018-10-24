@@ -37,34 +37,43 @@ public class BackStageInOutStorageService {
 
     public void batchOutStorage(Map map) {
         /**
-         * 对项目信息新增或者更新
+         * 判断是个人 还是 项目
          */
-        //没有projectId 就新增
         String projectId = "";
-        if (map.get("projectId") != null && map.get("projectId").toString() == "" ){
-            projectId = phonesProjectDao.saveProjectEntry(new PhonesProjectEntry(
-                    //构造无Id
-                    map.get("projectName").toString(),
-                    map.get("projectDockPeople").toString(),
-                    map.get("schoolName").toString(),
-                    map.get("accessClass").toString(),
-                    map.get("accessObj").toString(),
-                    map.get("contactInfo").toString(),
-                    map.get("address").toString()
-            ));
+        if (map.get("outStorageType") != null && map.get("outStorageType").toString() == "1"){
+            /**
+             * 对项目信息新增或者更新
+             */
+            //没有projectId 就新增
+
+            if (map.get("projectId") != null && map.get("projectId").toString() == "" ){
+                projectId = phonesProjectDao.saveProjectEntry(new PhonesProjectEntry(
+                        //构造无Id
+                        map.get("projectName").toString(),
+                        map.get("projectDockPeople").toString(),
+                        map.get("schoolName").toString(),
+                        map.get("accessClass").toString(),
+                        map.get("accessObj").toString(),
+                        map.get("contactInfo").toString(),
+                        map.get("address").toString()
+                ));
+            }else {
+                projectId = phonesProjectDao.saveProjectEntry(new PhonesProjectEntry(
+                        //构造有Id
+                        new ObjectId(map.get("projectId").toString()),
+                        map.get("projectName").toString(),
+                        map.get("projectDockPeople").toString(),
+                        map.get("schoolName").toString(),
+                        map.get("accessClass").toString(),
+                        map.get("accessObj").toString(),
+                        map.get("contactInfo").toString(),
+                        map.get("address").toString()
+                ));
+            }
         }else {
-            projectId = phonesProjectDao.saveProjectEntry(new PhonesProjectEntry(
-                    //构造有Id
-                    new ObjectId(map.get("projectId").toString()),
-                    map.get("projectName").toString(),
-                    map.get("projectDockPeople").toString(),
-                    map.get("schoolName").toString(),
-                    map.get("accessClass").toString(),
-                    map.get("accessObj").toString(),
-                    map.get("contactInfo").toString(),
-                    map.get("address").toString()
-            ));
+
         }
+
         //增加项目出库信息
         map.put("projectId", projectId);
         addProjectOutStorageRecord(map);
@@ -114,10 +123,10 @@ public class BackStageInOutStorageService {
                         map.get("deliveryMethod") == null ? "" : map.get("deliveryMethod").toString(),
                         "",
                         "",
-                        "",
-                        "",
-                        "",
-                        "",
+                        map.get("parentName") == null ? "" : map.get("parentName").toString(),
+                        map.get("parentMobile") == null ? "" : map.get("parentMobile").toString(),
+                        map.get("parentId") == null ? "" : map.get("parentId").toString(),
+                        map.get("studentName") == null ? "" : map.get("studentName").toString(),
                         "",
                         "",
                         "",

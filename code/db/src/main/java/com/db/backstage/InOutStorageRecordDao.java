@@ -598,4 +598,17 @@ public class InOutStorageRecordDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
         return map.get("ids").toString();
     }
+
+    public InOutStorageEntry getInOutStorageEntryById(ObjectId id) {
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+        query.append(Constant.ID, id);
+
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query);
+        InOutStorageEntry inOutStorageEntry = new InOutStorageEntry();
+        if (dbObject != null){
+            inOutStorageEntry = new InOutStorageEntry(dbObject);
+        }
+        return inOutStorageEntry;
+    }
 }

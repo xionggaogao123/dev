@@ -1,11 +1,14 @@
 package com.fulaan.backstage.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fulaan.backstage.service.BackStageDeliveryManageService;
 import com.fulaan.base.BaseController;
+import com.fulaan.integralmall.dto.WuliuInfoDto;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -241,6 +244,31 @@ public class BackStageDeliveryManageController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
             String result = backStageDeliveryManageService.updateReadyReadByIds(map);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 发货管理-获取物流信息
+     * @return
+     */
+    @ApiOperation(value = "发货管理-获取物流信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "操作完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getLogisticsInformation")
+    @ResponseBody
+    public RespObj getLogisticsInformation(
+            @ApiParam(name = "id", required = false, value = "id") @RequestParam(value = "id", defaultValue = "") String id
+    ) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            WuliuInfoDto result = backStageDeliveryManageService.getLogisticsInformation(new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         }catch (Exception e){

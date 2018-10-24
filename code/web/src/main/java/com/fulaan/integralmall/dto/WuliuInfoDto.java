@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.pojo.backstage.InOutStorageEntry;
 import com.pojo.integralmall.AddressEntry;
 import com.pojo.integralmall.OrderEntry;
 import com.pojo.lancustom.MobileReturnEntry;
@@ -69,6 +70,13 @@ public class WuliuInfoDto {
     }
 
     public WuliuInfoDto(MobileReturnEntry entry, wuliuDto w) {
+        this.area = entry.getAddress();
+        this.excompanyNo = this.map.get(entry.getExcompanyNo());
+        this.expressNo = entry.getExpressNo();
+        this.traces=w.getTraces();
+    }
+
+    public WuliuInfoDto(InOutStorageEntry entry, wuliuDto w) {
         this.area = entry.getAddress();
         this.excompanyNo = this.map.get(entry.getExcompanyNo());
         this.expressNo = entry.getExpressNo();

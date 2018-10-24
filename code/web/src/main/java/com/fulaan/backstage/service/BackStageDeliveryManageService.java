@@ -1,12 +1,19 @@
 package com.fulaan.backstage.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.db.backstage.InOutStorageRecordDao;
 import com.db.backstage.StorageManageDao;
 import com.fulaan.backstage.dto.InOutStorageRecordDto;
+import com.fulaan.integralmall.dto.WuliuInfoDto;
+import com.fulaan.integralmall.dto.wuliuDto;
+import com.fulaan.mall.service.EBusinessOrderService;
 import com.pojo.backstage.InOutStorageEntry;
 import com.sys.constants.Constant;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +28,9 @@ import java.util.Map;
  */
 @Service
 public class BackStageDeliveryManageService {
+
+    @Autowired
+    private EBusinessOrderService eBusinessOrderService;
 
     private InOutStorageRecordDao inOutStorageRecordDao = new InOutStorageRecordDao();
 
@@ -147,5 +157,17 @@ public class BackStageDeliveryManageService {
      */
     public String updateReadyReadByIds(Map map) {
         return inOutStorageRecordDao.updateReadyReadByIds(map);
+    }
+
+    /**
+     * 发货管理-获取物流信息
+     * @return
+     */
+    public WuliuInfoDto getLogisticsInformation(ObjectId id) {
+        InOutStorageEntry entry = inOutStorageRecordDao.getInOutStorageEntryById(id);
+        String s = eBusinessOrderService.getExpressList(entry.getExcompanyNo(), entry.getExpressNo());
+        wuliuDto w = JSON.parseObject(s, new TypeReference<wuliuDto>() {});
+        WuliuInfoDto wuliuInfoDto = new WuliuInfoDto(entry, w);
+        return wuliuInfoDto;
     }
 }

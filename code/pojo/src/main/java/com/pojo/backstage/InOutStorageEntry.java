@@ -67,6 +67,7 @@ import java.util.List;
  * creationYear 数据创建年
  * creationMonth 数据创建月
  * isr 为2 废弃数据
+ * isReadFlag 未读0 已读1
  */
 public class InOutStorageEntry extends BaseDBObject {
 
@@ -114,7 +115,8 @@ public class InOutStorageEntry extends BaseDBObject {
                              String repairCost,
                              String storageRecordStatus,
                              String commentType,
-                             List<String> needRepairComment
+                             List<String> needRepairComment,
+                             String isReadFlag
     ) {
         BasicDBObject basicDBObject = new BasicDBObject()
                 .append("imeiNo", imeiNo)
@@ -156,6 +158,7 @@ public class InOutStorageEntry extends BaseDBObject {
                 .append("creationTime", dateFormat.format(new Date()))
                 .append("creationYear", calendar.get(Calendar.YEAR)+"")
                 .append("creationMonth", (calendar.get(Calendar.MONTH)+1)+"")
+                .append("isReadFlag", isReadFlag)
                 .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -198,7 +201,8 @@ public class InOutStorageEntry extends BaseDBObject {
                              String isPay,
                              String payFrom,
                              String afterRepair,
-                             String repairType
+                             String repairType,
+                             String isReadFlag
     ) {
         BasicDBObject basicDBObject = new BasicDBObject()
                 .append("imeiNo", imeiNo)
@@ -244,6 +248,7 @@ public class InOutStorageEntry extends BaseDBObject {
                 .append("creationTime", dateFormat.format(new Date()))
                 .append("creationYear", calendar.get(Calendar.YEAR)+"")
                 .append("creationMonth", (calendar.get(Calendar.MONTH)+1)+"")
+                .append("isReadFlag", isReadFlag)
                 .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -436,6 +441,10 @@ public class InOutStorageEntry extends BaseDBObject {
 
     public String getCreationTime() {
         return getSimpleStringValue("creationTime");
+    }
+
+    public String getIsReadFlag() {
+        return getSimpleStringValue("isReadFlag");
     }
 
 }

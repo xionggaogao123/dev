@@ -120,4 +120,32 @@ public class BackStageDeliveryManageService {
         result += inOutStorageRecordDao.updateDeliveryLogisticsInfoById(map);
         return result;
     }
+
+    /**
+     * 发货管理-新增待读数据
+     * @return
+     */
+    public Map<String,Object> getReadInfoList(String storageRecordStatus) {
+        Map<String,Object> result = new HashMap<String, Object>();
+        result = inOutStorageRecordDao.getReadInfoList(storageRecordStatus);
+        List<InOutStorageRecordDto> inOutStorageRecordDtoList = new ArrayList<InOutStorageRecordDto>();
+        List<InOutStorageEntry> inOutStorageEntryList = (ArrayList)result.get("entryList");
+        for (InOutStorageEntry inOutStorageEntry : inOutStorageEntryList){
+            if (inOutStorageEntry != null){
+                inOutStorageRecordDtoList.add(new InOutStorageRecordDto(inOutStorageEntry));
+            }
+        }
+        result.put("dtos",inOutStorageRecordDtoList);
+        result.remove("entryList");
+        return result;
+    }
+
+    /**
+     * 根据唯一索引集合更新未读数据
+     * @param map
+     * @return
+     */
+    public String updateReadyReadByIds(Map map) {
+        return inOutStorageRecordDao.updateReadyReadByIds(map);
+    }
 }

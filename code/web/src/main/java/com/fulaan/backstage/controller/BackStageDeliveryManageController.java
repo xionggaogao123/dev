@@ -201,4 +201,53 @@ public class BackStageDeliveryManageController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 发货管理-新增待读数据
+     * @return
+     */
+    @ApiOperation(value = "发货管理-新增待读数据", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "操作完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getReadInfoList")
+    @ResponseBody
+    public RespObj getReadInfoList(
+            @ApiParam(name = "storageRecordStatus", required = false, value = "storageRecordStatus") @RequestParam(value = "storageRecordStatus", defaultValue = "5") String storageRecordStatus
+    ) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> result = backStageDeliveryManageService.getReadInfoList(storageRecordStatus);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 根据唯一索引集合更新未读数据
+     * @param map
+     * @return
+     */
+    @ApiOperation(value = "根据唯一索引集合更新未读数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "操作完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/updateReadyReadByIds")
+    @ResponseBody
+    public RespObj updateReadyReadByIds(@RequestBody Map map) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            String result = backStageDeliveryManageService.updateReadyReadByIds(map);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 }

@@ -214,7 +214,8 @@ public class BackStageStorageManageService {
                         "",
                         "0",//新机入库
                         "",
-                        needRepairComment
+                        needRepairComment,
+                        "0"//未读
                 );
                 inOutDbObjectList.add(inOutStorageEntry.getBaseEntry());
             }else {
@@ -378,7 +379,8 @@ public class BackStageStorageManageService {
                 params.get("repairCost") == null ? "" : params.get("repairCost").toString(),
                 "6",//待维修
                 params.get("commentType") == null ? "" : params.get("commentType").toString(),
-                params.get("needRepairComments") == null ? stringlist : jsontoList(params.get("needRepairComments"))
+                params.get("needRepairComments") == null ? stringlist : jsontoList(params.get("needRepairComments")),
+                "0"//未读
         );
         result += "维修管理:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
@@ -446,7 +448,8 @@ public class BackStageStorageManageService {
                     params.get("repairCost") == null ? "" : params.get("repairCost").toString(),
                     "6",//待维修
                     params.get("commentType") == null ? "" : params.get("commentType").toString(),
-                    params.get("needRepairComments") == null ? stringlist : jsontoList(params.get("needRepairComments"))
+                    params.get("needRepairComments") == null ? stringlist : jsontoList(params.get("needRepairComments")),
+                    "0"//未读
             );
             dbObjectList.add(inOutStorageEntry.getBaseEntry());
         }

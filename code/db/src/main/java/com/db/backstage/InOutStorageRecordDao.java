@@ -537,4 +537,65 @@ public class InOutStorageRecordDao extends BaseDao {
         result.put("count",count);*/
         return result;
     }
+
+    public Map<String,Object> getReadInfoList(String storageRecordStatus) {
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+
+
+        if ("5".equals(storageRecordStatus)){
+            //出库
+            query.append("storageRecordStatus", "5");
+            query.append("deliveryMethod", "快递");
+            //发货状态
+            List<String> stringList = new ArrayList<String>();
+            stringList.add("");
+            query.append("excompanyNo", new BasicDBObject(Constant.MONGO_IN,stringList));
+        }else {
+            //维修
+            query.append("storageRecordStatus", "6");
+        }
+        //未读
+        query.append("isReadFlag", "0");
+
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query);
+        List<InOutStorageEntry> inOutStorageEntryList = new ArrayList<InOutStorageEntry>();
+        for (DBObject dbObject : dbObjects){
+            inOutStorageEntryList.add(new InOutStorageEntry(dbObject));
+        }
+        Map<String,Object> result = new HashMap<String, Object>();
+        result.put("entryList",inOutStorageEntryList);
+        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD, query);
+        result.put("count",count);
+        return result;
+    }
+
+    /**
+     * 根据唯一索引集合更新未读数据
+     * @param map
+     * @return
+     */
+    public String updateReadyReadByIds(Map map) {
+        BasicDBObject query = new BasicDBObject();
+        //对拼接的Id做处理
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if (map.get("ids") != null){
+            for (String id : map.get("ids").toString().split(",")){
+                if (id != ""){
+                    objectIdList.add(new ObjectId(id));
+                }
+            }
+        }
+
+        query.append(Constant.ID, new BasicDBObject(Constant.MONGO_IN,objectIdList));
+
+        BasicDBObject updateParam = new BasicDBObject();
+        updateParam.append("isReadFlag", "1");
+
+
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
+        return map.get("ids").toString();
+    }
 }

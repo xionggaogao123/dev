@@ -273,7 +273,8 @@ public class BackStageOutStorageFollowService {
                 tjsonIn.get("repairCost") == null ? "" : tjsonIn.get("repairCost").toString(),
                 "6",//待维修
                 tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
-                stringlist
+                stringlist,
+                "0"//未读
         );
         result += "维修管理:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
@@ -336,7 +337,8 @@ public class BackStageOutStorageFollowService {
                 tjsonIn.get("repairCost") == null ? "" : tjsonIn.get("repairCost").toString(),
                 "1",//退货入库
                 tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
-                stringlist
+                stringlist,
+                "0"//未读
         );
         result += "退货入库log:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
@@ -410,7 +412,8 @@ public class BackStageOutStorageFollowService {
                 tjsonIn.get("repairCost") == null ? "" : tjsonIn.get("repairCost").toString(),
                 "3",//换货入库
                 tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
-                stringlist
+                stringlist,
+                "0"//未读
         );
         result += "换货入库log:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
@@ -449,7 +452,8 @@ public class BackStageOutStorageFollowService {
                 tjsonIn.get("repairCost") == null ? "" : tjsonIn.get("repairCost").toString(),
                 "5",//待换货出库
                 tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
-                stringlist
+                stringlist,
+                "0"//未读
         );
         result += "待换货出库log:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry1);
@@ -522,7 +526,8 @@ public class BackStageOutStorageFollowService {
                 tjsonIn.get("repairCost") == null ? "" : tjsonIn.get("repairCost").toString(),
                 "4",//回收入库
                 tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
-                stringlist
+                stringlist,
+                "0"//未读
         );
         result += "回收入库log:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
@@ -644,7 +649,8 @@ public class BackStageOutStorageFollowService {
                     tjsonIn.get("repairCost") == null ? "" : tjsonIn.get("repairCost").toString(),
                     "6",//待维修
                     tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
-                    stringlist
+                    stringlist,
+                    "0"//未读
             );
             dbObjectList.add(inOutStorageEntry.getBaseEntry());
         }
@@ -716,7 +722,8 @@ public class BackStageOutStorageFollowService {
                     tjsonIn.get("repairCost") == null ? "" : tjsonIn.get("repairCost").toString(),
                     "1",//退货入库
                     tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
-                    stringlist
+                    stringlist,
+                    "0"//未读
             );
             dbObjectList.add(inOutStorageEntry.getBaseEntry());
         }
@@ -795,7 +802,8 @@ public class BackStageOutStorageFollowService {
                     tjsonIn.get("repairCost") == null ? "" : tjsonIn.get("repairCost").toString(),
                     "3",//换货入库
                     tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
-                    stringlist
+                    stringlist,
+                    "0"//未读
             );
             dbObjectList.add(inOutStorageEntry.getBaseEntry());
 
@@ -833,7 +841,8 @@ public class BackStageOutStorageFollowService {
                     tjsonIn.get("repairCost") == null ? "" : tjsonIn.get("repairCost").toString(),
                     "5",//待换货出库
                     tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
-                    stringlist
+                    stringlist,
+                    "0"//未读
             );
             dbObjectList.add(inOutStorageEntry1.getBaseEntry());
         }
@@ -904,7 +913,8 @@ public class BackStageOutStorageFollowService {
                     tjsonIn.get("repairCost") == null ? "" : tjsonIn.get("repairCost").toString(),
                     "4",//回收入库
                     tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
-                    stringlist
+                    stringlist,
+                    "0"//未读
             );
             dbObjectList.add(inOutStorageEntry.getBaseEntry());
 

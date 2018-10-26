@@ -396,4 +396,21 @@ public class StorageManageDao extends BaseDao {
         }
         return stringList;
     }
+
+    /**
+     * 维修管理手动添加的 删除
+     * @param map
+     * @return
+     */
+    public String delFromRepairManage(Map map) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("imeiNo",map.get("imeiNo").toString());
+        //更新内容
+        BasicDBObject updateParam = new BasicDBObject();
+        updateParam.append("isr",2);
+
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_STORAGE_MANAGE,query,updateValue);
+        return map.get("imeiNo").toString();
+    }
 }

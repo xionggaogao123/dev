@@ -95,47 +95,47 @@ public class BackStageRepairManageService {
             storageManageDao.saveList(dbObjectList);
             //封装出入库记录数据
             //封装出入库记录数据声明
-            List<DBObject> inOutDbObjectList = new ArrayList<DBObject>();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Calendar calendar = Calendar.getInstance();
-            InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(
-                    map.get("imeiNo") == null ? "" : map.get("imeiNo").toString(),
-                    map.get("phoneModel") == null ? "" : map.get("phoneModel").toString(),
-                    map.get("color") == null ? "" : map.get("color").toString(),
-                    "",
-                    dateFormat.format(new Date()),
-                    calendar.get(Calendar.YEAR)+"",
-                    (calendar.get(Calendar.MONTH) + 1)+"",
-                    "0",
-                    map.get("comment") == null ? "" : map.get("comment").toString(),
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "0",//新机入库
-                    "",
-                    repairCommentList,
-                    "0"//未读
-            );
-            inOutDbObjectList.add(inOutStorageEntry.getBaseEntry());
-            inOutStorageRecordDao.addProjectOutStorageRecordList(inOutDbObjectList);
+//            List<DBObject> inOutDbObjectList = new ArrayList<DBObject>();
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            Calendar calendar = Calendar.getInstance();
+//            InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(
+//                    map.get("imeiNo") == null ? "" : map.get("imeiNo").toString(),
+//                    map.get("phoneModel") == null ? "" : map.get("phoneModel").toString(),
+//                    map.get("color") == null ? "" : map.get("color").toString(),
+//                    "",
+//                    dateFormat.format(new Date()),
+//                    calendar.get(Calendar.YEAR)+"",
+//                    (calendar.get(Calendar.MONTH) + 1)+"",
+//                    "6",//待维修状态手机
+//                    map.get("comment") == null ? "" : map.get("comment").toString(),
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "6",//待维修状态手机
+//                    "",
+//                    repairCommentList,
+//                    "0"//未读
+//            );
+//            inOutDbObjectList.add(inOutStorageEntry.getBaseEntry());
+//            inOutStorageRecordDao.addProjectOutStorageRecordList(inOutDbObjectList);
         }
 
 
@@ -147,7 +147,7 @@ public class BackStageRepairManageService {
                 "",
                 "",
                 "",
-                "",
+                "-100",//手动维修添加
                 map.get("comment") == null ? "" : map.get("comment").toString(),
                 "",
                 "",
@@ -542,5 +542,18 @@ public class BackStageRepairManageService {
         }
         System.out.println(stringList);
         return stringList;
+    }
+
+    /**
+     * 维修管理-删除
+     * @param map
+     * @return
+     */
+    public String delRepairManage(Map map) {
+        String result = "维修记录：";
+        result += inOutStorageRecordDao.updateRepairManage(map);//逻辑删除
+        result += "库存：";
+        result += storageManageDao.delFromRepairManage(map);
+        return result;
     }
 }

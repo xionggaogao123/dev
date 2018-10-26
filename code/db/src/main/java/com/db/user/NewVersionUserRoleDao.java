@@ -35,6 +35,17 @@ public class NewVersionUserRoleDao extends BaseDao{
         }
         return userRoleMap;
     }
+    
+    public Integer  getUserRole(ObjectId userId){
+        
+        BasicDBObject query=new BasicDBObject("uid",userId);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_USER_ROLE,query,Constant.FIELDS);
+     
+        NewVersionUserRoleEntry entry=new NewVersionUserRoleEntry(dbObject);
+        
+       
+        return entry.getNewRole();
+    }
 
 
 

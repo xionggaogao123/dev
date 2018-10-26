@@ -1,5 +1,6 @@
 package com.fulaan.controller;
 
+import com.db.user.NewVersionUserRoleDao;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.communityValidate.service.ValidateInfoService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,8 @@ public class WebFriendController extends BaseController {
     private UserService userService;
     
     private ValidateInfoService validateInfoService = new ValidateInfoService();
+    
+    private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
     @ApiOperation(value = "getFriends", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
@@ -53,6 +57,31 @@ public class WebFriendController extends BaseController {
        // long end = System.currentTimeMillis();
       //  System.out.print(end-start);
         respObj.setMessage(userList);
+        return respObj;
+    }
+    
+    @ApiOperation(value = "getFriendsNoKid", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getFriendsNoKid")
+    @ResponseBody
+    public RespObj getFriendsNoKid() {
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        ObjectId uid = getUserId();
+       // long start = System.currentTimeMillis();
+        List<User> userList = friendService.getFrinds(uid);
+        List<User> userL = new ArrayList<User>();
+        for (User u : userList) {
+            Integer role = newVersionUserRoleDao.getUserRole(new ObjectId(u.getId()));
+            if(role==Constant.ONE||role==Constant.TWO){
+                
+            } else {
+                userL.add(u);
+            }
+        }
+       // System.out.println(userList.size());
+       // long end = System.currentTimeMillis();
+      //  System.out.print(end-start);
+        respObj.setMessage(userL);
         return respObj;
     }
 

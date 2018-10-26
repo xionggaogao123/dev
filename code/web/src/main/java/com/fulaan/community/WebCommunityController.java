@@ -173,9 +173,19 @@ public class WebCommunityController extends BaseController {
         communityDTO.setMembers(members);
         MemberDTO mine = memberService.getUser(new ObjectId(communityDTO.getGroupId()), getUserId());
         communityDTO.setMine(mine);
-        String headImage = groupService.getHeadImage(new ObjectId(communityDTO.getGroupId()));
-        communityDTO.setHeadImage(headImage);
+        /*String headImage = groupService.getHeadImage(new ObjectId(communityDTO.getGroupId()));
+        communityDTO.setHeadImage(headImage);*/
         groupService.asyncUpdateHeadImage(new ObjectId(communityDTO.getGroupId()));
+        boolean flag = false;
+        while (!flag) {
+            String headImage = groupService.getHeadImage(new ObjectId(communityDTO.getGroupId()));
+            if (StringUtils.isNotBlank(headImage)) {
+                flag = true;
+                communityDTO.setHeadImage(headImage);
+            }
+            
+        }
+        
         return RespObj.SUCCESS(communityDTO);
     }
 

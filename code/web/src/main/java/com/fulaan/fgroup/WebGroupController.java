@@ -103,6 +103,14 @@ public class WebGroupController extends BaseController {
         }
         groupService.asyncUpdateHeadImage(groupId);
         groupService.asyncUpdateGroupNameByMember(groupId);
+        
+        boolean flag = false;
+        while(!flag) {
+            GroupDTO g = groupService.findById(groupId,userId);
+            if (StringUtils.isNotBlank(g.getHeadImage())) {
+                flag = true;
+            }
+        }
         return RespObj.SUCCESS(groupService.findById(groupId,userId));
     }
 

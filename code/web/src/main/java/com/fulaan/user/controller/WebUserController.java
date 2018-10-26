@@ -2236,6 +2236,7 @@ public class WebUserController extends BaseController {
         model.put("k6kt", sessionValue.getK6kt());
         model.put("avatar", sessionValue.getMinAvatar());
         model.put("mobileNumber",userEntry.getMobileNumber());
+        model.put("gugc", userEntry.getGenerateUserCode());
     }
 
 }

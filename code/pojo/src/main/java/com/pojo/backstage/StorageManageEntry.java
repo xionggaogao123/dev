@@ -26,7 +26,7 @@ import java.util.List;
 // * outStorageTime  出库库时间    String
 // * outStorageYear  出库年    String
 // * outStorageMonth  出库月    String
- * storageStatus 入库状态( 参考小兰退货 "serviceVersion":2, 维修(不入库)    "serviceVersion":1, 退货  "serviceVersion":3, 换货     4 回收入库     0 新机入库 5 出库) String
+ * storageStatus 入库状态( 参考小兰退货 "serviceVersion":2, 维修(不入库)    "serviceVersion":1, 退货  "serviceVersion":3, 换货     4 回收入库     0 新机入库 5 出库 6待维修) String
  * comment 备注   String
  * useStatus	是否可用状态(0不可用 1可用)    String
  * commentType 备注类型   String

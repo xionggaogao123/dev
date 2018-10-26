@@ -85,7 +85,7 @@ public class BackStageRepairManageService {
                     map.get("phoneModel") == null ? "" : map.get("phoneModel").toString(),
                     map.get("color") == null ? "" : map.get("color").toString(),
                     "",
-                    "0",//新机入库
+                    "6",//待维修状态手机
                     map.get("comment") == null ? "" : map.get("comment").toString(),
                     "0",//不可用
                     "",

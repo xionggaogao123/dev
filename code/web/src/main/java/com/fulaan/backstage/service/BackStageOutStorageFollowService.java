@@ -142,17 +142,26 @@ public class BackStageOutStorageFollowService {
 
             sheet.getRow(i).getCell(2).setCellType(Cell.CELL_TYPE_STRING);//防止parentId是纯数字，读取string类型报错
             String parentId = sheet.getRow(i).getCell(2) == null ? "" : sheet.getRow(i).getCell(2).getStringCellValue();
+
             sheet.getRow(i).getCell(3).setCellType(Cell.CELL_TYPE_STRING);
             String parentMobile = sheet.getRow(i).getCell(3) == null ? "" : sheet.getRow(i).getCell(3).getStringCellValue();
+
+            sheet.getRow(i).getCell(4).setCellType(Cell.CELL_TYPE_STRING);
             String studentName = sheet.getRow(i).getCell(4) == null ? "" : sheet.getRow(i).getCell(4).getStringCellValue();
 
             sheet.getRow(i).getCell(5).setCellType(Cell.CELL_TYPE_STRING);//防止studentId是纯数字，读取string类型报错
             String studentId = sheet.getRow(i).getCell(5) == null ? "" : sheet.getRow(i).getCell(5).getStringCellValue();
+
             sheet.getRow(i).getCell(6).setCellType(Cell.CELL_TYPE_STRING);
             String studentMobile = sheet.getRow(i).getCell(6) == null ? "" : sheet.getRow(i).getCell(6).getStringCellValue();
+
+            sheet.getRow(i).getCell(7).setCellType(Cell.CELL_TYPE_STRING);
             String schoolName = sheet.getRow(i).getCell(7) == null ? "" : sheet.getRow(i).getCell(7).getStringCellValue();
+
             sheet.getRow(i).getCell(8).setCellType(Cell.CELL_TYPE_STRING);
             String accessClass = sheet.getRow(i).getCell(8) == null ? "" : sheet.getRow(i).getCell(8).getStringCellValue();
+
+            sheet.getRow(i).getCell(9).setCellType(Cell.CELL_TYPE_STRING);
             String address = sheet.getRow(i).getCell(9) == null ? "" : sheet.getRow(i).getCell(9).getStringCellValue();
 
             //手机IMEI查验，如果未在出库状态则跳过，并告知前台

@@ -152,9 +152,17 @@ public class BackStageStorageManageService {
         for (int i = 1 ; i<= sheet.getLastRowNum();i++){
             sheet.getRow(i).getCell(0).setCellType(Cell.CELL_TYPE_STRING);//防止imeiNo是纯数字，读取string类型报错
             String imeiNo = sheet.getRow(i).getCell(0) == null ? "" : sheet.getRow(i).getCell(0).getStringCellValue();
+
+            sheet.getRow(i).getCell(1).setCellType(Cell.CELL_TYPE_STRING);
             String phoneModel = sheet.getRow(i).getCell(1) == null ? "" : sheet.getRow(i).getCell(1).getStringCellValue();
+
+            sheet.getRow(i).getCell(2).setCellType(Cell.CELL_TYPE_STRING);
             String color = sheet.getRow(i).getCell(2) == null ? "" : sheet.getRow(i).getCell(2).getStringCellValue();
+
+            sheet.getRow(i).getCell(3).setCellType(Cell.CELL_TYPE_STRING);
             String manufacturer = sheet.getRow(i).getCell(3) == null ? "" : sheet.getRow(i).getCell(3).getStringCellValue();
+
+            sheet.getRow(i).getCell(4).setCellType(Cell.CELL_TYPE_STRING);
             String comment = sheet.getRow(i).getCell(4) == null ? "" : sheet.getRow(i).getCell(4).getStringCellValue();
             //手机IMEI查验，如果更新过则跳过，并告知前台
             int exist = storageManageDao.findDataByImeiNo(imeiNo);

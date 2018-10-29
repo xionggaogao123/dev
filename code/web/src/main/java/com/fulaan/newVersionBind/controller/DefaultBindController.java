@@ -162,6 +162,30 @@ public class DefaultBindController extends BaseController {
     }
 
     /**
+     * 填写信息绑定接口
+     * @param userId
+     * @return
+     */
+    @ApiOperation(value = "添加孩子真实姓名", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/addTrueName")
+    @ResponseBody
+    public RespObj addTrueName(
+            @ApiParam(name = "userId", required = true, value = "userId") @ObjectIdType ObjectId userId,
+            String name){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+
+            newVersionBindService.addTrueName(userId,name);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("修改成功！");
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
      * 获取某个家长的绑定的所有的学生列表
      * @return
      */

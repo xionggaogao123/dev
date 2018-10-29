@@ -3219,6 +3219,9 @@ public class ExcellentCoursesService {
                 classOrderDao.updateToEntry(classOrderEntry.getID());
 
                 if(newVersionBindRelationEntry!=null){
+                    if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+                        name = newVersionBindRelationEntry.getUserName();
+                    }
                     //发送通知
                     try{
                         systemMessageService.sendClassNotice(newVersionBindRelationEntry.getMainUserId(),1,excellentCoursesEntry.getTitle(),name);
@@ -3279,6 +3282,9 @@ public class ExcellentCoursesService {
                 classOrderDao.updateToEntry(classOrderEntry.getID());
 
                 if(newVersionBindRelationEntry!=null){
+                    if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+                        name = newVersionBindRelationEntry.getUserName();
+                    }
                     //发送通知
                     try{
                         systemMessageService.sendClassNotice(newVersionBindRelationEntry.getMainUserId(),1,excellentCoursesEntry.getTitle(),name);
@@ -3340,6 +3346,9 @@ public class ExcellentCoursesService {
                 classOrderDao.updateToEntry(classOrderEntry.getID());
 
                 if(newVersionBindRelationEntry!=null){
+                    if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+                        name = newVersionBindRelationEntry.getUserName();
+                    }
                     //发送通知
                     try{
                         systemMessageService.sendClassNotice(newVersionBindRelationEntry.getMainUserId(),1,excellentCoursesEntry.getTitle(),name);

@@ -656,6 +656,13 @@ public class NewVersionBindService {
         return dtos;
     }
 
+    public void addTrueName(ObjectId userId,String name){
+        NewVersionBindRelationEntry entry= newVersionBindRelationDao.getBindEntry(userId);
+        if(entry!=null){
+            entry.setUserName(name);
+            newVersionBindRelationDao.saveNewVersionBindEntry(entry);
+        }
+    }
 
     public void saveNewVersionBindRelationEntry (
             ObjectId mainUserId,

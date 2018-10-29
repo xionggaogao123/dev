@@ -793,6 +793,9 @@ public class SystemMessageService extends BaseService {
             return;
         }
         ObjectId userId = newVersionBindRelationEntry.getMainUserId();
+        if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+            name = newVersionBindRelationEntry.getUserName();
+        }
         String description = "";
         description  = "您的小孩"+name+"已经登录了!";
         //添加系统信息
@@ -953,6 +956,9 @@ public class SystemMessageService extends BaseService {
                                     //sendStaticNotice(classOrderEntry.getUserId(),2,pushMessageEntry.getTitle(),name);
                                     NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(classOrderEntry.getUserId());
                                     if(newVersionBindRelationEntry!=null){
+                                        if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+                                            name = newVersionBindRelationEntry.getUserName();
+                                        }
                                         sendClassNotice(newVersionBindRelationEntry.getMainUserId(),0,pushMessageEntry.getTitle(),name);
                                     }
                                 }

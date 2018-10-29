@@ -7,6 +7,8 @@ import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.db.excellentCourses.*;
+import com.db.jiaschool.HomeSchoolDao;
+import com.db.jiaschool.SchoolCommunityDao;
 import com.db.lancustom.MonetaryOrdersDao;
 import com.db.user.UserDao;
 import com.fulaan.alipay.config.AlipayNewConfig;
@@ -15,6 +17,7 @@ import com.fulaan.excellentCourses.service.ExcellentGanKaoService;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.*;
+import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.lancustom.MonetaryOrdersEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -52,6 +55,13 @@ public class AppAlipayService  {
     private HourClassDao hourClassDao = new HourClassDao();
 
     private ClassOrderDao classOrderDao  = new ClassOrderDao();
+
+    private SchoolCommunityDao schoolCommunityDao = new SchoolCommunityDao();
+
+    private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
+
+    private CoursesOrderResultDao coursesOrderResultDao = new CoursesOrderResultDao();
+
 
 
     private UserDao userDao = new UserDao();
@@ -584,8 +594,6 @@ public class AppAlipayService  {
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"添加美豆账户充值记录成功！本次充值："+price);
 
 
-
-
             //订课阶段
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"课节订单开始修改状态");
             addLog(userId, contactId, "订单：" + orderId+"课节订单开始修改状态");
@@ -650,6 +658,9 @@ public class AppAlipayService  {
 
                     //修改课节订单为已购买
                     classOrderDao.updateEntryToBuy(objectIdList4);
+
+                    //String or = "支付宝";
+                    this.addCoursesOrderEntry(classOrderEntries.get(0).getUserId(),excellentCoursesEntry.getID(),Constant.ONE,cIds,price,orderId,Constant.ONE);
                 }catch (Exception e){
                     addLog(userId,contactId,"订单输出有错误，请人工修改！");
                     EBusinessLog.error("error",e);
@@ -689,6 +700,31 @@ public class AppAlipayService  {
 
 
 
+    }
+
+    //添加每日订单
+    public void addCoursesOrderEntry(ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source){
+        long orderTime = System.currentTimeMillis();
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(coursesId);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
+        ObjectId schoolId = null;
+        String schoolName = "";
+        if(communityIds!=null && communityIds.size()>0){
+            //所在学校
+            List<ObjectId> schoolIdsList = schoolCommunityDao.getSchoolIdsList(communityIds);
+            if(schoolIdsList.size()>0){
+                HomeSchoolEntry homeSchoolEntry =  homeSchoolDao.getEntryById(schoolIdsList.get(0));
+                schoolId = homeSchoolEntry.getID();
+                schoolName = homeSchoolEntry.getName();
+            }
+        }
+        CoursesOrderResultEntry coursesOrderResultEntry = new CoursesOrderResultEntry(
+                orderTime,userId,schoolId,schoolName,coursesId,excellentCoursesEntry.getTitle(),type
+                ,classList,price,order,source);
+        coursesOrderResultDao.addEntry(coursesOrderResultEntry);
     }
     //添加赶考网信息
     public static void addGankao(final String userId, final String courseId, final int price) {

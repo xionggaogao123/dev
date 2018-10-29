@@ -53,7 +53,7 @@ public class CoursesOrderResultEntry extends BaseDBObject {
         BasicDBObject dbObject=new BasicDBObject()
                 .append("otm", orderTime)
                 .append("uid", userId)
-                .append("cid", schoolId)
+                .append("sid", schoolId)
                 .append("snm", schoolName)
                 .append("cid", coursesId)
                 .append("cnm", coursesName)

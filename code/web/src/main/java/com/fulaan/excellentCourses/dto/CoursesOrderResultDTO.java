@@ -37,6 +37,7 @@ public class CoursesOrderResultDTO {
     private String order;
     private int source;
     private String userName;
+    private int count;
 
     public CoursesOrderResultDTO(){
 
@@ -172,5 +173,13 @@ public class CoursesOrderResultDTO {
 
     public void setSource(int source) {
         this.source = source;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

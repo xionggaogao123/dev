@@ -125,6 +125,42 @@ public class ControlSchoolPhoneService {
         return map;
     }
 
+    //首页加载社群及判断权限
+    public Map<String,Object> getNewSimpleMessageForTea(ObjectId teacherId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ObjectId> oids2 = getMyRoleList(teacherId);
+        if(oids2.size()>0){
+            map.put("isCommunity",true);
+        }else{
+            map.put("isCommunity",false);
+        }
+        //获得在学校中的管控
+        List<ObjectId> oids = schoolCommunityDao.getCommunityIdsListByCommunityIds(oids2);
+        List<CommunityDTO> dtos = new ArrayList<CommunityDTO>();
+        if(oids.size()>0){
+            List<CommunityEntry> communityEntries = communityDao.findByObjectIds(oids);
+            for(CommunityEntry com : communityEntries){
+                CommunityDTO communityDTO = new CommunityDTO(com);
+                communityDTO.setLogo("http://doc.k6kt.com/5bc826c6c4a727797c1c355a.png");
+                dtos.add(communityDTO);
+            }
+            map.put("list",dtos);
+            map.put("isTeacher",true);
+        }else{
+            map.put("isTeacher",false);
+            map.put("list",dtos);
+        }
+        //是否认证
+        TeacherApproveEntry entry = teacherApproveDao.getEntry(teacherId);
+        if(entry != null && entry.getType()==2){
+            map.put("isRen",true);
+        }else{
+            map.put("isRen",false);
+        }
+        //map.put("isRen",true);
+        return map;
+    }
+
 
     //获取某社区详细数据
     public Map<String,Object> getOneCommunityMessageForTea(ObjectId communityId,ObjectId userId){

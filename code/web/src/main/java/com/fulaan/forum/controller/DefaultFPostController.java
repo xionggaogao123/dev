@@ -3245,7 +3245,7 @@ public class DefaultFPostController extends BaseController {
         }
         model.put("login", true);
         model.put("k6kt", sessionValue.getK6kt());
-        model.put("avatar", sessionValue.getMinAvatar());
+        model.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
         model.put("mobileNumber",userEntry.getMobileNumber());
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(new ObjectId(sessionValue.getId()));
         if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){

@@ -32,8 +32,8 @@ public class CoursesOrderResultDao extends BaseDao {
     }
 
     //删除
-    public void delEntry(ObjectId id){
-        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+    public void delEntry(ObjectId userId,ObjectId coursesId){
+        BasicDBObject query = new BasicDBObject("cid",coursesId).append("uid",userId);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSES_ORDER_RESULT, query,updateValue);
     }
@@ -41,9 +41,9 @@ public class CoursesOrderResultDao extends BaseDao {
 
 
     //首页订单查询
-    public List<CoursesOrderResultEntry> getEntryList(ObjectId userId,int type,String startTime,String endTime,String schoolId,String coursesId,int page,int pageSize){
+    public List<CoursesOrderResultEntry> getEntryList(int type,String startTime,String endTime,String schoolId,String coursesId,int page,int pageSize){
         List<CoursesOrderResultEntry> entryList=new ArrayList<CoursesOrderResultEntry>();
-        BasicDBObject query=new BasicDBObject().append("isr", 0).append("uid",userId).append("typ",type);
+        BasicDBObject query=new BasicDBObject().append("isr", 0).append("typ",type);
         if(startTime !=null && !startTime.equals("")&& endTime !=null && !endTime.equals("")){
             long stm = DateTimeUtils.getStrToLongTime(startTime,"yyyy-MM-dd");
             long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd");
@@ -68,9 +68,9 @@ public class CoursesOrderResultDao extends BaseDao {
         return entryList;
     }
 
-    public List<CoursesOrderResultEntry> getAllEntryList(ObjectId userId,int type,String startTime,String endTime,String schoolId,String coursesId){
+    public List<CoursesOrderResultEntry> getAllEntryList(String startTime,String endTime,String schoolId,String coursesId){
         List<CoursesOrderResultEntry> entryList=new ArrayList<CoursesOrderResultEntry>();
-        BasicDBObject query=new BasicDBObject().append("isr", 0).append("uid",userId).append("typ",type);
+        BasicDBObject query=new BasicDBObject().append("isr", 0);
         if(startTime !=null && !startTime.equals("")&& endTime !=null && !endTime.equals("")){
             long stm = DateTimeUtils.getStrToLongTime(startTime,"yyyy-MM-dd");
             long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd");
@@ -95,8 +95,35 @@ public class CoursesOrderResultDao extends BaseDao {
         return entryList;
     }
 
-    public int countEntryList(ObjectId userId,int type,String startTime,String endTime,String schoolId,String coursesId){
-        BasicDBObject query=new BasicDBObject().append("isr", 0).append("uid",userId).append("typ",type);
+    public List<CoursesOrderResultEntry> getNewAllEntryList(int type,String startTime,String endTime,String schoolId,String coursesId){
+        List<CoursesOrderResultEntry> entryList=new ArrayList<CoursesOrderResultEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr", 0).append("typ",type);
+        if(startTime !=null && !startTime.equals("")&& endTime !=null && !endTime.equals("")){
+            long stm = DateTimeUtils.getStrToLongTime(startTime,"yyyy-MM-dd");
+            long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd");
+            BasicDBList basicDBList = new BasicDBList();
+            basicDBList.add(new BasicDBObject("otm",new BasicDBObject(Constant.MONGO_GTE,stm)));
+            basicDBList.add(new BasicDBObject("otm",new BasicDBObject(Constant.MONGO_LTE,etm)));
+            query.append(Constant.MONGO_AND,basicDBList);
+        }
+        if(schoolId !=null && !schoolId.equals("")){
+            query.append("sid",new ObjectId(schoolId));
+        }
+        if(coursesId !=null && !coursesId.equals("")){
+            query.append("cid",new ObjectId(coursesId));
+        }
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSES_ORDER_RESULT, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new CoursesOrderResultEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    public int countEntryList(int type,String startTime,String endTime,String schoolId,String coursesId){
+        BasicDBObject query=new BasicDBObject().append("isr", 0).append("typ",type);
         if(startTime !=null && !startTime.equals("")&& endTime !=null && !endTime.equals("")){
             long stm = DateTimeUtils.getStrToLongTime(startTime,"yyyy-MM-dd");
             long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd");

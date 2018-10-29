@@ -2,6 +2,8 @@ package com.fulaan.txpay.service;
 
 import cn.jiguang.commom.utils.StringUtils;
 import com.db.excellentCourses.*;
+import com.db.jiaschool.HomeSchoolDao;
+import com.db.jiaschool.SchoolCommunityDao;
 import com.db.lancustom.MonetaryOrdersDao;
 import com.db.user.UserDao;
 import com.fulaan.alipay.service.AppAlipayService;
@@ -15,6 +17,7 @@ import com.fulaan.txpay.entity.Unifiedorder;
 import com.fulaan.txpay.entity.UnifiedorderResult;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.*;
+import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.lancustom.MonetaryOrdersEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -55,6 +58,13 @@ public class WxpayService {
     private UserDao userDao = new UserDao();
 
     private MonetaryOrdersDao ordersDao = new MonetaryOrdersDao();
+
+    private SchoolCommunityDao schoolCommunityDao = new SchoolCommunityDao();
+
+    private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
+
+    private CoursesOrderResultDao coursesOrderResultDao = new CoursesOrderResultDao();
+
 
     private static final  int MAX_PRICE = 10000;
     //微信  1
@@ -664,6 +674,10 @@ public class WxpayService {
 
                     //修改课节订单为已购买
                     classOrderDao.updateEntryToBuy(objectIdList4);
+
+                    //String or = "微信";
+                    this.addCoursesOrderEntry(classOrderEntries.get(0).getUserId(),excellentCoursesEntry.getID(),Constant.ONE,cIds,price,orderId,Constant.TWO);
+
                 }catch (Exception e){
 
                 }
@@ -702,7 +716,31 @@ public class WxpayService {
 
 
     }
-    
+
+    //添加每日订单
+    public void addCoursesOrderEntry(ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source){
+        long orderTime = System.currentTimeMillis();
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(coursesId);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
+        ObjectId schoolId = null;
+        String schoolName = "";
+        if(communityIds!=null && communityIds.size()>0){
+            //所在学校
+            List<ObjectId> schoolIdsList = schoolCommunityDao.getSchoolIdsList(communityIds);
+            if(schoolIdsList.size()>0){
+                HomeSchoolEntry homeSchoolEntry =  homeSchoolDao.getEntryById(schoolIdsList.get(0));
+                schoolId = homeSchoolEntry.getID();
+                schoolName = homeSchoolEntry.getName();
+            }
+        }
+        CoursesOrderResultEntry coursesOrderResultEntry = new CoursesOrderResultEntry(
+                orderTime,userId,schoolId,schoolName,coursesId,excellentCoursesEntry.getTitle(),type
+                ,classList,price,order,source);
+        coursesOrderResultDao.addEntry(coursesOrderResultEntry);
+    }
     
     /**
      * 

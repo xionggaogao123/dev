@@ -944,6 +944,50 @@ public class WebBusinessManageController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 合并直播间
+     */
+    @ApiOperation(value = "合并直播间", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/heBingRoom")
+    @ResponseBody
+    public RespObj heBingRoom(
+            @ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+            @ApiParam(name="roomId",required = false,value="roomId") @RequestParam(value="roomId",defaultValue = "") String roomId
+             ) {
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.heBingRoom(new ObjectId(id),roomId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("合并成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("合并失败!");
+        }
+        return respObj;
+    }
+
+    /**
+     * 批量导出订单数据
+     */
+    @ApiOperation(value = "批量导出订单数据", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/exportOrderTemplate")
+    @ResponseBody
+    public void exportOrderTemplate(
+            @ApiParam(name="type",required = false,value="type") @RequestParam(value="type",defaultValue = "") int type,
+            @ApiParam(name="startTime",required = false,value="startTime") @RequestParam(value="startTime",defaultValue = "") String startTime,
+            @ApiParam(name="endTime",required = false,value="endTime") @RequestParam(value="endTime",defaultValue = "") String endTime,
+            @ApiParam(name="schoolId",required = false,value="schoolId") @RequestParam(value="schoolId",defaultValue = "") String schoolId,
+            @ApiParam(name="coursesId",required = false,value="coursesId") @RequestParam(value="coursesId",defaultValue = "") String coursesId,
+            HttpServletResponse response,
+            HttpServletRequest request) {
+        try {
+            businessManageService.exportOrderTemplate(request, response,type,startTime,endTime,schoolId,coursesId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @ApiOperation(value = "查询某个学校下的课程失败", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping(value="/getSchoolCourses")

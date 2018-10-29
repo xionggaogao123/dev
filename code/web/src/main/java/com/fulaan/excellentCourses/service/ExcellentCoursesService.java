@@ -2285,7 +2285,7 @@ public class ExcellentCoursesService {
 
                     //增加每日订单   ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source
                     String or = "后台付费";
-                    if(money!=0){
+                    if(money==0){
                         or = "后台免费";
                         price2 = 0;
                     }
@@ -4054,7 +4054,7 @@ public class ExcellentCoursesService {
         }
         List<ObjectId> communityIdList = excellentCoursesEntry.getCommunityIdList();
         List<ObjectId> objectIdList3 = getMyRoleList(excellentCoursesEntry.getUserId());
-        List<CommunityDTO> objectIdList4 = communityService.getCommunitys2(excellentCoursesEntry.getUserId(), 1, 200);
+        List<CommunityDTO> objectIdList4 = communityService.getCommunitys2(excellentCoursesEntry.getUserId(), 1, 100);
         List<CommunityDTO> objectIdList = new ArrayList<CommunityDTO>();
         for(CommunityDTO communityDTO:objectIdList4){
             if(objectIdList3.contains(new ObjectId(communityDTO.getId()))){

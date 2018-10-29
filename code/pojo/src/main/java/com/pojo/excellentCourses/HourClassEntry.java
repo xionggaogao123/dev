@@ -27,6 +27,9 @@ import java.util.Date;
  * ownId          上课老师id         oid
  * ownName        上课老师姓名       onm
  * subjectName    老师绑定学科       snm
+ *
+ * roomId          直播间id         指向特定直播间（为了某些省事的操作所做的坑爹要求）
+ *
  */
 public class HourClassEntry extends BaseDBObject {
 
@@ -151,6 +154,13 @@ public class HourClassEntry extends BaseDBObject {
     }
     public void setContent(String content){
         setSimpleValue("con", content);
+    }
+
+    public String getRoomId(){
+        return getSimpleStringValue("rid");
+    }
+    public void setRoomId(String roomId){
+        setSimpleValue("rid", roomId);
     }
 
     public int getCurrentTime(){

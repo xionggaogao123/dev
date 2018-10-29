@@ -351,13 +351,14 @@ public class BusinessManageService {
         }
         map.put("hourList",hourClassDTOs);
         //用户订单查询
-        List<ClassOrderEntry> classOrderEntries = classOrderDao.getCoursesUserList(id);
+        List<Map<String,Object>> listMap = new ArrayList<Map<String, Object>>();
+     /*   List<ClassOrderEntry> classOrderEntries = classOrderDao.getCoursesUserList(id);
         List<ObjectId> userIds = new ArrayList<ObjectId>();
         for(ClassOrderEntry classOrderEntry:classOrderEntries){
             userIds.add(classOrderEntry.getUserId());
         }
         List<UserEntry> userEntries = userDao.getUserEntryList(userIds, Constant.FIELDS);
-        List<Map<String,Object>> listMap = new ArrayList<Map<String, Object>>();
+
         int order = 0;
         String order2 = "";
         for(UserEntry userEntry:userEntries){
@@ -389,7 +390,7 @@ public class BusinessManageService {
             userMap.put("userName",name);
             userMap.put("orderId",order2);
             listMap.add(userMap);
-        }
+        }*/
         /*for(ClassOrderEntry classOrderEntry : classOrderEntries){
             ClassOrderDTO dto = new ClassOrderDTO(classOrderEntry);
             UserEntry userEntry = mainUserEntryMap.get(classOrderEntry.getUserId());
@@ -910,7 +911,7 @@ public class BusinessManageService {
             obMap.put("startTime",dto.getStartTime());
             obMap.put("classNewPrice",hourClassEntry.getClassNewPrice());
             obMap.put("order",hourClassEntry.getOrder());
-            obMap.put("level","0");
+            obMap.put("level","1");
             if(endTime<current){
                 obMap.put("status","已 过 期 ");//1 已过期
                 obMap.put("orderId","已 过 期 ");
@@ -959,14 +960,14 @@ public class BusinessManageService {
         for(HourClassEntry hourClassEntry:hourClassEntries){
             ClassOrderEntry classOrderEntry =  entryMap.get(hourClassEntry.getID());
             long endTime = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
-            if(endTime<current){
+           /* if(endTime<current){
 
-            }else{
+            }else{*/
                 if(classOrderEntry!=null && ids.contains(hourClassEntry.getID().toString())){
                     index++;
                     price = sum(price,classOrderEntry.getPrice());
                 }
-            }
+//            }
 
         }
        // map.put("list",);
@@ -1025,10 +1026,10 @@ public class BusinessManageService {
         int money = 1;
         for(HourClassEntry hourClassEntry:hourClassEntries){
             ClassOrderEntry classOrderEntry =  entryMap.get(hourClassEntry.getID());
-            long endTime = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
-            if(endTime<current){
+           // long endTime = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
+           /* if(endTime<current){
 
-            }else{
+            }else{*/
                 if(classOrderEntry!=null && ids.contains(hourClassEntry.getID().toString())){
                     hourIds.add(hourClassEntry.getID());
                     objectIdList.add(classOrderEntry.getID());
@@ -1038,7 +1039,7 @@ public class BusinessManageService {
                     role = classOrderEntry.getRole();
                     money = classOrderEntry.getMoney();
                 }
-            }
+//            }
         }
         if(role==0){
             NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
@@ -1058,6 +1059,17 @@ public class BusinessManageService {
         //订单置为退款中
         classOrderDao.updateEntry(objectIdList);
         backStageService.addLogMessage(id.toString(), "退课：" + excellentCoursesEntry.getTitle() + ",用户ID:" + userId.toString(), LogMessageType.courses.getDes(), uid.toString());
+
+        //退课支出
+        String or = "后台免费";
+        if(or.equals("")){
+            if(money==1){
+                or = "后台付费";
+            }else{
+                or = "后台免费";
+            }
+        }
+        this.addCoursesOrderEntry(userId,id,Constant.TWO,hourIds,price,or,Constant.THREE);
     }
 
     public String daoOrder(ObjectId id,String roomId){
@@ -1192,6 +1204,8 @@ public class BusinessManageService {
         //2. 删除订单，并添加说明
         classOrderDao.delOrderEntry(id, userId);
         backStageService.addLogMessage(id.toString(), "删除直播课堂订单：" + excellentCoursesEntry.getTitle() + ",ID:" + jiaId, LogMessageType.courses.getDes(), uid.toString());
+        //3. 删除对应的每日订单
+        coursesOrderResultDao.delEntry(userId,id);
     }
 
     /**
@@ -1958,8 +1972,8 @@ public class BusinessManageService {
     //查询每日订单
     public Map<String,Object> getDayOrderList(ObjectId userId,int type,String startTime,String endTime,String schoolId,String coursesId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
-        List<CoursesOrderResultEntry> coursesOrderResultEntries = coursesOrderResultDao.getEntryList(userId,type,startTime,endTime,schoolId,coursesId,page,pageSize);
-        int count = coursesOrderResultDao.countEntryList(userId,type,startTime,endTime,schoolId,coursesId);
+        List<CoursesOrderResultEntry> coursesOrderResultEntries = coursesOrderResultDao.getEntryList(type,startTime,endTime,schoolId,coursesId,page,pageSize);
+        int count = coursesOrderResultDao.countEntryList(type,startTime,endTime,schoolId,coursesId);
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         for(CoursesOrderResultEntry coursesOrderResultEntry : coursesOrderResultEntries){
             objectIdList.add(coursesOrderResultEntry.getUserId());
@@ -1973,12 +1987,14 @@ public class BusinessManageService {
             if(userEntry!=null){
                 name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
             }
+            coursesOrderResultDTO.setUserId(userEntry.getGenerateUserCode());
             coursesOrderResultDTO.setUserName(name);
+            coursesOrderResultDTO.setCount(coursesOrderResultDTO.getClassList().size());
             dtos.add(coursesOrderResultDTO);
         }
         map.put("list",dtos);
         map.put("count",count);
-        List<CoursesOrderResultEntry> coursesOrderResultEntries2 = coursesOrderResultDao.getAllEntryList(userId, type, startTime, endTime, schoolId, coursesId);
+        List<CoursesOrderResultEntry> coursesOrderResultEntries2 = coursesOrderResultDao.getAllEntryList(startTime, endTime, schoolId, coursesId);
         Set<ObjectId> schoolSet = new HashSet<ObjectId>();
         Set<ObjectId> coursesSet = new HashSet<ObjectId>();
         double addPrice = 0;
@@ -1999,6 +2015,159 @@ public class BusinessManageService {
 
         return map;
     }
+
+    /**
+     * 批量导出数据  type,startTime,endTime,schoolId,coursesId
+     * @return
+     */
+    public void exportOrderTemplate(HttpServletRequest request, HttpServletResponse response,int type,String startTime,String endTime,String schoolId,String coursesId) {
+        List<CoursesOrderResultEntry> coursesOrderResultEntries2 = coursesOrderResultDao.getNewAllEntryList(type, startTime, endTime, schoolId, coursesId);
+        Set<ObjectId> schoolSet = new HashSet<ObjectId>();
+        Set<ObjectId> coursesSet = new HashSet<ObjectId>();
+        double addPrice = 0;
+        double manPrice = 0;
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        for(CoursesOrderResultEntry coursesOrderResultEntry:coursesOrderResultEntries2){
+            schoolSet.add(coursesOrderResultEntry.getSchoolId());
+            coursesSet.add(coursesOrderResultEntry.getCoursesId());
+            userIds.add(coursesOrderResultEntry.getUserId());
+            if(coursesOrderResultEntry.getType()==1){
+                addPrice = sum(addPrice,coursesOrderResultEntry.getPrice());
+            }else{
+                manPrice = sum(addPrice,coursesOrderResultEntry.getPrice());
+            }
+        }
+
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet;
+        String sheetName = startTime+"至"+endTime+"支出订单统计";
+        if(type==1){
+            sheetName = startTime+"至"+endTime+"收入订单统计";
+        }
+        try {
+            sheet = wb.createSheet(sheetName);
+        } catch (Exception e) {
+            sheet = wb.createSheet("订单统计");
+        }
+
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
+        HSSFRow rowZero = sheet.createRow(0);
+        HSSFCell cellZero = rowZero.createCell(0);
+        if(type==1){
+            cellZero.setCellValue("共计"+coursesOrderResultEntries2.size()+"份订单，当前条件下，共有"+schoolSet.size()+"所学校"+coursesSet.size()+"门课程有交易记录，共收入"+addPrice+"元");
+        }else{
+            cellZero.setCellValue("共计"+coursesOrderResultEntries2.size()+"份订单，当前条件下，共有"+schoolSet.size()+"所学校"+coursesSet.size()+"门课程有退款记录，共支出"+manPrice+"元");
+        }
+
+
+        HSSFRow row = sheet.createRow(1);
+
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("序号");
+
+        cell = row.createCell(1);
+        cell.setCellValue("时间");
+
+        cell = row.createCell(2);
+        cell.setCellValue("课程名称");
+
+        cell = row.createCell(3);
+        cell.setCellValue("所属学校");
+
+        cell = row.createCell(4);
+        cell.setCellValue("购买用户");
+
+        cell = row.createCell(5);
+        cell.setCellValue("用户ID");
+
+        if(type==1){
+            cell = row.createCell(6);
+            cell.setCellValue("购买课节");
+            cell = row.createCell(7);
+            cell.setCellValue("购买金额");
+        }else{
+            cell = row.createCell(6);
+            cell.setCellValue("退课节数");
+            cell = row.createCell(7);
+            cell.setCellValue("退款金额");
+        }
+        cell = row.createCell(8);
+        cell.setCellValue("订单号");
+
+        cell = row.createCell(9);
+        cell.setCellValue("订单来源");
+
+        int rowLine = 2;
+
+        HSSFRow rowItem;
+        HSSFCell cellItem;
+        int index = 0;
+        Map<ObjectId,UserEntry> userEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
+        for(CoursesOrderResultEntry coursesOrderResultEntry:coursesOrderResultEntries2){
+            CoursesOrderResultDTO coursesOrderResultDTO = new CoursesOrderResultDTO(coursesOrderResultEntry);
+            index++;
+            rowItem = sheet.createRow(rowLine);
+
+            cellItem = rowItem.createCell(0);
+            cellItem.setCellValue(index+"");
+
+            cellItem = rowItem.createCell(1);
+            cellItem.setCellValue(coursesOrderResultDTO.getOrderTime());
+
+            cellItem = rowItem.createCell(2);
+            cellItem.setCellValue(coursesOrderResultDTO.getCoursesName());
+
+
+            cellItem = rowItem.createCell(3);
+            cellItem.setCellValue(coursesOrderResultDTO.getSchoolName());
+
+            UserEntry userEntry = userEntryMap.get(coursesOrderResultEntry.getUserId());
+            if(userEntry!=null){
+                String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+
+                cellItem = rowItem.createCell(4);
+                cellItem.setCellValue(name);
+
+                cellItem = rowItem.createCell(5);
+                cellItem.setCellValue(userEntry.getGenerateUserCode());
+            }else{
+                cellItem = rowItem.createCell(4);
+                cellItem.setCellValue("");
+
+                cellItem = rowItem.createCell(5);
+                cellItem.setCellValue("");
+            }
+
+            cellItem = rowItem.createCell(6);
+            cellItem.setCellValue(coursesOrderResultDTO.getClassList().size()+"");
+
+            cellItem = rowItem.createCell(7);
+            cellItem.setCellValue(coursesOrderResultDTO.getPrice());
+
+            cellItem = rowItem.createCell(8);
+            cellItem.setCellValue(coursesOrderResultDTO.getOrder());
+
+            cellItem = rowItem.createCell(9);
+            if(coursesOrderResultDTO.getSource()==1){
+                cellItem.setCellValue("支付宝");
+            }else if(coursesOrderResultDTO.getSource()==2){
+                cellItem.setCellValue("微信");
+            }else{
+                if(coursesOrderResultDTO.getPrice()==0){
+                    cellItem.setCellValue("免费");
+                }else{
+                    cellItem.setCellValue("现金");
+                }
+            }
+
+            rowLine++;
+        }
+        String fileName = sheetName + ".xls";
+        String userAgent = request.getHeader("USER-AGENT");
+        HSSFUtils.exportExcel(userAgent, response, wb, fileName);
+    }
+
+
     //添加每日订单
     public void addCoursesOrderEntry(ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source){
         long orderTime = System.currentTimeMillis();
@@ -2036,6 +2205,14 @@ public class BusinessManageService {
         return dtos;
     }
 
+
+    public void heBingRoom(ObjectId id,String roomId){
+        HourClassEntry hourClassEntry = hourClassDao.getEntry(id);
+        if(hourClassEntry!=null){
+            hourClassEntry.setRoomId(roomId);
+            hourClassDao.addEntry(hourClassEntry);
+        }
+    }
 
 
     public boolean booleanUserAgreement(ObjectId userId) {

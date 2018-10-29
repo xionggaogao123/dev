@@ -1,5 +1,7 @@
 package com.fulaan.instantmessage.service;
 
+import com.db.backstage.TeacherApproveDao;
+import com.db.business.BusinessRoleDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -10,6 +12,8 @@ import com.fulaan.instantmessage.dto.RedDotDTO;
 import com.fulaan.instantmessage.dto.RedResultDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.mongodb.DBObject;
+import com.pojo.backstage.TeacherApproveEntry;
+import com.pojo.business.BusinessRoleEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.instantmessage.RedDotEntry;
@@ -39,6 +43,10 @@ public class RedDotService {
     private GroupExamUserRecordDao groupExamUserRecordDao = new GroupExamUserRecordDao();
 
     private VirtualAndUserDao virtualAndUserDao = new VirtualAndUserDao();
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
+    private BusinessRoleDao  businessRoleDao = new BusinessRoleDao();
 
     /**
      * 批量增加红点记录
@@ -157,19 +165,44 @@ public class RedDotService {
         if(entry != null){
             dtos.setOperation(new RedDotDTO(entry));
         }
+        //大V 不显示通知红点
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        boolean fale = true;
+        if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){
+            BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(userId);
+            if(businessRoleEntry==null){
+                fale = false;//为大V不为蓝色大V
+            }
+        }
         for(RedDotEntry entry1 : entries){
             if(entry1.getType()==ApplyTypeEn.notice.getType()){
-                dtos.setNotice(new RedDotDTO(entry1));
+                if(fale){
+                    dtos.setNotice(new RedDotDTO(entry1));
+                }else{
+                    entry1.setNewNumber(0);
+                    dtos.setNotice(new RedDotDTO(entry1));
+                }
+
             }else if(entry1.getType()==ApplyTypeEn.hot.getType()){
                 dtos.setHot(new RedDotDTO(entry1));
             }else if(entry1.getType()==ApplyTypeEn.text.getType()){
                 dtos.setText(new RedDotDTO(entry1));
             }else if(entry1.getType()==ApplyTypeEn.repordcard.getType()){
-                dtos.setRepordcard(new RedDotDTO(entry1));
+                if(fale){
+                    dtos.setRepordcard(new RedDotDTO(entry1));
+                }else{
+                    entry1.setNewNumber(0);
+                    dtos.setRepordcard(new RedDotDTO(entry1));
+                }
             }else if(entry1.getType()==ApplyTypeEn.study.getType()){
                 dtos.setStudy(new RedDotDTO(entry1));
             }else if(entry1.getType()==ApplyTypeEn.piao.getType()){
-                dtos.setPiao(new RedDotDTO(entry1));
+                if(fale){
+                    dtos.setPiao(new RedDotDTO(entry1));
+                }else{
+                    entry1.setNewNumber(0);
+                    dtos.setPiao(new RedDotDTO(entry1));
+                }
             }else if(entry1.getType()==ApplyTypeEn.happy.getType()){
                 dtos.setHappy(new RedDotDTO(entry1));
             }else if(entry1.getType()==ApplyTypeEn.active.getType()){

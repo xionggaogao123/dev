@@ -38,9 +38,6 @@ public class BackStageStorageManageService {
     private static List<String> stringlist = new ArrayList<String>();
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static Calendar calendar = Calendar.getInstance();
-    private static String inStorageTime = dateFormat.format(new Date());
-    private static String inStorageYear = calendar.get(Calendar.YEAR)+"";
-    private static String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
 
     private StorageManageDao storageManageDao = new StorageManageDao();
 
@@ -346,6 +343,9 @@ public class BackStageStorageManageService {
 
     //冻结需维修 添加单个维修记录
     private String addSingleRepair(Map<String,Object> params) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = params.get("rowPojoIn").toString();
@@ -412,6 +412,9 @@ public class BackStageStorageManageService {
 
     //冻结需维修 添加多个维修记录
     private String addBatchleRepair(Map<String,Object> params) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = params.get("rowPojoIn").toString();

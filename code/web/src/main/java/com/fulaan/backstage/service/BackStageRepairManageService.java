@@ -24,9 +24,6 @@ public class BackStageRepairManageService {
     private static List<String> stringlist = new ArrayList<String>();
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static Calendar calendar = Calendar.getInstance();
-    private static String inStorageTime = dateFormat.format(new Date());
-    private static String inStorageYear = calendar.get(Calendar.YEAR)+"";
-    private static String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
 
     private InOutStorageRecordDao inOutStorageRecordDao = new InOutStorageRecordDao();
 
@@ -370,6 +367,9 @@ public class BackStageRepairManageService {
      * @return
      */
     private String completeRepairToInStorage(Map map) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = map.get("rowPojoIn").toString();
@@ -377,7 +377,7 @@ public class BackStageRepairManageService {
         JSONObject tjsonIn = (JSONObject)jsonObject.get("dataIn");
         System.out.println(tjsonIn);
         //2 添加入库记录
-
+        System.out.println(inStorageTime);
         InOutStorageEntry inOutStorageEntry1 = new InOutStorageEntry(
                 tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString(),
                 tjsonIn.get("phoneModel") == null ? "" : tjsonIn.get("phoneModel").toString(),
@@ -425,7 +425,7 @@ public class BackStageRepairManageService {
         String imeiNo = tjsonIn.get("imeiNo").toString();
         String storageStatus = "2";//维修入库
         String useStatus = "1";//可用状态
-
+        System.out.println(inStorageTime);
         result +="维修入库：";
         result += storageManageDao.updateStorageInfoByImeiNo(imeiNo, storageStatus, useStatus, inStorageTime, inStorageYear, inStorageMonth);
         return result;
@@ -437,6 +437,9 @@ public class BackStageRepairManageService {
      * @return
      */
     private String completeRepairToOutStorage(Map map) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = map.get("rowPojoIn").toString();

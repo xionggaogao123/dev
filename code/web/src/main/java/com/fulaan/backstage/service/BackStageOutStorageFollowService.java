@@ -35,9 +35,6 @@ public class BackStageOutStorageFollowService {
     private static List<String> stringlist = new ArrayList<String>();
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static Calendar calendar = Calendar.getInstance();
-    private static String inStorageTime = dateFormat.format(new Date());
-    private static String inStorageYear = calendar.get(Calendar.YEAR)+"";
-    private static String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
 
     private InOutStorageRecordDao inOutStorageRecordDao = new InOutStorageRecordDao();
 
@@ -235,6 +232,9 @@ public class BackStageOutStorageFollowService {
      * @return
      */
     private String addSinglePhoneToRepair(Map<String,Object> params) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = params.get("rowPojoIn").toString();
@@ -243,12 +243,6 @@ public class BackStageOutStorageFollowService {
         System.out.println(tjsonIn);
 
         //添加到维修管理
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        Calendar calendar = Calendar.getInstance();
-//        String inStorageTime = dateFormat.format(new Date());
-//        String inStorageYear = calendar.get(Calendar.YEAR)+"";
-//        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
-//        List<String> stringlist = new ArrayList<String>();
         InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(
                 tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString(),
                 tjsonIn.get("phoneModel") == null ? "" : tjsonIn.get("phoneModel").toString(),
@@ -299,6 +293,9 @@ public class BackStageOutStorageFollowService {
      * @return
      */
     private String singlePhoneToReturn(Map<String,Object> params) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = params.get("rowPojoIn").toString();
@@ -307,12 +304,7 @@ public class BackStageOutStorageFollowService {
         System.out.println(tjsonIn);
 
         //添加当前手机 退货入库记录
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        Calendar calendar = Calendar.getInstance();
-//        String inStorageTime = dateFormat.format(new Date());
-//        String inStorageYear = calendar.get(Calendar.YEAR)+"";
-//        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
-//        List<String> stringlist = new ArrayList<String>();
+
         InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(
                 tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString(),
                 tjsonIn.get("phoneModel") == null ? "" : tjsonIn.get("phoneModel").toString(),
@@ -373,6 +365,9 @@ public class BackStageOutStorageFollowService {
      * @return
      */
     private String singlePhoneToExchangeReturn(Map<String,Object> params) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = params.get("rowPojoIn").toString();
@@ -380,12 +375,6 @@ public class BackStageOutStorageFollowService {
         JSONObject tjsonIn = (JSONObject)jsonObject.get("dataIn");
         System.out.println(tjsonIn);
 
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        Calendar calendar = Calendar.getInstance();
-//        String inStorageTime = dateFormat.format(new Date());
-//        String inStorageYear = calendar.get(Calendar.YEAR)+"";
-//        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
-//        List<String> stringlist = new ArrayList<String>();
 
         //添加当前手机 换货入库记录
         InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(
@@ -487,6 +476,9 @@ public class BackStageOutStorageFollowService {
      * @return
      */
     private String singlePhoneToRecycleReturn(Map<String,Object> params) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = params.get("rowPojoIn").toString();
@@ -494,12 +486,6 @@ public class BackStageOutStorageFollowService {
         JSONObject tjsonIn = (JSONObject)jsonObject.get("dataIn");
         System.out.println(tjsonIn);
 
-//        List<String> stringlist = new ArrayList<String>();
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        Calendar calendar = Calendar.getInstance();
-//        String inStorageTime = dateFormat.format(new Date());
-//        String inStorageYear = calendar.get(Calendar.YEAR)+"";
-//        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
 
         //添加当前手机 回收入库记录
         InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(
@@ -607,6 +593,9 @@ public class BackStageOutStorageFollowService {
      * @return
      */
     private String addBatchlePhoneToRepair(Map<String,Object> params) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = params.get("rowPojoIn").toString();
@@ -614,12 +603,6 @@ public class BackStageOutStorageFollowService {
         JSONArray jsonArray = (JSONArray)jsonObject.get("dataIn");
         System.out.println(jsonArray);
 
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        Calendar calendar = Calendar.getInstance();
-//        String inStorageTime = dateFormat.format(new Date());
-//        String inStorageYear = calendar.get(Calendar.YEAR)+"";
-//        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
-//        List<String> stringlist = new ArrayList<String>();
 
         //并封装
         List<DBObject> dbObjectList = new ArrayList<DBObject>();
@@ -677,6 +660,9 @@ public class BackStageOutStorageFollowService {
      * @return
      */
     private String batchPhoneToReturn(Map<String,Object> params) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = params.get("rowPojoIn").toString();
@@ -684,12 +670,6 @@ public class BackStageOutStorageFollowService {
         JSONArray jsonArray = (JSONArray)jsonObject.get("dataIn");
         System.out.println(jsonArray);
 
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        Calendar calendar = Calendar.getInstance();
-//        String inStorageTime = dateFormat.format(new Date());
-//        String inStorageYear = calendar.get(Calendar.YEAR)+"";
-//        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
-//        List<String> stringlist = new ArrayList<String>();
 
         //并封装
         List<DBObject> dbObjectList = new ArrayList<DBObject>();
@@ -761,6 +741,9 @@ public class BackStageOutStorageFollowService {
      * @return
      */
     private String batchPhoneToExchangeReturn(Map<String,Object> params) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = params.get("rowPojoIn").toString();
@@ -874,6 +857,9 @@ public class BackStageOutStorageFollowService {
      * @return
      */
     private String batchPhoneToRecycleReturn(Map<String,Object> params) {
+        String inStorageTime = dateFormat.format(new Date());
+        String inStorageYear = calendar.get(Calendar.YEAR)+"";
+        String inStorageMonth = (calendar.get(Calendar.MONTH)+1)+"";
         String result = "";
         //解析数据
         String rowPojoIn = params.get("rowPojoIn").toString();

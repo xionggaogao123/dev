@@ -131,6 +131,7 @@ public class BackStageAdminManageService {
                         //UserRoleJurisdictionDto 将查询转换出权限中文RoleJurisdictionName
                         UserRoleJurisdictionEntry jurisdictionEntry = userRoleJurisdictionDao.getEntryById(settingEntry.getJurisdictionLevelId());
                         UserRoleJurisdictionDto userRoleJurisdictionDto = new UserRoleJurisdictionDto(jurisdictionEntry);
+                        resultDTO.setUserRoleJurisdictionDto(userRoleJurisdictionDto);
                         resultDTO.setRoleJurisdictionName(userRoleJurisdictionDto.getRoleJurisdictionName());
                         resultDTO.setLevel(userRoleJurisdictionDto.getLevel());
                     }
@@ -185,6 +186,7 @@ public class BackStageAdminManageService {
                     //UserRoleJurisdictionDto 将查询转换出权限中文RoleJurisdictionName
                     UserRoleJurisdictionEntry jurisdictionEntry = userRoleJurisdictionDao.getEntryById(settingEntry.getJurisdictionLevelId());
                     UserRoleJurisdictionDto userRoleJurisdictionDto = new UserRoleJurisdictionDto(jurisdictionEntry);
+                    resultDTO.setUserRoleJurisdictionDto(userRoleJurisdictionDto);
                     resultDTO.setRoleJurisdictionName(userRoleJurisdictionDto.getRoleJurisdictionName());
                     resultDTO.setLevel(userRoleJurisdictionDto.getLevel());
                 }

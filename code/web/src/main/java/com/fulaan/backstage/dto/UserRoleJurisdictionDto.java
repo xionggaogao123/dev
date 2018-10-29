@@ -22,6 +22,7 @@ public class UserRoleJurisdictionDto {
     private List<String> rolePath;
     //用来展示权限tree value 对应的中文name
     private String roleJurisdictionName;
+    private List<String> roleJurisdictionNameList;
     private String createBy;
     private String creationDate;
     private String lastUpdateBy;
@@ -45,6 +46,7 @@ public class UserRoleJurisdictionDto {
                 jurisdictionTreeEntries.add(jurisdictionTreeEntry);
             }
             String roleJurisdictionNameTemp = "";
+            List<String> roleJurisdictionNameList = new ArrayList<String>();
             for (String clas : classList) {
                 String clasEach = "";
                 for (JurisdictionTreeEntry treeEntry : jurisdictionTreeEntries){
@@ -54,7 +56,9 @@ public class UserRoleJurisdictionDto {
                 }
                 clasEach = clas+"："+clasEach;
                 roleJurisdictionNameTemp += clasEach;
+                roleJurisdictionNameList.add(clasEach);
             }
+            this.roleJurisdictionNameList = roleJurisdictionNameList;
             this.roleJurisdictionName = roleJurisdictionNameTemp;
         }
         this.rolePath = entry.getRolePath();
@@ -140,5 +144,13 @@ public class UserRoleJurisdictionDto {
 
     public void setRoleJurisdictionName(String roleJurisdictionName) {
         this.roleJurisdictionName = roleJurisdictionName;
+    }
+
+    public List<String> getRoleJurisdictionNameList() {
+        return roleJurisdictionNameList;
+    }
+
+    public void setRoleJurisdictionNameList(List<String> roleJurisdictionNameList) {
+        this.roleJurisdictionNameList = roleJurisdictionNameList;
     }
 }

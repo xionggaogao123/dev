@@ -21,6 +21,7 @@ public class JurisdictionTreeDao extends BaseDao {
 
     public List<JurisdictionTreeEntry> getJurisdictionTree(Map map) {
         BasicDBObject query = new BasicDBObject();
+        query.append("isr", 0);
         if (map.get("class") != null) {
             query.append("class", map.get("class"));
         }

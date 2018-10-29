@@ -282,7 +282,7 @@ public class BackStageStorageManageService {
         int countNewJoin = storageManageDao.getStorageListGroupByStorageStatus();
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject1 = new JSONObject();
-        jsonObject1.put("name","全部("+countAll+")");
+        jsonObject1.put("name","全部入库("+countAll+")");
         jsonObject1.put("value","");
         jsonArray.add(jsonObject1);
 
@@ -302,7 +302,7 @@ public class BackStageStorageManageService {
         int countCanUse = storageManageDao.getStorageListGroupByUseStatus();
         JSONArray jsonArrayStatus = new JSONArray();
         JSONObject jsonObject1Status = new JSONObject();
-        jsonObject1Status.put("name","全部("+countAll+")");
+        jsonObject1Status.put("name","全部状态("+countAll+")");
         jsonObject1Status.put("value","");
         jsonArrayStatus.add(jsonObject1Status);
 

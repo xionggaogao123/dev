@@ -151,7 +151,8 @@
         </div>
         <%-- mk-s后加 mk-ls跳转 --%>
         <div class="link-mk clearfix">
-            <div class="mk-s" ><%-- id="forum" --%>
+            <div class="mk-s" >
+                <%-- id="forum" --%>
                 <div class="mk8-pho"></div>
                 <div class="mk-name">
                     <span>才艺之星</span>
@@ -159,7 +160,8 @@
                 <div class="mk-intro">各种版块，无论是发碎碎念<br>还是秀才艺</div>
             </div>
             <div class="line-thr"></div>
-            <div class="mk-s" ><%-- id="competition" --%>
+            <div class="mk-s" >
+                <%-- id="competition" --%>
                 <div class="mk7-pho"></div>
                 <div class="mk-name">
                     <span>大赛</span>
@@ -168,7 +170,8 @@
                 <div class="i-hot"></div>
             </div>
             <div class="line-thr"></div>
-            <div class="mk-s" ><%-- id="playmate" --%>
+            <div class="mk-s" >
+                <%-- id="playmate" --%>
                 <div class="mk1-pho"></div>
                 <div class="mk-name">
                     <span>找玩伴</span>
@@ -176,7 +179,8 @@
                 <div class="mk-intro">结识附近志趣相投的小伙伴，<br>安全快乐的玩耍</div>
             </div>
             <div class="line-thr"></div>
-            <div class="mk-s" ><%-- id="train" --%>
+            <div class="mk-s" >
+                <%-- id="train" --%>
                 <div class="mk4-pho"></div>
                 <div class="mk-name">
                     <span>找培训</span>
@@ -189,7 +193,8 @@
                 <div></div>
                 <div></div>
             </div>
-            <div class="mk-s" ><%-- id="forumIndex" --%>
+            <div class="mk-s" >
+                <%-- id="forumIndex" --%>
                 <div class="mk6-pho"></div>
                 <div class="mk-name">
                     <span>教育商城</span>

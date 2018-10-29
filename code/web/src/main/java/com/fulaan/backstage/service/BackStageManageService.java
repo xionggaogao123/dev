@@ -136,15 +136,21 @@ public class BackStageManageService {
 //                    pajsObject.put("id",entry.getID().toString());
                     pajsObject.put("label", entry.getName());
                     //判断跟节点是否有子children节点
+                    boolean haveChild = false;
                     for (JurisdictionTreeEntry entryTemp : entryList) {
                         //判断当前节点是否有children子节点 有子节点 Id就封装成空
                         if (entry.getID().toString().equals(entryTemp.getParentId())) {
                             pajsObject.put("id", "");
                             pajsObject.put("children", getChildren(entryList, entry.getID().toString()));
-                        } else {
+                            haveChild = true;
+                        } /*else {
 //                            当前节点为叶子节点
-                            pajsObject.put("id", entry.getID().toString());
-                        }
+//                            pajsObject.put("id", entry.getID().toString());
+                        }*/
+                    }
+                    if (haveChild == false){
+                        //当前节点为叶子节点
+                        pajsObject.put("id", entry.getID().toString());
                     }
                     jsonArray.add(pajsObject);
                 }

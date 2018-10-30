@@ -1010,6 +1010,23 @@ public class UserDao extends BaseDao {
         return dbo == null ? null : new UserEntry((BasicDBObject) dbo);
     }
 
+    /**
+     * 根据用户名或者昵称查找
+     * @param userName
+     * @return
+     */
+    public UserEntry findByUserNameOrNickName(String userName) {
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1 = new BasicDBObject().append("nm", userName.toLowerCase());
+        BasicDBObject query2 = new BasicDBObject().append("nnm", userName.toLowerCase());
+        values.add(query1);
+        values.add(query2);
+        query.put(Constant.MONGO_OR, values);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
+        return dbo == null ? null : new UserEntry((BasicDBObject) dbo);
+    }
+
     public UserEntry findByPhone(String phone) {
         BasicDBObject query = new BasicDBObject()
                 .append("mn", phone.toLowerCase());

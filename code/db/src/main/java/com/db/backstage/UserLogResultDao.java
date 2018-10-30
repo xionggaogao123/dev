@@ -97,9 +97,12 @@ public class UserLogResultDao extends BaseDao {
     }
 
     public List<UserLogResultEntry> getLogsByUserId(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("uid", userId);
+        query.append("ir",Constant.ZERO);
+        query.append("roleId", new BasicDBObject(Constant.MONGO_NE, null));
         List<UserLogResultEntry> entries = new ArrayList<UserLogResultEntry>();
-        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
-                new BasicDBObject().append("uid", userId),Constant.FIELDS);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,query);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new UserLogResultEntry(dbObject));

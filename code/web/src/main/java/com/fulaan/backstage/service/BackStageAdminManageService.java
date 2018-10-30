@@ -116,7 +116,7 @@ public class BackStageAdminManageService {
                     //用户基础信息
                     UserEntry userEntry = userDao.findByUserId(entry.getUserId());
                     if(null!=userEntry){
-                        resultDTO.setUserName(userEntry.getUserName());
+                        resultDTO.setUserName(userEntry.getNickName() != "" ? userEntry.getNickName() : userEntry.getUserName());
                         resultDTO.setNickName(userEntry.getNickName());
                         resultDTO.setRegisterTime(sd.format(new Date(userEntry.getRegisterTime())));
                         resultDTO.setJiaId(userEntry.getGenerateUserCode());
@@ -143,7 +143,7 @@ public class BackStageAdminManageService {
             //当输入用户信息userInfo（userId 或 userName）时
             //根据用户信息查询用户Id
             ObjectId userId = null;
-            UserEntry userEntry = userDao.findByUserName(map.get("userInfo").toString());
+            UserEntry userEntry = userDao.findByUserNameOrNickName(map.get("userInfo").toString());
             if (null != userEntry){
                 //根据用户名查询到
                 userId = userEntry.getID();
@@ -171,7 +171,7 @@ public class BackStageAdminManageService {
                 resultDTO.setUserId(entry.getUserId().toString());
                 //带出用户信息
                 if(null!=userEntry){
-                    resultDTO.setUserName(userEntry.getUserName());
+                    resultDTO.setUserName(userEntry.getNickName() != "" ? userEntry.getNickName() : userEntry.getUserName());
                     resultDTO.setNickName(userEntry.getNickName());
                     resultDTO.setRegisterTime(sd.format(new Date(userEntry.getRegisterTime())));
                     resultDTO.setJiaId(userEntry.getGenerateUserCode());

@@ -156,66 +156,22 @@ public class AppNewVoteEntry extends BaseDBObject {
         setSimpleValue("uid",userId);
     }
 
-
-    public String getDescription(){
-        return getSimpleStringValue("des");
+    public int getRole(){
+        return  getSimpleIntegerValue("rol");
+    }
+    public void setRole(int role){
+        setSimpleValue("rol",role);
     }
 
-    public void setDescription(String description){
-        setSimpleValue("des",description);
+    public int getUserCount(){
+        return getSimpleIntegerValue("uco");
     }
 
-    public int getAllWriterNumber(){
-        return getSimpleIntegerValueDef("awm", 0);
-    }
-
-    public void setAllWriterNumber(int allWriterNumber){
-        setSimpleValue("awm",allWriterNumber);
+    public void setUserCount(int userCount){
+        setSimpleValue("uco",userCount);
     }
 
 
-    public int getAllLoadNumber(){
-        return getSimpleIntegerValueDef("alm",0);
-    }
-
-    public void setAllLoadNumber(int allLoadNumber){
-        setSimpleValue("alm",allLoadNumber);
-    }
-
-    public int getStatus(){
-        return getSimpleIntegerValue("sta");
-    }
-
-    public void setStatus(int status){
-        setSimpleValue("sta",status);
-    }
-    public int getWriteNumber(){
-        return getSimpleIntegerValue("wnm");
-    }
-
-    public void setWriteNumber(int writeNumber){
-        setSimpleValue("wnm",writeNumber);
-    }  public int getTalkNumber(){
-        return getSimpleIntegerValue("tnm");
-    }
-
-    public void setTalkNumber(int talkNumber){
-        setSimpleValue("tnm",talkNumber);
-    }
-    public int getLoadNumber(){
-        return getSimpleIntegerValue("lnm");
-    }
-
-    public void setLoadNumber(int loadNumber){
-        setSimpleValue("lnm",loadNumber);
-    }
-    public int getQuestionNumber(){
-        return getSimpleIntegerValue("qnm");
-    }
-
-    public void setQuestionNumber(int questionNumber){
-        setSimpleValue("qnm",questionNumber);
-    }
 
     public void setVoiceList(List<AttachmentEntry> voiceList){
         setSimpleValue("vt",MongoUtils.fetchDBObjectList(voiceList));
@@ -272,43 +228,111 @@ public class AppNewVoteEntry extends BaseDBObject {
         }
         return videoEntries;
     }
-    public String getSubject(){
-        return getSimpleStringValue("sub");
+
+    public int getType(){
+        return getSimpleIntegerValueDef("typ", 0);
     }
 
-    public void setSubject(String subject){
-        setSimpleValue("sub",subject);
+    public void setType(int type){
+        setSimpleValue("typ",type);
+    }
+
+    public List<Integer> getVoteTypeList(){
+        @SuppressWarnings("rawtypes")
+        List voteTypeList =(List)getSimpleObjectValue("vtl");
+        return voteTypeList;
+    }
+
+    public void setVoteTypeList(List<Integer> voteTypeList){
+        setSimpleValue("vtl",voteTypeList);
+    }
+
+    public int getVoteCount(){
+        return getSimpleIntegerValue("vct");
+    }
+
+    public void setVoteCount(int voteCount){
+        setSimpleValue("vct",voteCount);
+    }
+
+    public int getSign(){
+        return getSimpleIntegerValue("sig");
+    }
+
+    public void setSign(int sign){
+        setSimpleValue("sig",sign);
+    }
+
+    public int getOpen(){
+        return getSimpleIntegerValue("ope");
+    }
+
+    public void setOpen(int open){
+        setSimpleValue("ope",open);
     }
 
 
-
-    public String getRecipientName(){
-        return getSimpleStringValue("rec");
+    public long getApplyStartTime(){
+        return getSimpleLongValue("ast");
+    }
+    public void setApplyStartTime(long applyStartTime){
+        setSimpleValue("ast",applyStartTime);
     }
 
-    public void setRecipientName(String recipientName){
-        setSimpleValue("rec",recipientName);
+    public long getApplyEndTime(){
+        return getSimpleLongValue("aet");
+    }
+    public void setApplyEndTime(long applyEndTime){
+        setSimpleValue("aet",applyEndTime);
     }
 
-    public ObjectId getTutorId(){
-        return getSimpleObjecIDValue("tid");
+    public void setCommunityList(List<ObjectId> communityList){
+        setSimpleValue("clt", MongoUtils.convert(communityList));
     }
 
-    public void setTutorId(ObjectId tutorId){
-        setSimpleValue("tid",tutorId);
+    public List<ObjectId> getCommunityList(){
+        ArrayList<ObjectId> communityIdList = new ArrayList<ObjectId>();
+        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("clt");
+        if(dbList != null && !dbList.isEmpty()){
+            for (Object obj : dbList) {
+                communityIdList.add((ObjectId)obj);
+            }
+        }
+        return communityIdList;
     }
 
-    public long getDateTime(){
-        return getSimpleLongValue("dtm");
+
+    public List<Integer> getApplyTypeList(){
+        @SuppressWarnings("rawtypes")
+        List appList =(List)getSimpleObjectValue("aty");
+        return appList;
     }
-    public void setDateTime(long dateTime){
-        setSimpleValue("dtm",dateTime);
+
+    public void setApplyTypeList(List<Integer> applyTypeList){
+        setSimpleValue("aty",applyTypeList);
     }
-    public long getLoadTime(){
-        return getSimpleLongValue("ltm");
+
+    public int getApplyCount(){
+        return getSimpleIntegerValue("aco");
     }
-    public void setLoadTime(long loadTime){
-        setSimpleValue("ltm",loadTime);
+
+    public void setApplyCount(int applyCount){
+        setSimpleValue("aco",applyCount);
+    }
+
+
+    public long getVoteStartTime(){
+        return getSimpleLongValue("vst");
+    }
+    public void setVoteStartTime(long voteStartTime){
+        setSimpleValue("vst",voteStartTime);
+    }
+
+    public long getVoteEndTime(){
+        return getSimpleLongValue("vet");
+    }
+    public void setVoteEndTime(long voteEndTime){
+        setSimpleValue("vet",voteEndTime);
     }
 
 
@@ -319,21 +343,9 @@ public class AppNewVoteEntry extends BaseDBObject {
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
     }
-    public int getMonth(){
-        return getSimpleIntegerValue("mon");
-    }
 
-    public void setMonth(int month){
-        setSimpleValue("mon",month);
-    }
 
-    public int getShowType(){
-        return getSimpleIntegerValueDef("sht", 0);
-    }
 
-    public void setShowType(int showType){
-        setSimpleValue("sht",showType);
-    }
 
 
 }

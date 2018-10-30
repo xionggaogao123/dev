@@ -59,6 +59,18 @@ public class CommunityDao extends BaseDao {
         }
         return communitys;
     }
+    public String findStringByObjectIds(List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+        StringBuffer sb = new StringBuffer();
+        for (DBObject dbo : dbObjects) {
+            sb.append(new CommunityEntry(dbo).getCommunityName());
+            sb.append("、");
+        }
+        sb.substring(0,sb.length()-1);
+        return sb.toString();
+    }
+
     public List<CommunityEntry> findByNotObjectIds(List<ObjectId> ids) {
         BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids)).append("r",0);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);

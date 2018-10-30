@@ -2,6 +2,8 @@ package com.fulaan.txpay.service;
 
 import cn.jiguang.commom.utils.StringUtils;
 import com.db.excellentCourses.*;
+import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.MineCommunityDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.lancustom.MonetaryOrdersDao;
@@ -17,6 +19,8 @@ import com.fulaan.txpay.entity.Unifiedorder;
 import com.fulaan.txpay.entity.UnifiedorderResult;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.*;
+import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.lancustom.MonetaryOrdersEntry;
 import com.pojo.user.UserEntry;
@@ -64,6 +68,10 @@ public class WxpayService {
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
 
     private CoursesOrderResultDao coursesOrderResultDao = new CoursesOrderResultDao();
+
+    private MineCommunityDao mineCommunityDao = new MineCommunityDao();
+
+    private CommunityDao communityDao = new CommunityDao();
 
 
     private static final  int MAX_PRICE = 10000;
@@ -717,14 +725,30 @@ public class WxpayService {
 
     }
 
+    public List<ObjectId> getCommunitys3(ObjectId uid, int page, int pageSize) {
+        List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
+        List<ObjectId> list = new ArrayList<ObjectId>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
+            communityIds.add(mineCommunityEntry.getCommunityId());
+        }
+        List<CommunityEntry> communityEntries = communityDao.findByNotObjectIds(communityIds);
+        for(CommunityEntry communityEntry:communityEntries){
+            list.add(communityEntry.getID());
+        }
+        return list;
+    }
+
     //添加每日订单
     public void addCoursesOrderEntry(ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source){
         long orderTime = System.currentTimeMillis();
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(coursesId);
         if(excellentCoursesEntry==null){
+            EBusinessLog.error("error",new Exception("课程不存在，"+coursesId.toString()));
             return;
         }
-        List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
+        List<ObjectId>  communityIds =this.getCommunitys3(userId, 1, 100);
+        //List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
         ObjectId schoolId = null;
         String schoolName = "";
         if(communityIds!=null && communityIds.size()>0){

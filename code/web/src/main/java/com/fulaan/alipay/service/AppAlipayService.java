@@ -7,6 +7,8 @@ import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.db.excellentCourses.*;
+import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.MineCommunityDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.lancustom.MonetaryOrdersDao;
@@ -17,6 +19,8 @@ import com.fulaan.excellentCourses.service.ExcellentGanKaoService;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.*;
+import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.lancustom.MonetaryOrdersEntry;
 import com.pojo.user.UserEntry;
@@ -62,6 +66,9 @@ public class AppAlipayService  {
 
     private CoursesOrderResultDao coursesOrderResultDao = new CoursesOrderResultDao();
 
+    private MineCommunityDao mineCommunityDao = new MineCommunityDao();
+
+    private CommunityDao communityDao = new CommunityDao();
 
 
     private UserDao userDao = new UserDao();
@@ -661,6 +668,7 @@ public class AppAlipayService  {
 
                     //String or = "支付宝";
                     this.addCoursesOrderEntry(classOrderEntries.get(0).getUserId(),excellentCoursesEntry.getID(),Constant.ONE,cIds,price,orderId,Constant.ONE);
+                    addLog(userId,contactId,"记录生成");
                 }catch (Exception e){
                     addLog(userId,contactId,"订单输出有错误，请人工修改！");
                     EBusinessLog.error("error",e);
@@ -701,15 +709,30 @@ public class AppAlipayService  {
 
 
     }
+    public List<ObjectId> getCommunitys3(ObjectId uid, int page, int pageSize) {
+        List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
+        List<ObjectId> list = new ArrayList<ObjectId>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
+            communityIds.add(mineCommunityEntry.getCommunityId());
+        }
+        List<CommunityEntry> communityEntries = communityDao.findByNotObjectIds(communityIds);
+        for(CommunityEntry communityEntry:communityEntries){
+            list.add(communityEntry.getID());
+        }
+        return list;
+    }
 
     //添加每日订单
     public void addCoursesOrderEntry(ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source){
         long orderTime = System.currentTimeMillis();
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(coursesId);
         if(excellentCoursesEntry==null){
+            EBusinessLog.error("error",new Exception("课程不存在，"+coursesId.toString()));
             return;
         }
-        List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
+        List<ObjectId>  communityIds =this.getCommunitys3(userId, 1, 100);
+        //List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
         ObjectId schoolId = null;
         String schoolName = "";
         if(communityIds!=null && communityIds.size()>0){

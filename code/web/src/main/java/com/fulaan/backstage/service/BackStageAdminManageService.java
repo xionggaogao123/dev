@@ -57,7 +57,7 @@ public class BackStageAdminManageService {
             userLogResultDao.saveUserLogEntry(entry);
             this.addLogMessage
                     (entry.getID().toString(),
-                    "新增了管理员用户"+userEntry.getUserName()+"权限为"+new ObjectId(map.get("roleId").toString()),
+                    "新增了管理员用户"+userEntry.getUserName()+"权限为"+map.get("roleName").toString(),
                     LogMessageType.manageUserRole.getDes(),userEntry.getID().toString()
                     );
             msg = entry.getID().toString();
@@ -66,7 +66,7 @@ public class BackStageAdminManageService {
             resultEntry.setRoleId(new ObjectId(map.get("roleId").toString()));
             this.addLogMessage
                     (resultEntry.getID().toString(),
-                    "修改了"+userEntry.getUserName()+"的权限为"+new ObjectId(map.get("roleId").toString()),
+                    "修改了"+userEntry.getUserName()+"的权限为"+map.get("roleName").toString(),
                     LogMessageType.manageUserRole.getDes(), userEntry.getID().toString()
                     );
             userLogResultDao.saveUserLogEntry(resultEntry);

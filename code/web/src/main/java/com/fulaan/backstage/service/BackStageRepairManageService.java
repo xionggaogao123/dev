@@ -446,49 +446,49 @@ public class BackStageRepairManageService {
         JSONObject jsonObject = JSONObject.parseObject(rowPojoIn);
         JSONObject tjsonIn = (JSONObject)jsonObject.get("dataIn");
         System.out.println(tjsonIn);
-        //发货前做入库记录
-        InOutStorageEntry inOutStorageEntry1 = new InOutStorageEntry(
-                tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString(),
-                tjsonIn.get("phoneModel") == null ? "" : tjsonIn.get("phoneModel").toString(),
-                tjsonIn.get("color") == null ? "" : tjsonIn.get("color").toString(),
-                tjsonIn.get("manufacturer") == null ? "" : tjsonIn.get("manufacturer").toString(),
-                inStorageTime,
-                inStorageYear,
-                inStorageMonth,
-                tjsonIn.get("storageStatus") == null ? "" : tjsonIn.get("storageStatus").toString(),
-                tjsonIn.get("comment") == null ? "" : tjsonIn.get("comment").toString(),
-                tjsonIn.get("projectId") == null ? "" : tjsonIn.get("projectId").toString(),
-                tjsonIn.get("projectName") == null ? "" : tjsonIn.get("projectName").toString(),
-                tjsonIn.get("projectDockPeople") == null ? "" : tjsonIn.get("projectDockPeople").toString(),
-                tjsonIn.get("schoolName") == null ? "" : tjsonIn.get("schoolName").toString(),
-                tjsonIn.get("accessClass") == null ? "" : tjsonIn.get("accessClass").toString(),
-                tjsonIn.get("accessObj") == null ? "" : tjsonIn.get("accessObj").toString(),
-                tjsonIn.get("contactInfo") == null ? "" : tjsonIn.get("contactInfo").toString(),
-                tjsonIn.get("address") == null ? "" : tjsonIn.get("address").toString(),
-                tjsonIn.get("deliveryTime") == null ? "" : tjsonIn.get("deliveryTime").toString(),
-                "",
-                "",
-                "",
-                tjsonIn.get("parentName") == null ? "" : tjsonIn.get("parentName").toString(),
-                tjsonIn.get("parentMobile") == null ? "" : tjsonIn.get("parentMobile").toString(),
-                tjsonIn.get("parentId") == null ? "" : tjsonIn.get("parentId").toString(),
-                tjsonIn.get("studentName") == null ? "" : tjsonIn.get("studentName").toString(),
-                tjsonIn.get("studentMobile") == null ? "" : tjsonIn.get("studentMobile").toString(),
-                tjsonIn.get("studentId") == null ? "" : tjsonIn.get("studentId").toString(),
-                "",
-                map.get("repairCommentList") == null ? "" : map.get("repairCommentList").toString(),
-                map.get("repairCost") == null ? "" : map.get("repairCost").toString(),
-                "2",//添加入库记录
-                map.get("commentType") == null ? "" : map.get("commentType").toString(),
-                map.get("needRepairComment") == null ? stringlist : jsontoList(map.get("needRepairComment")),
-                map.get("isPay") == null ? "" : map.get("isPay").toString(),
-                map.get("payFrom") == null ? "" : map.get("payFrom").toString(),
-                map.get("afterRepair") == null ? "" : map.get("afterRepair").toString(),
-                map.get("repairType") == null ? "" : map.get("repairType").toString(),
-                "0"//未读
-        );
-        result += "入库记录：";
-        result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry1);
+//        //发货前做入库记录
+//        InOutStorageEntry inOutStorageEntry1 = new InOutStorageEntry(
+//                tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString(),
+//                tjsonIn.get("phoneModel") == null ? "" : tjsonIn.get("phoneModel").toString(),
+//                tjsonIn.get("color") == null ? "" : tjsonIn.get("color").toString(),
+//                tjsonIn.get("manufacturer") == null ? "" : tjsonIn.get("manufacturer").toString(),
+//                inStorageTime,
+//                inStorageYear,
+//                inStorageMonth,
+//                tjsonIn.get("storageStatus") == null ? "" : tjsonIn.get("storageStatus").toString(),
+//                tjsonIn.get("comment") == null ? "" : tjsonIn.get("comment").toString(),
+//                tjsonIn.get("projectId") == null ? "" : tjsonIn.get("projectId").toString(),
+//                tjsonIn.get("projectName") == null ? "" : tjsonIn.get("projectName").toString(),
+//                tjsonIn.get("projectDockPeople") == null ? "" : tjsonIn.get("projectDockPeople").toString(),
+//                tjsonIn.get("schoolName") == null ? "" : tjsonIn.get("schoolName").toString(),
+//                tjsonIn.get("accessClass") == null ? "" : tjsonIn.get("accessClass").toString(),
+//                tjsonIn.get("accessObj") == null ? "" : tjsonIn.get("accessObj").toString(),
+//                tjsonIn.get("contactInfo") == null ? "" : tjsonIn.get("contactInfo").toString(),
+//                tjsonIn.get("address") == null ? "" : tjsonIn.get("address").toString(),
+//                tjsonIn.get("deliveryTime") == null ? "" : tjsonIn.get("deliveryTime").toString(),
+//                "",
+//                "",
+//                "",
+//                tjsonIn.get("parentName") == null ? "" : tjsonIn.get("parentName").toString(),
+//                tjsonIn.get("parentMobile") == null ? "" : tjsonIn.get("parentMobile").toString(),
+//                tjsonIn.get("parentId") == null ? "" : tjsonIn.get("parentId").toString(),
+//                tjsonIn.get("studentName") == null ? "" : tjsonIn.get("studentName").toString(),
+//                tjsonIn.get("studentMobile") == null ? "" : tjsonIn.get("studentMobile").toString(),
+//                tjsonIn.get("studentId") == null ? "" : tjsonIn.get("studentId").toString(),
+//                "",
+//                map.get("repairCommentList") == null ? "" : map.get("repairCommentList").toString(),
+//                map.get("repairCost") == null ? "" : map.get("repairCost").toString(),
+//                "2",//添加入库记录
+//                map.get("commentType") == null ? "" : map.get("commentType").toString(),
+//                map.get("needRepairComment") == null ? stringlist : jsontoList(map.get("needRepairComment")),
+//                map.get("isPay") == null ? "" : map.get("isPay").toString(),
+//                map.get("payFrom") == null ? "" : map.get("payFrom").toString(),
+//                map.get("afterRepair") == null ? "" : map.get("afterRepair").toString(),
+//                map.get("repairType") == null ? "" : map.get("repairType").toString(),
+//                "0"//未读
+//        );
+//        result += "入库记录：";
+//        result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry1);
         //添加到发货记录
         List<String> stringlist = new ArrayList<String>();
         InOutStorageEntry inOutStorageEntry = new InOutStorageEntry(

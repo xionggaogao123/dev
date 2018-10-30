@@ -162,7 +162,7 @@ public class DefaultBindController extends BaseController {
     }
 
     /**
-     * 填写信息绑定接口
+     * 添加孩子真实姓名
      * @param userId
      * @return
      */

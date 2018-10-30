@@ -487,6 +487,8 @@ public class NewVersionBindService {
         }
         for(NewVersionBindRelationEntry entry:entries){
             NewVersionBindRelationDTO dto=new NewVersionBindRelationDTO(entry);
+
+
             dto.setIsBindCommunity(0);
             ObjectId userId=entry.getUserId();
             UserEntry userEntry=userEntryMap.get(userId);
@@ -550,6 +552,8 @@ public class NewVersionBindService {
                 }
                 dtos.add(dto);
             }
+            //放入真实姓名
+            dto.setThirdName(entry.getUserName());
         }
         return dtos;
     }

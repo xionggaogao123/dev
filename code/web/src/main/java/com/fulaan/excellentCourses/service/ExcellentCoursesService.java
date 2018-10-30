@@ -4,10 +4,7 @@ import com.db.backstage.LogMessageDao;
 import com.db.backstage.PushMessageDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.excellentCourses.*;
-import com.db.fcommunity.CommunityDao;
-import com.db.fcommunity.GroupDao;
-import com.db.fcommunity.MemberDao;
-import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.fcommunity.*;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.user.NewVersionBindRelationDao;
@@ -33,6 +30,7 @@ import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.excellentCourses.*;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.GroupEntry;
+import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
@@ -120,6 +118,8 @@ public class ExcellentCoursesService {
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
 
     private CoursesOrderResultDao coursesOrderResultDao = new CoursesOrderResultDao();
+
+    private MineCommunityDao mineCommunityDao = new MineCommunityDao();
 
 
     private static final int  TEACHER_TIME = 24*60*60*1000;  //老师提前时间  ->  60分钟
@@ -2138,6 +2138,20 @@ public class ExcellentCoursesService {
         }
     }
 
+    public List<ObjectId> getCommunitys3(ObjectId uid, int page, int pageSize) {
+        List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
+        List<ObjectId> list = new ArrayList<ObjectId>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
+            communityIds.add(mineCommunityEntry.getCommunityId());
+        }
+        List<CommunityEntry> communityEntries = communityDao.findByNotObjectIds(communityIds);
+        for(CommunityEntry communityEntry:communityEntries){
+            list.add(communityEntry.getID());
+        }
+        return list;
+    }
+
     //添加每日订单
     public void addCoursesOrderEntry(ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source){
         long orderTime = System.currentTimeMillis();
@@ -2145,7 +2159,8 @@ public class ExcellentCoursesService {
         if(excellentCoursesEntry==null){
             return;
         }
-        List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
+        List<ObjectId>  communityIds =this.getCommunitys3(excellentCoursesEntry.getUserId(), 1, 100);
+        //List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
         ObjectId schoolId = null;
         String schoolName = "";
         if(communityIds!=null && communityIds.size()>0){

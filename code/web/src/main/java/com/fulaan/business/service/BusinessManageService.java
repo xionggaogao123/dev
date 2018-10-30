@@ -2196,7 +2196,7 @@ public class BusinessManageService {
             return;
         }
         //查询该用户的社群(使用开课老师的学校)
-        List<ObjectId>  communityIds =this.getCommunitys3(userId, 1, 100);
+        List<ObjectId>  communityIds =this.getCommunitys3(excellentCoursesEntry.getUserId(), 1, 100);
         //List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
         ObjectId schoolId = null;
         String schoolName = "";

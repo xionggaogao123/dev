@@ -731,7 +731,7 @@ public class AppAlipayService  {
             EBusinessLog.error("error",new Exception("课程不存在，"+coursesId.toString()));
             return;
         }
-        List<ObjectId>  communityIds =this.getCommunitys3(userId, 1, 100);
+        List<ObjectId>  communityIds =this.getCommunitys3(excellentCoursesEntry.getUserId(), 1, 100);
         //List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
         ObjectId schoolId = null;
         String schoolName = "";

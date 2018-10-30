@@ -2004,7 +2004,7 @@ public class BusinessManageService {
         double addPrice = 0;
         double manPrice = 0;
         for(CoursesOrderResultEntry coursesOrderResultEntry:coursesOrderResultEntries2){
-            if(!coursesOrderResultEntry.getSchoolId().equals("")){
+            if(coursesOrderResultEntry.getSchoolId() != null && !coursesOrderResultEntry.getSchoolId().equals("")){
                 schoolSet.add(coursesOrderResultEntry.getSchoolId());
             }
             coursesSet.add(coursesOrderResultEntry.getCoursesId());

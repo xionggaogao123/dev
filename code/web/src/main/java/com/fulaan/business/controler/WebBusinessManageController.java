@@ -939,7 +939,7 @@ public class WebBusinessManageController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("同意失败!");
+            respObj.setErrorMessage("查询失败!");
         }
         return respObj;
     }

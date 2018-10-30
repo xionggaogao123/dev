@@ -33,7 +33,8 @@ public class KaniaoTrackQueryFu {
     //测试
     private String AppKey="518a73d8-1f7f-441a-b644-33e77b49d846";
     //请求url
-    private String ReqURL="http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx";
+//    private String ReqURL="http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx";
+    private String ReqURL="http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx";
     //测试url
    // private String ReqURL="http://sandboxapi.kdniao.cc:8080/kdniaosandbox/gateway/exterfaceInvoke.json";
 

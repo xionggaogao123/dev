@@ -499,7 +499,9 @@ public class EBusinessOrderService {
         //电商加密私钥，快递鸟提供，注意保管，不要泄漏
         private String AppKey = "da4b8535-0b2e-4565-b815-09a0c959cc63";
         //请求url
-        private String ReqURL = "http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx";
+//        private String ReqURL = "http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx";
+        private String ReqURL = "http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx";
+
         //快递单号
         private String expressNo;
         //快递公司编号

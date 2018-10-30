@@ -46,7 +46,8 @@ public class CoursesOrderResultDao extends BaseDao {
         BasicDBObject query=new BasicDBObject().append("isr", 0).append("typ",type);
         if(startTime !=null && !startTime.equals("")&& endTime !=null && !endTime.equals("")){
             long stm = DateTimeUtils.getStrToLongTime(startTime,"yyyy-MM-dd");
-            long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd");
+            endTime = endTime + " 23:59:59";
+            long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd HH:mm:ss");
             BasicDBList basicDBList = new BasicDBList();
             basicDBList.add(new BasicDBObject("otm",new BasicDBObject(Constant.MONGO_GTE,stm)));
             basicDBList.add(new BasicDBObject("otm",new BasicDBObject(Constant.MONGO_LTE,etm)));
@@ -73,7 +74,8 @@ public class CoursesOrderResultDao extends BaseDao {
         BasicDBObject query=new BasicDBObject().append("isr", 0);
         if(startTime !=null && !startTime.equals("")&& endTime !=null && !endTime.equals("")){
             long stm = DateTimeUtils.getStrToLongTime(startTime,"yyyy-MM-dd");
-            long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd");
+            endTime = endTime + " 23:59:59";
+            long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd HH:mm:ss");
             BasicDBList basicDBList = new BasicDBList();
             basicDBList.add(new BasicDBObject("otm",new BasicDBObject(Constant.MONGO_GTE,stm)));
             basicDBList.add(new BasicDBObject("otm",new BasicDBObject(Constant.MONGO_LTE,etm)));
@@ -100,7 +102,8 @@ public class CoursesOrderResultDao extends BaseDao {
         BasicDBObject query=new BasicDBObject().append("isr", 0).append("typ",type);
         if(startTime !=null && !startTime.equals("")&& endTime !=null && !endTime.equals("")){
             long stm = DateTimeUtils.getStrToLongTime(startTime,"yyyy-MM-dd");
-            long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd");
+            endTime = endTime + " 23:59:59";
+            long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd HH:mm:ss");
             BasicDBList basicDBList = new BasicDBList();
             basicDBList.add(new BasicDBObject("otm",new BasicDBObject(Constant.MONGO_GTE,stm)));
             basicDBList.add(new BasicDBObject("otm",new BasicDBObject(Constant.MONGO_LTE,etm)));
@@ -126,7 +129,8 @@ public class CoursesOrderResultDao extends BaseDao {
         BasicDBObject query=new BasicDBObject().append("isr", 0).append("typ",type);
         if(startTime !=null && !startTime.equals("")&& endTime !=null && !endTime.equals("")){
             long stm = DateTimeUtils.getStrToLongTime(startTime,"yyyy-MM-dd");
-            long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd");
+            endTime = endTime + " 23:59:59";
+            long etm = DateTimeUtils.getStrToLongTime(endTime,"yyyy-MM-dd HH:mm:ss");
             BasicDBList basicDBList = new BasicDBList();
             basicDBList.add(new BasicDBObject("otm",new BasicDBObject(Constant.MONGO_GTE,stm)));
             basicDBList.add(new BasicDBObject("otm",new BasicDBObject(Constant.MONGO_LTE,etm)));

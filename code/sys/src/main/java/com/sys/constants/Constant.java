@@ -1143,4 +1143,10 @@ public class Constant {
     /*************************************新版运营校管控*****************************************/
     /*校管控*/
     public static final String COLLECTION_SCHOOL_CONTROL_TIME = "jxm_school_control_time";
+
+    /*****************************************新版投票**********************************************/
+    //投票内容
+    public static final String COLLECTION_APP_NEW_VOTE="jxm_app_new_vote";
+    //投票选项
+    public static final String COLLECTION_APP_VOTE_OPTION="jxm_app_vote_option";
 }

@@ -129,6 +129,21 @@ public class IndexContentEntry extends BaseDBObject {
         setBaseEntry(basicDBObject);
     }
 
+    public void setReceiveIdList(List<ObjectId> receiveIdList){
+        setSimpleValue("clt", MongoUtils.convert(receiveIdList));
+    }
+
+    public List<ObjectId> getReceiveIdList(){
+        ArrayList<ObjectId> receiveIdList = new ArrayList<ObjectId>();
+        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("clt");
+        if(dbList != null && !dbList.isEmpty()){
+            for (Object obj : dbList) {
+                receiveIdList.add((ObjectId)obj);
+            }
+        }
+        return receiveIdList;
+    }
+
     public long getSendDay(){
         return getSimpleLongValueDef("sd",0L);
     }

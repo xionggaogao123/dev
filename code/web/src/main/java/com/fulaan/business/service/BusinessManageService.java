@@ -7,6 +7,7 @@ import com.db.excellentCourses.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.MineCommunityDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.jiaschool.SchoolPersionDao;
@@ -35,6 +36,7 @@ import com.pojo.business.*;
 import com.pojo.excellentCourses.*;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.FLoginLogEntry;
+import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
@@ -118,6 +120,8 @@ public class BusinessManageService {
 
     private SchoolCommunityDao schoolCommunityDao  = new SchoolCommunityDao();
 
+
+    private MineCommunityDao mineCommunityDao = new MineCommunityDao();
 
     @Autowired
     private EmService emService;
@@ -2167,6 +2171,20 @@ public class BusinessManageService {
         HSSFUtils.exportExcel(userAgent, response, wb, fileName);
     }
 
+    public List<ObjectId> getCommunitys3(ObjectId uid, int page, int pageSize) {
+        List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
+        List<ObjectId> list = new ArrayList<ObjectId>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
+            communityIds.add(mineCommunityEntry.getCommunityId());
+        }
+        List<CommunityEntry> communityEntries = communityDao.findByNotObjectIds(communityIds);
+        for(CommunityEntry communityEntry:communityEntries){
+            list.add(communityEntry.getID());
+        }
+        return list;
+    }
+
 
     //添加每日订单
     public void addCoursesOrderEntry(ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source){
@@ -2175,7 +2193,9 @@ public class BusinessManageService {
         if(excellentCoursesEntry==null){
             return;
         }
-        List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
+        //查询该用户的社群(使用开课老师的学校)
+        List<ObjectId>  communityIds =this.getCommunitys3(userId, 1, 100);
+        //List<ObjectId> communityIds = excellentCoursesEntry.getCommunityIdList();
         ObjectId schoolId = null;
         String schoolName = "";
         if(communityIds!=null && communityIds.size()>0){

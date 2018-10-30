@@ -8,10 +8,7 @@ import com.pojo.fcommunity.MemberEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by jerry on 2016/11/1.
@@ -572,6 +569,24 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject().append("grid", groupId).append("r", 0);
         BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
         List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            memberEntries.add(memberEntry.getUserId());
+        }
+        return memberEntries;
+    }
+
+    /**
+     * 获取多个社群所有的成员Id
+     *
+     * @param groupIds
+     * @return
+     */
+    public Set<ObjectId> getAllCommunityMemberIds(List<ObjectId> groupIds) {
+        BasicDBObject query = new BasicDBObject().append("grid", new BasicDBObject(Constant.MONGO_IN,groupIds)).append("r", 0);
+        BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
+        Set<ObjectId> memberEntries = new HashSet<ObjectId>();
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
         for (DBObject dbo : dbObjects) {
             MemberEntry memberEntry = new MemberEntry(dbo);

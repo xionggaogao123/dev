@@ -2011,7 +2011,7 @@ public class IndexPageService {
     public Map<String,Object> getSixHotIndexList(ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         //1.通知逻辑
-        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 200);
+        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
         //2.老师和家长页面区分（）
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         //3.获取火热分享

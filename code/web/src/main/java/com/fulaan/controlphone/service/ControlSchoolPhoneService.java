@@ -1226,7 +1226,10 @@ public class ControlSchoolPhoneService {
 
 
             List<PhoneSchoolTimeDTO> phoneTimeDTOs = new ArrayList<PhoneSchoolTimeDTO>();
-            this.getMoreSchoolControlTime(current, dateNowStr, week, zero, map, phoneTimeDTOs, trueSchoolIds);
+            List<ObjectId> sids = new ArrayList<ObjectId>();
+            //仅取一个学校
+            sids.add(trueSchoolIds.get(0));
+            this.getMoreSchoolControlTime(current, dateNowStr, week, zero, map, phoneTimeDTOs, sids);
             map.put("controlList",phoneTimeDTOs);
             this.getMoreAppControlTime(entries2, current, map, obList,zero,dateNowStr);
         }

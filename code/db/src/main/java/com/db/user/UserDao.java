@@ -1232,4 +1232,18 @@ public class UserDao extends BaseDao {
         }
         return uuIds;
     }
+
+    public UserEntry findByUserNameOrMobileOrJiaId(String userInfo) {
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1 = new BasicDBObject().append("nm", userInfo.toLowerCase());//用户名
+        BasicDBObject query2 = new BasicDBObject().append("mn", userInfo);//手机号
+        BasicDBObject query3 = new BasicDBObject().append("gugc", userInfo);//家校美ID
+        values.add(query1);
+        values.add(query2);
+        values.add(query3);
+        query.put(Constant.MONGO_OR, values);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
+        return dbo == null ? null : new UserEntry((BasicDBObject) dbo);
+    }
 }

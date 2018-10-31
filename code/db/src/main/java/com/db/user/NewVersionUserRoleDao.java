@@ -81,12 +81,13 @@ public class NewVersionUserRoleDao extends BaseDao{
         return userRoleEntries;
     }
 
-    public List<NewVersionUserRoleEntry> getUserByRolePageList(List<Integer> roleListInt, Map map) {
+    public List<NewVersionUserRoleEntry> getUserByRolePageList(List<Integer> roleListInt, Map map, List<ObjectId> teacherUserIds) {
         int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
         int pageSize = map.get("pageSize") == null?10:Integer.parseInt(map.get("pageSize").toString());
         List<NewVersionUserRoleEntry> userRoleEntries = new ArrayList<NewVersionUserRoleEntry>();
         BasicDBObject query=new BasicDBObject("nr",new BasicDBObject(Constant.MONGO_IN,roleListInt))
                 .append("ir",Constant.ZERO);
+        query.append("uid", new BasicDBObject(Constant.MONGO_NOTIN, teacherUserIds));
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_USER_ROLE,query,Constant.FIELDS
                 ,new BasicDBObject("_id", Constant.DESC), (page - 1) * pageSize, pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

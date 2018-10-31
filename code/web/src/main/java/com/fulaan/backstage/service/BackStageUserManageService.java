@@ -120,8 +120,8 @@ public class BackStageUserManageService {
         roleListInt.add(0);
         roleEntries = newVersionUserRoleDao.getUserByRoleList(roleListInt);
         jsonObject = new JSONObject();
-        jsonObject.put("value","家长"+"++"+roleEntries.size());
-        jsonObject.put("name","家长"+"("+roleEntries.size()+"人)");
+        jsonObject.put("value","家长"+"++"+(roleEntries.size()-teacherApproveEntries.size()));
+        jsonObject.put("name","家长"+"("+(roleEntries.size()-teacherApproveEntries.size())+"人)");
         jsonArray.add(jsonObject);
 
         //获取学生（newversion_userrole 表 nr 为 1 学生未激活 2 学生激活） 及其 数量
@@ -155,35 +155,62 @@ public class BackStageUserManageService {
             /**
              * //input框输入查询 用户名 id 或手机号
              */
-            //根据用户信息查询用户Id
+            //根据用户信息（用户Id，用户手机号查询，用户名）查询
             ObjectId userId = null;
-            UserEntry userEntry = userDao.findByUserName(map.get("userInfo").toString());
+            UserEntry userEntry = userDao.findByUserNameOrMobileOrJiaId(map.get("userInfo").toString());
             if (null != userEntry){
                 //根据用户名查询到
                 userId = userEntry.getID();
             }else {
-                //根据用户名查询不到，进而根据用户手机号查询
-
-                userEntry = userDao.findByMobile(map.get("userInfo").toString());
-                if (null != userEntry) {
-                    userId = userEntry.getID();
-                }else {
-                    //根据用户名，手机号都查询不到
-                    userEntry = userDao.getGenerateCodeEntry(map.get("userInfo").toString());
-                    if (null != userEntry){
-                        userId = userEntry.getID();
-                    }else {//根据用户名，根据用户Id，手机号都查询不到
-                        return userManageResultDTOS;
-                    }
-                }
+                return userManageResultDTOS;
             }
             /**
              * 到此处查到 用户信息 再根据用户信息 去查对应的角色信息
              */
-            //查看是否为 学生 或者 家长
             UserManageResultDTO userManageResultDTO = null;
+            TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getTeacherEntry(userId);
+            if (null != teacherApproveEntry){
+                //用户在老师 或者员工中 有角色
+                userManageResultDTO = new UserManageResultDTO();
+                userManageResultDTO.setId(teacherApproveEntry.getID().toString());
+                //超简洁获取用户的社团 listMineCommunityId
+                List<ObjectId> listMineCommunityId = communityService.getCommunitys3(userId,-1,0);
+                //获取当前用户所有的社群（范围存在于 listMineCommunityId）
+                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userId,listMineCommunityId);
+                userManageResultDTO.setCommunityCount(entries2.size()+"");
+                //家长，老师 员工 登录 或 未登录
+                String cacheUserKey= CacheHandler.getUserKey(userEntry.getID().toString());
+                if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
+                    SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
+                    if (null != sv && !sv.isEmpty()) {
+                        userManageResultDTO.setLineStatus("登录");
+                    }else {
+                        userManageResultDTO.setLineStatus("未登录");
+                    }
+                }
+                userManageResultDTO.setUserId(userEntry.getID().toString());
+                userManageResultDTO.setJiaId(userEntry.getGenerateUserCode());
+                userManageResultDTO.setUserName(userEntry.getUserName());
+                userManageResultDTO.setNickName(userEntry.getNickName());
+                userManageResultDTO.setTelephone(userEntry.getMobileNumber());
+                //系统角色
+                //通过绑定表 获取 userId 对应的 roleId
+                UserLogResultEntry userLogResultEntry= userLogResultDao.getEntryByUserId(userEntry.getID());
+                if (null != userLogResultEntry ){
+                    RoleJurisdictionSettingEntry settingEntry = roleJurisdictionSettingDao.getEntryById(userLogResultEntry.getRoleId());
+                    userManageResultDTO.setSysRoleName(settingEntry == null ? "" : settingEntry.getRoleName());
+                }else {
+                    userManageResultDTO.setSysRoleName("");
+                }
+                userManageResultDTO.setUserRoleName("大V老师");
+                userManageResultDTOS.add(userManageResultDTO);
+                return userManageResultDTOS;//是老师就不再去看是不是家长
+            }
+
+            //查看是否为 学生 或者 家长
             NewVersionUserRoleEntry userRoleEntry = newVersionUserRoleDao.getEntry(userId);
-            if (null != userRoleEntry){//用户在学生 或者家长中 有角色
+            if (null != userRoleEntry){
+                //用户在学生 或者家长中 有角色
                 userManageResultDTO = new UserManageResultDTO();
                 userManageResultDTO.setId(userRoleEntry.getID().toString());
                 //超简洁获取用户的社团 listMineCommunityId
@@ -206,7 +233,7 @@ public class BackStageUserManageService {
                 }else {
                     userManageResultDTO.setUserRoleName("学生");
                     //学生 在线与否
-                    ControlVersionDTO controlVersionDTO2 = getStudentVersion(userEntry.getID());
+                    ControlVersionDTO controlVersionDTO2 = getStudentVersion(userEntry == null ? null : userEntry.getID());
                     String ver2 = controlVersionDTO2.getVersion();
                     if(controlVersionDTO2==null){//记录不存在
 //                            map.put("status",5);//未在线
@@ -243,42 +270,7 @@ public class BackStageUserManageService {
 //                    userManageResultDTO.setUserRoleName("");
                 userManageResultDTOS.add(userManageResultDTO);
             }
-            TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
-            if (null != teacherApproveEntry){//用户在老师 或者员工中 有角色
-                userManageResultDTO = new UserManageResultDTO();
-                userManageResultDTO.setId(teacherApproveEntry.getID().toString());
-                //超简洁获取用户的社团 listMineCommunityId
-                List<ObjectId> listMineCommunityId = communityService.getCommunitys3(userId,-1,0);
-                //获取当前用户所有的社群（范围存在于 listMineCommunityId）
-                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userId,listMineCommunityId);
-                userManageResultDTO.setCommunityCount(entries2.size()+"");
-                //家长，老师 员工 登录 或 未登录
-                String cacheUserKey= CacheHandler.getUserKey(userEntry.getID().toString());
-                if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
-                    SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
-                    if (null != sv && !sv.isEmpty()) {
-                        userManageResultDTO.setLineStatus("登录");
-                    }else {
-                        userManageResultDTO.setLineStatus("未登录");
-                    }
-                }
-                userManageResultDTO.setUserId(userEntry.getID().toString());
-                userManageResultDTO.setJiaId(userEntry.getGenerateUserCode());
-                userManageResultDTO.setUserName(userEntry.getUserName());
-                userManageResultDTO.setNickName(userEntry.getNickName());
-                userManageResultDTO.setTelephone(userEntry.getMobileNumber());
-                //系统角色
-                //通过绑定表 获取 userId 对应的 roleId
-                UserLogResultEntry userLogResultEntry= userLogResultDao.getEntryByUserId(userEntry.getID());
-                if (null != userLogResultEntry ){
-                    RoleJurisdictionSettingEntry settingEntry = roleJurisdictionSettingDao.getEntryById(userLogResultEntry.getRoleId());
-                    userManageResultDTO.setSysRoleName(settingEntry == null ? "" : settingEntry.getRoleName());
-                }else {
-                    userManageResultDTO.setSysRoleName("");
-                }
-                userManageResultDTO.setUserRoleName("大V老师");
-                userManageResultDTOS.add(userManageResultDTO);
-            }
+
         }else {
             /**
              * //下拉查询
@@ -367,8 +359,13 @@ public class BackStageUserManageService {
         }else {
             List<Integer> roleListInt = null;
             List<NewVersionUserRoleEntry> roleEntries = null;
+            List<ObjectId> teacherUserIds= new ArrayList<ObjectId>();
             //下拉选中家长 或者 学生
             if ("家长".equals(map.get("roleOption"))){
+                List<TeacherApproveEntry> teacherApproveEntries = teacherApproveDao.getUserListByTeacherRole();
+                for (TeacherApproveEntry teacherApproveEntry : teacherApproveEntries){
+                    teacherUserIds.add(teacherApproveEntry.getUserId());
+                }
                 roleListInt = new ArrayList<Integer>();
                 roleListInt.add(0);
             }else {
@@ -377,7 +374,7 @@ public class BackStageUserManageService {
                 roleListInt.add(2);
             }
             map.put("roleListInt",roleListInt);
-            roleEntries = newVersionUserRoleDao.getUserByRolePageList(roleListInt,map);
+            roleEntries = newVersionUserRoleDao.getUserByRolePageList(roleListInt,map, teacherUserIds);
 
             List<ObjectId> userIds= new ArrayList<ObjectId>();
             for (NewVersionUserRoleEntry userRoleEntry : roleEntries) {
@@ -416,7 +413,7 @@ public class BackStageUserManageService {
                     /**
                      * 带出孩子信息
                      */
-                    List<UserManageChildrenDTO> userManageChildrenDTOS = getChildrenByParentId(userEntry.getID());
+                    List<UserManageChildrenDTO> userManageChildrenDTOS = getChildrenByParentId(userEntry == null ? null : userEntry.getID());
                     userManageResultDTO.setChildrenDTOList(userManageChildrenDTOS);
                 }else {
                     userManageResultDTO.setUserRoleName("学生");
@@ -450,7 +447,7 @@ public class BackStageUserManageService {
                     /**
                      * 带出绑定父母的信息
                      */
-                    List<UserManageParentDTO> userManageParentDTOList = getParentByChildrenId(userEntry.getID());
+                    List<UserManageParentDTO> userManageParentDTOList = getParentByChildrenId(userEntry == null ? null : userEntry.getID());
                     userManageResultDTO.setParentDTOList(userManageParentDTOList);
                 }
                 userManageResultDTO.setUserId(userEntry == null ? "" : userEntry.getID().toString());

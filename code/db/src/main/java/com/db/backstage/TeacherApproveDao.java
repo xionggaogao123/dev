@@ -172,4 +172,33 @@ public class TeacherApproveDao extends BaseDao {
         }
         return retList;
     }
+
+    public List<TeacherApproveEntry> getUserListByTeacherRole() {
+        BasicDBObject query = new BasicDBObject();
+            List<Integer> list = new ArrayList<Integer>();
+            list.add(1);
+            query.append("isr", Constant.ZERO)
+                    .append("typ", 2)
+                    .append("role", new BasicDBObject(Constant.MONGO_NOTIN, list)); //role 不为1的情况
+        List<DBObject> dboList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_TEACHER_APPROVE, query);
+        List<TeacherApproveEntry> retList = new ArrayList<TeacherApproveEntry>();
+        if (null != dboList && !dboList.isEmpty()) {
+            for (DBObject dbo : dboList) {
+                retList.add(new TeacherApproveEntry((BasicDBObject) dbo));
+            }
+        }
+        return retList;
+    }
+
+    public TeacherApproveEntry getTeacherEntry(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("uid", userId);
+
+        query.append("typ", 2) .append("role", new BasicDBObject(Constant.MONGO_NE, 1)); //role 不为1的情况
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_TEACHER_APPROVE, query, Constant.FIELDS);
+        if (null != dbo) {
+            return new TeacherApproveEntry((BasicDBObject) dbo);
+        }
+        return null;
+    }
 }

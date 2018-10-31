@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,29 @@ public class AppNewVoteController extends BaseController {
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
+    }
+
+    public static void main(String[] args){
+        AppNewVoteService appNewVoteService = new AppNewVoteService();
+        AppNewVoteDTO appNewVoteDTO = new AppNewVoteDTO();
+        appNewVoteDTO.setTitle("自主投票");
+        appNewVoteDTO.setContent("内容");
+        appNewVoteDTO.setType(1);
+        List<String> communityIds = new ArrayList<String>();
+        communityIds.add("5bd94c821f7e9d1fccc1e0c9");
+        appNewVoteDTO.setCommunityList(communityIds);
+        List<Integer> integers = new ArrayList<Integer>();
+        integers.add(2);
+        integers.add(3);
+        appNewVoteDTO.setVoteTypeList(integers);
+        appNewVoteDTO.setVoteCount(3);
+        appNewVoteDTO.setSign(1);
+        appNewVoteDTO.setOpen(1);
+        appNewVoteDTO.setVoteStartTime("2018-10-31 14:00:00");
+        appNewVoteDTO.setVoteEndTime("2018-11-08 14:00:00");
+        appNewVoteDTO.setUrlType(0);
+        appNewVoteDTO.setUserId("58f6bea2de04cb5a4bc72d38");
+        appNewVoteService.saveNewAppVote(appNewVoteDTO,new ObjectId("58f6bea2de04cb5a4bc72d38"));
     }
 
 
@@ -145,7 +169,7 @@ public class AppNewVoteController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             appNewVoteService.deleteMyOption(new ObjectId(id), new ObjectId(optionId));
-            respObj.setMessage("报名成功");
+            respObj.setMessage("撤销成功");
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setCode(Constant.FAILD_CODE);
@@ -183,6 +207,24 @@ public class AppNewVoteController extends BaseController {
         try{
             appNewVoteService.updateOption(new ObjectId(id), selectOptionIds);
             respObj.setMessage("保存成功");
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+            logger.error("error",e);
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "查询选项", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/selectOptionList")
+    @ResponseBody
+    public RespObj selectOptionList( @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> map = appNewVoteService.selectOptionList(getUserId(),new ObjectId(id));
+            respObj.setMessage(map);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setCode(Constant.FAILD_CODE);

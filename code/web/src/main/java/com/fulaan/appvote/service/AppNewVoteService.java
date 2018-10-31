@@ -99,7 +99,13 @@ public class AppNewVoteService {
                 appNewVoteDTO.getVoteTypeList().contains(new Integer("3")) ||
                 appNewVoteDTO.getApplyTypeList().contains(new Integer("3"))){ //投票或报名 有 家长或老师
             //发送通知
-            List<ObjectId> communityIds2 = appNewVoteEntry.getCommunityList();
+            List<String> communityIds3 = appNewVoteDTO.getCommunityList();
+            List<ObjectId> communityIds2 = new ArrayList<ObjectId>();
+            if(communityIds3!=null){
+                for(String st:communityIds3){
+                    communityIds2.add(new ObjectId(st));
+                }
+            }
             List<CommunityEntry> communityEntries = communityDao.findByObjectIds(communityIds2);
             List<String> cids = new ArrayList<String>();
             StringBuffer sb = new StringBuffer();
@@ -302,7 +308,7 @@ public class AppNewVoteService {
         //4. 组装选项
         List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getOneVoteList(id);
         List<AppVoteOptionDTO> selectOption = new ArrayList<AppVoteOptionDTO>();
-        List<AppVoteOptionDTO> unSelectOption = new ArrayList<AppVoteOptionDTO>();
+       // List<AppVoteOptionDTO> unSelectOption = new ArrayList<AppVoteOptionDTO>();
         for(AppVoteOptionEntry appVoteOptionEntry: appVoteOptionEntries){
             AppVoteOptionDTO appVoteOptionDTO = new AppVoteOptionDTO(appVoteOptionEntry);
             if(appVoteOptionEntry.getUserIdList()!=null && appVoteOptionEntry.getUserIdList().contains(userId)){
@@ -310,15 +316,15 @@ public class AppNewVoteService {
             }else{
                 appVoteOptionDTO.setIsSelect(0);
             }
-            if(appVoteOptionEntry.getSelect()==1){//可选项
-                selectOption.add(appVoteOptionDTO);
-            }else{//待选项
+//            if(appVoteOptionEntry.getSelect()==1){//可选项
+            selectOption.add(appVoteOptionDTO);
+            /*}else{//待选项
                 unSelectOption.add(appVoteOptionDTO);
-            }
+            }*/
         }
         map.put("dto",appNewVoteDTO);
-        map.put("selectOption",selectOption);
-        map.put("unSelectOption",unSelectOption);
+        map.put("optionList",selectOption);
+        //map.put("unSelectOption",unSelectOption);
         return map;
     }
 
@@ -468,6 +474,85 @@ public class AppNewVoteService {
         }else{
             return null;
         }
+    }
+
+    public Map<String,Object> selectOptionList(ObjectId userId,ObjectId id)throws Exception{
+        Map<String,Object> map = new HashMap<String, Object>();
+        AppNewVoteEntry appNewVoteEntry = appNewVoteDao.getEntry(id);
+        if(appNewVoteEntry==null){
+            throw new Exception("投票已被删除或不存在");
+        }
+        AppNewVoteDTO appNewVoteDTO = new AppNewVoteDTO(appNewVoteEntry);
+        //1. 发布人数据
+        UserEntry userEntry = userDao.findByUserId(appNewVoteEntry.getUserId());
+        if(userEntry!=null){
+            appNewVoteDTO.setUserName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+            appNewVoteDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+        }
+        //获得查询者的身份
+        int role = 2;//默认家长
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        if(teacherApproveEntry !=null && teacherApproveEntry.getType()==2){
+            role = 3;//默认老师
+        }
+        //2. 获得投票阶段
+        long current = System.currentTimeMillis();
+        if(appNewVoteEntry.getApplyStartTime()< current && appNewVoteEntry.getApplyEndTime()>current){//报名阶段
+            appNewVoteDTO.setLevel(1);
+        }else if(appNewVoteEntry.getVoteStartTime()< current && appNewVoteEntry.getVoteEndTime()>current){//投票阶段
+            appNewVoteDTO.setLevel(2);
+        }else if(appNewVoteEntry.getVoteEndTime()<current){//结束阶段
+            appNewVoteDTO.setLevel(3);
+        }else{//未开始阶段
+            appNewVoteDTO.setLevel(0);
+        }
+        //3. 判断阶段
+        if(appNewVoteEntry.getUserId().equals(userId)){//发布人
+            appNewVoteDTO.setIsOwner(1);
+            appNewVoteDTO.setIsApply(0);
+            appNewVoteDTO.setIsVote(0);
+        }else{//非发布人
+            appNewVoteDTO.setIsOwner(0);
+            appNewVoteDTO.setIsApply(0);
+            appNewVoteDTO.setIsVote(0);
+            if(appNewVoteEntry.getType()==2 && appNewVoteEntry.getApplyTypeList()!=null && appNewVoteEntry.getApplyTypeList().contains(new Integer(role))) {//可报名
+                if (appNewVoteEntry.getApplyUserList() != null && appNewVoteEntry.getApplyUserList().contains(userId)) {//已报名
+                    appNewVoteDTO.setIsApply(2);
+                } else {//未报名
+                    appNewVoteDTO.setIsApply(1);
+                }
+            }
+            if(appNewVoteEntry.getVoteTypeList()!=null && appNewVoteEntry.getVoteTypeList().contains(new Integer(role))){//可投票
+                if(appNewVoteEntry.getVoteUesrList()!=null && appNewVoteEntry.getVoteUesrList().contains(userId)){//已投票
+                    appNewVoteDTO.setIsVote(2);
+                }else{//未投票
+                    appNewVoteDTO.setIsVote(1);
+                }
+            }
+
+        }
+        //4. 组装选项
+        List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getOneVoteList(id);
+        List<AppVoteOptionDTO> selectOption = new ArrayList<AppVoteOptionDTO>();
+         List<AppVoteOptionDTO> unSelectOption = new ArrayList<AppVoteOptionDTO>();
+        for(AppVoteOptionEntry appVoteOptionEntry: appVoteOptionEntries){
+            AppVoteOptionDTO appVoteOptionDTO = new AppVoteOptionDTO(appVoteOptionEntry);
+            if(appVoteOptionEntry.getUserIdList()!=null && appVoteOptionEntry.getUserIdList().contains(userId)){
+                appVoteOptionDTO.setIsSelect(1);
+            }else{
+                appVoteOptionDTO.setIsSelect(0);
+            }
+            if(appVoteOptionEntry.getSelect()==1){//可选项
+            selectOption.add(appVoteOptionDTO);
+            }else{//待选项
+                unSelectOption.add(appVoteOptionDTO);
+            }
+        }
+        map.put("dto",appNewVoteDTO);
+        map.put("count",appNewVoteDTO.getApplyCount());
+        map.put("selectOption",selectOption);
+        map.put("unSelectOption",unSelectOption);
+        return map;
     }
 
     public void updateOption(ObjectId id,String selectOptionIds) throws Exception{

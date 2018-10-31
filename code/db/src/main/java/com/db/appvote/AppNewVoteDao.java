@@ -33,7 +33,7 @@ public class AppNewVoteDao extends BaseDao {
         if(keyword!=null && !keyword.equals("")){
             query.append("tit",MongoUtils.buildRegex(keyword));
         }
-        query.append("cid",new BasicDBObject(Constant.MONGO_IN,communityIds));
+        query.append("clt",new BasicDBObject(Constant.MONGO_IN,communityIds));
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_NEW_VOTE, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if (dbList != null && !dbList.isEmpty()) {
@@ -53,7 +53,7 @@ public class AppNewVoteDao extends BaseDao {
         if(keyword!=null && !keyword.equals("")){
             query.append("tit", MongoUtils.buildRegex(keyword));
         }
-        query.append("cid",new BasicDBObject(Constant.MONGO_IN,communityIds));
+        query.append("clt",new BasicDBObject(Constant.MONGO_IN,communityIds));
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_APP_NEW_VOTE,

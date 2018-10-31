@@ -2,7 +2,9 @@ package com.fulaan.appvote.dto;
 
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.pojo.Attachement;
-import org.bson.types.ObjectId;
+import com.pojo.appvote.AppVoteOptionEntry;
+import com.pojo.fcommunity.AttachmentEntry;
+import com.pojo.fcommunity.VideoEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ public class AppVoteOptionDTO {
     private String id;
     private String voteId;
     private String description;
+    private String userId;
     private int type;
     private int select;
     private List<VideoDTO> videoList=new ArrayList<VideoDTO>();
@@ -21,10 +24,64 @@ public class AppVoteOptionDTO {
     private List<Attachement> attachements=new ArrayList<Attachement>();
     private List<Attachement> voiceList=new ArrayList<Attachement>();
     private int count;
-    private List<ObjectId> userIdList = new ArrayList<ObjectId>();
+
+    private int isSelect;  // 0 未选择  1  已选择
 
     public AppVoteOptionDTO(){
 
+    }
+    public AppVoteOptionDTO(AppVoteOptionEntry e){
+        if(e!=null){
+            this.id = e.getID()==null?"":e.getID().toString();
+            this.voteId = e.getVoteId()==null?"":e.getVoteId().toString();
+            this.userId = e.getUserId()==null?"":e.getUserId().toString();
+            this.description = e.getDescription();
+            this.type = e.getType();
+            this.select = e.getSelect();
+            List<AttachmentEntry> attachmentEntries = e.getImageList();
+            if(attachmentEntries != null && attachmentEntries.size()>0){
+                for(AttachmentEntry entry : attachmentEntries){
+                    this.imageList.add(new Attachement(entry));
+                }
+            }
+            List<AttachmentEntry> attachmentEntries2 = e.getAttachmentEntries();
+            if(attachmentEntries2 != null && attachmentEntries2.size()>0){
+                for(AttachmentEntry entry2 : attachmentEntries2){
+                    this.attachements.add(new Attachement(entry2));
+                }
+            }
+            List<AttachmentEntry> attachmentEntries3 = e.getVoiceList();
+            if(attachmentEntries3 != null && attachmentEntries3.size()>0){
+                for(AttachmentEntry entry3 : attachmentEntries3){
+                    this.voiceList.add(new Attachement(entry3));
+                }
+            }
+            List<VideoEntry> videoEntries = e.getVideoList();
+            if(videoEntries != null && videoEntries.size()>0) {
+                for (VideoEntry entry3 : videoEntries) {
+                    this.videoList.add(new VideoDTO(entry3));
+                }
+            }
+            this.count = e.getCount();
+        }else{
+            new AppVoteOptionDTO();
+        }
+    }
+
+    public int getIsSelect() {
+        return isSelect;
+    }
+
+    public void setIsSelect(int isSelect) {
+        this.isSelect = isSelect;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getId() {
@@ -105,13 +162,5 @@ public class AppVoteOptionDTO {
 
     public void setCount(int count) {
         this.count = count;
-    }
-
-    public List<ObjectId> getUserIdList() {
-        return userIdList;
-    }
-
-    public void setUserIdList(List<ObjectId> userIdList) {
-        this.userIdList = userIdList;
     }
 }

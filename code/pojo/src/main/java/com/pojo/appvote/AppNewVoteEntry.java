@@ -100,6 +100,8 @@ public class AppNewVoteEntry extends BaseDBObject {
                 .append("clt", communityList)
                 .append("vtl",voteTypeList)
                 .append("vct",voteCount)
+                .append("vul",new ArrayList<ObjectId>())
+                .append("aul",new ArrayList<ObjectId>())
                 .append("sig",sign)
                 .append("ope", open)
                 .append("vst", voteStartTime)
@@ -301,6 +303,36 @@ public class AppNewVoteEntry extends BaseDBObject {
         return communityIdList;
     }
 
+
+    public void setVoteUesrList(List<ObjectId> voteUesrList){
+        setSimpleValue("vul", MongoUtils.convert(voteUesrList));
+    }
+
+    public List<ObjectId> getVoteUesrList(){
+        ArrayList<ObjectId> voteUesrList = new ArrayList<ObjectId>();
+        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("vul");
+        if(dbList != null && !dbList.isEmpty()){
+            for (Object obj : dbList) {
+                voteUesrList.add((ObjectId)obj);
+            }
+        }
+        return voteUesrList;
+    }
+
+    public void setApplyUserList(List<ObjectId> applyUserList){
+        setSimpleValue("aul", MongoUtils.convert(applyUserList));
+    }
+
+    public List<ObjectId> getApplyUserList(){
+        ArrayList<ObjectId> applyUserList = new ArrayList<ObjectId>();
+        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("aul");
+        if(dbList != null && !dbList.isEmpty()){
+            for (Object obj : dbList) {
+                applyUserList.add((ObjectId)obj);
+            }
+        }
+        return applyUserList;
+    }
 
     public List<Integer> getApplyTypeList(){
         @SuppressWarnings("rawtypes")

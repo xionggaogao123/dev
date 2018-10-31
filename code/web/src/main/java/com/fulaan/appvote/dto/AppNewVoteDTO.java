@@ -22,6 +22,8 @@ public class AppNewVoteDTO {
     private String subjectId;
     private String subjectName;
     private String userId;
+    private String userName;
+    private String avatar;
     private int role;
     private int userCount;
     private List<VideoDTO> videoList=new ArrayList<VideoDTO>();           //提交
@@ -46,6 +48,11 @@ public class AppNewVoteDTO {
     private String createTime;
 
     private String option; //选项（","分割）                              //（必）提交
+
+    private int level;       //所处阶段    0  未开始     1 报名      2 投票     3 已结束
+    private int isApply;        //      0 不可申请      1    可申请    2 已申请
+    private int isOwner;        //      0   非自己      1    自己
+    private int isVote;         //      0  不可投       1    可投      2 已投
 
     public AppNewVoteDTO(){
 
@@ -218,6 +225,54 @@ public class AppNewVoteDTO {
                         vet);
         return openEntry;
 
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getIsApply() {
+        return isApply;
+    }
+
+    public void setIsApply(int isApply) {
+        this.isApply = isApply;
+    }
+
+    public int getIsOwner() {
+        return isOwner;
+    }
+
+    public void setIsOwner(int isOwner) {
+        this.isOwner = isOwner;
+    }
+
+    public int getIsVote() {
+        return isVote;
+    }
+
+    public void setIsVote(int isVote) {
+        this.isVote = isVote;
     }
 
     public String getId() {

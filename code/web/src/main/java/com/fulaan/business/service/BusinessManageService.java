@@ -1049,6 +1049,7 @@ public class BusinessManageService {
             NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
             role = newVersionUserRoleEntry.getNewRole();
         }
+        String or = orderId;
         if(orderId.equals("")){
             if(money==1){
                 orderId = "后台付费";
@@ -1065,12 +1066,13 @@ public class BusinessManageService {
         backStageService.addLogMessage(id.toString(), "退课：" + excellentCoursesEntry.getTitle() + ",用户ID:" + userId.toString(), LogMessageType.courses.getDes(), uid.toString());
 
         //退课支出
-        String or = "后台免费";
+
         if(or.equals("")){
             if(money==1){
                 or = "后台付费";
             }else{
                 or = "后台免费";
+                price = 0;
             }
         }
         this.addCoursesOrderEntry(userId,id,Constant.TWO,hourIds,price,or,Constant.THREE);
@@ -2011,7 +2013,7 @@ public class BusinessManageService {
             if(coursesOrderResultEntry.getType()==1){
                 addPrice = sum(addPrice,coursesOrderResultEntry.getPrice());
             }else{
-                manPrice = sum(addPrice,coursesOrderResultEntry.getPrice());
+                manPrice = sum(manPrice,coursesOrderResultEntry.getPrice());
             }
         }
         map.put("schoolCount",schoolSet.size());
@@ -2148,7 +2150,7 @@ public class BusinessManageService {
             cellItem.setCellValue(coursesOrderResultDTO.getClassList().size()+"");
 
             cellItem = rowItem.createCell(7);
-            cellItem.setCellValue(coursesOrderResultDTO.getPrice());
+            cellItem.setCellValue(coursesOrderResultDTO.getPrice()+"0");
 
             cellItem = rowItem.createCell(8);
             cellItem.setCellValue(coursesOrderResultDTO.getOrder());

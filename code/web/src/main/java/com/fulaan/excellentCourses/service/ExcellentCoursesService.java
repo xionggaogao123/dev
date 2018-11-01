@@ -1764,6 +1764,10 @@ public class ExcellentCoursesService {
                     addLog(userId,contactId,"添加美豆账户消费记录成功！本次消费："+price);
                     logger.info(userId.toString()+"-"+contactId.toString()+"添加美豆账户消费记录成功！本次消费："+price);
 
+                    //增加每日订单   ObjectId userId,ObjectId coursesId,int type,List<ObjectId> classList,double price,String order,int source
+                    String or = "免费购买";
+                    this.addCoursesOrderEntry(userId,id,Constant.ONE,cIds,price,or,Constant.THREE);
+
                     //修改充值账户余额
                     double newPrice = sub(accountFrashEntry.getAccount(),price);
                     accountFrashDao.updateEntry(accountFrashEntry.getID(),newPrice);

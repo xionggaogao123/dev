@@ -110,7 +110,7 @@ public class BackStageUserManageService {
         //获取老师(teacherapprove 表 typ 为 2通过申请的 role 为0 或者没有role字段的（role为新增字段） 的） 及其 数量
         List<TeacherApproveEntry> teacherApproveEntries = teacherApproveDao.getTeacherByType();
         jsonObject = new JSONObject();
-        jsonObject.put("value","老师"+"++"+teacherApproveEntries.size());
+        jsonObject.put("value","老师");
         jsonObject.put("name","老师"+"("+teacherApproveEntries.size()+"人)");
         jsonArray.add(jsonObject);
 
@@ -120,7 +120,7 @@ public class BackStageUserManageService {
         roleListInt.add(0);
         roleEntries = newVersionUserRoleDao.getUserByRoleList(roleListInt);
         jsonObject = new JSONObject();
-        jsonObject.put("value","家长"+"++"+(roleEntries.size()-teacherApproveEntries.size()));
+        jsonObject.put("value","家长");
         jsonObject.put("name","家长"+"("+(roleEntries.size()-teacherApproveEntries.size())+"人)");
         jsonArray.add(jsonObject);
 
@@ -130,14 +130,14 @@ public class BackStageUserManageService {
         roleListInt.add(2);
         roleEntries = newVersionUserRoleDao.getUserByRoleList(roleListInt);
         jsonObject = new JSONObject();
-        jsonObject.put("value","学生"+"++"+roleEntries.size());
+        jsonObject.put("value","学生");
         jsonObject.put("name","学生"+"("+roleEntries.size()+"人)");
         jsonArray.add(jsonObject);
         // 员工也会放在这个表里面
         // (teacherapprove 表 typ 为 2通过申请的 role 为1 （role为新增字段） 的） 及其 数量
         List<TeacherApproveEntry> staffApproveEntries = teacherApproveDao.getStaffByType();
         jsonObject = new JSONObject();
-        jsonObject.put("value","员工"+"++"+staffApproveEntries.size());
+        jsonObject.put("value","员工");
         jsonObject.put("name","员工"+"("+staffApproveEntries.size()+"人)");
         jsonArray.add(jsonObject);
         return jsonArray;

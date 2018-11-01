@@ -11,6 +11,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MineCommunityDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
+import com.db.jiaschool.SchoolFunctionDao;
 import com.db.lancustom.MonetaryOrdersDao;
 import com.db.user.UserDao;
 import com.fulaan.alipay.config.AlipayNewConfig;
@@ -74,6 +75,8 @@ public class AppAlipayService  {
     private UserDao userDao = new UserDao();
 
     private MonetaryOrdersDao ordersDao = new MonetaryOrdersDao();
+
+    private SchoolFunctionDao schoolFunctionDao = new SchoolFunctionDao();
 
     private static final  int MAX_PRICE = 10000;
     //支付宝  1
@@ -738,8 +741,10 @@ public class AppAlipayService  {
         if(communityIds!=null && communityIds.size()>0){
             //所在学校
             List<ObjectId> schoolIdsList = schoolCommunityDao.getSchoolIdsList(communityIds);
-            if(schoolIdsList.size()>0){
-                HomeSchoolEntry homeSchoolEntry =  homeSchoolDao.getEntryById(schoolIdsList.get(0));
+            //获得已被允许的学校
+            List<ObjectId> schoolIds = schoolFunctionDao.getNewAllSchoolIdList(schoolIdsList,1, 1);
+            if(schoolIds.size()>0){
+                HomeSchoolEntry homeSchoolEntry =  homeSchoolDao.getEntryById(schoolIds.get(0));
                 schoolId = homeSchoolEntry.getID();
                 schoolName = homeSchoolEntry.getName();
             }

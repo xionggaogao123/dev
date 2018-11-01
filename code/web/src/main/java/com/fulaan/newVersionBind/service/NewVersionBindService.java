@@ -1055,6 +1055,7 @@ public class NewVersionBindService {
 
 
     public void addCommunityBindEntry(String userIds,ObjectId communityId,ObjectId mainUserId){
+        List<NewVersionCommunityBindEntry> newVersionCommunityBindEntries = newVersionCommunityBindDao.getBindEntries(communityId, mainUserId);
         //先删除绑定关系
         newVersionCommunityBindDao.removeNewVersionCommunity(communityId,mainUserId);
         if(StringUtils.isNotBlank(userIds)) {
@@ -1090,6 +1091,22 @@ public class NewVersionBindService {
             backStageService.setChildAutoFriends(uIds,communityId);
             //社长和孩子成为好友(暂时注释)
             backStageService.setChildCommunityFriends(uIds,communityId);
+        }
+        for(NewVersionCommunityBindEntry newVersionCommunityBindEntry:newVersionCommunityBindEntries){
+            long current = System.currentTimeMillis();
+            if(newVersionCommunityBindEntry!=null && newVersionCommunityBindEntry.getUserId() !=null){
+                String uId = newVersionCommunityBindEntry.getUserId().toString();
+                //向学生端推送消息
+                try {
+                    MQTTSendMsg.sendMessage(MQTTType.community.getEname(), uId,current);
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+                    String dateString = formatter.format(new Date(current));
+                    String scontent = dateString + MQTTType.community.getEname();
+                    this.addControlVersion(new ObjectId(uId),mainUserId,scontent,2);
+                }catch (Exception e){
+
+                }
+            }
         }
     }
     //处理老数据

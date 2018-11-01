@@ -145,4 +145,19 @@ public class CoursesOrderResultDao extends BaseDao {
         int count = count(MongoFacroty.getAppDB(),Constant.COLLECTION_COURSES_ORDER_RESULT,query);
         return count;
     }
+
+
+    public List<ObjectId> getAllLsit(ObjectId schoolId){
+        List<ObjectId> entryList=new ArrayList<ObjectId>();
+        BasicDBObject query=new BasicDBObject().append("isr", 0);
+        query.append("sid",schoolId);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSES_ORDER_RESULT, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new CoursesOrderResultEntry((BasicDBObject) obj).getCoursesId());
+            }
+        }
+        return entryList;
+    }
 }

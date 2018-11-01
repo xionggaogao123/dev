@@ -10,6 +10,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.MineCommunityDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
+import com.db.jiaschool.SchoolFunctionDao;
 import com.db.jiaschool.SchoolPersionDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -122,6 +123,8 @@ public class BusinessManageService {
 
 
     private MineCommunityDao mineCommunityDao = new MineCommunityDao();
+
+    private SchoolFunctionDao schoolFunctionDao = new SchoolFunctionDao();
 
     @Autowired
     private EmService emService;
@@ -2205,8 +2208,10 @@ public class BusinessManageService {
         if(communityIds!=null && communityIds.size()>0){
             //所在学校
             List<ObjectId> schoolIdsList = schoolCommunityDao.getSchoolIdsList(communityIds);
-            if(schoolIdsList.size()>0){
-                HomeSchoolEntry homeSchoolEntry =  homeSchoolDao.getEntryById(schoolIdsList.get(0));
+            //获得已被允许的学校
+            List<ObjectId> schoolIds = schoolFunctionDao.getNewAllSchoolIdList(schoolIdsList,1, 1);
+            if(schoolIds.size()>0){
+                HomeSchoolEntry homeSchoolEntry =  homeSchoolDao.getEntryById(schoolIds.get(0));
                 schoolId = homeSchoolEntry.getID();
                 schoolName = homeSchoolEntry.getName();
             }
@@ -2221,8 +2226,12 @@ public class BusinessManageService {
     public List<ExcellentCoursesDTO> getSchoolCourses(ObjectId schoolId){
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         //获得学校下的社群
-        List<ObjectId> communityIds = schoolCommunityDao.getCommunityIdsListBySchoolId(schoolId);
-        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getNewAllEntryList(communityIds);
+       // List<ObjectId> communityIds = schoolCommunityDao.getCommunityIdsListBySchoolId(schoolId);
+        List<ObjectId> objectIdList = coursesOrderResultDao.getAllLsit(schoolId);
+      /*  List<ObjectId> groupIds = communityDao.getGroupIdsByCommunityIds(communityIds);
+        List<ObjectId> memberList = memberDao.getAllGroupIdsMembers(groupIds);
+        List<ObjectId> objectIdList = teacherApproveDao.selectMap(memberList);*/
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyEntryListById(objectIdList);
         for(ExcellentCoursesEntry excellentCoursesEntry : excellentCoursesEntries){
             dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));
         }
@@ -2236,6 +2245,23 @@ public class BusinessManageService {
             hourClassEntry.setRoomId(roomId);
             hourClassDao.addEntry(hourClassEntry);
         }
+    }
+
+    public String selectBingRoom(ObjectId id){
+        HourClassEntry hourClassEntry = hourClassDao.getEntry(id);
+        String roomId = "";
+        if(hourClassEntry!=null){
+            if(hourClassEntry.getRoomId()!=null && !hourClassEntry.getRoomId().equals("")){
+                roomId = hourClassEntry.getRoomId();
+            }else{
+                CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(hourClassEntry.getParentId());
+                if(coursesRoomEntry!=null){
+                    roomId  = coursesRoomEntry.getRoomId();
+                }
+            }
+
+        }
+        return roomId;
     }
 
 

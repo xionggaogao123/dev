@@ -7,6 +7,7 @@ import com.db.excellentCourses.*;
 import com.db.fcommunity.*;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
+import com.db.jiaschool.SchoolFunctionDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -120,6 +121,8 @@ public class ExcellentCoursesService {
     private CoursesOrderResultDao coursesOrderResultDao = new CoursesOrderResultDao();
 
     private MineCommunityDao mineCommunityDao = new MineCommunityDao();
+
+    private SchoolFunctionDao schoolFunctionDao = new SchoolFunctionDao();
 
 
     private static final int  TEACHER_TIME = 24*60*60*1000;  //老师提前时间  ->  60分钟
@@ -2170,8 +2173,10 @@ public class ExcellentCoursesService {
         if(communityIds!=null && communityIds.size()>0){
             //所在学校
             List<ObjectId> schoolIdsList = schoolCommunityDao.getSchoolIdsList(communityIds);
-            if(schoolIdsList.size()>0){
-                HomeSchoolEntry homeSchoolEntry =  homeSchoolDao.getEntryById(schoolIdsList.get(0));
+            //获得已被允许的学校
+            List<ObjectId> schoolIds = schoolFunctionDao.getNewAllSchoolIdList(schoolIdsList,1, 1);
+            if(schoolIds.size()>0){
+                HomeSchoolEntry homeSchoolEntry =  homeSchoolDao.getEntryById(schoolIds.get(0));
                 schoolId = homeSchoolEntry.getID();
                 schoolName = homeSchoolEntry.getName();
             }
@@ -3225,7 +3230,13 @@ public class ExcellentCoursesService {
                 name = newVersionBindRelationEntry.getUserName();
             }
             map.put("uid",coursesRoomEntry.getUserId());
-            map.put("roomid",coursesRoomEntry.getRoomId());
+            //2018-11-01 修改
+            if(hourClassEntry.getRoomId()!=null && !hourClassEntry.getRoomId().equals("")){
+                map.put("roomid",hourClassEntry.getRoomId());
+            }else{
+                map.put("roomid",coursesRoomEntry.getRoomId());
+            }
+           // map.put("roomid",coursesRoomEntry.getRoomId());
             map.put("userName",name);
            // map.put("password",coursesRoomEntry.getPlaypass());
             if(coursesRoomEntry.getAuthtype()==0){//接口认证
@@ -3284,7 +3295,14 @@ public class ExcellentCoursesService {
             }
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
             map.put("uid",coursesRoomEntry.getUserId());
-            map.put("roomid",coursesRoomEntry.getRoomId());
+            //2018-11-01 修改
+            if(hourClassEntry.getRoomId()!=null && !hourClassEntry.getRoomId().equals("")){
+                map.put("roomid",hourClassEntry.getRoomId());
+            }else{
+                map.put("roomid",coursesRoomEntry.getRoomId());
+            }
+
+            //map.put("roomid",coursesRoomEntry.getRoomId());
             if(newVersionBindRelationEntry!=null && newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
                 name = newVersionBindRelationEntry.getUserName();
             }
@@ -3347,7 +3365,13 @@ public class ExcellentCoursesService {
             }
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
             map.put("uid",coursesRoomEntry.getUserId());
-            map.put("roomid",coursesRoomEntry.getRoomId());
+            //2018-11-01 修改
+            if(hourClassEntry.getRoomId()!=null && !hourClassEntry.getRoomId().equals("")){
+                map.put("roomid",hourClassEntry.getRoomId());
+            }else{
+                map.put("roomid",coursesRoomEntry.getRoomId());
+            }
+            //map.put("roomid",coursesRoomEntry.getRoomId());
             if(newVersionBindRelationEntry!=null && newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
                 name = newVersionBindRelationEntry.getUserName();
             }
@@ -4058,6 +4082,8 @@ public class ExcellentCoursesService {
                     teacherName = hourClassEntry.getOwnName();
                 }
                 long time = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
+                String roomId = "";
+
                 dtos = coursesRoomService.getBackList(excellentCoursesEntry.getID(),name,teacherName,hourClassEntry.getStartTime(),time,userId);
             }
         }

@@ -968,6 +968,27 @@ public class WebBusinessManageController extends BaseController {
     }
 
     /**
+     * 查询直播间
+     */
+    @ApiOperation(value = "查询直播间", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/selectBingRoom")
+    @ResponseBody
+    public RespObj selectBingRoom(
+            @ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id) {
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            String roomId = businessManageService.selectBingRoom(new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(roomId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询失败!");
+        }
+        return respObj;
+    }
+
+    /**
      * 批量导出订单数据
      */
     @ApiOperation(value = "批量导出订单数据", httpMethod = "GET", produces = "application/json")

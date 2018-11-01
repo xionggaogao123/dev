@@ -83,4 +83,25 @@ public class SchoolFunctionDao extends BaseDao {
         }
         return oids;
     }
+
+
+    public List<ObjectId> getNewAllSchoolIdList(List<ObjectId> schoolIds,int type,int open) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        query.append("typ",type).append("ope",open);
+        query.append("sid",new BasicDBObject(Constant.MONGO_IN,schoolIds));
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_SCHOOL_FUNCTION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_ASC);
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                SchoolFunctionEntry schoolFunctionEntry = new SchoolFunctionEntry((BasicDBObject) obj);
+                oids.add(schoolFunctionEntry.getSchoolId());
+            }
+        }
+        return oids;
+    }
 }

@@ -548,4 +548,21 @@ public class CommunityDao extends BaseDao {
         return count;
     }
 
+    /**
+     * 返回社区Entry
+     *
+     * @param searchId communityName
+     * @return
+     */
+    public CommunityEntry findBySearchIdOrName(String searchParam) {
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1 = new BasicDBObject().append("cmid", searchParam);
+        BasicDBObject query2 = new BasicDBObject().append("cmmn", searchParam);
+        values.add(query1);
+        values.add(query2);
+        query.put(Constant.MONGO_OR, values);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+        return dbObject == null ? null : new CommunityEntry(dbObject);
+    }
 }

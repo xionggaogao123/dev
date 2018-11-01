@@ -14,6 +14,7 @@ import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.jiaschool.service.HomeSchoolService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.service.CommunityService;
+import com.fulaan.service.CommunitySystemInfoService;
 import com.fulaan.service.MemberService;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
@@ -57,6 +58,9 @@ public class BackStageUserManageController extends BaseController {
 
     @Autowired
     private HomeSchoolService homeSchoolService;
+
+    @Autowired
+    private CommunitySystemInfoService communitySystemInfoService;
     /**
      * 后台用户管理角色筛选
      * @return
@@ -193,8 +197,8 @@ public class BackStageUserManageController extends BaseController {
     public RespObj getCommunityInfo(@RequestBody Map map) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
-            CommunityDTO communityDTO = backStageUserManageService.getCommunityInfo(map);
-            respObj.setMessage(communityDTO);
+            Map<String, Object> result = backStageUserManageService.getCommunityInfo(map);
+            respObj.setMessage(result);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e) {
             e.printStackTrace();
@@ -264,39 +268,62 @@ public class BackStageUserManageController extends BaseController {
             @ApiResponse(code = 500, message = "删除该社区选中的人员列表失败")})
     public RespObj quitMember(@RequestBody Map map) throws IOException, IllegalParamException {
         String emChatId = map.get("emChatId").toString();
-        String userIds = map.get("userIds").toString();
-        if (StringUtils.isBlank(userIds)) {
-            return RespObj.FAILD("userIds 为空 !");
-        }
-        ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-        GroupDTO groupDTO = groupService.findById(groupId,getUserId());
-        ObjectId userId = getUserId();
-//        if (!memberService.isManager(groupId, userId)) {
-//            return RespObj.FAILD("您没有这个权限");
+        String userIdStrings = map.get("userIds").toString();
+        ObjectId communityId = new ObjectId(map.get("communityId").toString());
+//        if (StringUtils.isBlank(userIds)) {
+//            return RespObj.FAILD("userIds 为空 !");
 //        }
-        List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
-        if (userList.contains(userId)) {
-            userList.remove(userId);
-        }
-        for (ObjectId personId : userList) {
-            if (memberService.isGroupMember(groupId, personId)) {
-                if (emService.removeUserFromEmGroup(emChatId, personId)) {
-                    memberService.deleteMember(groupId, personId);
-                    //废除数据
-                    if (groupDTO.isBindCommunity()) {
-                        communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
-                        communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), personId);
-                    }
+//        ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
+//        GroupDTO groupDTO = groupService.findById(groupId,getUserId());
+//        ObjectId userId = getUserId();
+////        if (!memberService.isManager(groupId, userId)) {
+////            return RespObj.FAILD("您没有这个权限");
+////        }
+//        List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+//        if (userList.contains(userId)) {
+//            userList.remove(userId);
+//        }
+//        for (ObjectId personId : userList) {
+//            if (memberService.isGroupMember(groupId, personId)) {
+//                if (emService.removeUserFromEmGroup(emChatId, personId)) {
+//                    memberService.deleteMember(groupId, personId);
+//                    //废除数据
+//                    if (groupDTO.isBindCommunity()) {
+//                        communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
+//                        communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), personId);
+//                    }
+//                }
+//            }
+//        }
+//        if (!groupDTO.isBindCommunity()) {
+//            groupService.asyncUpdateHeadImage(groupId);
+//            if (groupDTO.getIsM() == 0) {
+//                groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
+//            }
+//        }
+        List<ObjectId> userIds = MongoUtils.convertObjectIds(userIdStrings);
+        CommunityDTO community = communityService.findByObjectId(communityId);
+        ObjectId groupId = communityService.getGroupId(communityId);
+        for (ObjectId userId : userIds) {
+
+            if (memberService.isHead(new ObjectId(community.getGroupId()), userId)) {
+                return RespObj.FAILD("不能删除社长");
+            }
+//            if (emService.removeUserFromEmGroup(community.getEmChatId(), userId)) {//这个if判断导致有的社群退不掉？
+                emService.removeUserFromEmGroup(community.getEmChatId(), userId);
+                communityService.pullFromUser(communityId, userId);
+                memberService.deleteMember(groupId, userId);
+                //设置先前该用户所发表的数据为废弃掉的
+                communityService.setPartIncontentStatus(communityId, userId, 1);
+                if (memberService.isManager(groupId, userId)) { //发送退出消息
+                    //当是副社长退出时
+                    List<ObjectId> objectIds = communityService.getAllMemberIds(groupId);
+                    communitySystemInfoService.addBatchData(userId, objectIds, "副社长", 1, communityId);
                 }
-            }
+
+//            }
         }
-        if (!groupDTO.isBindCommunity()) {
-            groupService.asyncUpdateHeadImage(groupId);
-            if (groupDTO.getIsM() == 0) {
-                groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
-            }
-        }
-        return RespObj.SUCCESS("退出成功");
+        return RespObj.SUCCESS("退出成功！");
     }
 
     /**
@@ -405,8 +432,17 @@ public class BackStageUserManageController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
             ObjectId communityId = new ObjectId(map.get("communityId").toString());
-            String userIds = map.get("userIds").toString();
-            backStageUserManageService.relieveChildrenBindRelation(communityId, userIds);
+            //解除孩子社群绑定
+            String unCheckUserIds = map.get("unCheckUserIds").toString();
+            if (unCheckUserIds != ""){
+                backStageUserManageService.relieveChildrenBindRelation(communityId, unCheckUserIds);
+            }
+            //添加孩子社群绑定
+            String checkUserIds = map.get("checkUserIds").toString();
+            String mainUserId = map.get("mainUserId").toString();
+            if (checkUserIds != ""){
+                backStageUserManageService.addChildrenBindRelation(communityId, mainUserId, checkUserIds);
+            }
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("操作成功！");
         }catch (Exception e){

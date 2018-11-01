@@ -972,4 +972,27 @@ public class MemberDao extends BaseDao {
         }
         return map;
     }
+
+    public void updateRoleById(ObjectId id, int role) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("rl",role));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER,query,updateValue);
+    }
+
+    /**
+     * 获取全部成员(包括社长 副社长)
+     *
+     * @param groupId
+     * @return
+     */
+    public List<MemberEntry> getAllMembersByGroupId(ObjectId groupId) {
+        BasicDBObject query = new BasicDBObject().append("grid", groupId)/*.append("r", 0)*/;
+        BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
+        List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            memberEntries.add(new MemberEntry(dbo));
+        }
+        return memberEntries;
+    }
 }

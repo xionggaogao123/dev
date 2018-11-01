@@ -526,4 +526,29 @@ public class NewVersionCommunityBindDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
                 query,updateValue);
     }
+
+    /**
+     * 绑定的有效数据
+     * @param communityId
+     * @param mainUserId
+     * @param userId
+     * @return
+     */
+    public NewVersionCommunityBindEntry getValidEntry(ObjectId communityId,
+                                                 ObjectId mainUserId,
+                                                 ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("muid", mainUserId)
+                .append("uid", userId)
+                .append("ir", Constant.ZERO);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
+                query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new NewVersionCommunityBindEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
 }

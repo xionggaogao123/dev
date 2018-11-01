@@ -35,6 +35,7 @@ import com.pojo.backstage.UserLogResultEntry;
 import com.pojo.controlphone.ControlVersionEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
+import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
@@ -43,6 +44,7 @@ import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import com.sys.utils.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -672,14 +674,10 @@ public class BackStageUserManageService {
 
     public String setCommunityRole(Map map) {
         String msg = "";
-//        CommunityEntry communityEntry = communityDao.findBySearchId(map.get("searchParam").toString());
         CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(map.get("communityId").toString()));
         //社群信息校验
         if (null == communityEntry){
-//            communityEntry = communityDao.findByName(map.get("searchParam").toString());
-//            if (null == communityEntry){
                 return "无该社群，请确认输入的社群信息是否正确！";
-//            }
         }
 
         //用户信息校验
@@ -687,23 +685,30 @@ public class BackStageUserManageService {
         if(null == userEntry){
             return "当前用户信息有误！";
         }
+        //判断是否设置社长
+        if (!StringUtils.isBlank(map.get("role").toString()) && Integer.parseInt(map.get("role").toString()) == 2){
+            //设置社长
 
-//        Boolean flag = memberDao.isCommunityMember(communityEntry.getID(),userEntry.getID());
-//        if(true == flag){
-//            return "该用户在该社群中！";
-//        }
-//        MemberEntry memberEntry = new MemberEntry(
-//                userEntry.getID(),
-//                communityEntry.getGroupId(),
-//                communityEntry.getID(),
-//                userEntry.getNickName(),
-//                userEntry.getAvatar(),
-//                Integer.parseInt(map.get("role").toString()),
-//                userEntry.getUserName()
-//
-//        );
-//        memberEntry.setRole(0);
-        memberDao.updateRoleById(map);
+            //1 查出社长信息
+            ObjectId groupId = new ObjectId(map.get("groupId").toString());
+            MemberEntry memberEntry = memberDao.getHeader(groupId);
+
+            // 2 判断需要设置的是否为新社长
+            if (!StringUtils.isBlank(map.get("userId").toString()) && !memberEntry.getUserId().toString().equals(map.get("userId").toString())){
+                //是设置新社长
+                // 3 设置新社长
+                memberDao.updateRoleById(map);
+                // 4 老社长设置为社群成员
+                ObjectId id = memberEntry.getID();
+                int role = 0;
+                memberDao.updateRoleById(id, role);
+            }else {
+                memberDao.updateRoleById(map);
+            }
+        }else{
+            memberDao.updateRoleById(map);
+        }
+
         msg = "操作成功！";
         return msg;
     }
@@ -714,21 +719,39 @@ public class BackStageUserManageService {
      * @param map
      * @return
      */
-    public CommunityDTO getCommunityInfo(Map map) {
+    public Map<String, Object> getCommunityInfo(Map map) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
         CommunityDTO communityDTO = null;
-        CommunityEntry communityEntry = communityDao.findBySearchId(map.get("searchParam").toString());
+        CommunityEntry communityEntry = communityDao.findBySearchIdOrName(map.get("searchParam").toString());
         //社群信息校验
         if (null == communityEntry){
-            communityEntry = communityDao.findByName(map.get("searchParam").toString());
-            if (null != communityEntry){
-                communityDTO = new CommunityDTO(communityEntry);
-            }
+            communityDTO = new CommunityDTO();
+            result.put("communityDTO",communityDTO);
         }else {
             communityDTO = new CommunityDTO(communityEntry);
+            result.put("communityDTO",communityDTO);
+            //判断用户是否在要加入的社群
+            ObjectId groupId = new ObjectId(communityDTO.getGroupId());
+            List<MemberEntry> memberEntries = memberDao.getAllMembersByGroupId(groupId);
+            for (MemberEntry memberEntry : memberEntries){
+                if (memberEntry.getUserId().toString().equals(map.get("userId").toString()) ){
+                    result.put("in","true");
+                    return result;
+                }
+            }
         }
-        return communityDTO;
+        result.put("in","false");
+
+        return result;
+//        return communityDTO;
     }
 
+    /**
+     * 解除孩子社群绑定
+     * @param communityId
+     * @param userIds
+     */
     public void relieveChildrenBindRelation(ObjectId communityId, String userIds) {
         String[] uids = userIds.split(",");
         List<ObjectId> userIdList = new ArrayList<ObjectId>();
@@ -736,5 +759,31 @@ public class BackStageUserManageService {
             userIdList.add(new ObjectId(uid));
         }
         newVersionCommunityBindDao.relieveChildrenBindRelation(userIdList,communityId);
+    }
+
+    /**
+     * 添加孩子社群绑定
+     * @param communityId
+     * @param checkUserIds
+     */
+    public void addChildrenBindRelation(ObjectId communityId, String mainUserId, String checkUserIds) {
+        ObjectId mainUserIdObj = new ObjectId(mainUserId);
+        String[] uids = checkUserIds.split(",");
+        List<ObjectId> userIdList = new ArrayList<ObjectId>();
+        List<NewVersionCommunityBindEntry> communityBindEntries = new ArrayList<NewVersionCommunityBindEntry>();
+        for(String uid:uids){
+            //判断是否是绑定状态
+            ObjectId uidObj = new ObjectId(uid);
+            NewVersionCommunityBindEntry newVersionCommunityBindEntry = newVersionCommunityBindDao.getValidEntry(communityId, mainUserIdObj, uidObj);
+            if (newVersionCommunityBindEntry == null){
+                //没绑定 添加绑定记录
+                communityBindEntries.add(new NewVersionCommunityBindEntry(communityId, mainUserIdObj, uidObj));
+//                userIdList.add(uidObj);
+            }
+        }
+        if (communityBindEntries.size()>0){
+            //添加绑定记录到数据库
+            newVersionCommunityBindDao.saveEntries(communityBindEntries);
+        }
     }
 }

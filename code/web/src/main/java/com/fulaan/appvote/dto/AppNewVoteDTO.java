@@ -47,7 +47,7 @@ public class AppNewVoteDTO {
     private int  urlType; //选项类型                                      //提交           0  文本
     private String createTime;
 
-    private String option; //选项（","分割）                              //（必）提交
+    private List<String> option = new ArrayList<String>(); //选项                       //（必）提交
 
     private int level;       //所处阶段    0  未开始     1 报名      2 投票     3 已结束
     private int isApply;        //      0 不可申请      1    可申请    2 已申请
@@ -484,11 +484,11 @@ public class AppNewVoteDTO {
         this.urlType = urlType;
     }
 
-    public String getOption() {
+    public List<String> getOption() {
         return option;
     }
 
-    public void setOption(String option) {
+    public void setOption(List<String> option) {
         this.option = option;
     }
 

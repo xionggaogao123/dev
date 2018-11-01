@@ -74,10 +74,9 @@ public class AppNewVoteService {
         AppNewVoteEntry appNewVoteEntry = appNewVoteDTO.buildAddEntry();
         appNewVoteDao.saveAppVote(appNewVoteEntry);
         //添加选项
-        String option = appNewVoteDTO.getOption();
-        if(appNewVoteDTO.getType()==1 && option!=null && !option.equals("")){
-            String[] strings =  option.split(",");
-            for(String s:strings){
+        List<String> option = appNewVoteDTO.getOption();
+        if(appNewVoteDTO.getType()==1 && option!=null && option.size()>0){
+            for(String s:option){
                 AppVoteOptionEntry appVoteOptionEntry = new AppVoteOptionEntry(
                         appNewVoteEntry.getID(),
                         s,

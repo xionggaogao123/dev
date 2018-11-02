@@ -210,8 +210,8 @@ public class BackStageUserManageController extends BaseController {
 
     /**
      * 用户加入社群
-     * 复制 WebGroupController 下的join
-     * param userId emChatId
+     * 复制 DefaultCommunityController 下的inviteMembers
+     * param userId communityId
      * @return
      */
     @ApiOperation(value = "当前用户加入社群", httpMethod = "POST", produces = "application/json")
@@ -221,34 +221,24 @@ public class BackStageUserManageController extends BaseController {
     @RequestMapping("/addUserJoinCommunity")
     @ResponseBody
     public RespObj join(@RequestBody Map map) throws IOException, IllegalParamException {
-        String emChatId = map.get("emChatId").toString();
         ObjectId userId = new ObjectId(map.get("userId").toString());
-//        GroupDTO groupDTO = groupService.findByEmChatId(emChatId,getUserId());
-        GroupDTO groupDTO = groupService.findByEmChatId(emChatId,userId);
-        if (groupDTO == null) {
-            return RespObj.FAILDWithErrorMsg("不存在此群聊或社区");
-        }
-        ObjectId groupId = new ObjectId(groupDTO.getId());
-//        ObjectId userId = getUserId();
-        if (!memberService.isGroupMember(groupId, userId)) {
-            if (memberService.isBeforeMember(groupId, userId)) {
-                if (emService.addUserToEmGroup(emChatId, userId)) {
-                    memberService.updateMember(userId, groupId, 0);
-                    if (groupDTO.isBindCommunity()) {
-                        communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 0);
+        ObjectId communityId = new ObjectId(map.get("communityId").toString());
+        ObjectId groupId = communityService.getGroupId(communityId);
+        String emChatId = groupService.getEmchatIdByGroupId(groupId);
+            if (!memberService.isGroupMember(groupId, userId)) {
+                if (memberService.isBeforeMember(groupId, userId)) {
+                    if (emService.addUserToEmGroup(emChatId, userId)) {
+                        memberService.updateMember(groupId, userId, 0);
+                        communityService.setPartIncontentStatus(communityId, userId, 0);
+                        communityService.pushToUser(communityId, userId, 1);
+                    }
+                } else {
+                    if (emService.addUserToEmGroup(emChatId, userId)) {
+                        memberService.saveMember(userId, groupId);
+                        communityService.pushToUser(communityId, userId, 1);
                     }
                 }
-            } else {
-                if (emService.addUserToEmGroup(emChatId, userId)) {
-                    memberService.saveMember(userId, groupId, 0);
-                }
             }
-        }
-        //更新群聊头像
-        groupService.asyncUpdateHeadImage(groupId);
-        if (groupDTO.getIsM() == 0) {
-            groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
-        }
         return RespObj.SUCCESS("操作成功");
     }
 

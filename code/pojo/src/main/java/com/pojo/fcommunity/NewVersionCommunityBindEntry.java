@@ -63,6 +63,9 @@ public class NewVersionCommunityBindEntry extends BaseDBObject{
     public int getRemoveStatus(){
         return getSimpleIntegerValue("ir");
     }
+    public void setRemoveStatus(int ir){
+        setSimpleValue("ir",ir);
+    }
 
     public ObjectId getUserId(){
         return getSimpleObjecIDValue("uid");

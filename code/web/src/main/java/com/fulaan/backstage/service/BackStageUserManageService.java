@@ -779,10 +779,15 @@ public class BackStageUserManageService {
                 //没绑定 添加绑定记录
                 communityBindEntries.add(new NewVersionCommunityBindEntry(communityId, mainUserIdObj, uidObj));
 //                userIdList.add(uidObj);
+            }else{
+                if (1 == newVersionCommunityBindEntry.getRemoveStatus()){
+                    newVersionCommunityBindEntry.setRemoveStatus(0);
+                    newVersionCommunityBindDao.saveEntry(newVersionCommunityBindEntry);//更新
+                }
             }
         }
         if (communityBindEntries.size()>0){
-            //添加绑定记录到数据库
+            //添加绑定记录到数据库(批量新增)
             newVersionCommunityBindDao.saveEntries(communityBindEntries);
         }
     }

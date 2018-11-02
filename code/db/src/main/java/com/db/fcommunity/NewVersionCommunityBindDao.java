@@ -528,7 +528,7 @@ public class NewVersionCommunityBindDao extends BaseDao{
     }
 
     /**
-     * 绑定的有效数据
+     * 绑定的数据
      * @param communityId
      * @param mainUserId
      * @param userId
@@ -541,7 +541,7 @@ public class NewVersionCommunityBindDao extends BaseDao{
                 .append("cid",communityId)
                 .append("muid", mainUserId)
                 .append("uid", userId)
-                .append("ir", Constant.ZERO);
+                /*.append("ir", Constant.ZERO)*/;
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
                 query,Constant.FIELDS);
         if(null!=dbObject){

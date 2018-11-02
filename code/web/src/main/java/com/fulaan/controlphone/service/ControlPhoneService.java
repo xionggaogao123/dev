@@ -5092,7 +5092,7 @@ public class ControlPhoneService {
                 if(flag){
 
                 }else{
-                    dto.setVersion("已退出");
+                    dto.setVersion("未登录");
                 }
                 if(entry != null && controlVersionEntry2.getVersion().equals(entry.getVersion())){
                     dto.setLevel(3);//匹配
@@ -5115,7 +5115,7 @@ public class ControlPhoneService {
                     name = remarkEntry.getRemark();
                 }
                 dto.setUserName(name);
-                dto.setVersion("暂无数据");
+                dto.setVersion("未登录");
                 dto.setLevel(2);
                 dto.setCommunityId(communityId.toString());
                 dto.setDateTime(0l);
@@ -5130,7 +5130,7 @@ public class ControlPhoneService {
         }else{
             ControlVersionDTO dto = new ControlVersionDTO();
             dto.setUserName("");
-            dto.setVersion("暂无数据");
+            dto.setVersion("未登录");
             dto.setLevel(1);
             dto.setCommunityId(communityId.toString());
             dto.setDateTime(0l);

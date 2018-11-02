@@ -217,7 +217,10 @@ public class ExcellentCoursesController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
+            long sta = System.currentTimeMillis();
             Map<String,Object>  dto = excellentCoursesService.getSimpleCourses(getUserId());
+            long eta = System.currentTimeMillis();
+            System.out.print(eta-sta);
             respObj.setMessage(dto);
         } catch (Exception e) {
             e.printStackTrace();
@@ -678,7 +681,10 @@ public class ExcellentCoursesController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
+            long sta = System.currentTimeMillis();
             Map<String,Object> result = excellentCoursesService.myNewClassList(getUserId(),subjectId, priceType, persionType, timeType, page, pageSize);
+            long eta = System.currentTimeMillis();
+            System.out.print(eta-sta);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

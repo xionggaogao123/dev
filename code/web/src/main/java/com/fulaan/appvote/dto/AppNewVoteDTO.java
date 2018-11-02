@@ -33,9 +33,9 @@ public class AppNewVoteDTO {
     private int type;                                                     //提交    1   投票（必）     2 报名（或）
 
     private List<Integer> applyTypeList = new ArrayList<Integer>();       //（或）提交
-    private int applyCount;                                               //（或）提交
+    private int applyCount;                                               //（或）提交  1
     private String applyStartTime;                                        //（或）提交
-    private String applyEndTime;                                          //（或）提交
+    private String applyEndTime;                                          //（或）提交  1
 
     private List<String> communityList = new ArrayList<String>();         //提交
     private List<Integer> voteTypeList = new ArrayList<Integer>();        //提交
@@ -149,19 +149,19 @@ public class AppNewVoteDTO {
         }
         long ast = 0l;
         if(this.getApplyStartTime() != null && this.getApplyStartTime() != ""){
-            ast = DateTimeUtils.getStrToLongTime(this.getApplyStartTime());
+            ast = DateTimeUtils.getStrToLongTime(this.getApplyStartTime(),"yyyy-MM-dd HH:mm");
         }
         long aet = 0l;
         if(this.getApplyEndTime() != null && this.getApplyEndTime() != ""){
-            aet = DateTimeUtils.getStrToLongTime(this.getApplyEndTime());
+            aet = DateTimeUtils.getStrToLongTime(this.getApplyEndTime(),"yyyy-MM-dd HH:mm");
         }
         long vst = 0l;
         if(this.getVoteStartTime() != null && this.getVoteStartTime() != ""){
-            vst = DateTimeUtils.getStrToLongTime(this.getVoteStartTime());
+            vst = DateTimeUtils.getStrToLongTime(this.getVoteStartTime(),"yyyy-MM-dd HH:mm");
         }
         long vet = 0l;
         if(this.getVoteEndTime() != null && this.getVoteEndTime() != ""){
-            vet = DateTimeUtils.getStrToLongTime(this.getVoteEndTime());
+            vet = DateTimeUtils.getStrToLongTime(this.getVoteEndTime(),"yyyy-MM-dd HH:mm");
         }
         List<VideoEntry> videoEntries=new ArrayList<VideoEntry>();
         if(videoList.size()>0){

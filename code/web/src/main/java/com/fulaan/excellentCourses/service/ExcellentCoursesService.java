@@ -4084,6 +4084,7 @@ public class ExcellentCoursesService {
                 long time = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
                 String roomId = "";
 
+
                 dtos = coursesRoomService.getBackList(excellentCoursesEntry.getID(),name,teacherName,hourClassEntry.getStartTime(),time,userId);
             }
         }

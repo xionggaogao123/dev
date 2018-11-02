@@ -52,6 +52,8 @@ public class AppNewVoteController extends BaseController {
             respObj.setMessage(score);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
+            respObj.setCode(Constant.FAILD_CODE);
+            logger.error("error",e);
         }
         return respObj;
     }
@@ -81,7 +83,7 @@ public class AppNewVoteController extends BaseController {
 
 
 
-    @ApiOperation(value = "查询投票列表", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "家长查询投票列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getVoteList")
     @ResponseBody

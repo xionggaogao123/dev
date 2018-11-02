@@ -1214,7 +1214,7 @@ public class BusinessManageService {
         classOrderDao.delOrderEntry(id, userId);
         backStageService.addLogMessage(id.toString(), "删除直播课堂订单：" + excellentCoursesEntry.getTitle() + ",ID:" + jiaId, LogMessageType.courses.getDes(), uid.toString());
         //3. 删除对应的每日订单
-        coursesOrderResultDao.delEntry(userId,id);
+        //coursesOrderResultDao.delEntry(userId,id);
     }
 
     /**
@@ -2153,7 +2153,7 @@ public class BusinessManageService {
             cellItem.setCellValue(coursesOrderResultDTO.getClassList().size()+"");
 
             cellItem = rowItem.createCell(7);
-            cellItem.setCellValue(coursesOrderResultDTO.getPrice()+"0");
+            cellItem.setCellValue(coursesOrderResultDTO.getPrice()+"");
 
             cellItem = rowItem.createCell(8);
             cellItem.setCellValue(coursesOrderResultDTO.getOrder());

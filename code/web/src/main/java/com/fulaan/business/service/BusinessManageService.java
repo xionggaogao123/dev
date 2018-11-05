@@ -2039,7 +2039,9 @@ public class BusinessManageService {
         double manPrice = 0;
         List<ObjectId> userIds = new ArrayList<ObjectId>();
         for(CoursesOrderResultEntry coursesOrderResultEntry:coursesOrderResultEntries2){
-            schoolSet.add(coursesOrderResultEntry.getSchoolId());
+            if(coursesOrderResultEntry.getSchoolId() != null && !coursesOrderResultEntry.getSchoolId().equals("")) {
+                schoolSet.add(coursesOrderResultEntry.getSchoolId());
+            }
             coursesSet.add(coursesOrderResultEntry.getCoursesId());
             userIds.add(coursesOrderResultEntry.getUserId());
             if(coursesOrderResultEntry.getType()==1){

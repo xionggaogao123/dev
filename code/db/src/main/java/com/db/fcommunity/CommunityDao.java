@@ -59,6 +59,18 @@ public class CommunityDao extends BaseDao {
         }
         return communitys;
     }
+
+    public Map<ObjectId,CommunityEntry> findMapByObjectIds(List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+        Map<ObjectId,CommunityEntry> communitys = new HashMap<ObjectId, CommunityEntry>();
+        for (DBObject dbo : dbObjects) {
+            CommunityEntry communityEntry = new CommunityEntry(dbo);
+            communitys.put(communityEntry.getID(), communityEntry);
+        }
+        return communitys;
+    }
+
     public String findStringByObjectIds(List<ObjectId> ids) {
         BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);

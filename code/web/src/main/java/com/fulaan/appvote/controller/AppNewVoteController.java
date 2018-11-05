@@ -104,6 +104,27 @@ public class AppNewVoteController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "学生查询投票列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getStudentVoteList")
+    @ResponseBody
+    public RespObj getStudentVoteList(@RequestParam(value="page",defaultValue = "1") int page,
+                               @RequestParam(value="pageSize",defaultValue = "10") int pageSize,
+                               @RequestParam(value="keyword",defaultValue = "") String keyword,
+                               @RequestParam(value="communityId",defaultValue = "") String communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> map = appNewVoteService.getVoteList(getUserId(), communityId, keyword, page, pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+            logger.error("error",e);
+        }
+        return respObj;
+    }
+
 
     @ApiOperation(value = "查询投票详情", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})

@@ -152,13 +152,16 @@ liveid	直播id*/
     /**
      * 获取回放列表
      */
-    public List<ReplayDTO> getBackList(ObjectId cid,String userName,String teacherName,long stm,long etm,ObjectId userId){
+    public List<ReplayDTO> getBackList(ObjectId cid,String userName,String teacherName,long stm,long etm,ObjectId userId,String rid){
         List<ReplayDTO> replayDTOList =  new ArrayList<ReplayDTO>();
         CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(cid);
         if(coursesRoomEntry==null){
             return replayDTOList;
         }
         String roomid = coursesRoomEntry.getRoomId();
+        if(rid!=null && !rid.equals("")){
+            roomid = rid;
+        }
         Map<String,String> map = new TreeMap<String, String>();
         map.put("userid",CC_USERID);
         map.put("roomid",roomid);
@@ -221,23 +224,26 @@ liveid	直播id*/
             JSONObject dataJson = new JSONObject(str);
             String rows = dataJson.getString("result");
             if(rows.equals("OK")){
-                JSONArray jsonArray = dataJson.getJSONArray("records");
-                if(jsonArray!=null&&jsonArray.length()>0) {
-                    for (int j = 0; j < jsonArray.length(); j++) {
-                        JSONObject rows2 = jsonArray.getJSONObject(j);
-                        String id =  rows2.getString("id");
-                        String liveId =  rows2.getString("liveId");
-                        String stopTime =  rows2.getString("stopTime");
-                        String startTime =  rows2.getString("startTime");
-                        int recordStatus =  rows2.getInt("recordStatus");
-                        String recordVideoId =  rows2.getString("recordVideoId");
-                        String replayUrl =  rows2.getString("replayUrl");
-                        String password = CC_PLAYPASS;
-                        if(coursesRoomEntry.getAuthtype()==0){//接口认证
-                            password = userId.toString();
+                int co = dataJson.getInt("count");
+                if(co>0){
+                    JSONArray jsonArray = dataJson.getJSONArray("records");
+                    if(jsonArray!=null&&jsonArray.length()>0) {
+                        for (int j = 0; j < jsonArray.length(); j++) {
+                            JSONObject rows2 = jsonArray.getJSONObject(j);
+                            String id =  rows2.getString("id");
+                            String liveId =  rows2.getString("liveId");
+                            String stopTime =  rows2.getString("stopTime");
+                            String startTime =  rows2.getString("startTime");
+                            int recordStatus =  rows2.getInt("recordStatus");
+                            String recordVideoId =  rows2.getString("recordVideoId");
+                            String replayUrl =  rows2.getString("replayUrl");
+                            String password = CC_PLAYPASS;
+                            if(coursesRoomEntry.getAuthtype()==0){//接口认证
+                                password = userId.toString();
+                            }
+                            ReplayDTO dto = new ReplayDTO(id,liveId,roomid,recordVideoId,CC_USERID,userName,password,startTime,stopTime,recordStatus,replayUrl);
+                            replayDTOList.add(dto);
                         }
-                        ReplayDTO dto = new ReplayDTO(id,liveId,roomid,recordVideoId,CC_USERID,userName,password,startTime,stopTime,recordStatus,replayUrl);
-                        replayDTOList.add(dto);
                     }
                 }
             }else{

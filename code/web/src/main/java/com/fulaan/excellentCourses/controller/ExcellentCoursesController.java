@@ -544,6 +544,29 @@ public class ExcellentCoursesController extends BaseController {
     }
 
     /**
+     * 判断是否为特殊直播间（合并直播间、多直播间）
+     */
+    @ApiOperation(value = "判断是否为特殊直播间", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/booleanBackList")
+    @ResponseBody
+    public RespObj booleanBackList(@ApiParam(name = "id", required = true, value = "课节id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = excellentCoursesService.booleanBackList(new ObjectId(id), getUserId());
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取回放列表失败!");
+        }
+        return respObj;
+    }
+
+    /**
      * 简介（家长）
      */
     @ApiOperation(value = "简介（家长）", httpMethod = "GET", produces = "application/json")

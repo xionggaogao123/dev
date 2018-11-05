@@ -189,9 +189,12 @@ public class AppNewVoteService {
         List<AppNewVoteEntry> appNewVoteEntries = appNewVoteDao.getVoteList(keyword,communityIds,page,pageSize,role);
         int count = appNewVoteDao.countVoteList(keyword,communityIds,role);
         List<ObjectId> userIds = new ArrayList<ObjectId>();
+        List<ObjectId> cids = new ArrayList<ObjectId>();
         for(AppNewVoteEntry appNewVoteEntry: appNewVoteEntries){
             userIds.add(appNewVoteEntry.getUserId());
+            cids.addAll(appNewVoteEntry.getCommunityList());
         }
+        Map<ObjectId,CommunityEntry> nap = communityDao.findMapByObjectIds(cids);
         Map<ObjectId, UserEntry> userEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
         List<AppNewVoteDTO> dtos = new ArrayList<AppNewVoteDTO>();
         long current = System.currentTimeMillis();
@@ -240,6 +243,21 @@ public class AppNewVoteService {
                 }
 
             }
+            List<ObjectId> comIds = appNewVoteEntry.getCommunityList();
+            StringBuffer sb = new StringBuffer();
+            if(comIds!=null){
+                for(ObjectId oid:comIds){
+                    CommunityEntry communityEntry = nap.get(oid);
+                    if(communityEntry!=null){
+                        sb.append(communityEntry.getCommunityName());
+                        sb.append("、");
+                    }
+                }
+            }
+            if(sb.length()>0){
+                sb.substring(0,sb.length()-1);
+            }
+            dto.setCommunityNames(sb.toString());
             dtos.add(dto);
         }
         map.put("list",dtos);

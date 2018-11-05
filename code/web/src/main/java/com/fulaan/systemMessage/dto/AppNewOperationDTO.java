@@ -301,6 +301,5 @@ public class AppNewOperationDTO {
     public void setOperation(int operation) {
         this.operation = operation;
     }
-    
-    
+
 }

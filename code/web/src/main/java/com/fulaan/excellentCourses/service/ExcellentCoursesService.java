@@ -4083,12 +4083,50 @@ public class ExcellentCoursesService {
                 }
                 long time = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
                 String roomId = "";
-
-
-                dtos = coursesRoomService.getBackList(excellentCoursesEntry.getID(),name,teacherName,hourClassEntry.getStartTime(),time,userId);
+                if(hourClassEntry.getRoomId()!=null){
+                    roomId = hourClassEntry.getRoomId();
+                }
+                dtos = coursesRoomService.getBackList(excellentCoursesEntry.getID(),name,teacherName,hourClassEntry.getStartTime(),time,userId,roomId);
             }
         }
         return dtos;
+    }
+
+    public Map<String,Object>  booleanBackList(ObjectId id,ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ReplayDTO> dtos = new ArrayList<ReplayDTO>();
+        HourClassEntry hourClassEntry = hourClassDao.getEntry(id);
+        map.put("status",1);
+        if(hourClassEntry.getRoomId() == null || hourClassEntry.getRoomId().equals("")){
+            map.put("status",0);
+            map.put("list",dtos);
+            return map;
+        }
+        ObjectId ownId = hourClassEntry.getOwnId();
+        if(ownId==null){
+            ownId  =  userId;
+        }
+        UserEntry userEntry = userDao.findByUserId(ownId);
+        if(hourClassEntry!=null && userEntry!=null){//课节存在
+            ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(hourClassEntry.getParentId());
+            //课程存在
+            ClassOrderEntry classOrderEntry = classOrderDao.getEntry(hourClassEntry.getID(),hourClassEntry.getParentId(),userId);
+            if(excellentCoursesEntry !=null && classOrderEntry!=null){//订单存在
+                String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                String teacherName = excellentCoursesEntry.getUserName();
+                if(hourClassEntry.getOwnName()!=null){
+                    teacherName = hourClassEntry.getOwnName();
+                }
+                long time = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
+                String roomId = "";
+                if(hourClassEntry.getRoomId()!=null){
+                    roomId = hourClassEntry.getRoomId();
+                }
+                dtos = coursesRoomService.getBackList(excellentCoursesEntry.getID(),name,teacherName,hourClassEntry.getStartTime(),time,userId,roomId);
+            }
+        }
+        map.put("list",dtos);
+        return map;
     }
 
     /**

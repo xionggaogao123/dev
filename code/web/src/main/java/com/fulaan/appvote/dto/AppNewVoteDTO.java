@@ -21,6 +21,7 @@ public class AppNewVoteDTO {
     private String schoolId;
     private String subjectId;
     private String subjectName;
+    private String communityNames;
     private String userId;
     private String userName;
     private String avatar;
@@ -225,6 +226,14 @@ public class AppNewVoteDTO {
                         vet);
         return openEntry;
 
+    }
+
+    public String getCommunityNames() {
+        return communityNames;
+    }
+
+    public void setCommunityNames(String communityNames) {
+        this.communityNames = communityNames;
     }
 
     public String getUserName() {

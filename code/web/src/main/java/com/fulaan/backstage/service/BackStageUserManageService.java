@@ -46,6 +46,7 @@ import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import com.sys.utils.RespObj;
 import com.sys.utils.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
@@ -391,12 +392,16 @@ public class BackStageUserManageService {
             for (NewVersionUserRoleEntry userRoleEntry : roleEntries) {
                 userIds.add(userRoleEntry.getUserId());
             }
-            //超简洁获取用户的社团 listMineCommunityId
-            // 按userId分组 返回Map<userId,List<communityId>>
-            Map<ObjectId,List<ObjectId>> mineUserIdCommunityIdList = communityService.getCommunitys3GroupByUserId(userIds);
-            //获取当前用户所有的社群（范围存在于 listMineCommunityId）
-            // 按userId分组 返回Map<userId,List<MemberEntry>>
-            Map<ObjectId,List<MemberEntry>> userIdMemberEntries = memberDao.getMemberEntriesGroupByuserId(userIds,mineUserIdCommunityIdList);
+
+            Map<ObjectId,List<MemberEntry>> userIdMemberEntries = new HashMap<ObjectId, List<MemberEntry>>();
+            if ("家长".equals(map.get("roleOption"))){
+                //超简洁获取用户的社团 listMineCommunityId
+                // 按userId分组 返回Map<userId,List<communityId>>
+                Map<ObjectId,List<ObjectId>> mineUserIdCommunityIdList = communityService.getCommunitys3GroupByUserId(userIds);
+                //获取当前用户所有的社群（范围存在于 listMineCommunityId）
+                // 按userId分组 返回Map<userId,List<MemberEntry>>
+                userIdMemberEntries = memberDao.getMemberEntriesGroupByuserId(userIds,mineUserIdCommunityIdList);
+            }
             //获取用户基本信息
             Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
             for (NewVersionUserRoleEntry userRoleEntry : roleEntries) {
@@ -408,9 +413,10 @@ public class BackStageUserManageService {
                 //获取当前用户所有的社群（范围存在于 listMineCommunityId）
 //                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userRoleEntry.getUserId(),listMineCommunityId);
 //                userManageResultDTO.setCommunityCount(entries2.size()+"");
-                userManageResultDTO.setCommunityCount(userIdMemberEntries.get(userRoleEntry.getUserId()).size()+"");
+//                userManageResultDTO.setCommunityCount(userIdMemberEntries.get(userRoleEntry.getUserId()).size()+"");
                 if ("家长".equals(map.get("roleOption"))){
                     userManageResultDTO.setUserRoleName("家长");
+                    userManageResultDTO.setCommunityCount(userIdMemberEntries.get(userRoleEntry.getUserId()).size()+"");
                     //家长，老师 员工 登录 或 未登录
                     String cacheUserKey= CacheHandler.getUserKey(userEntry == null ? "" : userEntry.getID().toString());
                     if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
@@ -460,6 +466,12 @@ public class BackStageUserManageService {
                      */
                     List<UserManageParentDTO> userManageParentDTOList = getParentByChildrenId(userEntry == null ? null : userEntry.getID());
                     userManageResultDTO.setParentDTOList(userManageParentDTOList);
+                    //父母加入的社群 作为孩子加入或者即将加入的
+                    int count = 0;
+                    for (UserManageParentDTO dto : userManageParentDTOList){
+                        count += dto.getCommunityCount();
+                    }
+                    userManageResultDTO.setCommunityCount(count + "");
                 }
                 userManageResultDTO.setUserId(userEntry == null ? "" : userEntry.getID().toString());
                 userManageResultDTO.setJiaId(userEntry == null ? "" : userEntry.getGenerateUserCode());
@@ -495,9 +507,75 @@ public class BackStageUserManageService {
             userManageParentDTO.setJiaId(userEntry1.getGenerateUserCode());
             userManageParentDTO.setMobilePhone(userEntry1.getMobileNumber());
             userManageParentDTO.setNickName(userEntry1.getNickName());
+            userManageParentDTO.setCommunityCount(getUserCommunityCount(entry.getMainUserId()).size());
+            userManageParentDTO.setCommunityDTOList(getUserCommunityCount(entry.getMainUserId()));
             parentDTOList.add(userManageParentDTO);
         }
         return parentDTOList;
+    }
+
+    /**
+     * 获取用户社群
+     * @param mainUserId
+     * @return
+     */
+    private List<CommunityDTO> getUserCommunityCount(ObjectId mainUserId) {
+        List<CommunityDTO> result = null;
+        List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
+        CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
+        if (null == mainUserId && null != fulanDto) {
+            communityDTOList.add(fulanDto);
+            return communityDTOList;
+        } else {
+            if (null != fulanDto) {
+                //加入复兰社区
+                joinFulaanCommunity(mainUserId, new ObjectId(fulanDto.getId()));
+            }
+            communityDTOList = communityService.getCommunitys(mainUserId, -1, 10);
+            List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
+            if (communityDTOList.size() > 0) {
+                for (CommunityDTO dto3 : communityDTOList) {
+                    //5a7bb6e13d4df96672b6a2bf
+                    if (!dto3.getName().equals("复兰社区") && !dto3.getName().equals("复兰大学")) {
+                        communityDTOList2.add(dto3);
+                    } else {
+                        if(!dto3.getName().equals("复兰社区") && mainUserId.toString().equals("5a7bb6e13d4df96672b6a2bf")){
+                        communityDTOList2.add(dto3);
+                        }
+                    }
+                }
+            }
+            result = communityDTOList2;
+        }
+        return result;
+    }
+
+    /**
+     * 加入社区但是不加入环信群组---这里只有复兰社区调用
+     * 加入复兰社区--- 复兰社区很特殊，特殊对待
+     *
+     * @param userId
+     * @param communityId
+     * @return
+     */
+    private void joinFulaanCommunity(ObjectId userId, ObjectId communityId) {
+
+        ObjectId groupId = communityService.getGroupId(communityId);
+        //type=1时，处理的是复兰社区
+        if (memberService.isGroupMember(groupId, userId)) {
+            return;
+        }
+        //判断该用户是否曾经加入过该社区
+        if (memberService.isBeforeMember(groupId, userId)) {
+            memberService.updateMember(groupId, userId, 0);
+            communityService.pushToUser(communityId, userId, 3);
+            //设置先前该用户所发表的数据
+            communityService.setPartIncontentStatus(communityId, userId, 0);
+        } else {
+            //新人
+            communityService.pushToUser(communityId, userId, 3);
+            memberService.saveMember(userId, groupId, 0);
+        }
     }
 
     /**

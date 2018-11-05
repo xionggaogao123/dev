@@ -4,15 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.easemob.server.EaseMobAPI;
 import com.fulaan.annotation.ObjectIdType;
+import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.backstage.dto.UserManageResultDTO;
 import com.fulaan.backstage.service.BackStageUserManageService;
 import com.fulaan.base.BaseController;
+import com.fulaan.business.service.BusinessManageService;
 import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.controlphone.service.ControlPhoneService;
 import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.jiaschool.service.HomeSchoolService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
+import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.service.CommunityService;
 import com.fulaan.service.CommunitySystemInfoService;
 import com.fulaan.service.MemberService;
@@ -27,10 +31,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +67,12 @@ public class BackStageUserManageController extends BaseController {
 
     @Autowired
     private CommunitySystemInfoService communitySystemInfoService;
+
+    @Autowired
+    private BusinessManageService businessManageService;
+
+    @Autowired
+    private ControlPhoneService controlPhoneService;
     /**
      * 后台用户管理角色筛选
      * @return
@@ -432,6 +444,161 @@ public class BackStageUserManageController extends BaseController {
             String mainUserId = map.get("mainUserId").toString();
             if (checkUserIds != ""){
                 backStageUserManageService.addChildrenBindRelation(communityId, mainUserId, checkUserIds);
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("操作成功！");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 获得我的社区
+     *
+     * @return
+     */
+    @RequestMapping("/myCommunitys")
+    @ResponseBody
+    @SessionNeedless
+    @ApiOperation(value = "获取我的社区列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取我的社区列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取我的社区列表失败")})
+    public RespObj getMyCommunitys(@ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,//传入-1 查所有
+                                   @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "100", required = false) int pageSize,
+                                   @ApiParam(name="parentUserIds",required = false,value = "孩子父母Ids")@RequestParam(defaultValue = "", required = false) String parentUserIds) {
+//        ObjectId userId = getUserId();
+        List<ObjectId> userIds = MongoUtils.convertObjectIds(parentUserIds);
+        List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
+        CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
+        if ("" == parentUserIds && null != fulanDto) {
+            communityDTOList.add(fulanDto);
+            return RespObj.SUCCESS(communityDTOList);
+        } else {
+            if (null != fulanDto) {
+                //加入复兰社区
+                joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
+            }
+            for (ObjectId userId : userIds){
+                //getCommunitys 不好改造
+                List<CommunityDTO> communityDTOListTemp = new ArrayList<CommunityDTO>();
+                communityDTOListTemp = communityService.getCommunitys(userId, page, pageSize);
+                communityDTOList.addAll(communityDTOListTemp);
+            }
+            List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
+            if(communityDTOList.size()>0){
+                for(CommunityDTO dto3 : communityDTOList){
+                    //5a7bb6e13d4df96672b6a2bf
+                    if(!dto3.getName().equals("复兰社区") && !dto3.getName().equals("复兰大学")){
+                        communityDTOList2.add(dto3);
+                    }else{
+//                        if(!dto3.getName().equals("复兰社区") && userId.toString().equals("5a7bb6e13d4df96672b6a2bf")){
+//                        communityDTOList2.add(dto3);
+                        if(!dto3.getName().equals("复兰社区")){
+                            for (ObjectId userId : userIds){
+                                if (userId.toString().equals("5a7bb6e13d4df96672b6a2bf")){
+                                    communityDTOList2.add(dto3);
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+//            if ("web".equals(platform)) {
+//                int count = communityService.countMycommunitys(userId);
+//                Map<String, Object> map = new HashMap<String, Object>();
+//                map.put("list", communityDTOList2);
+//                map.put("count", count);
+//                map.put("pageSize", pageSize);
+//                map.put("page", page);
+//                return RespObj.SUCCESS(map);
+//            } else {
+                return RespObj.SUCCESS(communityDTOList2);
+//            }
+        }
+    }
+
+
+    /**
+     * 加入社区但是不加入环信群组---这里只有复兰社区调用
+     * 加入复兰社区--- 复兰社区很特殊，特殊对待
+     *
+     * @param userId
+     * @param communityId
+     * @return
+     */
+    private void joinFulaanCommunity(ObjectId userId, ObjectId communityId) {
+
+        ObjectId groupId = communityService.getGroupId(communityId);
+        //type=1时，处理的是复兰社区
+        if (memberService.isGroupMember(groupId, userId)) {
+            return;
+        }
+        //判断该用户是否曾经加入过该社区
+        if (memberService.isBeforeMember(groupId, userId)) {
+            memberService.updateMember(groupId, userId, 0);
+            communityService.pushToUser(communityId, userId, 3);
+            //设置先前该用户所发表的数据
+            communityService.setPartIncontentStatus(communityId, userId, 0);
+        } else {
+            //新人
+            communityService.pushToUser(communityId, userId, 3);
+            memberService.saveMember(userId, groupId, 0);
+        }
+    }
+
+    /**
+     * 获取孩子绑定社群列表
+     */
+    @ApiOperation(value = "获取孩子绑定社群列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getSonCommunityList")
+    @ResponseBody
+    public String getSonCommunityList(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<GroupOfCommunityDTO> dto = controlPhoneService.getSonCommunityList(new ObjectId(sonId));
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取孩子绑定社群列表!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+    /**
+     *
+     * @param userId
+     * @param relieveCommunityIds addCommunityIds
+     * @return
+     */
+    @ApiOperation(value = "处理孩子的绑定关系", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("updateCommunityBindRelation")
+    @ResponseBody
+    public RespObj relieveCommunityBindRelation(@ObjectIdType ObjectId userId,String relieveCommunityIds,String addCommunityIdsData){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            //解除社区绑定
+            if ("" != relieveCommunityIds && null != relieveCommunityIds){
+                newVersionBindService.relieveCommunityBindRelation(userId, relieveCommunityIds);
+            }
+            //添加绑定
+            if ("" != addCommunityIdsData && null != addCommunityIdsData){
+                //处理数据
+                String[] strings = addCommunityIdsData.split(",");
+                for (String eachData : strings){
+                    ObjectId communityId = new ObjectId(eachData.split("==")[1]);
+                    ObjectId parentId = new ObjectId(eachData.split("==")[0]);
+                    String userIds = userId+",";
+                    newVersionBindService.addCommunityBindEntry(userIds, communityId, parentId);
+                }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("操作成功！");

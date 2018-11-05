@@ -1,5 +1,9 @@
 package com.fulaan.backstage.dto;
 
+import com.fulaan.community.dto.CommunityDTO;
+
+import java.util.List;
+
 /**
  * @Auther: taotao.chan
  * @Date: 2018/9/6 13:46
@@ -12,6 +16,9 @@ public class UserManageParentDTO {
     private String mobilePhone;
     private String status;
     private String jiaId;
+    private int communityCount;
+
+    private List<CommunityDTO> CommunityDTOList;
 
     public String getUserId() {
         return userId;
@@ -59,5 +66,21 @@ public class UserManageParentDTO {
 
     public void setJiaId(String jiaId) {
         this.jiaId = jiaId;
+    }
+
+    public int getCommunityCount() {
+        return communityCount;
+    }
+
+    public void setCommunityCount(int communityCount) {
+        this.communityCount = communityCount;
+    }
+
+    public List<CommunityDTO> getCommunityDTOList() {
+        return CommunityDTOList;
+    }
+
+    public void setCommunityDTOList(List<CommunityDTO> communityDTOList) {
+        CommunityDTOList = communityDTOList;
     }
 }

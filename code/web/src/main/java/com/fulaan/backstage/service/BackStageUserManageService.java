@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.db.backstage.RoleJurisdictionSettingDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.backstage.UserLogResultDao;
+import com.db.controlphone.ControlShareDao;
 import com.db.controlphone.ControlVersionDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
@@ -32,6 +33,7 @@ import com.pojo.app.SessionValue;
 import com.pojo.backstage.RoleJurisdictionSettingEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.backstage.UserLogResultEntry;
+import com.pojo.controlphone.ControlShareEntry;
 import com.pojo.controlphone.ControlVersionEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
@@ -102,6 +104,8 @@ public class BackStageUserManageService {
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     private NewVersionBindRelationDao newVersionBindRelationDao=new NewVersionBindRelationDao();
+
+    private ControlShareDao controlShareDao = new ControlShareDao();
 
     public JSONArray getUserRoleOption() {
         JSONArray jsonArray = new JSONArray();
@@ -222,6 +226,11 @@ public class BackStageUserManageService {
                 userManageResultDTO.setCommunityCount(entries2.size()+"");
                 if (0 == userRoleEntry.getNewRole()){
                     userManageResultDTO.setUserRoleName("家长");
+                    /**
+                     * 带出孩子信息
+                     */
+                    List<UserManageChildrenDTO> userManageChildrenDTOS = getChildrenByParentId(userRoleEntry == null ? null : userRoleEntry.getUserId());
+                    userManageResultDTO.setChildrenDTOList(userManageChildrenDTOS);
                     //家长，老师 员工 登录 或 未登录
                     String cacheUserKey= CacheHandler.getUserKey(userEntry.getID().toString());
                     if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
@@ -498,28 +507,70 @@ public class BackStageUserManageService {
      */
     private List<UserManageChildrenDTO> getChildrenByParentId(ObjectId mainUserId) {
         List<UserManageChildrenDTO> childrenDTOList = new ArrayList<UserManageChildrenDTO>();
-        List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(mainUserId);
+//        List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(mainUserId);
+//        List<ObjectId> userIds= new ArrayList<ObjectId>();
+//        for(NewVersionBindRelationEntry entry:entries){
+//            userIds.add(entry.getUserId());
+//        }
+//        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+//        for(NewVersionBindRelationEntry entry:entries){
+//            UserEntry userEntry1 = userEntryMap.get(entry.getUserId());
+//            UserManageChildrenDTO userManageChildrenDTO = new UserManageChildrenDTO();
+//            userManageChildrenDTO.setUserName(userEntry1.getUserName());
+//            userManageChildrenDTO.setUserId(userEntry1.getID().toString());
+//            userManageChildrenDTO.setJiaId(userEntry1.getGenerateUserCode());
+//            userManageChildrenDTO.setMobilePhone(userEntry1.getMobileNumber());
+//            userManageChildrenDTO.setNickName(userEntry1.getNickName());
+//            //是否管控
+//            NewVersionBindRelationEntry n = newVersionBindRelationDao.getBindEntry(entry.getUserId());
+//            if (n != null){
+//                userManageChildrenDTO.setStatus("1");//管控状态
+//            }else {
+//                userManageChildrenDTO.setStatus("0");
+//            }
+//            childrenDTOList.add(userManageChildrenDTO);
+//        }
+        //可管控对象
+        List<ObjectId> sonIds = new ArrayList<ObjectId>();
+        List<ControlShareEntry> controlShareEntrys = controlShareDao.getAllEntryList(mainUserId);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        objectIdList.add(mainUserId);
+        for(ControlShareEntry controlShareEntry : controlShareEntrys){
+            objectIdList.add(controlShareEntry.getUserId());
+            //分享
+            sonIds.add(controlShareEntry.getSonId());
+        }
+        List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserIdList(objectIdList);
         List<ObjectId> userIds= new ArrayList<ObjectId>();
         for(NewVersionBindRelationEntry entry:entries){
+            if(entry.getMainUserId().equals(mainUserId)){//管控
+                sonIds.add(entry.getUserId());
+            }
             userIds.add(entry.getUserId());
         }
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
-        for(NewVersionBindRelationEntry entry:entries){
-            UserEntry userEntry1 = userEntryMap.get(entry.getUserId());
-            UserManageChildrenDTO userManageChildrenDTO = new UserManageChildrenDTO();
-            userManageChildrenDTO.setUserName(userEntry1.getUserName());
-            userManageChildrenDTO.setUserId(userEntry1.getID().toString());
-            userManageChildrenDTO.setJiaId(userEntry1.getGenerateUserCode());
-            userManageChildrenDTO.setMobilePhone(userEntry1.getMobileNumber());
-            userManageChildrenDTO.setNickName(userEntry1.getNickName());
-            //是否管控
-            NewVersionBindRelationEntry n = newVersionBindRelationDao.getBindEntry(entry.getUserId());
-            if (n != null){
-                userManageChildrenDTO.setStatus("1");//管控状态
-            }else {
-                userManageChildrenDTO.setStatus("0");
+        for(NewVersionBindRelationEntry newVersionBindRelationEntry :entries){
+            UserEntry userEntry = userEntryMap.get(newVersionBindRelationEntry.getUserId());
+            if(userEntry!=null && sonIds.contains(newVersionBindRelationEntry.getUserId())){
+                UserManageChildrenDTO userManageChildrenDTO = new UserManageChildrenDTO();
+                String name = org.apache.commons.lang3.StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+//                map.put("nickName",name);
+//                map.put("userId",newVersionBindRelationEntry.getUserId().toString());
+                userManageChildrenDTO.setUserName(name);
+                userManageChildrenDTO.setUserId(userEntry.getID().toString());
+                userManageChildrenDTO.setJiaId(userEntry.getGenerateUserCode());
+                userManageChildrenDTO.setMobilePhone(userEntry.getMobileNumber());
+                userManageChildrenDTO.setNickName(userEntry.getNickName());
+                //是否管控
+                if(newVersionBindRelationEntry.getMainUserId().equals(mainUserId)){
+//                    map.put("isControl",1);
+                    userManageChildrenDTO.setStatus("1");//管控状态
+                }else{
+//                    map.put("isControl",0);
+                    userManageChildrenDTO.setStatus("0");
+                }
+                childrenDTOList.add(userManageChildrenDTO);
             }
-            childrenDTOList.add(userManageChildrenDTO);
         }
         return childrenDTOList;
     }

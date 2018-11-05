@@ -642,4 +642,13 @@ public class AppNewVoteService {
         }
         return mapList;
     }
+
+    public void deleteVote(ObjectId id,ObjectId userId){
+        AppNewVoteEntry appNewVoteEntry = appNewVoteDao.getEntry(id);
+        if(appNewVoteEntry !=null && userId.equals(appNewVoteEntry.getUserId())){
+            appNewVoteDao.delEntry(id);
+            //删除首页记录
+            indexPageDao.delEntry(id);
+        }
+    }
 }

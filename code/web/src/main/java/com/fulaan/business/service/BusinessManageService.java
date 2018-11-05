@@ -1053,12 +1053,17 @@ public class BusinessManageService {
             role = newVersionUserRoleEntry.getNewRole();
         }
         String or = orderId;
-        if(orderId.equals("")){
-            if(money==1){
-                orderId = "后台付费";
-            }else{
-                orderId = "后台免费";
+        if(orderId.equals("")){//后台
+            if(orderType==3){
+                if(money==1){//现金
+                    orderId = "后台付费";
+                }else{
+                    orderId = "后台免费";
+                }
+            }else if(orderType==0){//自定义购买
+                orderId = "";
             }
+
         }
         //1. 添加删除订单记录
         BackOrderEntry backOrderEntry = new BackOrderEntry(id,userId,uid,hourIds,objectIdList,price,orderId,orderType,status,role,money);

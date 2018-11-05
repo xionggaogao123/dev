@@ -244,6 +244,17 @@ public class BackStageUserManageService {
                     }
                 }else {
                     userManageResultDTO.setUserRoleName("学生");
+                    /**
+                     * 带出绑定父母的信息
+                     */
+                    List<UserManageParentDTO> userManageParentDTOList = getParentByChildrenId(userEntry == null ? null : userEntry.getID());
+                    userManageResultDTO.setParentDTOList(userManageParentDTOList);
+                    //父母加入的社群 作为孩子加入或者即将加入的
+                    int count = 0;
+                    for (UserManageParentDTO dto : userManageParentDTOList){
+                        count += dto.getCommunityCount();
+                    }
+                    userManageResultDTO.setCommunityCount(count + "");
                     //学生 在线与否
                     ControlVersionDTO controlVersionDTO2 = getStudentVersion(userEntry == null ? null : userEntry.getID());
                     String ver2 = controlVersionDTO2.getVersion();

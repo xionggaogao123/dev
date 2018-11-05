@@ -1076,14 +1076,18 @@ public class BusinessManageService {
         //退课支出
 
         if(or.equals("")){
-            if(money==1){
-                or = "后台付费";
-            }else{
-                or = "后台免费";
-                price = 0;
+            if(orderType==3){
+                if(money==1){
+                    or = "后台付费";
+                }else{
+                    or = "后台免费";
+                    price = 0;
+                }
+            }else if(orderType==0){
+                or = "免费购买";
             }
         }
-        this.addCoursesOrderEntry(userId,id,Constant.TWO,hourIds,price,or,Constant.THREE);
+        this.addCoursesOrderEntry(userId,id,Constant.TWO,hourIds,price,or,orderType);
     }
 
     public String daoOrder(ObjectId id,String roomId){

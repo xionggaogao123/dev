@@ -217,6 +217,16 @@ public class ReportCardService {
                 }
             }
 
+        }else{
+            IndexContentEntry indexContentEntry = indexContentDao.getEntry(groupExamDetailId);
+            if(indexContentEntry!=null && !indexContentEntry.getUserId().equals(userId)){//防止自己签到
+                List<ObjectId> reList = indexContentEntry.getReaList();
+                if(!reList.contains(mainUserId)) {
+                    indexContentDao.pushReadList(mainUserId, groupExamDetailId);
+                    //红点减一
+                    redDotService.jianRedDot(mainUserId,ApplyTypeEn.repordcard.getType());
+                }
+            }
         }
     }
 

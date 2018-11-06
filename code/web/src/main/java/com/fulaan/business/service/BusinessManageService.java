@@ -58,7 +58,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -2057,7 +2056,7 @@ public class BusinessManageService {
             if(coursesOrderResultEntry.getType()==1){
                 addPrice = sum(addPrice,coursesOrderResultEntry.getPrice());
             }else{
-                manPrice = sum(addPrice,coursesOrderResultEntry.getPrice());
+                manPrice = sum(manPrice,coursesOrderResultEntry.getPrice());
             }
         }
 
@@ -2077,9 +2076,9 @@ public class BusinessManageService {
         HSSFRow rowZero = sheet.createRow(0);
         HSSFCell cellZero = rowZero.createCell(0);
         if(type==1){
-            cellZero.setCellValue("共计"+coursesOrderResultEntries2.size()+"份订单，当前条件下，共有"+schoolSet.size()+"所学校"+coursesSet.size()+"门课程有交易记录，共收入"+addPrice+"元");
+            cellZero.setCellValue("共计"+coursesOrderResultEntries2.size()+"份订单，当前条件下，共有"+schoolSet.size()+"所学校"+coursesSet.size()+"门课程有交易记录，共收入"+String.format("%.2f",addPrice)+"元");
         }else{
-            cellZero.setCellValue("共计"+coursesOrderResultEntries2.size()+"份订单，当前条件下，共有"+schoolSet.size()+"所学校"+coursesSet.size()+"门课程有退款记录，共支出"+manPrice+"元");
+            cellZero.setCellValue("共计"+coursesOrderResultEntries2.size()+"份订单，当前条件下，共有"+schoolSet.size()+"所学校"+coursesSet.size()+"门课程有退款记录，共支出"+String.format("%.2f",manPrice)+"元");
         }
 
 

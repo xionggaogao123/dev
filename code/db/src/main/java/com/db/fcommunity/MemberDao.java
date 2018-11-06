@@ -995,4 +995,35 @@ public class MemberDao extends BaseDao {
         }
         return memberEntries;
     }
+
+    /**
+     * 根据community的group分组 获取Map<groupId,List<MemberDTO>>
+     * @param groupIdList
+     * @return
+     */
+    public Map<ObjectId,List<MemberEntry>> getMembersGroupByGroup(List<ObjectId> groupIdList) {
+        Map<ObjectId,List<MemberEntry>> map = new HashMap<ObjectId, List<MemberEntry>>();
+
+        BasicDBObject query = new BasicDBObject().append("r", 0);
+        query.append("grid",new BasicDBObject(Constant.MONGO_IN,groupIdList));
+
+        List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            memberEntries.add(memberEntry);
+        }
+        //对查询的结果分组
+        List<MemberEntry> memberEntriesTemp = null;
+        for (ObjectId groupId: groupIdList){
+            memberEntriesTemp = new ArrayList<MemberEntry>();
+            for (MemberEntry entry: memberEntries){
+                if (groupId.equals(entry.getGroupId())){
+                    memberEntriesTemp.add(entry);
+                }
+            }
+            map.put(groupId,memberEntriesTemp);
+        }
+        return map;
+    }
 }

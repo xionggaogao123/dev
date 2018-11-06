@@ -292,16 +292,20 @@ public class BackStageSchoolManageService {
         List<CommunityEntry> communityEntries = communityDao.findPageByObjectIdsName(communityIdList,communityName, page, pageSize);
         int count = communityDao.getNotDelNumber(communityIdList);
         List<CommunityDTO> communityDTOs = new ArrayList<CommunityDTO>();
+        List<ObjectId> groupIdList = new ArrayList<ObjectId>();
         for(CommunityEntry communityEntry : communityEntries){
             CommunityDTO communityDTO =new CommunityDTO(communityEntry);
             communityDTO.setLogo(getNewLogo(communityDTO.getLogo()));
             communityDTO.setSchoolName(homeSchoolEntry.getName());
+            communityDTO.setGroupId(communityDTO.getGroupId());
+            groupIdList.add(new ObjectId(communityDTO.getGroupId()));
             communityDTOs.add(communityDTO);
         }
-        //根据community分组 获取Map<communityId,List<MemberDTO>>
-        Map<ObjectId,List<MemberEntry>> communityIdMemberEntryMap = memberDao.getMembersGroupByCommunity(communityIdList);
+        /*//根据community分组 获取Map<communityId,List<MemberDTO>>*/
+        //根据community的group分组 获取Map<groupId,List<MemberDTO>>
+        Map<ObjectId,List<MemberEntry>> communityIdMemberEntryMap = memberDao.getMembersGroupByGroup(groupIdList);
         for (CommunityDTO dto : communityDTOs){
-            List<MemberEntry> memberEntryList = communityIdMemberEntryMap.get(new ObjectId(dto.getId()));
+            List<MemberEntry> memberEntryList = communityIdMemberEntryMap.get(new ObjectId(dto.getGroupId()));
             for (MemberEntry memberEntry : memberEntryList){
                 //社长
                 if (Constant.TWO == memberEntry.getRole()){

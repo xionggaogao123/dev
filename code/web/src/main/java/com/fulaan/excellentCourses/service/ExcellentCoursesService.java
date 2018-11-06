@@ -4129,6 +4129,43 @@ public class ExcellentCoursesService {
         return map;
     }
 
+    public Map<String,Object>  zhuLogin(ObjectId id,ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        HourClassEntry hourClassEntry = hourClassDao.getEntry(id);
+        map.put("status",0);
+        if(hourClassEntry==null){
+            return map;
+        }
+        UserEntry userEntry = userDao.findByUserId(userId);
+        CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(hourClassEntry.getParentId());
+        if(coursesRoomEntry==null){
+            return map;
+        }
+        map.put("status",1);
+        if(hourClassEntry.getRoomId()!=null && !hourClassEntry.getRoomId().equals("")){
+            if(userEntry==null){
+                map.put("viewername","长空助教");
+                map.put("userId",coursesRoomEntry.getUserId());
+                map.put("roomId",hourClassEntry.getRoomId());
+            }else{
+                map.put("viewername",StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                map.put("userId",coursesRoomEntry.getUserId());
+                map.put("roomId",hourClassEntry.getRoomId());
+            }
+        }else{
+            if(userEntry==null){
+                map.put("viewername","长空助教");
+                map.put("userId",coursesRoomEntry.getUserId());
+                map.put("roomId",coursesRoomEntry.getRoomId());
+            }else{
+                map.put("viewername",StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                map.put("userId",coursesRoomEntry.getUserId());
+                map.put("roomId",coursesRoomEntry.getRoomId());
+            }
+        }
+        return map;
+    }
+
     /**
      * 获得用户的所有具有管理员权限的社区id
      *

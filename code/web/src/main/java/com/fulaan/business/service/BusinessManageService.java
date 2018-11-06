@@ -58,6 +58,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -2164,7 +2165,7 @@ public class BusinessManageService {
             cellItem.setCellValue(coursesOrderResultDTO.getClassList().size()+"");
 
             cellItem = rowItem.createCell(7);
-            cellItem.setCellValue(coursesOrderResultDTO.getPrice()+"");
+            cellItem.setCellValue(String.format("%.2f", coursesOrderResultEntry.getPrice()));
 
             cellItem = rowItem.createCell(8);
             cellItem.setCellValue(coursesOrderResultDTO.getOrder());

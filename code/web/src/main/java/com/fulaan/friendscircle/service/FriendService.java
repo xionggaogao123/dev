@@ -20,14 +20,16 @@ import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -385,10 +387,150 @@ public class FriendService {
         if (friendIds.contains(uid)) {
             friendIds.remove(uid);
         }
-        return get(friendIds,uid);
+        return get(friendIds, uid);
     }
 
+    public List<Map<String,Object>> getNewFrinds(ObjectId uid) {
+        List<ObjectId> friendIds = friendDao.findMyFriendIds(uid);
+        HashSet h = new HashSet(friendIds);
+        friendIds.clear();
+        friendIds.addAll(h);
 
+        if (friendIds.contains(uid)) {
+            friendIds.remove(uid);
+        }
+        return getNew(friendIds,uid);
+    }
+
+    private List<Map<String,Object>> getNew(List<ObjectId> uids,ObjectId userId) {
+        List<User> users = new ArrayList<User>();
+        Map<ObjectId,RemarkEntry> map=remarkDao.find(userId,uids);
+        Map<ObjectId,Integer> userRoleMap = newVersionUserRoleDao.getUserRoleMap(uids);
+        Map<ObjectId,UserEntry> userEntryMap = userDao.getUserEntryMap(uids, Constant.FIELDS);
+        List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
+        for (ObjectId oid : uids) {
+            UserEntry userEntry = userEntryMap.get(oid);
+            if (userEntry != null) {
+                User user = new User();
+                user.setId(userEntry.getID().toString());
+                user.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
+                user.setUserName(userEntry.getUserName());
+                RemarkEntry remarkEntry=map.get(oid);
+                if(null!=remarkEntry){
+                    user.setNickName(remarkEntry.getRemark());
+                }else {
+                    user.setNickName(StringUtils.isBlank(userEntry.getNickName()) ? userEntry.getUserName() : userEntry.getNickName());
+                }
+                user.setSex(userEntry.getSex());
+                user.setUserId(userEntry.getID().toString());
+                user.setRole(Constant.ZERO);
+                if(null!=userRoleMap.get(oid)&&
+                        (userRoleMap.get(oid)==Constant.ONE||userRoleMap.get(oid)==Constant.TWO)){
+                    user.setRole(Constant.ONE);
+                }
+                users.add(user);
+                Map<String,Object> map2  = new HashMap<String, Object>();
+                map2.put("str",user.getNickName());
+                map2.put("dto",user);
+                map2.put("level",getFirstSpellOne(user.getNickName().substring(0, 1)));
+
+                list.add(map2);
+            }
+        }
+        Collections.sort(list, new Comparator<Map<String, Object>>() {
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                return getFirstSpell((String) o1.get("str"))
+                        .compareTo(
+                                getFirstSpell((String) o2
+                                        .get("str")));
+            }
+        });
+        return list;
+    }
+    public static void main(String[] args){
+        System.out.print(getFirstSpell("黎波"));
+    }
+
+    public static String getFirstSpell(String string) {
+        StringBuffer pybf = new StringBuffer();
+        char[] arr = string.toCharArray();
+        HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
+        defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+        defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+        for (int i = 0; i < 1; i++) {
+            if (arr[i] > 128) { //如果已经是字母就不用转换了
+                try {
+                    //获取当前汉字的全拼
+                    String[] temp = PinyinHelper.toHanyuPinyinStringArray(
+                            arr[i], defaultFormat);
+                    if (temp != null) {
+                        char[] so = temp[0].toCharArray();
+                        for(char si : so){
+                            pybf.append(si);// 取首字母
+                        }
+
+                    }else{
+                        pybf.append("#");
+                    }
+                } catch (BadHanyuPinyinOutputFormatCombination e) {
+                    pybf.append("#");
+                    e.printStackTrace();
+                }
+            } else {
+                if (arr[i] >= 'a' && arr[i] <= 'z') {
+                    arr[i] -= 32;
+                }else if((arr[0] >= 'A' && arr[0] <= 'Z')){
+
+                }else{
+                    arr[i] = "#".charAt(0);
+                }
+            /*if (arr[0] >= 'A' && arr[0] <= 'Z') {// 将大写转换为小写
+                arr[0] += 32;
+            }*/
+                pybf.append(arr[i]);
+            }
+        }
+        return pybf.toString().toUpperCase();
+    }
+
+    // 获取汉字的首字母大写
+    public static String getFirstSpellOne(String string) {
+        StringBuffer pybf = new StringBuffer();
+        char[] arr = string.toCharArray();
+        HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
+        defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+        defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+        for (int i = 0; i < 1; i++) {
+            if (arr[i] > 128) { //如果已经是字母就不用转换了
+                try {
+                    //获取当前汉字的全拼
+                    String[] temp = PinyinHelper.toHanyuPinyinStringArray(
+                            arr[i], defaultFormat);
+                    if (temp != null) {
+                        pybf.append(temp[0].charAt(0));// 取首字母
+                    }else{
+                        pybf.append("#");
+                    }
+                } catch (BadHanyuPinyinOutputFormatCombination e) {
+                    pybf.append("#");
+                    e.printStackTrace();
+                }
+            } else {
+                if (arr[i] >= 'a' && arr[i] <= 'z') {
+                    arr[i] -= 32;
+                }else if((arr[0] >= 'A' && arr[0] <= 'Z')){
+
+                }else{
+                    arr[i] = "#".charAt(0);
+                }
+            /*if (arr[0] >= 'A' && arr[0] <= 'Z') {// 将大写转换为小写
+                arr[0] += 32;
+            }*/
+                pybf.append(arr[i]);
+            }
+        }
+        return pybf.toString().toUpperCase();
+    }
     /**
      * 获取我的伙伴
      *

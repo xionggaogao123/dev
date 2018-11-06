@@ -47,11 +47,25 @@ public class DefaultFriendController extends BaseController {
     public RespObj getFriends() {
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         ObjectId uid = getUserId();
-       // long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         List<User> userList = friendService.getFrinds(uid);
-       // System.out.println(userList.size());
-       // long end = System.currentTimeMillis();
-      //  System.out.print(end-start);
+        long end = System.currentTimeMillis();
+        System.out.print(end-start);
+        respObj.setMessage(userList);
+        return respObj;
+    }
+
+    @ApiOperation(value = "getFriends", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getNewFriends")
+    @ResponseBody
+    public RespObj getNewFriends() {
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        ObjectId uid = getUserId();
+        long start = System.currentTimeMillis();
+        List<Map<String,Object>> userList = friendService.getNewFrinds(uid);
+        long end = System.currentTimeMillis();
+        System.out.print(end-start);
         respObj.setMessage(userList);
         return respObj;
     }

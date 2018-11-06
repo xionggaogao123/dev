@@ -189,8 +189,9 @@ public class BackStageAdminManageService {
                     resultDTO.setUserRoleJurisdictionDto(userRoleJurisdictionDto);
                     resultDTO.setRoleJurisdictionName(userRoleJurisdictionDto.getRoleJurisdictionName());
                     resultDTO.setLevel(userRoleJurisdictionDto.getLevel());
+                    resultDTOs.add(resultDTO);//删除对应角色的 不展示
                 }
-                resultDTOs.add(resultDTO);
+//                resultDTOs.add(resultDTO);
             }
             result.put("count",resultDTOs.size());
             result.put("dto",resultDTOs);

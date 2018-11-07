@@ -814,6 +814,7 @@ public class BackStageUserManageService {
 
     public String setCommunityRole(Map map) {
         String msg = "";
+        ObjectId groupId = new ObjectId(map.get("groupId").toString());
         CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(map.get("communityId").toString()));
         //社群信息校验
         if (null == communityEntry){
@@ -830,7 +831,7 @@ public class BackStageUserManageService {
             //设置社长
 
             //1 查出社长信息
-            ObjectId groupId = new ObjectId(map.get("groupId").toString());
+
             MemberEntry memberEntry = memberDao.getHeader(groupId);
 
             // 2 判断需要设置的是否为新社长
@@ -842,6 +843,14 @@ public class BackStageUserManageService {
                 ObjectId id = memberEntry.getID();
                 int role = 0;
                 memberDao.updateRoleById(id, role);
+            }else {
+                memberDao.updateRoleById(map);
+            }
+        }else if (!StringUtils.isBlank(map.get("role").toString()) && Integer.parseInt(map.get("role").toString()) == 1){
+            //设置副社长
+            int countDeputyHead = memberDao.countDeputyHead(groupId);//社区副社长人数
+            if (countDeputyHead >= 10){
+                return "副社长不能超过十人！";
             }else {
                 memberDao.updateRoleById(map);
             }

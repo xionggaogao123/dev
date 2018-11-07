@@ -92,7 +92,24 @@ public class ControlSchoolPhoneService {
             "com.android.gallery3d&"+
             "com.freeme.ota&"+
             "com.android.settings&"+
-            "com.freeme.gallery";
+            "com.freeme.gallery&" +
+            "com.myos.videoplayer&" +
+            "com.android.calendar";
+    //sugar 系统 应用过滤
+    public static final String APP_SYSTEM_PACKAGE_NAME = "com.myos.camera&" +
+            "com.android.gallery3d&" +
+            "com.myos.videoplayer&" +
+            "com.myos.filemanager&" +
+            "com.android.calendar&" +
+            "com.myos.videoplayer&" +
+            "com.myos.music";
+    //音乐
+    public static final String APP_MUSIC_PACKAGE_NAME = "com.android.music&com.myos.music";
+    //文件管理
+    public static final String APP_FILE_PACKAGE_NAME = "com.freeme.filemanager&com.myos.filemanager";
+    //相机
+    public static final String APP_CAMERA_PACKAGE_NAME = "com.freeme.camera&com.myos.camera";
+
 
     //首页加载社群及判断权限
     public Map<String,Object> getSimpleMessageForTea(ObjectId teacherId){
@@ -195,45 +212,17 @@ public class ControlSchoolPhoneService {
         //手机系统
         int index = 0;
         for(AppDetailEntry appDetailEntry:appDetailEntries){
-            if(!APP_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){
-                Map<String,Object> appMap = new HashMap<String, Object>();
-                if(appDetailEntry.getLogo()==null || appDetailEntry.getLogo().equals("") || appDetailEntry.getLogo().contains("/static")){
-                    appMap.put("logo","http://doc.k6kt.com/5bcd4811c4a727054fe96abe.png");//http://doc.k6kt.com/5bc96f99c4a72769500cc6e1.png
-                }else{
-                    appMap.put("logo",appDetailEntry.getLogo());
-                }
-                appMap.put("name",appDetailEntry.getAppName());
-                appMap.put("id",appDetailEntry.getID().toString());
-                ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+1+"*");
-                appMap.put("isControl",1);//管控中
-                appMap.put("freeTime",0);
-                appMap.put("markStartFreeTime",current);
-                if(controlAppSchoolResultEntry!=null && ty==2){
-                    //生效时间
-                    long markStartFreeTime = controlAppSchoolResultEntry.getMarkStartFreeTime();
-                    //持续时间
-                    long freeTime = controlAppSchoolResultEntry.getFreeTime();
-                    if(markStartFreeTime+freeTime>current){
-                        long htm = markStartFreeTime+freeTime-current;
-                        //自由时间
-                        appMap.put("isControl",0);
-                        appMap.put("freeTime",htm);
-                        appMap.put("markStartFreeTime",markStartFreeTime);
-                    }else{
-                        appMap.put("isControl",1);
-                    }
-                }else{
-                    ControlAppSchoolEntry controlAppSchoolEntry = schoolEntryMap.get(appDetailEntry.getID().toString()+"*"+1);
-                    if(controlAppSchoolEntry!=null){//暂时都开放
-                        appMap.put("isControl",1);
-                    }
-                }
-                mapList1.add(appMap);
+            if(APP_SYSTEM_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//过滤sugar应用
+
             }else{
-                if(index==0){
+                if(!APP_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){
                     Map<String,Object> appMap = new HashMap<String, Object>();
-                    appMap.put("logo","http://doc.k6kt.com/5bcd4811c4a727054fe96abe.png");
-                    appMap.put("name","手机系统");
+                    if(appDetailEntry.getLogo()==null || appDetailEntry.getLogo().equals("") || appDetailEntry.getLogo().contains("/static")){
+                        appMap.put("logo","http://doc.k6kt.com/5bcd4811c4a727054fe96abe.png");//http://doc.k6kt.com/5bc96f99c4a72769500cc6e1.png
+                    }else{
+                        appMap.put("logo",appDetailEntry.getLogo());
+                    }
+                    appMap.put("name",appDetailEntry.getAppName());
                     appMap.put("id",appDetailEntry.getID().toString());
                     ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+1+"*");
                     appMap.put("isControl",1);//管控中
@@ -260,7 +249,39 @@ public class ControlSchoolPhoneService {
                         }
                     }
                     mapList1.add(appMap);
-                    index++;
+                }else{
+                    if(index==0){
+                        Map<String,Object> appMap = new HashMap<String, Object>();
+                        appMap.put("logo","http://doc.k6kt.com/5bcd4811c4a727054fe96abe.png");
+                        appMap.put("name","手机系统");
+                        appMap.put("id",appDetailEntry.getID().toString());
+                        ControlAppSchoolResultEntry controlAppSchoolResultEntry = resultEntryMap.get(appDetailEntry.getID().toString()+"*"+1+"*");
+                        appMap.put("isControl",1);//管控中
+                        appMap.put("freeTime",0);
+                        appMap.put("markStartFreeTime",current);
+                        if(controlAppSchoolResultEntry!=null && ty==2){
+                            //生效时间
+                            long markStartFreeTime = controlAppSchoolResultEntry.getMarkStartFreeTime();
+                            //持续时间
+                            long freeTime = controlAppSchoolResultEntry.getFreeTime();
+                            if(markStartFreeTime+freeTime>current){
+                                long htm = markStartFreeTime+freeTime-current;
+                                //自由时间
+                                appMap.put("isControl",0);
+                                appMap.put("freeTime",htm);
+                                appMap.put("markStartFreeTime",markStartFreeTime);
+                            }else{
+                                appMap.put("isControl",1);
+                            }
+                        }else{
+                            ControlAppSchoolEntry controlAppSchoolEntry = schoolEntryMap.get(appDetailEntry.getID().toString()+"*"+1);
+                            if(controlAppSchoolEntry!=null){//暂时都开放
+                                appMap.put("isControl",1);
+                            }
+                        }
+                        mapList1.add(appMap);
+                        index++;
+                    }
                 }
             }
         }
@@ -270,7 +291,7 @@ public class ControlSchoolPhoneService {
         List<ObjectId> objectIdList1 = controlAppSchoolDao.getNoAppList();
         int index2 = 0;
         for(AppDetailEntry appDetailEntry:appDetailEntries){
-            if(!objectIdList1.contains(appDetailEntry.getID())){//过滤放学后不受管控的类型
+            if(!objectIdList1.contains(appDetailEntry.getID())&& !APP_SYSTEM_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//过滤放学后不受管控的类型 和 sugar应用
                 if(!APP_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){
                     Map<String,Object> appMap = new HashMap<String, Object>();
                     if(appDetailEntry.getLogo()==null || appDetailEntry.getLogo().equals("")|| appDetailEntry.getLogo().contains("/static")){
@@ -562,6 +583,81 @@ public class ControlSchoolPhoneService {
                     controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
                 }
             }
+        }else if(APP_MUSIC_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//音乐
+            String[]  strings =APP_MUSIC_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for(String s : strings){
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for(AppDetailEntry appDetailEntry1 : appDetailEntries){
+                ObjectId appId1 = appDetailEntry1.getID();
+                //1.获取社群状态并添加记录
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ONE,communityId,appId1);
+                if(controlAppSchoolResultEntry==null){
+                    //无记录添加新纪录
+                    ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                            appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,time,
+                            Constant.ZERO,Constant.ZERO,Constant.ZERO,current,current,Constant.ONE);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                }else{
+                    //有记录，更新记录
+                    controlAppSchoolResultEntry.setFreeTime(time);
+                    controlAppSchoolResultEntry.setMarkStartFreeTime(current);
+                    controlAppSchoolResultEntry.setSaveTime(current);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                }
+            }
+        }else if(APP_CAMERA_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//相机
+            String[]  strings =APP_CAMERA_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for(String s : strings){
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for(AppDetailEntry appDetailEntry1 : appDetailEntries){
+                ObjectId appId1 = appDetailEntry1.getID();
+                //1.获取社群状态并添加记录
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ONE,communityId,appId1);
+                if(controlAppSchoolResultEntry==null){
+                    //无记录添加新纪录
+                    ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                            appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,time,
+                            Constant.ZERO,Constant.ZERO,Constant.ZERO,current,current,Constant.ONE);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                }else{
+                    //有记录，更新记录
+                    controlAppSchoolResultEntry.setFreeTime(time);
+                    controlAppSchoolResultEntry.setMarkStartFreeTime(current);
+                    controlAppSchoolResultEntry.setSaveTime(current);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                }
+            }
+        }else if(APP_FILE_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//文件
+            String[]  strings =APP_FILE_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for(String s : strings){
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for(AppDetailEntry appDetailEntry1 : appDetailEntries){
+                ObjectId appId1 = appDetailEntry1.getID();
+                //1.获取社群状态并添加记录
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ONE,communityId,appId1);
+                if(controlAppSchoolResultEntry==null){
+                    //无记录添加新纪录
+                    ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                            appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,time,
+                            Constant.ZERO,Constant.ZERO,Constant.ZERO,current,current,Constant.ONE);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                }else{
+                    //有记录，更新记录
+                    controlAppSchoolResultEntry.setFreeTime(time);
+                    controlAppSchoolResultEntry.setMarkStartFreeTime(current);
+                    controlAppSchoolResultEntry.setSaveTime(current);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                }
+            }
         }else{
             //1.获取社群状态并添加记录
             ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ONE,communityId,appId);
@@ -624,6 +720,78 @@ public class ControlSchoolPhoneService {
         //todo
         if(APP_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){
             String[]  strings =APP_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for(String s : strings){
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for(AppDetailEntry appDetailEntry1 : appDetailEntries){
+                ObjectId appId1 = appDetailEntry1.getID();
+                //1.获取社群状态并添加记录
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ONE,communityId,appId1);
+                if(controlAppSchoolResultEntry==null){
+                    //无记录添加新纪录
+                    ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                            appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,0,
+                            Constant.ZERO,Constant.ZERO,Constant.ZERO,current,current,Constant.ONE);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                }else{
+                    //有记录，更新记录
+                    controlAppSchoolResultEntry.setFreeTime(0);
+                    controlAppSchoolResultEntry.setSaveTime(current);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                }
+            }
+        }else if(APP_MUSIC_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//音乐
+            String[]  strings =APP_MUSIC_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for(String s : strings){
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for(AppDetailEntry appDetailEntry1 : appDetailEntries){
+                ObjectId appId1 = appDetailEntry1.getID();
+                //1.获取社群状态并添加记录
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ONE,communityId,appId1);
+                if(controlAppSchoolResultEntry==null){
+                    //无记录添加新纪录
+                    ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                            appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,0,
+                            Constant.ZERO,Constant.ZERO,Constant.ZERO,current,current,Constant.ONE);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                }else{
+                    //有记录，更新记录
+                    controlAppSchoolResultEntry.setFreeTime(0);
+                    controlAppSchoolResultEntry.setSaveTime(current);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                }
+            }
+        }else if(APP_CAMERA_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//相机
+            String[]  strings =APP_CAMERA_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for(String s : strings){
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for(AppDetailEntry appDetailEntry1 : appDetailEntries){
+                ObjectId appId1 = appDetailEntry1.getID();
+                //1.获取社群状态并添加记录
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getEntry(Constant.ONE,communityId,appId1);
+                if(controlAppSchoolResultEntry==null){
+                    //无记录添加新纪录
+                    ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                            appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,0,
+                            Constant.ZERO,Constant.ZERO,Constant.ZERO,current,current,Constant.ONE);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                }else{
+                    //有记录，更新记录
+                    controlAppSchoolResultEntry.setFreeTime(0);
+                    controlAppSchoolResultEntry.setSaveTime(current);
+                    controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                }
+            }
+        }else if(APP_FILE_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//文件
+            String[]  strings =APP_FILE_PACKAGE_NAME.split("&");
             List<String> appNames = new ArrayList<String>();
             for(String s : strings){
                 appNames.add(s);
@@ -775,6 +943,111 @@ public class ControlSchoolPhoneService {
         //todo
         if(APP_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){
             String[]  strings =APP_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for(String s : strings){
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for(AppDetailEntry appDetailEntry1 : appDetailEntries){
+                ObjectId appId1 = appDetailEntry1.getID();
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getHomeEntry(Constant.ZERO, communityId, appId1, type);
+                if(controlAppSchoolResultEntry==null){
+                    if(time<0){
+                        //误操作
+                    }else{
+                        //无记录添加新纪录
+                        ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                                appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,0,
+                                time*60*1000,type,startNum,current,current,Constant.ZERO);
+                        controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                    }
+
+                }else{
+                    if(time<0){
+                        //删除今日
+                        controlAppSchoolResultDao.delEntry(controlAppSchoolResultEntry.getID());
+                    }else{
+                        //有记录，更新记录
+                        controlAppSchoolResultEntry.setOutSchoolCanUseTime(time*60*1000);
+                        controlAppSchoolResultEntry.setDateTime(startNum);
+                        controlAppSchoolResultEntry.setSaveTime(current);
+                        controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                    }
+
+                }
+            }
+        }else if(APP_MUSIC_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//音乐
+            String[]  strings =APP_MUSIC_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for(String s : strings){
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for(AppDetailEntry appDetailEntry1 : appDetailEntries){
+                ObjectId appId1 = appDetailEntry1.getID();
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getHomeEntry(Constant.ZERO, communityId, appId1, type);
+                if(controlAppSchoolResultEntry==null){
+                    if(time<0){
+                        //误操作
+                    }else{
+                        //无记录添加新纪录
+                        ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                                appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,0,
+                                time*60*1000,type,startNum,current,current,Constant.ZERO);
+                        controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                    }
+
+                }else{
+                    if(time<0){
+                        //删除今日
+                        controlAppSchoolResultDao.delEntry(controlAppSchoolResultEntry.getID());
+                    }else{
+                        //有记录，更新记录
+                        controlAppSchoolResultEntry.setOutSchoolCanUseTime(time*60*1000);
+                        controlAppSchoolResultEntry.setDateTime(startNum);
+                        controlAppSchoolResultEntry.setSaveTime(current);
+                        controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                    }
+
+                }
+            }
+        }else if(APP_CAMERA_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//相机
+            String[]  strings =APP_CAMERA_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for(String s : strings){
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for(AppDetailEntry appDetailEntry1 : appDetailEntries){
+                ObjectId appId1 = appDetailEntry1.getID();
+                ControlAppSchoolResultEntry controlAppSchoolResultEntry = controlAppSchoolResultDao.getHomeEntry(Constant.ZERO, communityId, appId1, type);
+                if(controlAppSchoolResultEntry==null){
+                    if(time<0){
+                        //误操作
+                    }else{
+                        //无记录添加新纪录
+                        ControlAppSchoolResultEntry controlAppSchoolResultEntry1 = new ControlAppSchoolResultEntry(
+                                appId1,communityId,appDetailEntry1.getAppPackageName(),Constant.ONE,0,
+                                time*60*1000,type,startNum,current,current,Constant.ZERO);
+                        controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry1);
+                    }
+
+                }else{
+                    if(time<0){
+                        //删除今日
+                        controlAppSchoolResultDao.delEntry(controlAppSchoolResultEntry.getID());
+                    }else{
+                        //有记录，更新记录
+                        controlAppSchoolResultEntry.setOutSchoolCanUseTime(time*60*1000);
+                        controlAppSchoolResultEntry.setDateTime(startNum);
+                        controlAppSchoolResultEntry.setSaveTime(current);
+                        controlAppSchoolResultDao.addEntry(controlAppSchoolResultEntry);
+                    }
+
+                }
+            }
+        }else if(APP_FILE_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//文件
+            String[]  strings =APP_FILE_PACKAGE_NAME.split("&");
             List<String> appNames = new ArrayList<String>();
             for(String s : strings){
                 appNames.add(s);
@@ -1645,6 +1918,63 @@ public class ControlSchoolPhoneService {
         //todo
         if(APP_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())) {
             String[] strings = APP_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for (String s : strings) {
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for (AppDetailEntry appDetailEntry1 : appDetailEntries) {
+                ObjectId appId1 = appDetailEntry1.getID();
+                ControlAppSchoolEntry controlAppSchoolEntry = controlAppSchoolDao.getEntry(appId1);
+                if(controlAppSchoolEntry==null){
+                    ControlAppSchoolEntry controlAppSchoolEntry1 = new ControlAppSchoolEntry(appId1,appDetailEntry1.getAppPackageName(),type,time*60000,Constant.ZERO);
+                    controlAppSchoolDao.addEntry(controlAppSchoolEntry1);
+                }else{
+                    controlAppSchoolEntry.setControlType(type);
+                    controlAppSchoolEntry.setFreeTime(time * 60000);
+                    controlAppSchoolDao.addEntry(controlAppSchoolEntry);
+                }
+            }
+        }else if(APP_MUSIC_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//音乐
+            String[] strings = APP_MUSIC_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for (String s : strings) {
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for (AppDetailEntry appDetailEntry1 : appDetailEntries) {
+                ObjectId appId1 = appDetailEntry1.getID();
+                ControlAppSchoolEntry controlAppSchoolEntry = controlAppSchoolDao.getEntry(appId1);
+                if(controlAppSchoolEntry==null){
+                    ControlAppSchoolEntry controlAppSchoolEntry1 = new ControlAppSchoolEntry(appId1,appDetailEntry1.getAppPackageName(),type,time*60000,Constant.ZERO);
+                    controlAppSchoolDao.addEntry(controlAppSchoolEntry1);
+                }else{
+                    controlAppSchoolEntry.setControlType(type);
+                    controlAppSchoolEntry.setFreeTime(time * 60000);
+                    controlAppSchoolDao.addEntry(controlAppSchoolEntry);
+                }
+            }
+        }else if(APP_CAMERA_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//相机
+            String[] strings = APP_CAMERA_PACKAGE_NAME.split("&");
+            List<String> appNames = new ArrayList<String>();
+            for (String s : strings) {
+                appNames.add(s);
+            }
+            List<AppDetailEntry> appDetailEntries = appDetailDao.getEntryByApkPackageNames(appNames);
+            for (AppDetailEntry appDetailEntry1 : appDetailEntries) {
+                ObjectId appId1 = appDetailEntry1.getID();
+                ControlAppSchoolEntry controlAppSchoolEntry = controlAppSchoolDao.getEntry(appId1);
+                if(controlAppSchoolEntry==null){
+                    ControlAppSchoolEntry controlAppSchoolEntry1 = new ControlAppSchoolEntry(appId1,appDetailEntry1.getAppPackageName(),type,time*60000,Constant.ZERO);
+                    controlAppSchoolDao.addEntry(controlAppSchoolEntry1);
+                }else{
+                    controlAppSchoolEntry.setControlType(type);
+                    controlAppSchoolEntry.setFreeTime(time * 60000);
+                    controlAppSchoolDao.addEntry(controlAppSchoolEntry);
+                }
+            }
+        }else if(APP_FILE_PACKAGE_NAME.contains(appDetailEntry.getAppPackageName())){//文件
+            String[] strings = APP_FILE_PACKAGE_NAME.split("&");
             List<String> appNames = new ArrayList<String>();
             for (String s : strings) {
                 appNames.add(s);

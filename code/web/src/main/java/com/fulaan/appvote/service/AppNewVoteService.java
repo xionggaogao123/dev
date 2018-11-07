@@ -461,9 +461,14 @@ public class AppNewVoteService {
                     new ArrayList<ObjectId>());
             appVoteOptionDao.saveAppVote(appVoteOptionEntry);
         }
+        //添加申请名单中
+        applyUserList.add(userId);
+        appNewVoteEntry.setApplyUserList(applyUserList);
+        appNewVoteDao.saveAppVote(appNewVoteEntry);
+
     }
 
-    public void deleteMyOption(ObjectId id,ObjectId optionId)throws Exception{
+    public void deleteMyOption(ObjectId id,ObjectId optionId,ObjectId userId)throws Exception{
         AppNewVoteEntry appNewVoteEntry = appNewVoteDao.getEntry(id);
         if(appNewVoteEntry==null){
             throw new Exception("投票已被删除或不存在");
@@ -485,6 +490,16 @@ public class AppNewVoteService {
             //删除选项
             appVoteOptionDao.delEntry(optionId);
         }
+
+        //去除申请名单中
+        List<ObjectId> objectIdList = appNewVoteEntry.getApplyUserList();
+        if(objectIdList!=null){
+            objectIdList.remove(userId);
+        }else{
+            objectIdList = new ArrayList<ObjectId>();
+        }
+        appNewVoteEntry.setApplyUserList(objectIdList);
+        appNewVoteDao.saveAppVote(appNewVoteEntry);
     }
 
     public AppVoteOptionDTO selectMyOption(ObjectId userId,ObjectId id)throws Exception{

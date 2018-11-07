@@ -191,7 +191,7 @@ public class AppNewVoteController extends BaseController {
     public RespObj deleteMyOption(@RequestParam(value="id",defaultValue = "") String id,@RequestParam(value="optionId",defaultValue = "") String optionId){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            appNewVoteService.deleteMyOption(new ObjectId(id), new ObjectId(optionId));
+            appNewVoteService.deleteMyOption(new ObjectId(id), new ObjectId(optionId),getUserId());
             respObj.setMessage("撤销成功");
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

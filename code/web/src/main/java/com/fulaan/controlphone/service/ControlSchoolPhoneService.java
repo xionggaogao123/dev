@@ -1661,6 +1661,7 @@ public class ControlSchoolPhoneService {
         map.put("controlApp",mapList);
     }
 
+
     //多学校校管控
     public void getMoreSchoolControlTime(long current,String string,int week,long dateTime,Map<String,Object> objectMap,List<PhoneSchoolTimeDTO> phoneTimeDTOs,List<ObjectId> schoolIdsList){
         Map<String,List<SchoolControlTimeEntry>>  map =new HashMap<String, List<SchoolControlTimeEntry>>();

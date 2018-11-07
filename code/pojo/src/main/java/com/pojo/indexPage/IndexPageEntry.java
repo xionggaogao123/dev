@@ -18,7 +18,8 @@ import java.util.List;
  * type             类型                   typ    1 作业    2 通知    4 系统通知  6 投票    7 活动   8 新集合通知  9 新成绩单
  * communityId      社区id                 cid
  * contactId        联系记录id             tid
- * List<ObjectId>   接受者集合       receiveIdList
+ * List<ObjectId>   接受者集合              receiveIdList（社群集合）
+ * List<Integer>    接受权限集合            roleList（角色集合）
  */
 public class IndexPageEntry extends BaseDBObject {
 
@@ -34,7 +35,8 @@ public class IndexPageEntry extends BaseDBObject {
             ObjectId userId,
             ObjectId communityId,
             ObjectId contactId,
-            List<ObjectId> receiveIdList
+            List<ObjectId> receiveIdList,
+            List<Integer> roleList
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("typ", type)
@@ -42,6 +44,7 @@ public class IndexPageEntry extends BaseDBObject {
                 .append("cid", communityId)
                 .append("tid",contactId)
                 .append("rlt",receiveIdList)
+                .append("olt",roleList)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -77,6 +80,16 @@ public class IndexPageEntry extends BaseDBObject {
                 .append("tid",contactId)
                 .append("isr", 0);
         setBaseEntry(dbObject);
+    }
+
+    public List<Integer> getRoleList(){
+        @SuppressWarnings("rawtypes")
+        List voteTypeList =(List)getSimpleObjectValue("olt");
+        return voteTypeList;
+    }
+
+    public void setRoleList(List<Integer> roleList){
+        setSimpleValue("olt",roleList);
     }
 
     public void setReceiveIdList(List<ObjectId> receiveIdList){

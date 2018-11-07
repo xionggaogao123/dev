@@ -2044,8 +2044,8 @@ public class IndexPageService {
         List<ObjectId> userIds = this.getMyChildList(userIds2);
         userIds.add(userId);
         dlist.add(userId);
-        List<ObjectId> cntactIdList = indexPageDao.getNewPageList(dlist, userId, page, pageSize, Constant.EIGHT,userIds);
-        int count = indexPageDao.countNewPageList(dlist, userId, Constant.EIGHT,userIds);
+        List<ObjectId> cntactIdList = indexPageDao.getSixPageList(dlist, userId, page, pageSize, Constant.EIGHT,userIds);
+        int count = indexPageDao.countSixPageList(dlist, userId, Constant.EIGHT,userIds);
         List<IndexContentDTO> list2 = new ArrayList<IndexContentDTO>();
         List<IndexContentEntry> entryList = indexContentDao.getPageList(cntactIdList);
         List<ObjectId> oids = new ArrayList<ObjectId>();
@@ -2131,6 +2131,132 @@ public class IndexPageService {
         return map;
     }
 
+
+    public Map<String,Object> getSevenHotIndexList(ObjectId userId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //1.通知逻辑
+        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
+        //2.老师和家长页面区分（）
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        //3.获取火热分享
+        List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
+        int role = 1;
+        if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
+            role = 2;
+            if(page==1){
+                superTopicDTOs=getHotList(2);
+            }
+            if(superTopicDTOs.size()==0){
+                superTopicDTOs=getEducationList(2);
+            }
+        }else{
+            role = 1;
+            if(page==1){
+                superTopicDTOs=getHotList(1);
+            }
+            if(superTopicDTOs.size()==0){
+                superTopicDTOs=getEducationList(1);
+            }
+        }
+        map.put("hotList",superTopicDTOs);
+        //获取最新系统通知
+        ObjectId syId = indexPageDao.getNewSystemPageList(userId, 1, 1);
+        List<Map<String,Object>> obmap = new ArrayList<Map<String, Object>>();
+        if(syId!=null){
+            getNewSystemMessage(syId,obmap);
+        }
+        map.put("systemMessage",obmap);
+        //新集合通知
+        List<ObjectId>  userIds2 = newVersionCommunityBindDao.getNewIdsByMainUserId(userId, dlist);
+        List<ObjectId> userIds = this.getMyChildList(userIds2);
+        userIds.add(userId);
+        dlist.add(userId);
+        List<ObjectId> cntactIdList = indexPageDao.getNewPageList(dlist, userId, page, pageSize, Constant.EIGHT,userIds,role);
+        int count = indexPageDao.countNewPageList(dlist, userId, Constant.EIGHT,userIds,role);
+        List<IndexContentDTO> list2 = new ArrayList<IndexContentDTO>();
+        List<IndexContentEntry> entryList = indexContentDao.getPageList(cntactIdList);
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        Map<ObjectId,IndexContentEntry> comMap = new HashMap<ObjectId, IndexContentEntry>();
+        for(IndexContentEntry indexContentEntry2 : entryList){
+            oids.add(indexContentEntry2.getUserId());
+            comMap.put(indexContentEntry2.getContactId(),indexContentEntry2);
+        }
+        Map<ObjectId, UserEntry> userEntryMap = new HashMap<ObjectId, UserEntry>();
+        if (oids.size() > 0) {
+            userEntryMap = userService.getUserEntryMap(oids, Constant.FIELDS);
+        }
+        Set<ObjectId> ownIds = new HashSet<ObjectId>();
+        for(ObjectId cid:cntactIdList){
+            IndexContentEntry indexContentEntry = comMap.get(cid);
+            if(indexContentEntry!=null){
+                ObjectId uid = indexContentEntry.getUserId();
+                IndexContentDTO dto = new IndexContentDTO(indexContentEntry);
+                dto.setId(indexContentEntry.getContactId().toString());
+                // Index
+                dto.setTimeExpression("");
+                if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(userId)){
+                    dto.setIsRead(1);
+                }else{
+                    dto.setIsRead(0);
+                }
+                if(indexContentEntry.getReaList()!=null){
+                    List<ObjectId> rids = indexContentEntry.getReaList();
+                    if(indexContentEntry.getContactType()!=8){
+                        rids.remove(indexContentEntry.getUserId());
+                    }
+                    dto.setReadCount(rids.size());
+                }else{
+                    dto.setReadCount(0);
+                }
+                if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(uid)){
+                    dto.setTotalReadCount(indexContentEntry.getAllCount());
+                }else{
+                   /* if(indexContentEntry.getContactType()!=8) {
+                        dto.setTotalReadCount(indexContentEntry.getAllCount() - 1);
+                    }else{
+                        dto.setTotalReadCount(indexContentEntry.getAllCount());
+                    }*/
+                    dto.setTotalReadCount(indexContentEntry.getAllCount());
+                }
+
+                UserEntry userEntry = userEntryMap.get(uid);
+                if(userEntry!=null){
+                    String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                    dto.setUserName(name);
+                    dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                }
+                if(userId.toString().equals(uid.toString()) && !ownIds.contains(cid)){
+                    dto.setIsOwner(true);
+                    ownIds.add(cid);
+                }else{
+                    if(indexContentEntry.getContactType()==8){
+                        String str = indexContentEntry.getUserName();
+                        String[] strings = str.split(",");
+                        for(String s:strings){
+                            for(ObjectId oid : userIds){
+                                if(s.contains(oid.toString())){
+                                    dto.setUserId(oid.toString());
+                                    String[] strings1 = s.split("#");
+                                    if(strings1.length==2){
+                                        dto.setTag(strings1[1]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    dto.setIsOwner(false);
+                }
+                list2.add(dto);
+
+            }
+        }
+       /* for(IndexContentEntry indexContentEntry : entryList){
+
+        }*/
+        map.put("count",count);
+        map.put("list",list2);
+        return map;
+    }
     public void readMessage(ObjectId id,ObjectId userId){
         IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
         if(indexContentEntry!=null){

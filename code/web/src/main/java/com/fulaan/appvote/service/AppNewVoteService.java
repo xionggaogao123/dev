@@ -125,11 +125,18 @@ public class AppNewVoteService {
             sb.substring(0,sb.length()-1);
             //新首页记录
             IndexPageDTO dto1 = new IndexPageDTO();
-            dto1.setType(CommunityType.allNotice.getType());
+            dto1.setType(CommunityType.newVote.getType());
             dto1.setUserId(appNewVoteDTO.getUserId());
             dto1.setReceiveIdList(cids);
             dto1.setCommunityId(null);
             dto1.setContactId(appNewVoteEntry.getID().toString());
+            //角色列表
+            Set<Integer> set = new HashSet<Integer>();
+            set.addAll(appNewVoteEntry.getApplyTypeList());
+            set.addAll(appNewVoteEntry.getVoteTypeList());
+            List<Integer> roleList =  new ArrayList<Integer>();
+            roleList.addAll(set);
+            dto1.setRoleList(roleList);
             IndexPageEntry entry = dto1.buildAddEntry();
             indexPageDao.addEntry(entry);
             IndexContentDTO indexContentDTO = new IndexContentDTO(

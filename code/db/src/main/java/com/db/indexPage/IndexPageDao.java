@@ -87,14 +87,39 @@ public class IndexPageDao extends BaseDao {
 
 
     }
+
     //查询首页显示列表
-    public List<ObjectId> getNewPageList(List<ObjectId> olist,ObjectId userId,int page,int pageSize,int type,List<ObjectId> userIds){
+    public List<ObjectId> getSixPageList(List<ObjectId> olist,ObjectId userId,int page,int pageSize,int type,List<ObjectId> userIds){
+        List<ObjectId> entryList=new ArrayList<ObjectId>();
+        BasicDBObject query=new BasicDBObject()
+                //.append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                .append("isr", Constant.ZERO);
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("typ",type).append("cid", new BasicDBObject(Constant.MONGO_IN, olist)));
+        values.add(new BasicDBObject("typ", Constant.NINE).append("rlt", new BasicDBObject(Constant.MONGO_IN, userIds)));
+        query.append(Constant.MONGO_OR,values);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new IndexPageEntry((BasicDBObject) obj).getContactId());
+            }
+        }
+        return entryList;
+
+
+
+    }
+
+    //查询首页显示列表
+    public List<ObjectId> getNewPageList(List<ObjectId> olist,ObjectId userId,int page,int pageSize,int type,List<ObjectId> userIds,int role){
         List<ObjectId> entryList=new ArrayList<ObjectId>();
         BasicDBObject query=new BasicDBObject()
                         //.append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
                 .append("isr", Constant.ZERO);
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("typ",type).append("cid", new BasicDBObject(Constant.MONGO_IN, olist)));
+        values.add(new BasicDBObject("typ", Constant.TEN).append("rlt", new BasicDBObject(Constant.MONGO_IN, olist)).append("olt",role));
         values.add(new BasicDBObject("typ", Constant.NINE).append("rlt", new BasicDBObject(Constant.MONGO_IN, userIds)));
         query.append(Constant.MONGO_OR,values);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query,
@@ -160,9 +185,21 @@ public class IndexPageDao extends BaseDao {
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query);
     }
 
-    public int countNewPageList(List<ObjectId> olist,ObjectId userId,int type,List<ObjectId> userIds){
+    public int countNewPageList(List<ObjectId> olist,ObjectId userId,int type,List<ObjectId> userIds,int role){
         BasicDBObject query=new BasicDBObject()
                         //.append("uid", new BasicDBObject(Constant.MONGO_NE, userId))
+                .append("isr", Constant.ZERO);
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("typ",type).append("cid", new BasicDBObject(Constant.MONGO_IN, olist)));
+        values.add(new BasicDBObject("typ", Constant.TEN).append("rlt", new BasicDBObject(Constant.MONGO_IN, olist)).append("olt", role));
+        values.add(new BasicDBObject("typ", Constant.NINE).append("rlt", new BasicDBObject(Constant.MONGO_IN, userIds)));
+        query.append(Constant.MONGO_OR,values);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query);
+    }
+
+    public int countSixPageList(List<ObjectId> olist,ObjectId userId,int type,List<ObjectId> userIds){
+        BasicDBObject query=new BasicDBObject()
+                //.append("uid", new BasicDBObject(Constant.MONGO_NE, userId))
                 .append("isr", Constant.ZERO);
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("typ",type).append("cid", new BasicDBObject(Constant.MONGO_IN, olist)));

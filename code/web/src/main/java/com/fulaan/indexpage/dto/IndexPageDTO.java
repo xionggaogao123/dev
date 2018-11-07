@@ -20,6 +20,7 @@ public class IndexPageDTO {
     private String communityId;
     private String contactId;
     private List<String> receiveIdList = new ArrayList<String>();
+    private List<Integer> roleList = new ArrayList<Integer>();
 
     public List<String> getReceiveIdList() {
         return receiveIdList;
@@ -67,7 +68,8 @@ public class IndexPageDTO {
                         uId,
                         cId,
                         tId,
-                        rIdList
+                        rIdList,
+                        this.roleList
                 );
         return openEntry;
 
@@ -166,5 +168,11 @@ public class IndexPageDTO {
         this.contactId = contactId;
     }
 
+    public List<Integer> getRoleList() {
+        return roleList;
+    }
 
+    public void setRoleList(List<Integer> roleList) {
+        this.roleList = roleList;
+    }
 }

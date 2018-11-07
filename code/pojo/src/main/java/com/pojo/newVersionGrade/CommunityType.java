@@ -14,7 +14,7 @@ public enum CommunityType {
     woShiLaoShi(7,"初一", "junior"),
     allNotice(8,"集合通知", "allNotice"),
     reportCard(9, "成绩单", "reportCard"),
-    onlineList(10, "高一", "senior"),
+    newVote(10, "新投票", "newVote"),
     binFen(11, "高二", "senior"),
     gongYi(12, "高三", "senior"),
     gangwei(13,"已毕业", "senior");

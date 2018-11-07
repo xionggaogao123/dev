@@ -8,6 +8,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.MineCommunityDao;
 import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
+import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.appvote.dto.AppNewVoteDTO;
@@ -30,6 +31,7 @@ import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.integral.IntegralType;
 import com.pojo.newVersionGrade.CommunityType;
+import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -69,6 +71,8 @@ public class AppNewVoteService {
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     private UserDao userDao = new UserDao();
+
+    private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
 
     public String saveNewAppVote(AppNewVoteDTO appNewVoteDTO,ObjectId userId){
         AppNewVoteEntry appNewVoteEntry = appNewVoteDTO.buildAddEntry();
@@ -190,6 +194,96 @@ public class AppNewVoteService {
         List<ObjectId> communityIds =  new ArrayList<ObjectId>();
         if(communityId==null || communityId.equals("")){
             communityIds = this.getCommunitys3(userId, 1, 100);
+        }else{
+            communityIds.add(new ObjectId(communityId));
+        }
+        List<AppNewVoteEntry> appNewVoteEntries = appNewVoteDao.getVoteList(keyword,communityIds,page,pageSize,role);
+        int count = appNewVoteDao.countVoteList(keyword,communityIds,role);
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        List<ObjectId> cids = new ArrayList<ObjectId>();
+        for(AppNewVoteEntry appNewVoteEntry: appNewVoteEntries){
+            userIds.add(appNewVoteEntry.getUserId());
+            cids.addAll(appNewVoteEntry.getCommunityList());
+        }
+        Map<ObjectId,CommunityEntry> nap = communityDao.findMapByObjectIds(cids);
+        Map<ObjectId, UserEntry> userEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
+        List<AppNewVoteDTO> dtos = new ArrayList<AppNewVoteDTO>();
+        long current = System.currentTimeMillis();
+        for(AppNewVoteEntry appNewVoteEntry: appNewVoteEntries){
+            AppNewVoteDTO dto = new AppNewVoteDTO(appNewVoteEntry);
+            //1.发布人数据
+            UserEntry userEntry  = userEntryMap.get(appNewVoteEntry.getUserId());
+            if(userEntry!=null){
+                String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                dto.setUserName(name);
+                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+            }
+            //2.获得投票阶段
+            if(appNewVoteEntry.getApplyStartTime()< current && appNewVoteEntry.getApplyEndTime()>current){//报名阶段
+                dto.setLevel(1);
+            }else if(appNewVoteEntry.getVoteStartTime()< current && appNewVoteEntry.getVoteEndTime()>current){//投票阶段
+                dto.setLevel(2);
+            }else if(appNewVoteEntry.getVoteEndTime()<current){//结束阶段
+                dto.setLevel(3);
+            }else{//未开始阶段
+                dto.setLevel(0);
+            }
+
+            //3.判断阶段
+            if(appNewVoteEntry.getUserId().equals(userId)){//发布人
+                dto.setIsOwner(1);
+                dto.setIsApply(0);
+                dto.setIsVote(0);
+            }else{//非发布人
+                dto.setIsOwner(0);
+                dto.setIsApply(0);
+                dto.setIsVote(0);
+                if(appNewVoteEntry.getType()==2 && appNewVoteEntry.getApplyTypeList()!=null && appNewVoteEntry.getApplyTypeList().contains(new Integer(role))) {//可报名
+                    if (appNewVoteEntry.getApplyUserList() != null && appNewVoteEntry.getApplyUserList().contains(userId)) {//已报名
+                        dto.setIsApply(2);
+                    } else {//未报名
+                        dto.setIsApply(1);
+                    }
+                }
+                if(appNewVoteEntry.getVoteTypeList()!=null && appNewVoteEntry.getVoteTypeList().contains(new Integer(role))){//可投票
+                    if(appNewVoteEntry.getVoteUesrList()!=null && appNewVoteEntry.getVoteUesrList().contains(userId)){//已投票
+                        dto.setIsVote(2);
+                    }else{//未投票
+                        dto.setIsVote(1);
+                    }
+                }
+
+            }
+            List<ObjectId> comIds = appNewVoteEntry.getCommunityList();
+            StringBuffer sb = new StringBuffer();
+            if(comIds!=null){
+                for(ObjectId oid:comIds){
+                    CommunityEntry communityEntry = nap.get(oid);
+                    if(communityEntry!=null){
+                        sb.append(communityEntry.getCommunityName());
+                        sb.append("、");
+                    }
+                }
+            }
+            if(sb.length()>0){
+                sb.substring(0,sb.length()-1);
+            }
+            dto.setCommunityNames(sb.toString());
+            dtos.add(dto);
+        }
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+
+    public Map<String,Object> getStudentVoteList(ObjectId userId,String communityId,String keyword,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得查询者的身份
+        int role = 1;//默认学生
+        List<ObjectId> communityIds =  new ArrayList<ObjectId>();
+        NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
+        if(communityId==null || communityId.equals("")){
+            communityIds = this.getCommunitys3(newVersionBindRelationEntry.getMainUserId(), 1, 100);
         }else{
             communityIds.add(new ObjectId(communityId));
         }

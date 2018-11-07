@@ -114,7 +114,7 @@ public class AppNewVoteController extends BaseController {
                                @RequestParam(value="communityId",defaultValue = "") String communityId){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object> map = appNewVoteService.getVoteList(getUserId(), communityId, keyword, page, pageSize);
+            Map<String,Object> map = appNewVoteService.getStudentVoteList(getUserId(), communityId, keyword, page, pageSize);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(map);
         }catch (Exception e){

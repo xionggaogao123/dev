@@ -5115,8 +5115,28 @@ public class ControlPhoneService {
                     name = remarkEntry.getRemark();
                 }
                 dto.setUserName(name);
-                dto.setVersion("未登录");
-                dto.setLevel(2);
+                if(entry!=null){
+                   /* boolean flag = false;
+                    String cacheUserKey= CacheHandler.getUserKey(ddto.getId());
+                    if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
+                        SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
+                        if (null != sv && !sv.isEmpty()) {
+                            flag = true;
+                        }
+                    }
+                    if(flag){
+                        dto.setVersion("");
+                        dto.setLevel(3);
+                    }else{
+                        dto.setVersion("未登录");
+                        dto.setLevel(2);
+                    }*/
+                    dto.setVersion("暂无数据");
+                    dto.setLevel(2);
+                }else{
+                    dto.setVersion("暂无数据");
+                    dto.setLevel(2);
+                }
                 dto.setCommunityId(communityId.toString());
                 dto.setDateTime(0l);
                 dto.setId("");

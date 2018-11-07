@@ -48,7 +48,12 @@ public class BackStageAdminManageService {
         String msg = "";
         UserEntry userEntry = userDao.getGenerateCodeEntry(map.get("userJiaId").toString());
         if (null == userEntry){
-            msg = "用户不存在，请检查用户Id";
+            msg = "用户不存在，请检查用户ID！";
+            return msg;
+        }
+        List<UserLogResultEntry> resultEntries = userLogResultDao.getLogsByUserId(userEntry.getID());
+        if (resultEntries.size() > 0){
+            msg = "此用户已经是管理员！";
             return msg;
         }
         if ("".equals(map.get("id")) || null == map.get("id")) {//新增管理员权限

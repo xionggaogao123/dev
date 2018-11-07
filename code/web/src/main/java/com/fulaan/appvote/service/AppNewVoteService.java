@@ -40,6 +40,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -427,6 +428,7 @@ public class AppNewVoteService {
         List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getOneVoteList(id);
         List<AppVoteOptionDTO> selectOption = new ArrayList<AppVoteOptionDTO>();
        // List<AppVoteOptionDTO> unSelectOption = new ArrayList<AppVoteOptionDTO>();
+        int allCount = 0;
         for(AppVoteOptionEntry appVoteOptionEntry: appVoteOptionEntries){
             AppVoteOptionDTO appVoteOptionDTO = new AppVoteOptionDTO(appVoteOptionEntry);
             if(appVoteOptionEntry.getUserIdList()!=null && appVoteOptionEntry.getUserIdList().contains(userId)){
@@ -436,14 +438,31 @@ public class AppNewVoteService {
             }
 //            if(appVoteOptionEntry.getSelect()==1){//可选项
             selectOption.add(appVoteOptionDTO);
+            allCount += appVoteOptionDTO.getCount();
             /*}else{//待选项
                 unSelectOption.add(appVoteOptionDTO);
             }*/
+        }
+        for(AppVoteOptionDTO appVoteOptionDTO:selectOption){
+            appVoteOptionDTO.setPercent(Double.parseDouble(division(appVoteOptionDTO.getCount(), allCount)));
         }
         map.put("dto",appNewVoteDTO);
         map.put("optionList",selectOption);
         //map.put("unSelectOption",unSelectOption);
         return map;
+    }
+
+    //整数相除 保留一位小数
+    public static String division(int a ,int b){
+        String result = "";
+        float num =(float)a/b;
+
+        DecimalFormat df = new DecimalFormat("0.0");
+
+        result = df.format(num);
+
+        return result;
+
     }
 
 

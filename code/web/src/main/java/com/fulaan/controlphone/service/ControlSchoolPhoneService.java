@@ -85,6 +85,7 @@ public class ControlSchoolPhoneService {
     private ControlAppUserDao controlAppUserDao = new ControlAppUserDao();
 
     private ControlVersionDao controlVersionDao = new ControlVersionDao();
+    //催的急，被迫的
     //默认手机系统
     public static final String APP_PACKAGE_NAME = "com.zhuoyi.security.lite&" +
             "com.android.freeme.calendar&" +

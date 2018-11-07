@@ -202,7 +202,7 @@ public class BackStageUserManageService {
                 userManageResultDTO.setTelephone(userEntry.getMobileNumber());
                 //系统角色
                 //通过绑定表 获取 userId 对应的 roleId
-                UserLogResultEntry userLogResultEntry= userLogResultDao.getEntryByUserId(userEntry.getID());
+                UserLogResultEntry userLogResultEntry= userLogResultDao.getEntryByUserIdNew(userEntry.getID());
                 if (null != userLogResultEntry ){
                     RoleJurisdictionSettingEntry settingEntry = roleJurisdictionSettingDao.getEntryById(userLogResultEntry.getRoleId());
                     userManageResultDTO.setSysRoleName(settingEntry == null ? "" : settingEntry.getRoleName());

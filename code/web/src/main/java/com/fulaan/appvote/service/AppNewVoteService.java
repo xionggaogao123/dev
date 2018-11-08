@@ -415,6 +415,7 @@ public class AppNewVoteService {
                     appNewVoteDTO.setIsApply(1);
                 }
             }
+
             if(appNewVoteEntry.getVoteTypeList()!=null && appNewVoteEntry.getVoteTypeList().contains(new Integer(role))){//可投票
 
                 if(appNewVoteEntry.getVoteUesrList()!=null){

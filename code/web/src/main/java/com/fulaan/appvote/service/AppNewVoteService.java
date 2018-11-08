@@ -416,14 +416,36 @@ public class AppNewVoteService {
                 }
             }
             if(appNewVoteEntry.getVoteTypeList()!=null && appNewVoteEntry.getVoteTypeList().contains(new Integer(role))){//可投票
-                if(appNewVoteEntry.getVoteUesrList()!=null && appNewVoteEntry.getVoteUesrList().contains(userId)){//已投票
-                    appNewVoteDTO.setIsVote(2);
-                }else{//未投票
+
+                if(appNewVoteEntry.getVoteUesrList()!=null){
+                    appNewVoteDTO.setUserCount(appNewVoteEntry.getVoteUesrList().size());
+                    if(appNewVoteEntry.getVoteUesrList().contains(userId)){//已投票
+                        appNewVoteDTO.setIsVote(2);
+                    }else{//未投票
+                        appNewVoteDTO.setIsVote(1);
+                    }
+                }else{
+                    appNewVoteDTO.setUserCount(0);
                     appNewVoteDTO.setIsVote(1);
                 }
             }
 
         }
+        List<ObjectId> objectIdList = appNewVoteEntry.getCommunityList();
+        StringBuffer sb = new StringBuffer();
+        if(objectIdList!=null){
+            List<CommunityEntry> communityEntries = communityDao.findByObjectIds(objectIdList);
+            for(CommunityEntry communityEntry:communityEntries){
+                sb.append(communityEntry.getCommunityName());
+                sb.append("、");
+            }
+        }
+        if(sb.length()>0){
+            appNewVoteDTO.setCommunityNames(sb.toString().substring(0,sb.length()-1));
+        }else{
+            appNewVoteDTO.setCommunityNames("");
+        }
+
         //4. 组装选项
         List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getOneVoteList(id);
         List<AppVoteOptionDTO> selectOption = new ArrayList<AppVoteOptionDTO>();
@@ -454,6 +476,9 @@ public class AppNewVoteService {
 
     //整数相除 保留一位小数
     public static String division(int a ,int b){
+        if(b==0){
+            return "0";
+        }
         String result = "";
         float num =(float)a/b;
 

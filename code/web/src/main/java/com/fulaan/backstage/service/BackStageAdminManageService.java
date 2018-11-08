@@ -51,12 +51,13 @@ public class BackStageAdminManageService {
             msg = "用户不存在，请检查用户ID！";
             return msg;
         }
-        List<UserLogResultEntry> resultEntries = userLogResultDao.getLogsByUserId(userEntry.getID());
-        if (resultEntries.size() > 0){
-            msg = "此用户已经是管理员！";
-            return msg;
-        }
+
         if ("".equals(map.get("id")) || null == map.get("id")) {//新增管理员权限
+            List<UserLogResultEntry> resultEntries = userLogResultDao.getLogsByUserId(userEntry.getID());
+            if (resultEntries.size() > 0){
+                msg = "此用户已经是管理员！";
+                return msg;
+            }
 //            UserLogResultEntry entry=new UserLogResultEntry(new ObjectId(map.get("userId").toString()),new ObjectId(map.get("roleId").toString()));
             UserLogResultEntry entry=new UserLogResultEntry(userEntry.getID(), new ObjectId(map.get("roleId").toString()));
             userLogResultDao.saveUserLogEntry(entry);

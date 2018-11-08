@@ -411,6 +411,9 @@ public class BackStageUserManageService {
             for (NewVersionUserRoleEntry userRoleEntry : roleEntries) {
                 userManageResultDTO = new UserManageResultDTO();
                 UserEntry userEntry = userEntryMap.get(userRoleEntry.getUserId());
+                if (null == userEntry){
+                    continue;
+                }
                 userManageResultDTO.setId(userRoleEntry.getID().toString());
 
                 Map<ObjectId,List<ObjectId>> communityDTOListMap = communityService.getCommunitys3GroupByUserId(userIds);

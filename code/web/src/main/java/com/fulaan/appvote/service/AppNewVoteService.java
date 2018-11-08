@@ -539,6 +539,7 @@ public class AppNewVoteService {
             }
         }
         if(fale){//选项投递成功
+            appVoteUserList.add(userId);
             appNewVoteEntry.setVoteUesrList(appVoteUserList);
             appNewVoteEntry.setVoteCount(appVoteUserList.size());
             appNewVoteDao.saveAppVote(appNewVoteEntry);
@@ -776,30 +777,30 @@ public class AppNewVoteService {
         Map<ObjectId, UserEntry> userEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
         List<Map<String,Object>>  mapList = new ArrayList<Map<String,Object>>();
         int index = 0;
-        for(AppVoteOptionEntry appVoteOptionEntry:appVoteOptionEntries){
+        for(AppVoteOptionEntry appVoteOptionEntry:appVoteOptionEntries) {
             index++;
-            Map<String,Object> map2 = new HashMap<String, Object>();
-            map2.put("order",index);
-            map2.put("description",appVoteOptionEntry.getDescription());
+            Map<String, Object> map2 = new HashMap<String, Object>();
+            map2.put("order", index);
+            map2.put("description", appVoteOptionEntry.getDescription());
             List<User> userList = new ArrayList<User>();
-            List<ObjectId>  objectIdList = appVoteOptionEntry.getUserIdList();
-            if(objectIdList!=null){
-                for(ObjectId oid:objectIdList){
+            List<ObjectId> objectIdList = appVoteOptionEntry.getUserIdList();
+            if (objectIdList != null) {
+                for (ObjectId oid : objectIdList) {
                     UserEntry userEntry = userEntryMap.get(oid);
-                    if(userEntry!=null){
-                        String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-                        User user=new User(name,
+                    if (userEntry != null) {
+                        String name = StringUtils.isNotEmpty(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+                        User user = new User(name,
                                 name,
                                 userEntry.getID().toString(),
-                                AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
+                                AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),
                                 userEntry.getSex(),
                                 "");
                         userList.add(user);
                     }
                 }
             }
-            map2.put("list",userList);
-            map2.put("count",userList.size());
+            map2.put("list", userList);
+            map2.put("count", userList.size());
             mapList.add(map2);
         }
         return mapList;

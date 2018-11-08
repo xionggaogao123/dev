@@ -180,11 +180,12 @@ public class BackStageUserManageService {
                 //用户在老师 或者员工中 有角色
                 userManageResultDTO = new UserManageResultDTO();
                 userManageResultDTO.setId(teacherApproveEntry.getID().toString());
-                //超简洁获取用户的社团 listMineCommunityId
-                List<ObjectId> listMineCommunityId = communityService.getCommunitys3(userId,-1,0);
-                //获取当前用户所有的社群（范围存在于 listMineCommunityId）
-                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userId,listMineCommunityId);
-                userManageResultDTO.setCommunityCount(entries2.size()+"");
+//                //超简洁获取用户的社团 listMineCommunityId
+//                List<ObjectId> listMineCommunityId = communityService.getCommunitys3(userId,-1,0);
+//                //获取当前用户所有的社群（范围存在于 listMineCommunityId）
+//                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userId,listMineCommunityId);
+                List<CommunityDTO> communityDTOList = communityService.getCommunitys(userId, -1, 10); //page -1 表示不分页
+                userManageResultDTO.setCommunityCount(communityDTOList.size()+"");
                 //家长，老师 员工 登录 或 未登录
                 String cacheUserKey= CacheHandler.getUserKey(userEntry.getID().toString());
                 if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
@@ -202,7 +203,7 @@ public class BackStageUserManageService {
                 userManageResultDTO.setTelephone(userEntry.getMobileNumber());
                 //系统角色
                 //通过绑定表 获取 userId 对应的 roleId
-                UserLogResultEntry userLogResultEntry= userLogResultDao.getEntryByUserId(userEntry.getID());
+                UserLogResultEntry userLogResultEntry= userLogResultDao.getEntryByUserIdNew(userEntry.getID());
                 if (null != userLogResultEntry ){
                     RoleJurisdictionSettingEntry settingEntry = roleJurisdictionSettingDao.getEntryById(userLogResultEntry.getRoleId());
                     userManageResultDTO.setSysRoleName(settingEntry == null ? "" : settingEntry.getRoleName());
@@ -220,11 +221,12 @@ public class BackStageUserManageService {
                 //用户在学生 或者家长中 有角色
                 userManageResultDTO = new UserManageResultDTO();
                 userManageResultDTO.setId(userRoleEntry.getID().toString());
-                //超简洁获取用户的社团 listMineCommunityId
-                List<ObjectId> listMineCommunityId = communityService.getCommunitys3(userId,-1,0);
-                //获取当前用户所有的社群（范围存在于 listMineCommunityId）
-                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userId,listMineCommunityId);
-                userManageResultDTO.setCommunityCount(entries2.size()+"");
+//                //超简洁获取用户的社团 listMineCommunityId
+//                List<ObjectId> listMineCommunityId = communityService.getCommunitys3(userId,-1,0);
+//                //获取当前用户所有的社群（范围存在于 listMineCommunityId）
+//                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userId,listMineCommunityId);
+                List<CommunityDTO> communityDTOList = communityService.getCommunitys(userId, -1, 10); //page -1 表示不分页
+                userManageResultDTO.setCommunityCount(communityDTOList.size()+"");
                 if (0 == userRoleEntry.getNewRole()){
                     userManageResultDTO.setUserRoleName("家长");
                     /**
@@ -319,12 +321,8 @@ public class BackStageUserManageService {
                 userIds.add(teacherApproveEntry.getUserId());
             }
 
-            //超简洁获取用户的社团 listMineCommunityId
-            // 按userId分组 返回Map<userId,List<communityId>>
-            Map<ObjectId,List<ObjectId>> mineUserIdCommunityIdList = communityService.getCommunitys3GroupByUserId(userIds);
-            //获取当前用户所有的社群（范围存在于 listMineCommunityId）
             // 按userId分组 返回Map<userId,List<MemberEntry>>
-            Map<ObjectId,List<MemberEntry>> userIdMemberEntries = memberDao.getMemberEntriesGroupByuserId(userIds,mineUserIdCommunityIdList);
+            Map<ObjectId,List<ObjectId>> communityDTOListMap = communityService.getCommunitys3GroupByUserId(userIds);
             //通过绑定表 获取 userId 对应的 roleId
             // 按userId分组 返回Map<userId,List<userLogResultEntryRoleId>>
             Map<ObjectId,List<ObjectId>> userLogResultEntryRoleIdsMap = userLogResultDao.getEntriesGroupByUserId(userIds);
@@ -337,12 +335,7 @@ public class BackStageUserManageService {
                 UserEntry userEntry = userEntryMap.get(teacherApproveEntry.getUserId());
                 userManageResultDTO = new UserManageResultDTO();
                 userManageResultDTO.setId(teacherApproveEntry.getID().toString());
-//                //超简洁获取用户的社团 listMineCommunityId
-//                List<ObjectId> listMineCommunityId = communityService.getCommunitys3(teacherApproveEntry.getUserId(),-1,0);
-//                //获取当前用户所有的社群（范围存在于 listMineCommunityId）
-//                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(teacherApproveEntry.getUserId(),listMineCommunityId);
-//                userManageResultDTO.setCommunityCount(entries2.size()+"");
-                userManageResultDTO.setCommunityCount(userIdMemberEntries.get(teacherApproveEntry.getUserId()).size()+"");
+                userManageResultDTO.setCommunityCount(communityDTOListMap.get(userEntry.getID()).size()+"");
                 //家长，老师 员工 登录 或 未登录
                 String cacheUserKey= CacheHandler.getUserKey(userEntry==null?"":userEntry.getID().toString());
                 if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
@@ -419,15 +412,11 @@ public class BackStageUserManageService {
                 userManageResultDTO = new UserManageResultDTO();
                 UserEntry userEntry = userEntryMap.get(userRoleEntry.getUserId());
                 userManageResultDTO.setId(userRoleEntry.getID().toString());
-                //超简洁获取用户的社团 listMineCommunityId
-//                List<ObjectId> listMineCommunityId = communityService.getCommunitys3(userRoleEntry.getUserId(),-1,0);
-                //获取当前用户所有的社群（范围存在于 listMineCommunityId）
-//                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userRoleEntry.getUserId(),listMineCommunityId);
-//                userManageResultDTO.setCommunityCount(entries2.size()+"");
-//                userManageResultDTO.setCommunityCount(userIdMemberEntries.get(userRoleEntry.getUserId()).size()+"");
+
+                Map<ObjectId,List<ObjectId>> communityDTOListMap = communityService.getCommunitys3GroupByUserId(userIds);
                 if ("家长".equals(map.get("roleOption"))){
                     userManageResultDTO.setUserRoleName("家长");
-                    userManageResultDTO.setCommunityCount(userIdMemberEntries.get(userRoleEntry.getUserId()).size()+"");
+                    userManageResultDTO.setCommunityCount(communityDTOListMap.get(userEntry.getID()).size()+"");
                     //家长，老师 员工 登录 或 未登录
                     String cacheUserKey= CacheHandler.getUserKey(userEntry == null ? "" : userEntry.getID().toString());
                     if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
@@ -685,8 +674,16 @@ public class BackStageUserManageService {
     public Map<String, Object> getUserCreatedCommunity(Map map) {
         List<CommunityDTO> communityDTOS = new ArrayList<CommunityDTO>();
         //超简洁获取用户的社团 listMineCommunityId
-        List<ObjectId> listMineCommunityId = communityService.getCommunitys3(new ObjectId(map.get("userId").toString()), -1, 0);
-        Map<String, Object> result = communityDao.getUserCreatedCommunity(map, listMineCommunityId);
+        List<CommunityDTO> communityDTOList = communityService.getCommunitys(new ObjectId(map.get("userId").toString()), -1, 0);
+        List<ObjectId> groupIdList = new ArrayList<ObjectId>();
+        for (CommunityDTO communityDTO : communityDTOList){
+            if (!groupIdList.contains(new ObjectId(communityDTO.getGroupId()))){
+                groupIdList.add(new ObjectId(communityDTO.getGroupId()));
+            }
+        }
+        //获取用户是社长的社群GroupId
+        List<ObjectId> createdGroupIds = memberDao.getHeadCommunityIdsByGroupList(new ObjectId(map.get("userId").toString()), groupIdList);
+        Map<String, Object> result = communityDao.getUserCreatedCommunity(map, createdGroupIds);
         List<CommunityEntry> communityEntries = (ArrayList) result.get("communityEntryList");
 //        List<CommunityEntry> communityEntries = communityDao.getUserCreatedCommunity(map);
 
@@ -723,16 +720,16 @@ public class BackStageUserManageService {
     public Map<String,Object> getUserJoinCommunity(Map map) {
         List<CommunityDTO> communityDTOS = new ArrayList<CommunityDTO>();
         //超简洁获取用户的社团 listMineCommunityId
-        List<ObjectId> listMineCommunityId = communityService.getCommunitys3(new ObjectId(map.get("userId").toString()),-1,0);
-        //获取当前用户所有的社群 （范围存在于 listMineCommunityId）
-        List<MemberEntry> memberEntries = memberDao.getCommunityListByUid(new ObjectId(map.get("userId").toString()),listMineCommunityId);
-        List<ObjectId> communityIdList = new ArrayList<ObjectId>();
-        for (MemberEntry memberEntry : memberEntries) {
-            if (!communityIdList.contains(memberEntry.getCommunityId())) {
-                communityIdList.add(memberEntry.getCommunityId());
+        List<CommunityDTO> communityDTOList = communityService.getCommunitys(new ObjectId(map.get("userId").toString()), -1, 0);
+        List<ObjectId> groupIdList = new ArrayList<ObjectId>();
+        for (CommunityDTO communityDTO : communityDTOList){
+            if (!groupIdList.contains(new ObjectId(communityDTO.getGroupId()))){
+                groupIdList.add(new ObjectId(communityDTO.getGroupId()));
             }
         }
-        Map<String,Object> result = communityDao.getUserJoinCommunityByIdList(communityIdList, map);
+        //获取用户不是社长的社群groupId
+        List<ObjectId> notCreatedGroupIds = memberDao.getNotHeadCommunityIdsByGroupList(new ObjectId(map.get("userId").toString()), groupIdList);
+        Map<String,Object> result = communityDao.getUserJoinCommunityByIdList(notCreatedGroupIds, map);
         List<CommunityEntry> communityEntries = (ArrayList)result.get("communityEntryList");
 //        List<CommunityEntry> communityEntries = communityDao.getUserJoinCommunityByIdList(communityIdList, map);
         for (CommunityEntry communityEntry : communityEntries) {
@@ -814,6 +811,7 @@ public class BackStageUserManageService {
 
     public String setCommunityRole(Map map) {
         String msg = "";
+        ObjectId groupId = new ObjectId(map.get("groupId").toString());
         CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(map.get("communityId").toString()));
         //社群信息校验
         if (null == communityEntry){
@@ -830,7 +828,7 @@ public class BackStageUserManageService {
             //设置社长
 
             //1 查出社长信息
-            ObjectId groupId = new ObjectId(map.get("groupId").toString());
+
             MemberEntry memberEntry = memberDao.getHeader(groupId);
 
             // 2 判断需要设置的是否为新社长
@@ -842,6 +840,14 @@ public class BackStageUserManageService {
                 ObjectId id = memberEntry.getID();
                 int role = 0;
                 memberDao.updateRoleById(id, role);
+            }else {
+                memberDao.updateRoleById(map);
+            }
+        }else if (!StringUtils.isBlank(map.get("role").toString()) && Integer.parseInt(map.get("role").toString()) == 1){
+            //设置副社长
+            int countDeputyHead = memberDao.countDeputyHead(groupId);//社区副社长人数
+            if (countDeputyHead >= 10){
+                return "副社长不能超过十人！";
             }else {
                 memberDao.updateRoleById(map);
             }

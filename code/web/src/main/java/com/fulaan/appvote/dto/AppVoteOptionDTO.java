@@ -24,6 +24,7 @@ public class AppVoteOptionDTO {
     private List<Attachement> attachements=new ArrayList<Attachement>();
     private List<Attachement> voiceList=new ArrayList<Attachement>();
     private int count;
+    private double percent;
 
     private int isSelect;  // 0 未选择  1  已选择
 
@@ -66,6 +67,14 @@ public class AppVoteOptionDTO {
         }else{
             new AppVoteOptionDTO();
         }
+    }
+
+    public double getPercent() {
+        return percent;
+    }
+
+    public void setPercent(double percent) {
+        this.percent = percent;
     }
 
     public int getIsSelect() {

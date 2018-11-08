@@ -67,6 +67,25 @@ public class UserLogResultDao extends BaseDao {
     }
 
     /**
+     * 查询带roleId的
+     * @param userId
+     * @return
+     */
+    public UserLogResultEntry getEntryByUserIdNew(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("uid", userId);
+        query.append("roleId", new BasicDBObject(Constant.MONGO_NE, null));
+        query.append("ir", 0);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
+                query, Constant.FIELDS);
+        if (null != dbObject) {
+            return new UserLogResultEntry(dbObject);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * 按userId分组 返回Map<userId,List<userLogResultEntryRoleId>>
      * @param userIds
      * @return
@@ -74,6 +93,8 @@ public class UserLogResultDao extends BaseDao {
     public Map<ObjectId,List<ObjectId>> getEntriesGroupByUserId(List<ObjectId> userIds) {
         BasicDBObject query = new BasicDBObject()
                 .append("uid", new BasicDBObject(Constant.MONGO_IN,userIds));
+        query.append("ir", 0);
+        query.append("roleId", new BasicDBObject(Constant.MONGO_NE, null));
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_LOG_RESULT,
                 query, Constant.FIELDS);
         List<UserLogResultEntry> userLogResultEntrys = new ArrayList<UserLogResultEntry>();

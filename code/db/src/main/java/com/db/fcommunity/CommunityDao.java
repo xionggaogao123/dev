@@ -107,6 +107,11 @@ public class CommunityDao extends BaseDao {
         }
 
         BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,mineCommunityIds)).append("r",0);
+        //排除某些不展示的社群
+        List<String> notShowCommunityNames = new ArrayList<String>();
+        notShowCommunityNames.add("复兰社区");
+        notShowCommunityNames.add("复兰大学");
+        query.append("cmmn",  new BasicDBObject(Constant.MONGO_NOTIN, notShowCommunityNames));
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
         List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
         for (DBObject dbo : dbObjects) {
@@ -488,15 +493,20 @@ public class CommunityDao extends BaseDao {
      * @param map
      * @return
      */
-    public Map<String,Object> getUserCreatedCommunity(Map map,List<ObjectId> listMineCommunityId) {
+    public Map<String,Object> getUserCreatedCommunity(Map map,List<ObjectId> createdGroupIds) {
         int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
         int pageSize = map.get("pageSize") == null?10:Integer.parseInt(map.get("pageSize").toString());
 
         Map<String,Object> result = new HashMap<String, Object>();
         List<CommunityEntry> entries=new ArrayList<CommunityEntry>();
-        BasicDBObject query = new BasicDBObject().append("cmow", new ObjectId(map.get("userId").toString()));
+        BasicDBObject query = new BasicDBObject()/*.append("cmow", new ObjectId(map.get("userId").toString()))*/;
         query.append("r",Constant.ZERO);
-        query.append("_id",new BasicDBObject(Constant.MONGO_IN,listMineCommunityId));
+        query.append("grid",new BasicDBObject(Constant.MONGO_IN,createdGroupIds));
+        //排除某些不展示的社群
+        List<String> notShowCommunityNames = new ArrayList<String>();
+        notShowCommunityNames.add("复兰社区");
+        notShowCommunityNames.add("复兰大学");
+        query.append("cmmn",  new BasicDBObject(Constant.MONGO_NOTIN, notShowCommunityNames));
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS
                 ,new BasicDBObject("_id", Constant.DESC), (page - 1) * pageSize, pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -516,24 +526,25 @@ public class CommunityDao extends BaseDao {
      * @param map
      * @return
      */
-    public Map<String,Object> getUserJoinCommunityByIdList(List<ObjectId> communityIdList, Map map) {
+    public Map<String,Object> getUserJoinCommunityByIdList(List<ObjectId> notCreatedGroupIds, Map map) {
         int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
         int pageSize = map.get("pageSize") == null?10:Integer.parseInt(map.get("pageSize").toString());
 
         Map<String,Object> result = new HashMap<String, Object>();
         List<CommunityEntry> entries=new ArrayList<CommunityEntry>();
-        //不取自己创建的社群 操作有退出
-        List<ObjectId> userIdList = new ArrayList<ObjectId>();
-        userIdList.add(new ObjectId(map.get("userId").toString()));
+//        //不取自己创建的社群 操作有退出
+//        List<ObjectId> userIdList = new ArrayList<ObjectId>();
+//        userIdList.add(new ObjectId(map.get("userId").toString()));
 //        BasicDBObject query = new BasicDBObject().append("cmow",  new BasicDBObject(Constant.MONGO_NOTIN, userIdList));
         BasicDBObject query = new BasicDBObject();
-        query.append("cmow",  new BasicDBObject(Constant.MONGO_NOTIN, userIdList));
+//        query.append("cmow",  new BasicDBObject(Constant.MONGO_NOTIN, userIdList));
         query.append("r",Constant.ZERO);
-        query.append("_id",new BasicDBObject(Constant.MONGO_IN, communityIdList));
+        query.append("grid",new BasicDBObject(Constant.MONGO_IN, notCreatedGroupIds));
 
         //排除某些不展示的社群
         List<String> notShowCommunityNames = new ArrayList<String>();
         notShowCommunityNames.add("复兰社区");
+        notShowCommunityNames.add("复兰大学");
         query.append("cmmn",  new BasicDBObject(Constant.MONGO_NOTIN, notShowCommunityNames));
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS
                 ,new BasicDBObject("_id", Constant.DESC), (page - 1) * pageSize, pageSize);

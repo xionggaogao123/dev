@@ -462,6 +462,106 @@ public class NewVersionBindService {
         return dtos2;
     }
 
+    public List<NewVersionBindRelationDTO> getVersionBindDtos (ObjectId mainUserId,ObjectId communityId){
+        List<NewVersionBindRelationDTO> dtos = new ArrayList<NewVersionBindRelationDTO>();
+        List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(mainUserId);
+        List<ObjectId> userIds= new ArrayList<ObjectId>();
+        for(NewVersionBindRelationEntry entry:entries){
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,NewVersionCommunityBindEntry> map=newVersionCommunityBindDao.getCommunityBindMap(communityId,mainUserId);
+        KeyValue keyValue = wrongQuestionService.getCurrTermType();
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        Map<ObjectId,RecordTotalChatEntry> recordTotalChatEntryMap =recordTotalChatDao.getChatMapByIds(userIds);
+        Map<ObjectId,NewVersionGradeEntry> newVersionGradeEntryMap=newVersionGradeDao.getNewVersionGradeMap(userIds,keyValue.getValue());
+        Map<ObjectId,Set<ObjectId>> userBindCommunityMap=newVersionCommunityBindDao.getUserEntryMapByUserId(userIds);
+        Set<ObjectId> communityIds=new HashSet<ObjectId>();
+        for(Map.Entry<ObjectId,Set<ObjectId>> userBind:userBindCommunityMap.entrySet()){
+            Set<ObjectId> cIds=userBind.getValue();
+            communityIds.addAll(cIds);
+        }
+        Map<ObjectId, CommunityEntry> communityEntryMap=communityDao.findMapInfo(new ArrayList<ObjectId>(communityIds));
+        List<ObjectId> userUnBindIds = new ArrayList<ObjectId>();
+        if(userIds.size()>0){
+            userUnBindIds=recordUserUnbindDao.getAlreadyTransferUserIds(mainUserId,userIds);
+        }
+        for(NewVersionBindRelationEntry entry:entries){
+            NewVersionBindRelationDTO dto=new NewVersionBindRelationDTO(entry);
+
+
+            dto.setIsBindCommunity(0);
+            ObjectId userId=entry.getUserId();
+            UserEntry userEntry=userEntryMap.get(userId);
+
+            if(null!=userBindCommunityMap.get(userId)){
+                Set<ObjectId> set = userBindCommunityMap.get(userId);
+                String str=Constant.EMPTY;
+                List<GroupOfCommunityDTO> communityDTOs = new ArrayList<GroupOfCommunityDTO>();
+                for(ObjectId cItem:set){
+                    if(null!=communityEntryMap.get(cItem)){
+                        CommunityEntry communityEntry=communityEntryMap.get(cItem);
+                        if(Constant.EMPTY.equals(str)){
+                            str=communityEntry.getCommunityName();
+                        }else{
+                            str=str+","+communityEntry.getCommunityName();
+                        }
+                        GroupOfCommunityDTO dto1 = new GroupOfCommunityDTO(communityEntry.getGroupId().toString(),
+                                communityEntry.getID().toString(),communityEntry.getCommunityName());
+                        communityDTOs.add(dto1);
+                    }
+                }
+                dto.setBindCommunityStr(str);
+                dto.setBindCommunities(communityDTOs);
+            }
+            NewVersionCommunityBindEntry bindEntry=map.get(userEntry.getID());
+            if(null!=userEntry){
+                dto.setMobileNumber(userEntry.getMobileNumber());
+                dto.setSex(userEntry.getSex());
+
+                dto.setNickName(userEntry.getNickName());
+                dto.setJiaId(userEntry.getGenerateUserCode());
+                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                String birthDate=format.format(userEntry.getBirthDate());
+                dto.setBirthDate(birthDate);
+                if(null!=bindEntry){
+                    dto.setIsBindCommunity(1);
+                    dto.setStudentNumber(bindEntry.getNumber());
+                    dto.setThirdName(bindEntry.getThirdName());
+                }
+                dto.setGradeType(0);
+                NewVersionGradeEntry gradeEntry=newVersionGradeEntryMap.get(entry.getUserId());
+                if(null!=gradeEntry){
+                    dto.setGradeType(gradeEntry.getGradeType());
+                }
+                dto.setLogin(false);
+                String cacheUserKey= CacheHandler.getUserKey(userEntry.getID().toString());
+                if(StringUtils.isNotEmpty(cacheUserKey)){
+                    SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
+                    if (null != sv && !sv.isEmpty()) {
+                        dto.setLogin(true);
+                    }
+                }
+                dto.setChatCount(Constant.ZERO);
+                RecordTotalChatEntry recordTotalChatEntry =recordTotalChatEntryMap.get(userId);
+                if(null!=recordTotalChatEntry){
+                    dto.setChatCount(recordTotalChatEntry.getChatCount());
+                }
+                dto.setSelectTransfer(0);
+                if(userUnBindIds.contains(userId)){
+                    dto.setSelectTransfer(1);
+                }
+                dtos.add(dto);
+            }
+            //放入真实姓名
+            if(entry.getUserName()!=null && !entry.getUserName().equals("")){
+                dto.setNickName(entry.getUserName());
+            }
+            dto.setThirdName(entry.getUserName());
+        }
+        return dtos;
+    }
+
     public List<NewVersionBindRelationDTO> getNewVersionBindDtos (ObjectId mainUserId,ObjectId communityId){
         List<NewVersionBindRelationDTO> dtos = new ArrayList<NewVersionBindRelationDTO>();
         List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(mainUserId);
@@ -585,6 +685,9 @@ public class NewVersionBindService {
             if(userEntry!=null && sonIds.contains(newVersionBindRelationEntry.getUserId())){
                 Map<String,Object> map = new HashMap<String, Object>();
                 String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){
+                    name = newVersionBindRelationEntry.getUserName();
+                }
                 map.put("nickName",name);
                 map.put("userId",newVersionBindRelationEntry.getUserId().toString());
                 if(newVersionBindRelationEntry.getMainUserId().equals(mainUserId)){

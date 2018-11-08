@@ -547,7 +547,7 @@ public class DefaultBindController extends BaseController {
     public RespObj getCommunityBindList(@ObjectIdType ObjectId communityId){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            List<NewVersionBindRelationDTO> dtoList=newVersionBindService.getNewVersionBindDtos(getUserId(),communityId);
+            List<NewVersionBindRelationDTO> dtoList=newVersionBindService.getVersionBindDtos(getUserId(),communityId);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(dtoList);
         }catch (Exception e){

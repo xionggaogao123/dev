@@ -493,7 +493,7 @@ public class CommunityDao extends BaseDao {
      * @param map
      * @return
      */
-    public Map<String,Object> getUserCreatedCommunity(Map map,List<ObjectId> listMineCommunityId) {
+    public Map<String,Object> getUserCreatedCommunity(Map map,List<ObjectId> createdGroupIds) {
         int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
         int pageSize = map.get("pageSize") == null?10:Integer.parseInt(map.get("pageSize").toString());
 
@@ -501,7 +501,7 @@ public class CommunityDao extends BaseDao {
         List<CommunityEntry> entries=new ArrayList<CommunityEntry>();
         BasicDBObject query = new BasicDBObject()/*.append("cmow", new ObjectId(map.get("userId").toString()))*/;
         query.append("r",Constant.ZERO);
-        query.append("_id",new BasicDBObject(Constant.MONGO_IN,listMineCommunityId));
+        query.append("grid",new BasicDBObject(Constant.MONGO_IN,createdGroupIds));
         //排除某些不展示的社群
         List<String> notShowCommunityNames = new ArrayList<String>();
         notShowCommunityNames.add("复兰社区");
@@ -526,7 +526,7 @@ public class CommunityDao extends BaseDao {
      * @param map
      * @return
      */
-    public Map<String,Object> getUserJoinCommunityByIdList(List<ObjectId> createdCommunityIds, Map map) {
+    public Map<String,Object> getUserJoinCommunityByIdList(List<ObjectId> notCreatedGroupIds, Map map) {
         int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
         int pageSize = map.get("pageSize") == null?10:Integer.parseInt(map.get("pageSize").toString());
 
@@ -539,7 +539,7 @@ public class CommunityDao extends BaseDao {
         BasicDBObject query = new BasicDBObject();
 //        query.append("cmow",  new BasicDBObject(Constant.MONGO_NOTIN, userIdList));
         query.append("r",Constant.ZERO);
-        query.append("_id",new BasicDBObject(Constant.MONGO_IN, createdCommunityIds));
+        query.append("grid",new BasicDBObject(Constant.MONGO_IN, notCreatedGroupIds));
 
         //排除某些不展示的社群
         List<String> notShowCommunityNames = new ArrayList<String>();

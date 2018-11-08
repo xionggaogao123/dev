@@ -681,23 +681,9 @@ public class BackStageUserManageService {
                 groupIdList.add(new ObjectId(communityDTO.getGroupId()));
             }
         }
-        //获取用户是社长的社群
-//        List<ObjectId> createdCommunityIds = memberDao.getHeadCommunityIdsByGroupList(new ObjectId(map.get("userId").toString()), groupIdList);//fmember表存在社长 但是没对应cmid的（比如id为ObjectId("5a7d62043d4df947c08dba92")）
-        List<ObjectId> notCreatedCommunityIds = memberDao.getNotHeadCommunityIdsByGroupList(new ObjectId(map.get("userId").toString()), groupIdList);
-        //封装是社长的社群id
-        List<ObjectId> createdCommunityIds = new ArrayList<ObjectId>();
-        for (CommunityDTO communityDTO : communityDTOList){
-            boolean flag = true;
-            for (ObjectId notCreatedCommunityId : notCreatedCommunityIds){
-                if (new ObjectId(communityDTO.getId()).equals(notCreatedCommunityId)){
-                    flag = false;
-                }
-            }
-            if (flag == true){
-                createdCommunityIds.add(new ObjectId(communityDTO.getId()));
-            }
-        }
-        Map<String, Object> result = communityDao.getUserCreatedCommunity(map, createdCommunityIds);
+        //获取用户是社长的社群GroupId
+        List<ObjectId> createdGroupIds = memberDao.getHeadCommunityIdsByGroupList(new ObjectId(map.get("userId").toString()), groupIdList);
+        Map<String, Object> result = communityDao.getUserCreatedCommunity(map, createdGroupIds);
         List<CommunityEntry> communityEntries = (ArrayList) result.get("communityEntryList");
 //        List<CommunityEntry> communityEntries = communityDao.getUserCreatedCommunity(map);
 
@@ -741,9 +727,9 @@ public class BackStageUserManageService {
                 groupIdList.add(new ObjectId(communityDTO.getGroupId()));
             }
         }
-        //获取用户不是社长的社群
-        List<ObjectId> notCreatedCommunityIds = memberDao.getNotHeadCommunityIdsByGroupList(new ObjectId(map.get("userId").toString()), groupIdList);
-        Map<String,Object> result = communityDao.getUserJoinCommunityByIdList(notCreatedCommunityIds, map);
+        //获取用户不是社长的社群groupId
+        List<ObjectId> notCreatedGroupIds = memberDao.getNotHeadCommunityIdsByGroupList(new ObjectId(map.get("userId").toString()), groupIdList);
+        Map<String,Object> result = communityDao.getUserJoinCommunityByIdList(notCreatedGroupIds, map);
         List<CommunityEntry> communityEntries = (ArrayList)result.get("communityEntryList");
 //        List<CommunityEntry> communityEntries = communityDao.getUserJoinCommunityByIdList(communityIdList, map);
         for (CommunityEntry communityEntry : communityEntries) {

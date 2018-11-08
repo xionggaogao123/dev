@@ -1028,7 +1028,7 @@ public class MemberDao extends BaseDao {
     }
 
     /**
-     * 获取用户是社长的社群Id
+     * 获取用户是社长的社群GroupId
      * @param groupIdList
      * @return
      */
@@ -1036,16 +1036,16 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject().append("grid", new BasicDBObject(Constant.MONGO_IN,groupIdList)).append("r", 0);
         query.append("rl", 2);
         query.append("uid", userId);
-        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        List<ObjectId> groupIds = new ArrayList<ObjectId>();
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
         for (DBObject dbo : dbObjects) {
-            communityIds.add(new MemberEntry(dbo).getCommunityId());
+            groupIds.add(new MemberEntry(dbo).getGroupId());
         }
-        return communityIds;
+        return groupIds;
     }
 
     /**
-     * 获取用户不是社长的社群Id
+     * 获取用户不是社长的社群groupId
      * @param groupIdList
      * @return
      */
@@ -1053,11 +1053,11 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject().append("grid", new BasicDBObject(Constant.MONGO_IN,groupIdList)).append("r", 0);
         query.append("rl", new BasicDBObject(Constant.MONGO_NE, 2));
         query.append("uid", userId);
-        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        List<ObjectId> groupIds = new ArrayList<ObjectId>();
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
         for (DBObject dbo : dbObjects) {
-            communityIds.add(new MemberEntry(dbo).getCommunityId());
+            groupIds.add(new MemberEntry(dbo).getGroupId());
         }
-        return communityIds;
+        return groupIds;
     }
 }

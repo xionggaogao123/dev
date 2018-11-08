@@ -674,7 +674,6 @@ public class BackStageUserManageService {
     public Map<String, Object> getUserCreatedCommunity(Map map) {
         List<CommunityDTO> communityDTOS = new ArrayList<CommunityDTO>();
         //超简洁获取用户的社团 listMineCommunityId
-//        List<ObjectId> listMineCommunityId = communityService.getCommunitys3(new ObjectId(map.get("userId").toString()), -1, 0);
         List<CommunityDTO> communityDTOList = communityService.getCommunitys(new ObjectId(map.get("userId").toString()), -1, 0);
         List<ObjectId> groupIdList = new ArrayList<ObjectId>();
         for (CommunityDTO communityDTO : communityDTOList){
@@ -683,7 +682,21 @@ public class BackStageUserManageService {
             }
         }
         //获取用户是社长的社群
-        List<ObjectId> createdCommunityIds = memberDao.getHeadCommunityIdsByGroupList(new ObjectId(map.get("userId").toString()), groupIdList);
+//        List<ObjectId> createdCommunityIds = memberDao.getHeadCommunityIdsByGroupList(new ObjectId(map.get("userId").toString()), groupIdList);//fmember表存在社长 但是没对应cmid的（比如id为ObjectId("5a7d62043d4df947c08dba92")）
+        List<ObjectId> notCreatedCommunityIds = memberDao.getNotHeadCommunityIdsByGroupList(new ObjectId(map.get("userId").toString()), groupIdList);
+        //封装是社长的社群id
+        List<ObjectId> createdCommunityIds = new ArrayList<ObjectId>();
+        for (CommunityDTO communityDTO : communityDTOList){
+            boolean flag = true;
+            for (ObjectId notCreatedCommunityId : notCreatedCommunityIds){
+                if (new ObjectId(communityDTO.getId()).equals(notCreatedCommunityId)){
+                    flag = false;
+                }
+            }
+            if (flag == true){
+                createdCommunityIds.add(new ObjectId(communityDTO.getId()));
+            }
+        }
         Map<String, Object> result = communityDao.getUserCreatedCommunity(map, createdCommunityIds);
         List<CommunityEntry> communityEntries = (ArrayList) result.get("communityEntryList");
 //        List<CommunityEntry> communityEntries = communityDao.getUserCreatedCommunity(map);
@@ -721,15 +734,6 @@ public class BackStageUserManageService {
     public Map<String,Object> getUserJoinCommunity(Map map) {
         List<CommunityDTO> communityDTOS = new ArrayList<CommunityDTO>();
         //超简洁获取用户的社团 listMineCommunityId
-//        List<ObjectId> listMineCommunityId = communityService.getCommunitys3(new ObjectId(map.get("userId").toString()),-1,0);
-        //获取当前用户所有的社群 （范围存在于 listMineCommunityId）
-//        List<MemberEntry> memberEntries = memberDao.getCommunityListByUid(new ObjectId(map.get("userId").toString()),listMineCommunityId);
-//        List<ObjectId> communityIdList = new ArrayList<ObjectId>();
-//        for (MemberEntry memberEntry : memberEntries) {
-//            if (!communityIdList.contains(memberEntry.getCommunityId())) {
-//                communityIdList.add(memberEntry.getCommunityId());
-//            }
-//        }
         List<CommunityDTO> communityDTOList = communityService.getCommunitys(new ObjectId(map.get("userId").toString()), -1, 0);
         List<ObjectId> groupIdList = new ArrayList<ObjectId>();
         for (CommunityDTO communityDTO : communityDTOList){

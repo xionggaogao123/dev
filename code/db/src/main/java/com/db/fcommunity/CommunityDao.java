@@ -502,6 +502,11 @@ public class CommunityDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()/*.append("cmow", new ObjectId(map.get("userId").toString()))*/;
         query.append("r",Constant.ZERO);
         query.append("_id",new BasicDBObject(Constant.MONGO_IN,listMineCommunityId));
+        //排除某些不展示的社群
+        List<String> notShowCommunityNames = new ArrayList<String>();
+        notShowCommunityNames.add("复兰社区");
+        notShowCommunityNames.add("复兰大学");
+        query.append("cmmn",  new BasicDBObject(Constant.MONGO_NOTIN, notShowCommunityNames));
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS
                 ,new BasicDBObject("_id", Constant.DESC), (page - 1) * pageSize, pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

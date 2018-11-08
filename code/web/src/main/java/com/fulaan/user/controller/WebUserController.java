@@ -2238,5 +2238,21 @@ public class WebUserController extends BaseController {
         model.put("mobileNumber",userEntry.getMobileNumber());
         model.put("gugc", userEntry.getGenerateUserCode());
     }
+    
+    @ApiOperation(value = "getUserGugc", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
+    @SessionNeedless
+    @RequestMapping("/getUserGugc")
+    @ResponseBody
+    public RespObj getUserGugc(String userId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        UserEntry user = userDao.getUserEntry(new ObjectId(userId), Constant.FIELDS);
+        if (user != null) {
+            respObj.setMessage(user.getGenerateUserCode());
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }
+        return respObj;
+        
+    }
 
 }

@@ -35,6 +35,7 @@ import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import com.sys.utils.TimeChangeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,9 +80,13 @@ public class AppNewVoteService {
         AppNewVoteEntry appNewVoteEntry = appNewVoteDTO.buildAddEntry();
         appNewVoteDao.saveAppVote(appNewVoteEntry);
         //添加选项
+        long current = System.currentTimeMillis();
         List<String> option = appNewVoteDTO.getOption();
         if(appNewVoteDTO.getType()==1 && option!=null && option.size()>0){
+            int index = 10;
             for(String s:option){
+                index++;
+                current = index +current;
                 AppVoteOptionEntry appVoteOptionEntry = new AppVoteOptionEntry(
                         appNewVoteEntry.getID(),
                         s,
@@ -93,6 +98,7 @@ public class AppNewVoteService {
                         new ArrayList<VideoEntry>(),
                         new ArrayList<AttachmentEntry>(),
                         Constant.ZERO,
+                        current,
                         new ArrayList<ObjectId>());
                 appVoteOptionDao.saveAppVote(appVoteOptionEntry);
             }
@@ -198,8 +204,8 @@ public class AppNewVoteService {
         }else{
             communityIds.add(new ObjectId(communityId));
         }
-        List<AppNewVoteEntry> appNewVoteEntries = appNewVoteDao.getVoteList(keyword,communityIds,page,pageSize,role);
-        int count = appNewVoteDao.countVoteList(keyword,communityIds,role);
+        List<AppNewVoteEntry> appNewVoteEntries = appNewVoteDao.getVoteList(userId,keyword,communityIds,page,pageSize,role);
+        int count = appNewVoteDao.countVoteList(userId,keyword,communityIds,role);
         List<ObjectId> userIds = new ArrayList<ObjectId>();
         List<ObjectId> cids = new ArrayList<ObjectId>();
         for(AppNewVoteEntry appNewVoteEntry: appNewVoteEntries){
@@ -270,6 +276,7 @@ public class AppNewVoteService {
                 sb.substring(0,sb.length()-1);
             }
             dto.setCommunityNames(sb.toString());
+            dto.setTimeExpression(TimeChangeUtils.getChangeTime(appNewVoteEntry.getCreateTime()));
             dtos.add(dto);
         }
         map.put("list",dtos);
@@ -288,8 +295,8 @@ public class AppNewVoteService {
         }else{
             communityIds.add(new ObjectId(communityId));
         }
-        List<AppNewVoteEntry> appNewVoteEntries = appNewVoteDao.getVoteList(keyword,communityIds,page,pageSize,role);
-        int count = appNewVoteDao.countVoteList(keyword,communityIds,role);
+        List<AppNewVoteEntry> appNewVoteEntries = appNewVoteDao.getVoteList(userId,keyword,communityIds,page,pageSize,role);
+        int count = appNewVoteDao.countVoteList(userId,keyword,communityIds,role);
         List<ObjectId> userIds = new ArrayList<ObjectId>();
         List<ObjectId> cids = new ArrayList<ObjectId>();
         for(AppNewVoteEntry appNewVoteEntry: appNewVoteEntries){
@@ -573,6 +580,7 @@ public class AppNewVoteService {
         }
         //查询已成为选项的数量
         int optionCount = appVoteOptionDao.countSelectOneVoteList(id);
+        long current = System.currentTimeMillis();
         if(optionCount< appNewVoteEntry.getApplyCount()) {//申请数量未满,成为可选项
             AppVoteOptionEntry appVoteOptionEntry = new AppVoteOptionEntry(
                     appNewVoteEntry.getID(),
@@ -585,6 +593,7 @@ public class AppNewVoteService {
                     new ArrayList<VideoEntry>(),
                     new ArrayList<AttachmentEntry>(),
                     Constant.ZERO,
+                    current,
                     new ArrayList<ObjectId>());
             appVoteOptionDao.saveAppVote(appVoteOptionEntry);
         }else{//已满，成为待选项
@@ -599,6 +608,7 @@ public class AppNewVoteService {
                     new ArrayList<VideoEntry>(),
                     new ArrayList<AttachmentEntry>(),
                     Constant.ZERO,
+                    current,
                     new ArrayList<ObjectId>());
             appVoteOptionDao.saveAppVote(appVoteOptionEntry);
         }
@@ -755,7 +765,20 @@ public class AppNewVoteService {
             }
         }
         //改为已选择
-        appVoteOptionDao.updateEntry(id,objectIdList1,Constant.ONE);
+        current  = appNewVoteEntry.getCreateTime();
+        int index = 10;
+        if(selectOptionIds!=null){
+            String[] strings = selectOptionIds.split(",");
+            for(String string:strings){
+                index++;
+                current = current+ index;
+                if(ObjectId.isValid(string)){
+                    appVoteOptionDao.updateOneEntry(id, new ObjectId(string), Constant.ONE,current);
+                }
+            }
+        }
+
+
         //改为未选择
         appVoteOptionDao.updateEntry(id,objectIdList2,Constant.ZERO);
 

@@ -23,7 +23,7 @@ public class AppVoteOptionDao extends BaseDao {
         List<AppVoteOptionEntry> entryList=new ArrayList<AppVoteOptionEntry>();
         BasicDBObject query=new BasicDBObject().append("isr", 0).append("vid",voteId);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_VOTE_OPTION, query,
-                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+                Constant.FIELDS, new BasicDBObject("ord",1));
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
                 entryList.add(new AppVoteOptionEntry((BasicDBObject) obj));
@@ -65,6 +65,16 @@ public class AppVoteOptionDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sel",select));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_VOTE_OPTION, query,updateValue);
     }
+
+    //修改已选
+    public void updateOneEntry(ObjectId voteId,ObjectId id,int select,long order){
+        BasicDBObject query = new BasicDBObject().append("isr",Constant.ZERO);
+        query.append("vid",voteId);
+        query.append(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sel",select).append("ord",order));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_VOTE_OPTION, query,updateValue);
+    }
+
 
     //修改已选
     public void delEntry(ObjectId id){

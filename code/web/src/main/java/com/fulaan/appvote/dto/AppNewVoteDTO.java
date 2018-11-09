@@ -54,6 +54,7 @@ public class AppNewVoteDTO {
     private int isApply;        //      0 不可申请      1    可申请    2 已申请
     private int isOwner;        //      0   非自己      1    自己
     private int isVote;         //      0  不可投       1    可投      2 已投
+    private String timeExpression;
 
     public AppNewVoteDTO(){
 
@@ -226,6 +227,14 @@ public class AppNewVoteDTO {
                         vet);
         return openEntry;
 
+    }
+
+    public String getTimeExpression() {
+        return timeExpression;
+    }
+
+    public void setTimeExpression(String timeExpression) {
+        this.timeExpression = timeExpression;
     }
 
     public String getCommunityNames() {

@@ -27,6 +27,7 @@ import java.util.List;
  *      createTime          创建时间                       ctm
  *      count               投票人数                       cot
  *      userList<Ob >       投票列表                       ult
+ *      order               排序                          序号越小排列越前
  *
  */
 public class AppVoteOptionEntry extends BaseDBObject {
@@ -51,11 +52,12 @@ public class AppVoteOptionEntry extends BaseDBObject {
             List<VideoEntry> videoList,
             List<AttachmentEntry> attachmentEntries,
             int count,
+            long order,
             List<ObjectId> userIdList){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("vid",voteId)
                 .append("des",description)
-                .append("uid",userId)
+                .append("uid", userId)
                 .append("typ",type)
                 .append("sel", select)
                 .append("ats", MongoUtils.fetchDBObjectList(attachmentEntries))
@@ -64,10 +66,18 @@ public class AppVoteOptionEntry extends BaseDBObject {
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
                 .append("cou",count)
                 .append("ult",userIdList)
+                .append("ord",order)
+                .append("ctm",System.currentTimeMillis())
                 .append("isr", 0);
         setBaseEntry(basicDBObject);
     }
 
+    public long getOrder(){
+        return getSimpleLongValueDef("ord", 0);
+    }
+    public void setOrder(long order){
+        setSimpleValue("ord",order);
+    }
 
     public String getDescription(){
         return getSimpleStringValue("des");

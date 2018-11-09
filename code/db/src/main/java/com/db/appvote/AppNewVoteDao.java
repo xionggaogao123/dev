@@ -23,12 +23,13 @@ public class AppNewVoteDao extends BaseDao {
     }
 
 
-    public List<AppNewVoteEntry> getVoteList(String keyword,List<ObjectId> communityIds,int page,int pageSize,int role){
+    public List<AppNewVoteEntry> getVoteList(ObjectId userId,String keyword,List<ObjectId> communityIds,int page,int pageSize,int role){
         List<AppNewVoteEntry> entryList=new ArrayList<AppNewVoteEntry>();
         BasicDBObject query=new BasicDBObject().append("isr", 0);
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("aty",  role));
         values.add(new BasicDBObject("vtl",  role));
+        values.add(new BasicDBObject("uid",  userId));
         query.put(Constant.MONGO_OR, values);
         if(keyword!=null && !keyword.equals("")){
             query.append("tit",MongoUtils.buildRegex(keyword));
@@ -44,11 +45,12 @@ public class AppNewVoteDao extends BaseDao {
         return entryList;
     }
 
-    public int countVoteList(String keyword,List<ObjectId> communityIds,int role) {
+    public int countVoteList(ObjectId userId,String keyword,List<ObjectId> communityIds,int role) {
         BasicDBObject query=new BasicDBObject().append("isr", 0);
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("aty",  role));
         values.add(new BasicDBObject("vtl",  role));
+        values.add(new BasicDBObject("uid",  userId));
         query.put(Constant.MONGO_OR, values);
         if(keyword!=null && !keyword.equals("")){
             query.append("tit", MongoUtils.buildRegex(keyword));

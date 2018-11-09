@@ -272,10 +272,11 @@ public class AppNewVoteService {
                     }
                 }
             }
-            if(sb.length()>0){
-                sb.substring(0,sb.length()-1);
+            String cs = sb.toString();
+            if(cs.length()>0){
+                cs = cs.substring(0,cs.length()-1);
             }
-            dto.setCommunityNames(sb.toString());
+            dto.setCommunityNames(cs);
             dto.setTimeExpression(TimeChangeUtils.getChangeTime(appNewVoteEntry.getCreateTime()));
             dtos.add(dto);
         }
@@ -363,10 +364,11 @@ public class AppNewVoteService {
                     }
                 }
             }
-            if(sb.length()>0){
-                sb.substring(0,sb.length()-1);
+            String cs = sb.toString();
+            if(cs.length()>0){
+                cs = cs.substring(0,cs.length()-1);
             }
-            dto.setCommunityNames(sb.toString());
+            dto.setCommunityNames(cs);
             dtos.add(dto);
         }
         map.put("list",dtos);
@@ -449,8 +451,10 @@ public class AppNewVoteService {
                 sb.append("、");
             }
         }
-        if(sb.length()>0){
-            appNewVoteDTO.setCommunityNames(sb.toString().substring(0,sb.length()-1));
+        String cs = sb.toString();
+        if(cs.length()>0){
+            cs = cs.substring(0,cs.length()-1);
+            appNewVoteDTO.setCommunityNames(cs);
         }else{
             appNewVoteDTO.setCommunityNames("");
         }
@@ -548,7 +552,7 @@ public class AppNewVoteService {
         if(fale){//选项投递成功
             appVoteUserList.add(userId);
             appNewVoteEntry.setVoteUesrList(appVoteUserList);
-            appNewVoteEntry.setVoteCount(appVoteUserList.size());
+            appNewVoteEntry.setUserCount(appVoteUserList.size());
             appNewVoteDao.saveAppVote(appNewVoteEntry);
         }
     }

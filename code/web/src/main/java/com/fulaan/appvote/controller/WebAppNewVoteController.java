@@ -212,6 +212,24 @@ public class WebAppNewVoteController extends BaseController {
     }
 
 
+    @ApiOperation(value = "删除投票", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/deleteVote")
+    @ResponseBody
+    public RespObj deleteVote( @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            appNewVoteService.deleteVote(new ObjectId(id),getUserId());
+            respObj.setMessage("删除投票成功");
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+            logger.error("error",e);
+        }
+        return respObj;
+    }
+
 
 
 }

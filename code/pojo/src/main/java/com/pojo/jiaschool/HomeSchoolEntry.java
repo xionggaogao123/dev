@@ -120,6 +120,7 @@ public class HomeSchoolEntry extends BaseDBObject {
             String province,
             String address,
             String city,
+            String area,
             String creationDate,
             List<String> schoolParagraph//学段
     ) {
@@ -137,6 +138,7 @@ public class HomeSchoolEntry extends BaseDBObject {
                 .append("pr", province)
                 .append("add", address)
                 .append("city", city)
+                .append("area", area)
                 .append("creationDate", creationDate)
                 .append("schoolParagraph", schoolParagraph)
                 .append("logo", "http://doc.k6kt.com/5a2674e3b0573026f932759b.png")
@@ -153,6 +155,7 @@ public class HomeSchoolEntry extends BaseDBObject {
             String province,
             String address,
             String city,
+            String area,
             String creationDate,
             List<String> schoolParagraph//学段
     ) {
@@ -171,6 +174,7 @@ public class HomeSchoolEntry extends BaseDBObject {
                 .append("pr", province)
                 .append("add", address)
                 .append("city", city)
+                .append("area", area)
                 .append("creationDate", creationDate)
                 .append("schoolParagraph", schoolParagraph)
                 .append("logo", "http://doc.k6kt.com/5a2674e3b0573026f932759b.png")
@@ -275,6 +279,9 @@ public class HomeSchoolEntry extends BaseDBObject {
 
     public String getCity(){
         return getSimpleStringValue("city");
+    }
+    public String getArea(){
+        return getSimpleStringValue("area");
     }
     public String getCreationDate(){
         return getSimpleStringValue("creationDate");

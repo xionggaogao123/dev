@@ -30,6 +30,7 @@ public class HomeSchoolDTO {
 
     //运营管理
     private String city;
+    private String area;
     private String creationDate;
     private String schoolParagraphStr;
     private List<String> schoolParagraph;
@@ -56,6 +57,7 @@ public class HomeSchoolDTO {
             this.logo = e.getLogo();
 
             this.city = e.getCity();
+            this.area = e.getArea();
             this.creationDate = e.getCreationDate();
             this.schoolParagraph = e.getSchoolParagraph();
         }else{
@@ -265,5 +267,13 @@ public class HomeSchoolDTO {
 
     public void setCommunityCount(String communityCount) {
         this.communityCount = communityCount;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 }

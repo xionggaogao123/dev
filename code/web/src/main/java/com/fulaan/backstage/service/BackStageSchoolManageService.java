@@ -98,8 +98,8 @@ public class BackStageSchoolManageService {
     private SchoolControlTimeDao schoolControlTimeDao = new SchoolControlTimeDao();
 
 
-    public Map<String, Object> getSchoolList(int schoolType, String provincesName, String cityName, int page, int pageSize, String schoolName) {
-        Map<String, Object> map = homeSchoolDao.getBackStageSchoolList(schoolType, provincesName, cityName, page, pageSize, schoolName);
+    public Map<String, Object> getSchoolList(int schoolType, String provincesName, String cityName, String areaName, int page, int pageSize, String schoolName) {
+        Map<String, Object> map = homeSchoolDao.getBackStageSchoolList(schoolType, provincesName, cityName, areaName, page, pageSize, schoolName);
 
         List<HomeSchoolEntry> entries = (ArrayList)map.get("entryList");
         List<HomeSchoolDTO> dtos = new ArrayList<HomeSchoolDTO>();
@@ -172,6 +172,7 @@ public class BackStageSchoolManageService {
                             dto.getProvince(),
                             dto.getAddress(),
                             dto.getCity(),
+                            dto.getArea(),
                             dto.getCreationDate(),
                             Arrays.asList(dto.getSchoolParagraphStr().split("-"))
                     )
@@ -191,6 +192,7 @@ public class BackStageSchoolManageService {
                             dto.getProvince(),
                             dto.getAddress(),
                             dto.getCity(),
+                            dto.getArea(),
                             f.format(now),
                             Arrays.asList(dto.getSchoolParagraphStr().split("-"))
                     )

@@ -49,13 +49,14 @@ public class BackStageSchoolManageController extends BaseController {
     public String getSchoolList(@ApiParam(name="schoolType",required = false,value="学校类型") @RequestParam(value="schoolType",defaultValue = "0") int schoolType,
                                 @ApiParam(name="provincesName",required = false,value="学校所属省") @RequestParam(value="provincesName",defaultValue = "") String provincesName,
                                 @ApiParam(name="cityName",required = false,value="学校所属市") @RequestParam(value="cityName",defaultValue = "") String cityName,
+                                @ApiParam(name="areaName",required = false,value="学校所属市") @RequestParam(value="areaName",defaultValue = "") String areaName,
                                 @ApiParam(name="page",required = true,value="page") @RequestParam(value="page",defaultValue = "1") int page,
                                 @ApiParam(name="pageSize",required = true,value="pageSize") @RequestParam(value="pageSize",defaultValue = "5") int pageSize,
                                 @ApiParam(name="schoolName",required = false,value="学校名") @RequestParam(value="schoolName",defaultValue = "") String schoolName){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String, Object> dtos = backStageSchoolManageService.getSchoolList(schoolType, provincesName, cityName, page, pageSize, schoolName);
+            Map<String, Object> dtos = backStageSchoolManageService.getSchoolList(schoolType, provincesName, cityName, areaName, page, pageSize, schoolName);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();

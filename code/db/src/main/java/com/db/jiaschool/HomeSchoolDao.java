@@ -207,7 +207,7 @@ public class HomeSchoolDao extends BaseDao {
      * @param schoolName
      * @return
      */
-    public Map<String,Object> getBackStageSchoolList(int schoolType, String provincesName, String cityName, int page, int pageSize, String schoolName) {
+    public Map<String,Object> getBackStageSchoolList(int schoolType, String provincesName, String cityName, String areaName, int page, int pageSize, String schoolName) {
         Map<String,Object> map = new HashMap<String, Object>();
         BasicDBObject query = new BasicDBObject()
                 .append("isr", 0); // 未删除
@@ -222,6 +222,9 @@ public class HomeSchoolDao extends BaseDao {
         }
         if(cityName != null && !cityName.equals("")){
             query.append("city", cityName);
+        }
+        if(areaName != null && !areaName.equals("")){
+            query.append("area", areaName);
         }
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

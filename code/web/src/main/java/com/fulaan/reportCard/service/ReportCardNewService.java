@@ -3172,16 +3172,34 @@ public class ReportCardNewService {
             //item.setId(id);
             StringBuffer sb = new StringBuffer();
             StringBuffer sbb = new StringBuffer();
+            //预备总分
+            double zfyb = 0;
             for(int k =0;k < i;k++) {
                 HSSFCell cell = sheet.getRow(j).getCell(1+k);
                 if (groupExamDetailEntry.getRecordScoreType() == 1) {
                     double score = getValue(cell);
+                    //预备总分
+                    if (k < (i-1) && score != -1.0 && score != -2.0) {
+                        zfyb = (new BigDecimal(score).add(new BigDecimal(zfyb))).doubleValue();
+                    }
                     if (score == -1.0) {
                         sb.append("-1").append(",");
                     } else if(score == -2.0) {
-                        sb.append("-2").append(",");
-                    }else {
+                        if (k == (i-1)) {
+                            if (zfyb == 0) {
+                                sb.append("-2").append(",");
+                            } else {
+                                sb.append(String.valueOf(zfyb)).append(",");
+                            } 
+                            
+                        } else {
+                            sb.append("-2").append(",");
+                        }
+                        
+                    }else {            
                         sb.append(String.valueOf(score)).append(",");
+                        
+                        
                     }
                     sbb.append("-1").append(",");
                 } else {
@@ -3304,6 +3322,7 @@ public class ReportCardNewService {
                 strCell = Constant.EMPTY;
                 break;
         }
+
 
         return org.apache.commons.lang.StringUtils.isBlank(strCell) ? Constant.EMPTY : strCell;
     }

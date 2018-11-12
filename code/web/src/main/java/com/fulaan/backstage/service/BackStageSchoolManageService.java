@@ -174,7 +174,14 @@ public class BackStageSchoolManageService {
                             dto.getCity(),
                             dto.getArea(),
                             dto.getCreationDate(),
-                            Arrays.asList(dto.getSchoolParagraphStr().split("-"))
+                            Arrays.asList(dto.getSchoolParagraphStr().split("-")),
+                            //老数据编辑不丢失
+                            dto.getEnglishName(),
+                            dto.getIntroduce(),
+                            dto.getDetail(),dto.getDomain(),
+                            dto.getPostCode(),
+                            dto.getTelephone(),
+                            dto.getInitialPassword()
                     )
             );
             return oid.toString();

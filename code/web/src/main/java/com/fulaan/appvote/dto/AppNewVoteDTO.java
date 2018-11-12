@@ -56,6 +56,7 @@ public class AppNewVoteDTO {
     private int isVote;         //      0  不可投       1    可投      2 已投
     private String timeExpression;
 
+
     public AppNewVoteDTO(){
 
     }

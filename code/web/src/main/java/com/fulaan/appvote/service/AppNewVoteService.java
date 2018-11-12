@@ -856,7 +856,7 @@ public class AppNewVoteService {
 
         }
         //4. 组装选项
-        List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getOneVoteList(id);
+        List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getAllOneVoteList(id);
         List<AppVoteOptionDTO> selectOption = new ArrayList<AppVoteOptionDTO>();
          List<AppVoteOptionDTO> unSelectOption = new ArrayList<AppVoteOptionDTO>();
         for(AppVoteOptionEntry appVoteOptionEntry: appVoteOptionEntries){
@@ -888,7 +888,7 @@ public class AppNewVoteService {
         if(appNewVoteEntry.getVoteStartTime()<current){//投票已开始
             throw new Exception("投票已开始无法修改");
         }
-        List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getOneVoteList(id);
+        List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getAllOneVoteList(id);
         List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
         List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
         for(AppVoteOptionEntry appVoteOptionEntry : appVoteOptionEntries){

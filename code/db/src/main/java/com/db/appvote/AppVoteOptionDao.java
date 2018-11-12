@@ -32,6 +32,19 @@ public class AppVoteOptionDao extends BaseDao {
         return entryList;
     }
 
+    public List<AppVoteOptionEntry> getAllOneVoteList(ObjectId voteId){
+        List<AppVoteOptionEntry> entryList=new ArrayList<AppVoteOptionEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr", 0).append("vid", voteId);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_VOTE_OPTION, query,
+                Constant.FIELDS, new BasicDBObject("ord",1));
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppVoteOptionEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     public List<AppVoteOptionEntry> getSelectOneVoteList(ObjectId voteId){
         List<AppVoteOptionEntry> entryList=new ArrayList<AppVoteOptionEntry>();
         BasicDBObject query=new BasicDBObject().append("isr", 0).append("vid",voteId).append("sel",Constant.ONE);

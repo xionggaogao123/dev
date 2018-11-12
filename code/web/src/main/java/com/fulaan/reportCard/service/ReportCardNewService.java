@@ -46,7 +46,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.bson.types.ObjectId;
@@ -3097,7 +3099,7 @@ public class ReportCardNewService {
         for (VirtualUserEntry user : l) {
             boolean flag = false;
             for (int i =0;i<=rowNum;i++) {
-                String userName = getStringCellValue(sheet.getRow(i).getCell(0));
+                String userName = getStringCellValue1(sheet.getRow(i).getCell(0));
                 if (StringUtils.isNotBlank(userName)) {
                     if (user.getUserName().equals(userName)) {
                         flag = true;
@@ -3111,7 +3113,7 @@ public class ReportCardNewService {
         }
         for (int i =2;i<=rowNum;i++) {
             boolean flag = false;
-            String userName = getStringCellValue(sheet.getRow(i).getCell(0));
+            String userName = getStringCellValue1(sheet.getRow(i).getCell(0));
             for (VirtualUserEntry user : l) {
                 if (StringUtils.isNotBlank(userName)) {
                     if (user.getUserName().equals(userName)) {
@@ -3138,7 +3140,7 @@ public class ReportCardNewService {
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(inputStream);
         HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
-        
+        FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
         int rowNum = sheet.getLastRowNum();
         List<GroupExamUserRecordDTO> examScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
         List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(groupExamId), -1, -1, -1, 1);
@@ -3155,7 +3157,7 @@ public class ReportCardNewService {
             //String groupExamDetailId = sheet.getRow(j).getCell(1).getStringCellValue();
             ObjectId communityId = groupExamDetailDao.getEntryById(new ObjectId(groupExamId)).getCommunityId();
             item.setGroupExamDetailId(groupExamId);
-            String userName = getStringCellValue(sheet.getRow(j).getCell(0));
+            String userName = getStringCellValue1(sheet.getRow(j).getCell(0));
             //List<NewVersionCommunityBindEntry> l = newVersionCommunityBindDao.getBindEntriesNew(communityId, userName);
             List<VirtualUserEntry> l =virtualUserDao.getAllVirtualUsersNew(communityId,userName);
             if (!CollectionUtils.isEmpty(l)) {
@@ -3172,29 +3174,18 @@ public class ReportCardNewService {
             //item.setId(id);
             StringBuffer sb = new StringBuffer();
             StringBuffer sbb = new StringBuffer();
-            //预备总分
-            double zfyb = 0;
+
             for(int k =0;k < i;k++) {
                 HSSFCell cell = sheet.getRow(j).getCell(1+k);
                 if (groupExamDetailEntry.getRecordScoreType() == 1) {
-                    double score = getValue(cell);
-                    //预备总分
-                    if (k < (i-1) && score != -1.0 && score != -2.0) {
-                        zfyb = (new BigDecimal(score).add(new BigDecimal(zfyb))).doubleValue();
-                    }
+                    double score = getValue(cell, evaluator);
+        
                     if (score == -1.0) {
                         sb.append("-1").append(",");
                     } else if(score == -2.0) {
-                        if (k == (i-1)) {
-                            if (zfyb == 0) {
-                                sb.append("-2").append(",");
-                            } else {
-                                sb.append(String.valueOf(zfyb)).append(",");
-                            } 
-                            
-                        } else {
-                            sb.append("-2").append(",");
-                        }
+                  
+                        sb.append("-2").append(",");
+                   
                         
                     }else {            
                         sb.append(String.valueOf(score)).append(",");
@@ -3204,7 +3195,7 @@ public class ReportCardNewService {
                     sbb.append("-1").append(",");
                 } else {
                     sb.append("-1").append(",");
-                    int scoreLevel = (new Double(getValue(cell))).intValue();
+                    int scoreLevel = (new Double(getValue(cell, evaluator))).intValue();
                     sbb.append(String.valueOf(scoreLevel)).append(",");
                 }
                 /*HSSFCell cell = sheet.getRow(j).getCell(2+(2*k));
@@ -3246,10 +3237,10 @@ public class ReportCardNewService {
         this.judgeVirtualUser(groupExamId, sheet);
     }
 
-    public double getValue(HSSFCell cell) throws Exception{
+    public double getValue(HSSFCell cell, FormulaEvaluator evaluator) throws Exception{
         double cellValue = -1;
         if (cell != null) {
-            String vvv = getStringCellValue(cell);
+            String vvv = getStringCellValue(cell, evaluator);
             if (StringUtils.isNotBlank(vvv)) {
                 if ("缺".equals(vvv.trim())) {
                     
@@ -3305,7 +3296,33 @@ public class ReportCardNewService {
         return cellValue;
     }
 
-    private String getStringCellValue(HSSFCell cell) throws Exception{
+    private String getStringCellValue(HSSFCell cell, FormulaEvaluator evaluator) throws Exception{
+        if (cell == null) return Constant.EMPTY;
+        CellValue cellValue = evaluator.evaluate(cell);
+        String strCell;
+        switch (cell.getCellType()) {
+            case HSSFCell.CELL_TYPE_STRING:
+                strCell = cell.getStringCellValue();
+                break;
+            case HSSFCell.CELL_TYPE_NUMERIC:
+                strCell = String.valueOf(cell.getNumericCellValue());
+                break;
+            case HSSFCell.CELL_TYPE_BOOLEAN:
+                strCell = String.valueOf(cell.getBooleanCellValue());
+                break;
+            case HSSFCell.CELL_TYPE_FORMULA:
+                strCell = getStringCellValue2(cellValue);
+                break;
+            default:
+                strCell = Constant.EMPTY;
+                break;
+        }
+
+
+        return org.apache.commons.lang.StringUtils.isBlank(strCell) ? Constant.EMPTY : strCell;
+    }
+    
+    private String getStringCellValue1(HSSFCell cell) throws Exception{
         if (cell == null) return Constant.EMPTY;
         String strCell;
         switch (cell.getCellType()) {
@@ -3325,6 +3342,36 @@ public class ReportCardNewService {
 
 
         return org.apache.commons.lang.StringUtils.isBlank(strCell) ? Constant.EMPTY : strCell;
+    }
+    
+    public String getStringCellValue2(CellValue cellValue) {
+        Object o;
+        switch (cellValue.getCellType()) {
+            case Cell.CELL_TYPE_BOOLEAN:
+                o = cellValue.getBooleanValue();
+                break;
+            case Cell.CELL_TYPE_NUMERIC:
+                o = cellValue.getNumberValue();
+                break;
+            case Cell.CELL_TYPE_STRING:
+                o = cellValue.getStringValue();
+                break;
+            case Cell.CELL_TYPE_BLANK:
+                o = "";
+                break;
+            case Cell.CELL_TYPE_ERROR:
+                o = "";
+                break;
+
+            // CELL_TYPE_FORMULA will never happen
+            case Cell.CELL_TYPE_FORMULA:
+                o = "";
+                break;
+            default:
+                o = "";
+                break;
+        }    
+        return String.valueOf(o);
     }
 
 

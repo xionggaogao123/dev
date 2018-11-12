@@ -17,6 +17,7 @@ public class AppVoteOptionDTO {
     private String voteId;
     private String description;
     private String userId;
+    private String userNames;
     private int type;
     private int select;
     private List<VideoDTO> videoList=new ArrayList<VideoDTO>();
@@ -115,6 +116,14 @@ public class AppVoteOptionDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getUserNames() {
+        return userNames;
+    }
+
+    public void setUserNames(String userNames) {
+        this.userNames = userNames;
     }
 
     public int getType() {

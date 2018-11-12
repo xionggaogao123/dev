@@ -1072,7 +1072,11 @@ public class BusinessManageService {
         //订单置为退款中
         classOrderDao.updateEntry(objectIdList);
         backStageService.addLogMessage(id.toString(), "退课：" + excellentCoursesEntry.getTitle() + ",用户ID:" + userId.toString(), LogMessageType.courses.getDes(), uid.toString());
-
+        //用户订单查询
+        Set<ObjectId> userIds = classOrderDao.getUserIdEntry(id);
+        //List<UserEntry> userEntries = userDao.getUserEntryList(userIds, Constant.FIELDS);
+        excellentCoursesEntry.setStudentNumber(userIds.size());
+        excellentCoursesDao.addEntry(excellentCoursesEntry);
         //退课支出
 
         if(or.equals("")){
@@ -1223,6 +1227,11 @@ public class BusinessManageService {
         classOrderDao.delOrderEntry(id, userId);
         backStageService.addLogMessage(id.toString(), "删除直播课堂订单：" + excellentCoursesEntry.getTitle() + ",ID:" + jiaId, LogMessageType.courses.getDes(), uid.toString());
         //3. 删除对应的每日订单
+        //用户订单查询
+        Set<ObjectId> userIds = classOrderDao.getUserIdEntry(id);
+        //List<UserEntry> userEntries = userDao.getUserEntryList(userIds, Constant.FIELDS);
+        excellentCoursesEntry.setStudentNumber(userIds.size());
+        excellentCoursesDao.addEntry(excellentCoursesEntry);
         //coursesOrderResultDao.delEntry(userId,id);
     }
 

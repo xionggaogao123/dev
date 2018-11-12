@@ -86,7 +86,7 @@ public class WebAppNewVoteController extends BaseController {
     public RespObj getOneVote(@RequestParam(value="id",defaultValue = "") String id){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object> map = appNewVoteService.getOneVote(getUserId(),new ObjectId(id));
+            Map<String,Object> map = appNewVoteService.getWebOneVote(getUserId(),new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(map);
         }catch (Exception e){
@@ -183,6 +183,24 @@ public class WebAppNewVoteController extends BaseController {
         try{
             appNewVoteService.updateOption(new ObjectId(id), selectOptionIds);
             respObj.setMessage("保存成功");
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+            logger.error("error",e);
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "查询选项", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/selectOptionList")
+    @ResponseBody
+    public RespObj selectOptionList( @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> map = appNewVoteService.selectOptionList(getUserId(),new ObjectId(id));
+            respObj.setMessage(map);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setCode(Constant.FAILD_CODE);

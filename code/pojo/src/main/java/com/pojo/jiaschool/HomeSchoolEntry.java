@@ -157,7 +157,14 @@ public class HomeSchoolEntry extends BaseDBObject {
             String city,
             String area,
             String creationDate,
-            List<String> schoolParagraph//学段
+            List<String> schoolParagraph,//学段
+            String englishName,
+            String introduce,
+            String detail,
+            String domain,
+            String postCode,
+            String telephone,
+            String initialPassword
     ) {
         BasicDBObject dbObject = new BasicDBObject()
                 .append(Constant.ID, id)
@@ -178,6 +185,13 @@ public class HomeSchoolEntry extends BaseDBObject {
                 .append("creationDate", creationDate)
                 .append("schoolParagraph", schoolParagraph)
                 .append("logo", "http://doc.k6kt.com/5a2674e3b0573026f932759b.png")
+                .append("enm", englishName)
+                .append("int", introduce)
+                .append("det", detail)
+                .append("dom", domain)
+                .append("pc", postCode)
+                .append("tp", telephone)
+                .append("inp", initialPassword)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }

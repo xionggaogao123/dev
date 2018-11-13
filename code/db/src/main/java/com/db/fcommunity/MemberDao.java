@@ -578,6 +578,51 @@ public class MemberDao extends BaseDao {
     }
 
     /**
+     * 计算数量
+     *
+     * @param groupIds
+     * @return
+     */
+    public Map<ObjectId,Set<ObjectId>> getAllMemberIds(List<ObjectId> groupIds) {
+        BasicDBObject query = new BasicDBObject().append("grid", new BasicDBObject(Constant.MONGO_IN,groupIds)).append("r", 0);
+        BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
+        Map<ObjectId,Set<ObjectId>> map = new HashMap<ObjectId, Set<ObjectId>>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            Set<ObjectId> set = map.get(memberEntry.getGroupId());
+            if(set==null){
+                Set<ObjectId> set1 = new HashSet<ObjectId>();
+                set1.add(memberEntry.getUserId());
+                map.put(memberEntry.getGroupId(),set1);
+            }else{
+                set.add(memberEntry.getUserId());
+                map.put(memberEntry.getGroupId(),set);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 获取不在所选范围内的所有成员Id
+     *
+     * @param groupId
+     * @return
+     */
+    public List<ObjectId> getExtraMemberIds(ObjectId groupId,List<ObjectId> objectIds) {
+        BasicDBObject query = new BasicDBObject().append("grid", groupId).append("r", 0);
+        query.append("uid",new BasicDBObject(Constant.MONGO_NOTIN,objectIds));
+        BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            memberEntries.add(memberEntry.getUserId());
+        }
+        return memberEntries;
+    }
+
+    /**
      * 获取多个社群所有的成员Id
      *
      * @param groupIds

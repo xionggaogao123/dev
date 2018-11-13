@@ -989,6 +989,11 @@ public class AppNewVoteService {
             if(appVoteEntries.size()<10){
                 flage = false;
             }
+            for(AppVoteEntry appVoteEntry:appVoteEntries){
+
+
+
+            }
 
             page++;
         }

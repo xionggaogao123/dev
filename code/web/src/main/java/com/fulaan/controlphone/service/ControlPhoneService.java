@@ -5032,6 +5032,18 @@ public class ControlPhoneService {
             dto.setUserId("");
             map.put("dto",dto);
         }
+        Collections.sort(dtos, new Comparator<ControlVersionDTO>() {
+            @Override
+            public int compare(ControlVersionDTO o1, ControlVersionDTO o2) {
+                if (o1.getLevel() > o2.getLevel()) {
+                    return -1;
+                } else if (o1.getLevel() == o2.getLevel()) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
         map.put("list",dtos);
         return map;
     }
@@ -5089,13 +5101,14 @@ public class ControlPhoneService {
                         flag = true;
                     }
                 }
-                if(flag){
 
-                }else{
-                    dto.setVersion("未登录");
-                }
                 if(entry != null && controlVersionEntry2.getVersion().equals(entry.getVersion())){
-                    dto.setLevel(3);//匹配
+                    if(flag){
+                        dto.setLevel(3);//匹配
+                    }else{
+                        dto.setVersion("未登录");
+                        dto.setLevel(2);//匹配
+                    }
                 }else{
                     dto.setLevel(2);//不匹配
                 }
@@ -5159,6 +5172,18 @@ public class ControlPhoneService {
             dto.setUserId("");
             map.put("dto",dto);
         }
+        Collections.sort(dtos, new Comparator<ControlVersionDTO>() {
+            @Override
+            public int compare(ControlVersionDTO o1, ControlVersionDTO o2) {
+                if (o1.getLevel() > o2.getLevel()) {
+                    return 1;
+                } else if (o1.getLevel() == o2.getLevel()) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            }
+        });
         map.put("list",dtos);
         return map;
     }

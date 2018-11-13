@@ -30,7 +30,15 @@ public class IndexContentDao extends BaseDao {
     }
 
     //删除作业
-    public void updateEntry(ObjectId id,int count){
+    public void updateEntry(ObjectId communityId,int count){
+        BasicDBObject query=new BasicDBObject()
+                .append("cmId",communityId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("act",count));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_CONTENT, query,updateValue);
+    }
+
+    //修改人数
+    public void updateNumberEntry(ObjectId id,int count){
         BasicDBObject query=new BasicDBObject()
                 .append("cid",id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("act",count));

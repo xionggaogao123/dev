@@ -1,11 +1,13 @@
 package com.fulaan.appvote.service;
 
 import com.db.appvote.AppNewVoteDao;
+import com.db.appvote.AppVoteDao;
 import com.db.appvote.AppVoteOptionDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.MineCommunityDao;
+import com.db.forum.FVoteDao;
 import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.user.NewVersionBindRelationDao;
@@ -20,6 +22,7 @@ import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
 import com.pojo.appvote.AppNewVoteEntry;
+import com.pojo.appvote.AppVoteEntry;
 import com.pojo.appvote.AppVoteOptionEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.fcommunity.AttachmentEntry;
@@ -73,6 +76,10 @@ public class AppNewVoteService {
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     private UserDao userDao = new UserDao();
+
+    private AppVoteDao appVoteDao = new AppVoteDao();
+
+    private FVoteDao fVoteDao = new FVoteDao();
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
 
@@ -856,7 +863,7 @@ public class AppNewVoteService {
 
         }
         //4. 组装选项
-        List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getOneVoteList(id);
+        List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getAllOneVoteList(id);
         List<AppVoteOptionDTO> selectOption = new ArrayList<AppVoteOptionDTO>();
          List<AppVoteOptionDTO> unSelectOption = new ArrayList<AppVoteOptionDTO>();
         for(AppVoteOptionEntry appVoteOptionEntry: appVoteOptionEntries){
@@ -888,7 +895,7 @@ public class AppNewVoteService {
         if(appNewVoteEntry.getVoteStartTime()<current){//投票已开始
             throw new Exception("投票已开始无法修改");
         }
-        List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getOneVoteList(id);
+        List<AppVoteOptionEntry> appVoteOptionEntries = appVoteOptionDao.getAllOneVoteList(id);
         List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
         List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
         for(AppVoteOptionEntry appVoteOptionEntry : appVoteOptionEntries){
@@ -969,6 +976,26 @@ public class AppNewVoteService {
             appNewVoteDao.delEntry(id);
             //删除首页记录
             indexPageDao.delEntry(id);
+        }
+    }
+
+    //处理旧数据
+    public void traFraVote(){
+        int page = 1;
+        int pageSize = 10;
+        boolean flage = true;
+        while(flage){
+            List<AppVoteEntry> appVoteEntries = appVoteDao.getPageList(page, pageSize);
+            if(appVoteEntries.size()<10){
+                flage = false;
+            }
+            for(AppVoteEntry appVoteEntry:appVoteEntries){
+
+
+
+            }
+
+            page++;
         }
     }
 }

@@ -98,22 +98,22 @@ public class AppNewVoteDTO {
             this.applyCount = e.getApplyCount();
             this.applyTypeList = e.getApplyTypeList();
             if(e.getApplyStartTime()!=0l){
-                this.applyStartTime = DateTimeUtils.getLongToStrTimeTwo(e.getApplyStartTime());
+                this.applyStartTime = DateTimeUtils.getLongToStrTimeTwo(e.getApplyStartTime()).substring(0,16);
             }else{
                 this.applyStartTime = "";
             }
             if(e.getApplyEndTime()!=0l){
-                this.applyEndTime = DateTimeUtils.getLongToStrTimeTwo(e.getApplyEndTime());
+                this.applyEndTime = DateTimeUtils.getLongToStrTimeTwo(e.getApplyEndTime()).substring(0,16);
             }else{
                 this.applyEndTime = "";
             }
             if(e.getVoteStartTime()!=0l){
-                this.voteStartTime = DateTimeUtils.getLongToStrTimeTwo(e.getVoteStartTime());
+                this.voteStartTime = DateTimeUtils.getLongToStrTimeTwo(e.getVoteStartTime()).substring(0,16);
             }else{
                 this.voteStartTime = "";
             }
             if(e.getVoteEndTime()!=0l){
-                this.voteEndTime = DateTimeUtils.getLongToStrTimeTwo(e.getVoteEndTime());
+                this.voteEndTime = DateTimeUtils.getLongToStrTimeTwo(e.getVoteEndTime()).substring(0,16);
             }else{
                 this.voteEndTime = "";
             }

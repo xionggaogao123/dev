@@ -9,6 +9,7 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.indexPage.WebHomePageDao;
+import com.db.instantmessage.RedDotDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
 import com.fulaan.indexpage.dto.IndexContentDTO;
@@ -33,6 +34,7 @@ import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
+import com.pojo.instantmessage.RedDotEntry;
 import com.pojo.integral.IntegralType;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppOperationEntry;
@@ -84,6 +86,8 @@ public class AppNoticeService {
     private NewVersionBindService newVersionBindService;
     @Autowired
     private IntegralSufferService integralSufferService;
+
+    private RedDotDao redDotDao = new RedDotDao();
 
     //学生社群
    // private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
@@ -181,7 +185,9 @@ public class AppNoticeService {
                 indexContentEntry.setReadList(new ArrayList<ObjectId>());
                 indexContentEntry.setContactId(oid);
                 indexContentEntry.setContactType(1);
-                indexContentEntry.setAllCount(members.size());
+                indexContentEntry.setAllCount(members.size()-1);
+                //更改所有该社群通知的总人数
+                //indexContentDao.updateNumberEntry(new ObjectId(communityDTO.getCommunityId()),members.size() - 1);
                 indexContentDao.addEntry(indexContentEntry);
 
                 WebHomePageEntry pageEntry=new WebHomePageEntry(Constant.TWO, userId,
@@ -254,6 +260,10 @@ public class AppNoticeService {
                     indexPageDao.delEntry(noticeId);
                     //删除首页
                     webHomePageDao.removeContactId(noticeId);
+                    //获取已签到人数
+                    List<ObjectId> objectIdList = appNoticeEntry.getReaList();
+                    //消除多余红点
+                    this.updateUser(objectIdList,appNoticeEntry.getGroupId());
                 }else{
                     throw new Exception("已过有效时间!");
                 }
@@ -263,6 +273,32 @@ public class AppNoticeService {
 
         }
     }
+    //消除多余红点
+    public void updateUser(final List<ObjectId> objectIds,final ObjectId groupId){
+        new Thread(){
+            public void run() {
+                MemberDao memberDao1 = new MemberDao();
+                List<ObjectId> members=memberDao1.getExtraMemberIds(groupId, objectIds);
+                for(ObjectId objectId:members){
+                    RedDotEntry redDotEntry = redDotDao.getEntryByUserId(objectId,ApplyTypeEn.notice.getType());
+                    if(redDotEntry!=null && redDotEntry.getNewNumber()>0){
+                        redDotDao.updateEntry(redDotEntry.getID(),redDotEntry.getNewNumber()-1);
+                    }
+                }
+            }
+        }.start();
+    }
+
+    /**
+     * 减去某个类别红点数
+     */
+    public void jianRedDot(ObjectId userId,int type){
+        RedDotEntry redDotEntry = redDotDao.getEntryByUserId(userId,type);
+        if(redDotEntry!=null && redDotEntry.getNewNumber()>0){
+            redDotDao.updateEntry(redDotEntry.getID(),redDotEntry.getNewNumber()-1);
+        }
+    }
+
 
     /**
      * 查询已阅和未阅列表
@@ -289,10 +325,16 @@ public class AppNoticeService {
         }
         IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
         if(indexContentEntry!=null){
+            //更改所有该社群通知的总人数
+            int nowCount = read.size()+unRead.size();
+//            if(indexContentEntry.getAllCount()!=nowCount){
+//                indexContentDao.updateNumberEntry(entry.getCommunityId(),nowCount);
+//            }
            // indexContentDao.updateAllEntry(id,allCount,members);
-            indexContentEntry.setAllCount(read.size()+unRead.size());
+            indexContentEntry.setAllCount(nowCount);
             indexContentEntry.setReadList(reads);
             indexContentDao.addEntry(indexContentEntry);
+
         }
 
         userMap.put("read",read);

@@ -2050,7 +2050,11 @@ public class IndexPageService {
         List<IndexContentEntry> entryList = indexContentDao.getPageList(cntactIdList);
         List<ObjectId> oids = new ArrayList<ObjectId>();
         Map<ObjectId,IndexContentEntry> comMap = new HashMap<ObjectId, IndexContentEntry>();
+        List<ObjectId> groupIds = new ArrayList<ObjectId>();
         for(IndexContentEntry indexContentEntry2 : entryList){
+            if(userId.equals(indexContentEntry2.getUserId())){
+                groupIds.add(indexContentEntry2.getGroupId());
+            }
             oids.add(indexContentEntry2.getUserId());
             comMap.put(indexContentEntry2.getContactId(),indexContentEntry2);
         }
@@ -2058,6 +2062,9 @@ public class IndexPageService {
         if (oids.size() > 0) {
             userEntryMap = userService.getUserEntryMap(oids, Constant.FIELDS);
         }
+        //去掉复兰大学
+        groupIds.remove(new ObjectId("5a7be20b3d4df96672b6a59e"));
+        Map<ObjectId,Set<ObjectId>> setMap = memberDao.getAllMemberIds(groupIds);
         Set<ObjectId> ownIds = new HashSet<ObjectId>();
         for(ObjectId cid:cntactIdList){
             IndexContentEntry indexContentEntry = comMap.get(cid);
@@ -2081,17 +2088,22 @@ public class IndexPageService {
                 }else{
                     dto.setReadCount(0);
                 }
-                if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(uid)){
-                    dto.setTotalReadCount(indexContentEntry.getAllCount());
+//                if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(uid)){
+//                    dto.setTotalReadCount(indexContentEntry.getAllCount());
+//                }else{
+//                   /* if(indexContentEntry.getContactType()!=8) {
+//                        dto.setTotalReadCount(indexContentEntry.getAllCount() - 1);
+//                    }else{
+//                        dto.setTotalReadCount(indexContentEntry.getAllCount());
+//                    }*/
+//                    dto.setTotalReadCount(indexContentEntry.getAllCount());
+//                }
+                Set<ObjectId> set = setMap.get(indexContentEntry.getGroupId());
+                if(set!=null){
+                    dto.setTotalReadCount(set.size()-1);
                 }else{
-                   /* if(indexContentEntry.getContactType()!=8) {
-                        dto.setTotalReadCount(indexContentEntry.getAllCount() - 1);
-                    }else{
-                        dto.setTotalReadCount(indexContentEntry.getAllCount());
-                    }*/
                     dto.setTotalReadCount(indexContentEntry.getAllCount());
                 }
-
                 UserEntry userEntry = userEntryMap.get(uid);
                 if(userEntry!=null){
                     String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
@@ -2177,7 +2189,9 @@ public class IndexPageService {
         List<IndexContentEntry> entryList = indexContentDao.getPageList(cntactIdList);
         List<ObjectId> oids = new ArrayList<ObjectId>();
         Map<ObjectId,IndexContentEntry> comMap = new HashMap<ObjectId, IndexContentEntry>();
+        List<ObjectId> groupIds = new ArrayList<ObjectId>();
         for(IndexContentEntry indexContentEntry2 : entryList){
+            groupIds.add(indexContentEntry2.getGroupId());
             oids.add(indexContentEntry2.getUserId());
             comMap.put(indexContentEntry2.getContactId(),indexContentEntry2);
         }
@@ -2185,6 +2199,9 @@ public class IndexPageService {
         if (oids.size() > 0) {
             userEntryMap = userService.getUserEntryMap(oids, Constant.FIELDS);
         }
+        //去掉复兰大学
+        groupIds.remove(new ObjectId("5a7be20b3d4df96672b6a59e"));
+        Map<ObjectId,Set<ObjectId>> setMap = memberDao.getAllMemberIds(groupIds);
         Set<ObjectId> ownIds = new HashSet<ObjectId>();
         for(ObjectId cid:cntactIdList){
             IndexContentEntry indexContentEntry = comMap.get(cid);
@@ -2208,14 +2225,20 @@ public class IndexPageService {
                 }else{
                     dto.setReadCount(0);
                 }
-                if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(uid)){
-                    dto.setTotalReadCount(indexContentEntry.getAllCount());
+//                if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(uid)){
+//                    dto.setTotalReadCount(indexContentEntry.getAllCount());
+//                }else{
+//                   /* if(indexContentEntry.getContactType()!=8) {
+//                        dto.setTotalReadCount(indexContentEntry.getAllCount() - 1);
+//                    }else{
+//                        dto.setTotalReadCount(indexContentEntry.getAllCount());
+//                    }*/
+//                    dto.setTotalReadCount(indexContentEntry.getAllCount());
+//                }
+                Set<ObjectId> set = setMap.get(indexContentEntry.getGroupId());
+                if(set!=null){
+                    dto.setTotalReadCount(set.size()-1);
                 }else{
-                   /* if(indexContentEntry.getContactType()!=8) {
-                        dto.setTotalReadCount(indexContentEntry.getAllCount() - 1);
-                    }else{
-                        dto.setTotalReadCount(indexContentEntry.getAllCount());
-                    }*/
                     dto.setTotalReadCount(indexContentEntry.getAllCount());
                 }
 

@@ -63,6 +63,19 @@ public class AppVoteDao extends BaseDao{
         return entries;
     }
 
+    public List<AppVoteEntry> getPageList(int page,int pageSize){
+        List<AppVoteEntry> entries=new ArrayList<AppVoteEntry>();
+        BasicDBObject query = new BasicDBObject();
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_APP_VOTE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppVoteEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
     public List<AppVoteEntry> getEntriesByIds(List<ObjectId> ids){
         List<AppVoteEntry> entries=new ArrayList<AppVoteEntry>();
         BasicDBObject query= new BasicDBObject();

@@ -43,22 +43,22 @@ public class AppNoticeDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE, MongoUtils.fetchDBObjectList(entries));
     }
 
-    public int countMyAppNotices(ObjectId communityId,
+    public int countMyAppNotices(String title, ObjectId communityId,
                                  ObjectId subjectId,
                                  List<ObjectId> groupIds,
                                  ObjectId userId){
-        BasicDBObject query=getMyAppNoticesCondition(communityId,subjectId,groupIds,userId);
+        BasicDBObject query=getMyAppNoticesConditionSec(title,communityId,subjectId,groupIds,userId);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query);
     }
 
-    public List<AppNoticeEntry> getMyAppNotices(ObjectId communityId,
+    public List<AppNoticeEntry> getMyAppNotices(String title, ObjectId communityId,
                                                 ObjectId subjectId,
                                                 List<ObjectId> groupIds,
                                                 ObjectId userId,
                                                 int page,
                                                 int pageSize){
         List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
-        BasicDBObject query=getMyAppNoticesCondition(communityId,subjectId,groupIds,userId);
+        BasicDBObject query=getMyAppNoticesConditionSec(title,communityId,subjectId,groupIds,userId);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -81,6 +81,39 @@ public class AppNoticeDao extends BaseDao{
             }
         }
         return entries;
+    }
+    
+    public BasicDBObject getMyAppNoticesConditionSec(String title, ObjectId communityId,
+                                                  ObjectId subjectId,
+                                                  List<ObjectId> groupIds,
+                                                  ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO);
+        if(StringUtils.isNotBlank(title)){
+            Pattern pattern = Pattern.compile("^.*" + title + ".*$", Pattern.CASE_INSENSITIVE);
+            query.append("tl",new BasicDBObject(Constant.MONGO_REGEX, pattern));
+        }
+        if(null!=communityId){
+            query.append("cmId",communityId);
+        }
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1=new BasicDBObject("uid",userId);
+        values.add(query1);
+        List<Integer> watchPermissions=new ArrayList<Integer>();
+        watchPermissions.add(Constant.ONE);
+        watchPermissions.add(Constant.THREE);
+        BasicDBObject query2=new BasicDBObject()
+                .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions));
+        if(null==communityId){
+            query2.append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds));
+        }
+        values.add(query2);
+        query.put(Constant.MONGO_OR,values);
+        return query;
     }
 
 
@@ -114,13 +147,17 @@ public class AppNoticeDao extends BaseDao{
     }
 
 
-    public List<AppNoticeEntry> getMySendAppNoticeEntries(ObjectId communityId,
+    public List<AppNoticeEntry> getMySendAppNoticeEntries(String title, ObjectId communityId,
                                                           ObjectId subjectId,
                                                           ObjectId userId,int page,int pageSize){
         List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
         BasicDBObject query=new BasicDBObject()
                 .append("uid",userId)
                 .append("ir",Constant.ZERO);
+        if(StringUtils.isNotBlank(title)){
+            Pattern pattern = Pattern.compile("^.*" + title + ".*$", Pattern.CASE_INSENSITIVE);
+            query.append("tl",new BasicDBObject(Constant.MONGO_REGEX, pattern));
+        }
         if(null!=communityId){
             query.append("cmId",communityId);
         }
@@ -165,12 +202,17 @@ public class AppNoticeDao extends BaseDao{
     }
 
     public int countMySendAppNoticeEntries(
+                                           String title,
                ObjectId communityId,
                ObjectId subjectId,
                ObjectId userId){
         BasicDBObject query=new BasicDBObject()
                 .append("uid",userId)
                 .append("ir",Constant.ZERO);
+        if(StringUtils.isNotBlank(title)){
+            Pattern pattern = Pattern.compile("^.*" + title + ".*$", Pattern.CASE_INSENSITIVE);
+            query.append("tl",new BasicDBObject(Constant.MONGO_REGEX, pattern));
+        }
         if(null!=communityId){
             query.append("cmId",communityId);
         }
@@ -186,9 +228,9 @@ public class AppNoticeDao extends BaseDao{
                 getMyReceivedAppNoticeQueryCondition(groupIds, userId));
     }
 
-    public int countMyReceivedAppNoticeEntries(ObjectId communityId,ObjectId subjectId,List<ObjectId> groupIds, ObjectId userId){
+    public int countMyReceivedAppNoticeEntries(String title, ObjectId communityId,ObjectId subjectId,List<ObjectId> groupIds, ObjectId userId){
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
-                getMyReceivedAppNoticeQueryCondition(communityId,subjectId,groupIds, userId));
+                getMyReceivedAppNoticeQueryConditionSec(title,communityId,subjectId,groupIds, userId));
     }
 
 
@@ -227,13 +269,14 @@ public class AppNoticeDao extends BaseDao{
     }
 
     public List<AppNoticeEntry> getMyReceivedAppNoticeEntries(
+            String title,
             ObjectId communityId,
             ObjectId subjectId,
             List<ObjectId> groupIds,int page,int pageSize,
             ObjectId userId){
         List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
-                getMyReceivedAppNoticeQueryCondition(communityId,subjectId,groupIds, userId),
+                getMyReceivedAppNoticeQueryConditionSec(title, communityId,subjectId,groupIds, userId),
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
@@ -242,6 +285,33 @@ public class AppNoticeDao extends BaseDao{
         }
         return entries;
     }
+    
+    public BasicDBObject getMyReceivedAppNoticeQueryConditionSec(
+                                                                 String title,
+          ObjectId communityId,
+          ObjectId subjectId,
+          List<ObjectId> groupIds, ObjectId userId){
+      List<Integer> watchPermissions=new ArrayList<Integer>();
+      watchPermissions.add(Constant.ONE);
+      watchPermissions.add(Constant.THREE);
+      BasicDBObject query=new BasicDBObject()
+              .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+              .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions))
+              .append("ir",Constant.ZERO);
+      if(StringUtils.isNotBlank(title)){
+          Pattern pattern = Pattern.compile("^.*" + title + ".*$", Pattern.CASE_INSENSITIVE);
+          query.append("tl",new BasicDBObject(Constant.MONGO_REGEX, pattern));
+      }
+      if(null==communityId){
+          query.append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds));
+      }else{
+          query.append("cmId",communityId);
+      }
+      if(null!=subjectId){
+          query.append("sid",subjectId);
+      }
+      return query;
+  }
 
     /**
      * 获取我接收到的通知

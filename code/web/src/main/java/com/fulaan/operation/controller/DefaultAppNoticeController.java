@@ -316,7 +316,7 @@ public class DefaultAppNoticeController extends BaseController {
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object>  retMap=appNoticeService.getMyAppNotices(communityId,Constant.EMPTY,getUserId(),page,pageSize);
+            Map<String,Object>  retMap=appNoticeService.getMyAppNotices(null,communityId,Constant.EMPTY,getUserId(),page,pageSize);
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

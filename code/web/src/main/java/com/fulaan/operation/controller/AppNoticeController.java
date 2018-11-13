@@ -139,12 +139,13 @@ public class AppNoticeController extends BaseController {
     public RespObj getMySendAppNoticeDtos(
             @RequestParam(required = false, defaultValue = "")String communityId,
             @RequestParam(required = false, defaultValue = "")String subjectId,
+            @RequestParam(required = false, defaultValue = "")String title,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
             ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object>  retMap=appNoticeService.getMySendAppNoticeDtos(communityId,subjectId,getUserId(),page,pageSize);
+            Map<String,Object>  retMap=appNoticeService.getMySendAppNoticeDtos(title, communityId,subjectId,getUserId(),page,pageSize);
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
@@ -161,12 +162,13 @@ public class AppNoticeController extends BaseController {
     public RespObj getMyGatherNotice(
             @RequestParam(required = false, defaultValue = "")String communityId,
             @RequestParam(required = false, defaultValue = "")String subjectId,
+            @RequestParam(required = false, defaultValue = "")String title,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object>  retMap=appNoticeService.getMyAppNotices(communityId,subjectId,getUserId(),page,pageSize);
+            Map<String,Object>  retMap=appNoticeService.getMyAppNotices(title, communityId,subjectId,getUserId(),page,pageSize);
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
@@ -184,12 +186,13 @@ public class AppNoticeController extends BaseController {
     public RespObj getMyReceivedAppNoticeDtosForParent(
             @RequestParam(required = false, defaultValue = "")String communityId,
             @RequestParam(required = false, defaultValue = "")String subjectId,
+            @RequestParam(required = false, defaultValue = "")String title,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object> retMap=appNoticeService.getMyReceivedAppNoticeDtos(communityId,subjectId,getUserId(),page,pageSize);
+            Map<String,Object> retMap=appNoticeService.getMyReceivedAppNoticeDtos(title, communityId,subjectId,getUserId(),page,pageSize);
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

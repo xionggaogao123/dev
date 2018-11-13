@@ -323,13 +323,13 @@ public class AppNoticeService {
     }
 
 
-    public Map<String,Object> getMyAppNotices(String cId,String sId,ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getMyAppNotices(String title, String cId,String sId,ObjectId userId,int page,int pageSize){
         Map<String,Object> result=new HashMap<String,Object>();
         ObjectId communityId=StringUtils.isNotEmpty(cId)?new ObjectId(cId):null;
         ObjectId subjectId=StringUtils.isNotEmpty(sId)?new ObjectId(sId):null;
         List<ObjectId> groupIds=memberDao.getGroupIdsByUserId(userId);
-        List<AppNoticeEntry> entries=appNoticeDao.getMyAppNotices(communityId,subjectId,groupIds,userId,page,pageSize);
-        int count=appNoticeDao.countMyAppNotices(communityId,subjectId,groupIds,userId);
+        List<AppNoticeEntry> entries=appNoticeDao.getMyAppNotices(title, communityId,subjectId,groupIds,userId,page,pageSize);
+        int count=appNoticeDao.countMyAppNotices(title, communityId,subjectId,groupIds,userId);
         List<AppNoticeDTO> appNoticeDTOs=getAppNoticeDtos(entries,userId);
         result.put("list",appNoticeDTOs);
         result.put("count",count);
@@ -341,15 +341,15 @@ public class AppNoticeService {
     }
 
 
-    public Map<String,Object> getMySendAppNoticeDtos(String cId,String sId,ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getMySendAppNoticeDtos(String title, String cId,String sId,ObjectId userId,int page,int pageSize){
         List<AppNoticeDTO> dtos=new ArrayList<AppNoticeDTO>();
         Map<String,Object> retMap=new HashMap<String,Object>();
         ObjectId communityId=StringUtils.isNotEmpty(cId)?new ObjectId(cId):null;
         ObjectId subjectId=StringUtils.isNotBlank(sId)?new ObjectId(sId):null;
-        List<AppNoticeEntry> entries=appNoticeDao.getMySendAppNoticeEntries(communityId,subjectId,userId,page,pageSize);
+        List<AppNoticeEntry> entries=appNoticeDao.getMySendAppNoticeEntries(title,communityId,subjectId,userId,page,pageSize);
         UserEntry userEntry=userService.findById(userId);
         sendAppNotices(entries,userEntry,dtos,userId);
-        int count=appNoticeDao.countMySendAppNoticeEntries(communityId,subjectId,userId);
+        int count=appNoticeDao.countMySendAppNoticeEntries(title,communityId,subjectId,userId);
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         retMap.put("list",dtos);
@@ -583,14 +583,14 @@ public class AppNoticeService {
         return retMap;
     }
 
-    public Map<String,Object> getMyReceivedAppNoticeDtos(String cId,String sId,ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getMyReceivedAppNoticeDtos(String title, String cId,String sId,ObjectId userId,int page,int pageSize){
         Map<String,Object> retMap=new HashMap<String,Object>();
         List<ObjectId> groupIds=memberDao.getGroupIdsByUserId(userId);
         ObjectId communityId=StringUtils.isNotEmpty(cId)?new ObjectId(cId):null;
         ObjectId subjectId=StringUtils.isNotEmpty(sId)?new ObjectId(sId):null;
-        List<AppNoticeEntry> entries=appNoticeDao.getMyReceivedAppNoticeEntries(communityId,subjectId,groupIds,page,pageSize,userId);
+        List<AppNoticeEntry> entries=appNoticeDao.getMyReceivedAppNoticeEntries(title,communityId,subjectId,groupIds,page,pageSize,userId);
         List<AppNoticeDTO> appNoticeDtos=getAppNoticeDtos(entries,userId);
-        int count=appNoticeDao.countMyReceivedAppNoticeEntries(communityId,subjectId,groupIds,userId);
+        int count=appNoticeDao.countMyReceivedAppNoticeEntries(title,communityId,subjectId,groupIds,userId);
         retMap.put("list",appNoticeDtos);
         retMap.put("count",count);
         retMap.put("page",page);

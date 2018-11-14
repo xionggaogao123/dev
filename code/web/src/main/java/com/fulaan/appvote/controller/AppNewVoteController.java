@@ -302,8 +302,8 @@ public class AppNewVoteController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
            // appNewVoteService.deleteVote(new ObjectId(id),getUserId());
-            //appNewVoteService.deleteVote(new ObjectId(id),getUserId());
-            respObj.setMessage("删除投票成功");
+            appNewVoteService.traFraVote();
+            respObj.setMessage("兼容老数据成功");
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setCode(Constant.FAILD_CODE);

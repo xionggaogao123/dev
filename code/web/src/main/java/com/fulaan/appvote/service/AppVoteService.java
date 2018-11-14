@@ -52,7 +52,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -98,7 +97,10 @@ public class AppVoteService {
     private IndexContentDao indexContentDao = new IndexContentDao();
 
 
-    public String saveAppVote(AppVoteDTO appVoteDTO) throws ParseException {
+    public String saveAppVote(AppVoteDTO appVoteDTO) throws Exception {
+        if(true){
+            throw new Exception("新版本投票已上线，请升级到最新版家校美体验！");
+        }
         SimpleDateFormat format = new SimpleDateFormat(DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
         Date date = format.parse(appVoteDTO.getDeadFormatTime());
        // List<AppVoteEntry> entries = new ArrayList<AppVoteEntry>();

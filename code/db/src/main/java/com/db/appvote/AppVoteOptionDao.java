@@ -96,6 +96,12 @@ public class AppVoteOptionDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_VOTE_OPTION, query,updateValue);
     }
 
+    //删除投票选项
+    public void delAllEntry(ObjectId voteId){
+        BasicDBObject query = new BasicDBObject().append("isr",Constant.ZERO).append("vid",voteId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_VOTE_OPTION, query,updateValue);
+    }
 
     public AppVoteOptionEntry getEntry(ObjectId id,ObjectId userId){
         BasicDBObject query=new BasicDBObject()

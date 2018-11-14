@@ -15,6 +15,7 @@ import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.appvote.dto.AppNewVoteDTO;
 import com.fulaan.appvote.dto.AppVoteOptionDTO;
+import com.fulaan.forum.service.FVoteService;
 import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
@@ -29,6 +30,7 @@ import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.fcommunity.VideoEntry;
+import com.pojo.forum.FVoteDTO;
 import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
@@ -83,6 +85,9 @@ public class AppNewVoteService {
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
 
+    @Autowired
+    private FVoteService fVoteService;
+
     public String saveNewAppVote(AppNewVoteDTO appNewVoteDTO,ObjectId userId){
         AppNewVoteEntry appNewVoteEntry = appNewVoteDTO.buildAddEntry();
         appNewVoteDao.saveAppVote(appNewVoteEntry);
@@ -130,6 +135,7 @@ public class AppNewVoteService {
             List<ObjectId> communityIds = new ArrayList<ObjectId>();
             for(CommunityEntry communityEntry : communityEntries){
                 sb.append(communityEntry.getCommunityName());
+                sb.append("、");
                 cids.add(communityEntry.getID().toString());
                 groupIds.add(communityEntry.getGroupId());
                 communityIds.add(communityEntry.getID());
@@ -970,10 +976,15 @@ public class AppNewVoteService {
         return mapList;
     }
 
-    public void deleteVote(ObjectId id,ObjectId userId){
+    public void deleteVote(ObjectId id,ObjectId userId) throws  Exception{
         AppNewVoteEntry appNewVoteEntry = appNewVoteDao.getEntry(id);
+        long current = System.currentTimeMillis();
+        if(current>appNewVoteEntry.getApplyStartTime()+24*60*60*1000){
+            throw new Exception("发布超过24小时的投票无法撤回！");
+        }
         if(appNewVoteEntry !=null && userId.equals(appNewVoteEntry.getUserId())){
             appNewVoteDao.delEntry(id);
+            appVoteOptionDao.delAllEntry(id);
             //删除首页记录
             indexPageDao.delEntry(id);
         }
@@ -989,12 +1000,104 @@ public class AppNewVoteService {
             if(appVoteEntries.size()<10){
                 flage = false;
             }
+            //flage = false;
+            long current = System.currentTimeMillis();
             for(AppVoteEntry appVoteEntry:appVoteEntries){
+                //获得投票信息
+                List<FVoteDTO> fVoteEntryList = fVoteService.getFVoteList(appVoteEntry.getID().toString());
+                //组装对象
+                List<Integer> voteTypeList = new ArrayList<Integer>();
+                if(appVoteEntry.getVisiblePermission()==1){//家长
+                    voteTypeList.add(2);
+                    voteTypeList.add(3);
+                }else if(appVoteEntry.getVisiblePermission()==2){//学生
+                    voteTypeList.add(1);
+                }else{//所有人
+                    voteTypeList.add(1);
+                    voteTypeList.add(2);
+                    voteTypeList.add(3);
+                }
+                List<ObjectId> communityIds = new ArrayList<ObjectId>();
+                communityIds.add(appVoteEntry.getCommunityId());
+                int sign = appVoteEntry.getVoteType()==0?1:0;
+                Map<Integer,List<ObjectId>> map = new HashMap<Integer, List<ObjectId>>();
+                Set<ObjectId> set = new HashSet<ObjectId>();
+                for(FVoteDTO fVoteDTO:fVoteEntryList){
+                    List<ObjectId> objectIdList = map.get(fVoteDTO.getNumber());
+                    if(objectIdList==null){
+                        List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+                        objectIdList1.add(new ObjectId(fVoteDTO.getUserId()));
+                        map.put(fVoteDTO.getNumber(),objectIdList1);
+                    }else{
+                        objectIdList.add(new ObjectId(fVoteDTO.getUserId()));
+                        map.put(fVoteDTO.getNumber(),objectIdList);
+                    }
+                    set.add(new ObjectId(fVoteDTO.getUserId()));
 
-
-
+                }
+                List<ObjectId> userList = new ArrayList<ObjectId>();
+                userList.addAll(set);
+                AppNewVoteEntry appNewVoteEntry = new AppNewVoteEntry(
+                        appVoteEntry.getTitle(),
+                        appVoteEntry.getContent(),
+                        null,
+                        appVoteEntry.getSubjectId(),
+                        appVoteEntry.getUserId(),
+                        Constant.ZERO,
+                        set.size(),
+                        appVoteEntry.getImageList(),
+                        new ArrayList<AttachmentEntry>(),
+                        new ArrayList<VideoEntry>(),
+                        new ArrayList<AttachmentEntry>(),
+                        Constant.ONE,
+                        new ArrayList<Integer>(),
+                        Constant.ZERO,
+                        Constant.ZERO,
+                        Constant.ZERO,
+                        communityIds,
+                        voteTypeList,
+                        appVoteEntry.getVoteMaxCount(),
+                        sign,
+                        Constant.ONE,
+                        appVoteEntry.getSubmitTime(),
+                        appVoteEntry.getVoteDeadTime());
+                appNewVoteEntry.setCreateTime(appVoteEntry.getSubmitTime());
+                appNewVoteEntry.setID(appVoteEntry.getID());
+                appNewVoteDao.saveAppVote(appNewVoteEntry);
+                ObjectId id = appNewVoteEntry.getID();
+                appNewVoteEntry.setVoteUesrList(userList);
+                appNewVoteEntry.setApplyUserList(new ArrayList<ObjectId>());
+                appNewVoteDao.saveAppVote(appNewVoteEntry);
+                List<String> stringList = appVoteEntry.getVoteContent();
+                if(stringList!=null){
+                    int index = 10;
+                    int i = 0;
+                    appVoteOptionDao.delAllEntry(id);
+                    for(String s:stringList){
+                        index++;
+                        i++;
+                        current = index +current;
+                        List<ObjectId> uids = map.get(i);
+                        if(uids==null){
+                            uids = new ArrayList<ObjectId>();
+                        }
+                        AppVoteOptionEntry appVoteOptionEntry = new AppVoteOptionEntry(
+                                id,
+                                s,
+                                appVoteEntry.getUserId(),
+                                Constant.ONE,
+                                Constant.ONE,
+                                new ArrayList<AttachmentEntry>(),
+                                new ArrayList<AttachmentEntry>(),
+                                new ArrayList<VideoEntry>(),
+                                new ArrayList<AttachmentEntry>(),
+                                uids.size(),
+                                current,
+                                uids);
+                        appVoteOptionDao.saveAppVote(appVoteOptionEntry);
+                    }
+                }
             }
-
             page++;
         }
     }

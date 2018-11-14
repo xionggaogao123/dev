@@ -2240,6 +2240,7 @@ public class IndexPageService {
 //                }
                 Set<ObjectId> set = setMap.get(indexContentEntry.getGroupId());
                 if(set!=null){
+                    set.remove(userId);
                     List<ObjectId> oids2 = indexContentEntry.getReaList();
                     set.removeAll(oids2);
                     dto.setTotalReadCount(set.size()+oids2.size());

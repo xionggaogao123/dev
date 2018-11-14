@@ -983,10 +983,10 @@ public class AppNewVoteService {
 
     public void deleteVote(ObjectId id,ObjectId userId) throws  Exception{
         AppNewVoteEntry appNewVoteEntry = appNewVoteDao.getEntry(id);
-        long current = System.currentTimeMillis();
-        if(current>appNewVoteEntry.getApplyStartTime()+24*60*60*1000){
-            throw new Exception("发布超过24小时的投票无法撤回！");
-        }
+//        long current = System.currentTimeMillis();
+//        if(current>appNewVoteEntry.getApplyStartTime()+24*60*60*1000){
+//            throw new Exception("发布超过24小时的投票无法撤回！");
+//        }
         if(appNewVoteEntry !=null && userId.equals(appNewVoteEntry.getUserId())){
             appNewVoteDao.delEntry(id);
             appVoteOptionDao.delAllEntry(id);

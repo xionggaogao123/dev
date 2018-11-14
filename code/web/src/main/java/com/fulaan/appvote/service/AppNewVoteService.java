@@ -130,12 +130,12 @@ public class AppNewVoteService {
             }
             List<CommunityEntry> communityEntries = communityDao.findByObjectIds(communityIds2);
             List<String> cids = new ArrayList<String>();
-            StringBuffer sb = new StringBuffer();
+            StringBuffer sb2 = new StringBuffer();
             List<ObjectId> groupIds = new ArrayList<ObjectId>();
             List<ObjectId> communityIds = new ArrayList<ObjectId>();
             for(CommunityEntry communityEntry : communityEntries){
-                sb.append(communityEntry.getCommunityName());
-                sb.append("、");
+                sb2.append(communityEntry.getCommunityName());
+                sb2.append("、");
                 cids.add(communityEntry.getID().toString());
                 groupIds.add(communityEntry.getGroupId());
                 communityIds.add(communityEntry.getID());
@@ -146,7 +146,7 @@ public class AppNewVoteService {
                     cids.add(communityId.toString());
                 }
             }
-            sb.substring(0,sb.length()-1);
+            String sb = sb2.toString().substring(0, sb2.length() - 1);
             //新首页记录
             IndexPageDTO dto1 = new IndexPageDTO();
             dto1.setType(CommunityType.newVote.getType());

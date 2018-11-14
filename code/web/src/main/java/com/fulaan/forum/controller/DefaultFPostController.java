@@ -3207,12 +3207,7 @@ public class DefaultFPostController extends BaseController {
         Map<String, Object> map = fMissionService.findTodayMissionByUserId(sessionValue.getId());
         model.put("signIn", map.get("signIn"));
         model.put("userPermission", sessionValue.getUserRole());
-        model.put("userName", sessionValue.getUserName());
-        if ("".equals(sessionValue.getRealName())) {
-            model.put("nickName", sessionValue.getUserName());
-        } else {
-            model.put("nickName", sessionValue.getRealName());
-        }
+
         String temp = request.getParameter("pSectionId");
         if (null != temp && !"".equals(temp)) {
             boolean collect = fCollectionService.isCollected(new ObjectId(sessionValue.getId()), temp);
@@ -3220,6 +3215,13 @@ public class DefaultFPostController extends BaseController {
         }
 
         UserEntry userEntry = userService.findById(new ObjectId(sessionValue.getId()));
+        model.put("userName", sessionValue.getUserName());
+//        if ("".equals(sessionValue.getRealName())) {
+//            model.put("nickName", sessionValue.getUserName());
+//        } else {
+//            model.put("nickName", sessionValue.getRealName());
+//        }
+        model.put("nickName", StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
         IntegralSufferEntry integralSufferEntry = integralSufferService.getEntry(new ObjectId(sessionValue.getId()));
         if(integralSufferEntry!=null){
             model.put("forumScore", integralSufferEntry.getScore());

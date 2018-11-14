@@ -2152,9 +2152,9 @@ public class IndexPageService {
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         //3.获取火热分享
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
-        int role = 1;
+        int role = 2;
         if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
-            role = 2;
+            role = 3;
             if(page==1){
                 superTopicDTOs=getHotList(2);
             }
@@ -2162,7 +2162,7 @@ public class IndexPageService {
                 superTopicDTOs=getEducationList(2);
             }
         }else{
-            role = 1;
+            role = 2;
             if(page==1){
                 superTopicDTOs=getHotList(1);
             }

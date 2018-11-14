@@ -37,6 +37,7 @@ import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.integral.IntegralType;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.NewVersionBindRelationEntry;
+import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -84,7 +85,6 @@ public class AppNewVoteService {
     private FVoteDao fVoteDao = new FVoteDao();
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
-
     @Autowired
     private FVoteService fVoteService;
 
@@ -657,6 +657,11 @@ public class AppNewVoteService {
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         if(teacherApproveEntry !=null && teacherApproveEntry.getType()==2){
             role = 3;//默认老师
+        }else{
+            NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
+            if(newVersionUserRoleEntry!=null && newVersionUserRoleEntry.getNewRole()==2){
+                role = 1;//默认学生
+            }
         }
         if(appNewVoteEntry.getVoteTypeList()==null || !appNewVoteEntry.getVoteTypeList().contains(new Integer(role))){
             throw new Exception("无投票权限");

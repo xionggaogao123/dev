@@ -2100,7 +2100,10 @@ public class IndexPageService {
 //                }
                 Set<ObjectId> set = setMap.get(indexContentEntry.getGroupId());
                 if(set!=null){
-                    dto.setTotalReadCount(set.size()-1);
+                    set.remove(userId);
+                    List<ObjectId> oids2 = indexContentEntry.getReaList();
+                    set.removeAll(oids2);
+                    dto.setTotalReadCount(set.size()+oids2.size());
                 }else{
                     dto.setTotalReadCount(indexContentEntry.getAllCount());
                 }
@@ -2237,8 +2240,11 @@ public class IndexPageService {
 //                }
                 Set<ObjectId> set = setMap.get(indexContentEntry.getGroupId());
                 if(set!=null){
-                    dto.setTotalReadCount(set.size()-1);
+                    List<ObjectId> oids2 = indexContentEntry.getReaList();
+                    set.removeAll(oids2);
+                    dto.setTotalReadCount(set.size()+oids2.size());
                 }else{
+
                     dto.setTotalReadCount(indexContentEntry.getAllCount());
                 }
 

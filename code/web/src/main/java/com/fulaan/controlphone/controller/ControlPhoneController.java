@@ -1744,7 +1744,7 @@ public class ControlPhoneController extends BaseController {
             if(status==0){
                 respObj.setCode(Constant.FAILD_CODE);
                 if(isCheck==1){
-                    respObj.setErrorMessage("您的小孩已进入“校管控”，如需卸载应用，请联系老师！");
+                    respObj.setErrorMessage("您的小孩已进入“校管控”，无法操作！");
                 }else{
                     respObj.setErrorMessage("您的小孩已进入“校管控”，如需推送应用，请联系老师！");
                 }

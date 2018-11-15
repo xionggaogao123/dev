@@ -409,6 +409,11 @@ public class AppNewVoteService {
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         if(teacherApproveEntry !=null && teacherApproveEntry.getType()==2){
             role = 3;//默认老师
+        }else{
+            NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
+            if(newVersionUserRoleEntry!=null && newVersionUserRoleEntry.getNewRole()==2){
+                role = 1;//默认学生
+            }
         }
         //2. 获得投票阶段
         long current = System.currentTimeMillis();
@@ -519,6 +524,11 @@ public class AppNewVoteService {
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         if(teacherApproveEntry !=null && teacherApproveEntry.getType()==2){
             role = 3;//默认老师
+        }else{
+            NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
+            if(newVersionUserRoleEntry!=null && newVersionUserRoleEntry.getNewRole()==2){
+                role = 1;//默认学生
+            }
         }
         //2. 获得投票阶段
         long current = System.currentTimeMillis();
@@ -609,7 +619,7 @@ public class AppNewVoteService {
                     UserEntry userEntry1 = map2.get(oid);
                     if(userEntry1!=null){
                         sb2.append(StringUtils.isNotBlank(userEntry1.getNickName())?userEntry1.getNickName():userEntry1.getUserName());
-                        sb2.append(" ");
+                        sb2.append("、#");
                     }
                 }
             }
@@ -719,6 +729,11 @@ public class AppNewVoteService {
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         if(teacherApproveEntry !=null && teacherApproveEntry.getType()==2){
             role = 3;//默认老师
+        }else{
+            NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
+            if(newVersionUserRoleEntry!=null && newVersionUserRoleEntry.getNewRole()==2){
+                role = 1;//默认学生
+            }
         }
         if(appNewVoteEntry.getApplyTypeList()==null || !appNewVoteEntry.getApplyTypeList().contains(new Integer(role))){
             throw new Exception("无报名权限");
@@ -836,6 +851,11 @@ public class AppNewVoteService {
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         if(teacherApproveEntry !=null && teacherApproveEntry.getType()==2){
             role = 3;//默认老师
+        }else{
+            NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
+            if(newVersionUserRoleEntry!=null && newVersionUserRoleEntry.getNewRole()==2){
+                role = 1;//默认学生
+            }
         }
         //2. 获得投票阶段
         long current = System.currentTimeMillis();

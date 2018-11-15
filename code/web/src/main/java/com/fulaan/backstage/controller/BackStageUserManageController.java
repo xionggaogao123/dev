@@ -608,4 +608,32 @@ public class BackStageUserManageController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * 用户管理重置账号(用户名 也是 手机号)
+     * map 中 mobile
+     * @return
+     */
+    @ApiOperation(value = "用户管理重置账号", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/resetUserMobile")
+    @ResponseBody
+    public RespObj resetUserMobile(@RequestBody Map map){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+//            String mobile = map.get("mobile") == null ?"":map.get("mobile").toString();
+//            if(){
+//
+//            }
+            String result = backStageUserManageService.resetUserMobile(map);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 }

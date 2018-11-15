@@ -13,6 +13,7 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.fcommunity.RemarkDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
+import com.db.mobile.UserMobileDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -57,6 +58,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Auther: taotao.chan
@@ -107,6 +110,10 @@ public class BackStageUserManageService {
     private NewVersionBindRelationDao newVersionBindRelationDao=new NewVersionBindRelationDao();
 
     private ControlShareDao controlShareDao = new ControlShareDao();
+
+    //重置账号
+    private UserMobileDao userMobileDao = new UserMobileDao();
+
 
     public JSONArray getUserRoleOption() {
         JSONArray jsonArray = new JSONArray();
@@ -939,5 +946,38 @@ public class BackStageUserManageService {
             //添加绑定记录到数据库(批量新增)
             newVersionCommunityBindDao.saveEntries(communityBindEntries);
         }
+    }
+
+    /**
+     * 用户管理重置账号
+     * map 中 mobile
+     * @return
+     */
+    public String resetUserMobile(Map map) {
+        String result = "success";
+        String mobile = map.get("mobile") == null ?"":map.get("mobile").toString();
+        if("" == mobile){
+            return "手机号不能为空！";
+        }else{
+            //判断是否是手机号
+            if (!isMobileNO(mobile)){
+                return "手机号不正确！";
+            }else{
+                //开始重置账号
+                //COLLECTION_USER_NAME表重置账号
+                userDao.resetUserMobile(mobile);
+                //COLLECTION_USER_MOBILE表重置账号
+                userMobileDao.resetUserMobile(mobile);
+            }
+        }
+        return result;
+    }
+
+    public static boolean isMobileNO(String mobiles){
+        String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9])|(16[6]))\\d{8}$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(mobiles);
+        boolean isMatch = m.matches();
+        return isMatch;
     }
 }

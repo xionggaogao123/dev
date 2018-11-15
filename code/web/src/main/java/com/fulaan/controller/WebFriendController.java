@@ -71,12 +71,17 @@ public class WebFriendController extends BaseController {
         List<User> userList = friendService.getFrinds(uid);
         List<User> userL = new ArrayList<User>();
         for (User u : userList) {
-            Integer role = newVersionUserRoleDao.getUserRole(new ObjectId(u.getId()));
-            if(role==Constant.ONE||role==Constant.TWO){
-                
-            } else {
-                userL.add(u);
+            try {
+                Integer role = newVersionUserRoleDao.getUserRole(new ObjectId(u.getId()));
+                if(role==Constant.ONE||role==Constant.TWO){
+                    
+                } else {
+                    userL.add(u);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
             }
+            
         }
        // System.out.println(userList.size());
        // long end = System.currentTimeMillis();

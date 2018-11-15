@@ -40,7 +40,7 @@ public class BackStageInOutStorageService {
          * 判断是个人 还是 项目
          */
         String projectId = "";
-        if (map.get("outStorageType") != null && map.get("outStorageType").toString() == "1"){
+        if (map.get("outStorageType") != null && (map.get("outStorageType").toString() == "1" || "1".equals(map.get("outStorageType").toString()))){
             /**
              * 对项目信息新增或者更新
              */

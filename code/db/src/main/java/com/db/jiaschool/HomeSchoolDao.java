@@ -211,6 +211,7 @@ public class HomeSchoolDao extends BaseDao {
         Map<String,Object> map = new HashMap<String, Object>();
         BasicDBObject query = new BasicDBObject()
                 .append("isr", 0); // 未删除
+        query.append("nm", new BasicDBObject(Constant.MONGO_NE, "复兰大学"));//排除复兰大学
         if(schoolType !=0){
             query.append("sty",schoolType);
         }

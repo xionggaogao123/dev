@@ -315,6 +315,18 @@ public class UserDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("nnm", userName).append("ir", Constant.ZERO);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
     }
+    
+    /**
+     * 
+     *〈简述〉统计所有用户总数
+     *〈详细描述〉
+     * @author Administrator
+     * @return
+     */
+    public int countUsers() {
+        BasicDBObject query = new BasicDBObject("ir", Constant.ZERO);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
+    }
 
     /**
      * 更新用户手机

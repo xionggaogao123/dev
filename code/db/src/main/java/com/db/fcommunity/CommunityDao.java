@@ -203,6 +203,17 @@ public class CommunityDao extends BaseDao {
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
         return dbObject == null ? null : new CommunityEntry(dbObject);
     }
+    
+    /**
+     * 查找社群数量
+     *
+     * @param communityName
+     * @return
+     */
+    public Integer countCommunities() {
+        BasicDBObject query = new BasicDBObject("r", Constant.ZERO);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+    }
 
     /**
      * 社团名称:正则查找

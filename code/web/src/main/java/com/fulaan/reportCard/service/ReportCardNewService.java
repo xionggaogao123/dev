@@ -1488,9 +1488,9 @@ public class ReportCardNewService {
         for (ScoreRepresentDto sr : list) {
             if (StringUtils.isNotEmpty(sr.getSubjectId())) {
                 
-                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(sr.getId()),new ObjectId(sr.getGroupExamDetailId()), new ObjectId(sr.getSubjectId()) ,sr.getSubjectName() , sr.getMaxScore(), sr.getScoreOne(), sr.getScoreTwo(), sr.getScoreThree(), sr.getScoreFour(), sr.getScoreFive(), sr.getScoreSix(), sr.getScoreSeven(), sr.getScoreEight(), Integer.valueOf(sr.getSort()), Integer.valueOf(sr.getRepresentNameType())));
+                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(sr.getId()),new ObjectId(sr.getGroupExamDetailId()), new ObjectId(sr.getSubjectId()) ,sr.getSubjectName() , sr.getMaxScore().trim(), sr.getScoreOne().trim(), sr.getScoreTwo().trim(), sr.getScoreThree().trim(), sr.getScoreFour().trim(), sr.getScoreFive().trim(), sr.getScoreSix().trim(), sr.getScoreSeven().trim(), sr.getScoreEight().trim(), Integer.valueOf(sr.getSort()), Integer.valueOf(sr.getRepresentNameType())));
             } else {
-                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(sr.getGroupExamDetailId()), sr.getSubjectName() , sr.getMaxScore(), sr.getScoreOne(), sr.getScoreTwo(), sr.getScoreThree(), sr.getScoreFour(), sr.getScoreFive(), sr.getScoreSix(), sr.getScoreSeven(), sr.getScoreEight(), Integer.valueOf(sr.getSort()), Integer.valueOf(sr.getRepresentNameType()),new ObjectId(sr.getId())));
+                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(sr.getGroupExamDetailId()), sr.getSubjectName() , sr.getMaxScore().trim(), sr.getScoreOne().trim(), sr.getScoreTwo().trim(), sr.getScoreThree().trim(), sr.getScoreFour().trim(), sr.getScoreFive().trim(), sr.getScoreSix().trim(), sr.getScoreSeven().trim(), sr.getScoreEight().trim(), Integer.valueOf(sr.getSort()), Integer.valueOf(sr.getRepresentNameType()),new ObjectId(sr.getId())));
             }
             
         }
@@ -1502,9 +1502,9 @@ public class ReportCardNewService {
         for (ScoreRepresentDto sr : list.getList()) {
             if (StringUtils.isNotEmpty(sr.getSubjectId())) {
                 
-                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(sr.getId()),new ObjectId(sr.getGroupExamDetailId()), new ObjectId(sr.getSubjectId()) ,sr.getSubjectName() , sr.getMaxScore(), sr.getScoreOne(), sr.getScoreTwo(), sr.getScoreThree(), sr.getScoreFour(), sr.getScoreFive(), sr.getScoreSix(), sr.getScoreSeven(), sr.getScoreEight(), Integer.valueOf(sr.getSort()), Integer.valueOf(sr.getRepresentNameType())));
+                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(sr.getId()),new ObjectId(sr.getGroupExamDetailId()), new ObjectId(sr.getSubjectId()) ,sr.getSubjectName() , sr.getMaxScore().trim(), sr.getScoreOne().trim(), sr.getScoreTwo().trim(), sr.getScoreThree().trim(), sr.getScoreFour().trim(), sr.getScoreFive().trim(), sr.getScoreSix().trim(), sr.getScoreSeven().trim(), sr.getScoreEight().trim(), Integer.valueOf(sr.getSort()), Integer.valueOf(sr.getRepresentNameType())));
             } else {
-                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(sr.getGroupExamDetailId()), sr.getSubjectName() , sr.getMaxScore(), sr.getScoreOne(), sr.getScoreTwo(), sr.getScoreThree(), sr.getScoreFour(), sr.getScoreFive(), sr.getScoreSix(), sr.getScoreSeven(), sr.getScoreEight(), Integer.valueOf(sr.getSort()), Integer.valueOf(sr.getRepresentNameType()),new ObjectId(sr.getId())));
+                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(sr.getGroupExamDetailId()), sr.getSubjectName() , sr.getMaxScore().trim(), sr.getScoreOne().trim(), sr.getScoreTwo().trim(), sr.getScoreThree().trim(), sr.getScoreFour().trim(), sr.getScoreFive().trim(), sr.getScoreSix().trim(), sr.getScoreSeven().trim(), sr.getScoreEight().trim(), Integer.valueOf(sr.getSort()), Integer.valueOf(sr.getRepresentNameType()),new ObjectId(sr.getId())));
             }
             
         }

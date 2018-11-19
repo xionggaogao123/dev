@@ -64,13 +64,17 @@ public class GroupExamUserRecordDTO {
         StringBuffer bb = new StringBuffer();
         StringBuffer bbb = new StringBuffer();
         for(String s : g.getScore()) {
-            
-            if (("缺(免)考").equals(s) || ("缺").equals(s)) {
-                s = "-1";
-            } else if (StringUtils.isEmpty(s)) {
+            if (StringUtils.isNotBlank(s)) {
+                if (("缺(免)考").equals(s.trim()) || ("缺").equals(s.trim())) {
+                    s = "-1";
+                } else {
+                    b.append(s.trim()).append(",");
+                }
+            } else {
                 s = "-2";
             }
-            b.append(s).append(",");
+            
+            
         }
         this.scoreStr = b.toString();
         for(Integer t : g.getScoreLevel()) {

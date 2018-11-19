@@ -487,15 +487,15 @@ public class DefaultReportCardNewController extends BaseController {
         if (StringUtils.isBlank(score)) {
             score = "0";
 
-        } else if ("缺".equals(score)) {
+        } else if ("缺".equals(score.trim())) {
             score = "-1";
 
         }
-        if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreTwo()))>=0) {
+        if (new BigDecimal(score.trim()).compareTo(new BigDecimal(s.getScoreTwo().trim()))>=0) {
            
-        } else if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreFour()))>=0) {
+        } else if (new BigDecimal(score.trim()).compareTo(new BigDecimal(s.getScoreFour().trim()))>=0) {
             i =2;
-        } else if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreSix()))>=0) {
+        } else if (new BigDecimal(score.trim()).compareTo(new BigDecimal(s.getScoreSix().trim()))>=0) {
             i = 3;
         } else {
             i = 4;
@@ -508,15 +508,15 @@ public class DefaultReportCardNewController extends BaseController {
         if (StringUtils.isBlank(score)) {
             //score = "0";
             return "-";
-        } else if ("缺".equals(score)) {
+        } else if ("缺".equals(score.trim())) {
             //score = "-1";
             return "-";
         }
-        if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreTwo()))>=0) {
+        if (new BigDecimal(score.trim()).compareTo(new BigDecimal(s.getScoreTwo().trim()))>=0) {
            
-        } else if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreFour()))>=0) {
+        } else if (new BigDecimal(score.trim()).compareTo(new BigDecimal(s.getScoreFour().trim()))>=0) {
             i =2;
-        } else if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreSix()))>=0) {
+        } else if (new BigDecimal(score.trim()).compareTo(new BigDecimal(s.getScoreSix().trim()))>=0) {
             i = 3;
         } else {
             i = 4;

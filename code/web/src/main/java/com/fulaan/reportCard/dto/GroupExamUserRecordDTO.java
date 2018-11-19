@@ -67,11 +67,13 @@ public class GroupExamUserRecordDTO {
             if (StringUtils.isNotBlank(s)) {
                 if (("缺(免)考").equals(s.trim()) || ("缺").equals(s.trim())) {
                     s = "-1";
+                    b.append(s.trim()).append(",");
                 } else {
                     b.append(s.trim()).append(",");
                 }
             } else {
                 s = "-2";
+                b.append(s.trim()).append(",");
             }
             
             

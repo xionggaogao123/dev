@@ -1117,8 +1117,8 @@ public class Constant {
     public static final String COLLECTION_COMMON_QUESTION = "common_question";
     //退换货
     public static final String COLLECTION_MOBILE_RETURN = "mobile_return";
-    //维修价目表
-    public static final String COLLECTION_PHONE_REPAIR_COST_DICTIONARY = "jxm_phone_repair_cost_dictionary";
+//    //维修价目表 合到COLLECTION_MONETARY_GOODS
+//    public static final String COLLECTION_PHONE_REPAIR_COST_DICTIONARY = "jxm_phone_repair_cost_dictionary";
 
     /*************************************小兰手机商城*****************************************/
 

@@ -29,7 +29,8 @@ public class MonetaryGoodsEntry extends BaseDBObject {
                               String style,
                               String name,
                               Double money,
-                              String description) {
+                              String description,
+                              String repairCostPic) {
         BasicDBObject dbObject = new BasicDBObject()
                 .append("avatar", avatar)
                 .append("pic", pic)
@@ -38,6 +39,7 @@ public class MonetaryGoodsEntry extends BaseDBObject {
                 .append("name", name)
                 .append("money", money)
                 .append("desc", description)
+                .append("repairCostPic", repairCostPic)
                 .append("isr", Constant.ZERO);
         setBaseEntry(dbObject);
     }
@@ -48,6 +50,14 @@ public class MonetaryGoodsEntry extends BaseDBObject {
 
     public void setAvatar(String avatar){
         setSimpleValue("avatar",avatar);
+    }
+
+    public String getRepairCostPic(){
+        return getSimpleStringValue("repairCostPic");
+    }
+
+    public void setRepairCostPic(String repairCostPic){
+        setSimpleValue("repairCostPic",repairCostPic);
     }
 
     public String getPic(){

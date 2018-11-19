@@ -1,5 +1,6 @@
 package com.fulaan.lancustom.dto;
 
+import com.pojo.lancustom.MonetaryGoodsEntry;
 import com.pojo.lancustom.PhoneCostEntry;
 
 /**
@@ -12,11 +13,11 @@ public class PhoneCostDto {
     private String model;
     private String costPicUrl;
 
-    public PhoneCostDto(PhoneCostEntry entry){
+    public PhoneCostDto(MonetaryGoodsEntry entry){
         if (entry != null){
             this.id = entry.getID().toString();
-            this.model = entry.getModel();
-            this.costPicUrl = entry.getCostUrl();
+            this.model = entry.getName();
+            this.costPicUrl = entry.getRepairCostPic();
         }
     }
 

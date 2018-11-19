@@ -26,6 +26,9 @@ public class MonetaryGoodsDto {
     //商品简介
     private String description;
 
+    //维修价目表
+    private String repairCostPic;
+
     public MonetaryGoodsDto(){
 
     }
@@ -39,6 +42,7 @@ public class MonetaryGoodsDto {
         this.name = entry.getName();
         this.money = entry.getMoney();
         this.description = entry.getDescription();
+        this.repairCostPic = entry.getRepairCostPic();
     }
 
     public String getId() {
@@ -106,7 +110,15 @@ public class MonetaryGoodsDto {
     }
 
     public MonetaryGoodsEntry buildAddEntry() {
-        MonetaryGoodsEntry entry = new MonetaryGoodsEntry(this.avatar, this.pic, this.label, this.style, this.name, this.money, this.description);
+        MonetaryGoodsEntry entry = new MonetaryGoodsEntry(this.avatar, this.pic, this.label, this.style, this.name, this.money, this.description, this.repairCostPic);
         return entry;
+    }
+
+    public String getRepairCostPic() {
+        return repairCostPic;
+    }
+
+    public void setRepairCostPic(String repairCostPic) {
+        this.repairCostPic = repairCostPic;
     }
 }

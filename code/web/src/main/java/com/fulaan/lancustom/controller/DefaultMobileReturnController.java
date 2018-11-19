@@ -98,43 +98,6 @@ public class DefaultMobileReturnController extends BaseController{
         return respObj;
     }
 
-    @ApiOperation(value = "可维修手机型号列表", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "可维修手机型号列表",response = String.class),
-            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
-            @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/getAllPhoneModel")
-    @ResponseBody
-    public RespObj getAllPhoneModel() {
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try {
-            List<String> list = mobileReturnService.getAllPhoneModel();
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage(list);
-        } catch (Exception e) {
-            // TODO: handle exception
-            respObj.setErrorMessage(e.getMessage());
-        }
-        return respObj;
-    }
-
-    @ApiOperation(value = "当前手机型号价目表", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "可维修手机型号列表",response = String.class),
-            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
-            @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/getCostPicUrlByPhoneModel")
-    @ResponseBody
-    public RespObj getCostPicUrlByPhoneModel(@RequestParam(required = false, defaultValue = "")String phoneModel) {
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try {
-            String s = mobileReturnService.getCostPicUrlByPhoneModel(phoneModel);
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage(s);
-        } catch (Exception e) {
-            // TODO: handle exception
-            respObj.setErrorMessage(e.getMessage());
-        }
-        return respObj;
-    }
 
     @ApiOperation(value = "手机型号维修价目列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "手机型号维修价目列表",response = String.class),

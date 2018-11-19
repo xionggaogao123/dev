@@ -35,11 +35,11 @@ public class MonetaryGoodsDao extends BaseDao {
      * @param pic
      * @param style
      */
-    public void updateGoods(ObjectId objectId, String avatar, String description, String label, Double money, String name, String pic, String style) {
+    public void updateGoods(ObjectId objectId, String avatar, String description, String label, Double money, String name, String pic, String style, String repairCostPic) {
         DBObject query = new BasicDBObject(Constant.ID, objectId);
         BasicDBObject updateValue=new BasicDBObject()
                 .append(Constant.MONGO_SET,new BasicDBObject("avatar",avatar).append("desc",description).append("label", label)
-                        .append("money", money).append("name", name).append("pic", pic).append("style", style));
+                        .append("money", money).append("name", name).append("pic", pic).append("style", style).append("repairCostPic", repairCostPic));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_MONETARY_GOODS,query,updateValue);
     }
 
@@ -98,5 +98,22 @@ public class MonetaryGoodsDao extends BaseDao {
             return new MonetaryGoodsEntry((BasicDBObject) obj);
         }
         return null;
+    }
+
+    /**
+     * 获取所有的商品列表
+     * @return
+     */
+    public List<MonetaryGoodsEntry> getPhoneRepairCostList() {
+        List<MonetaryGoodsEntry> entries = new ArrayList<MonetaryGoodsEntry>();
+
+        BasicDBObject query = new BasicDBObject().append("isr", 0);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_MONETARY_GOODS, query);
+        if (null != dbObjectList && !dbObjectList.isEmpty()) {
+            for (DBObject dbObject : dbObjectList) {
+                entries.add(new MonetaryGoodsEntry(dbObject));
+            }
+        }
+        return entries;
     }
 }

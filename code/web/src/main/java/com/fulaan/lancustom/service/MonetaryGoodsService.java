@@ -25,7 +25,7 @@ public class MonetaryGoodsService {
             MonetaryGoodsEntry entry = dto.buildAddEntry();
             dao.addEntry(entry);
         } else {
-            dao.updateGoods(new ObjectId(dto.getId()),dto.getAvatar(),dto.getDescription(),dto.getLabel(),dto.getMoney(),dto.getName(),dto.getPic(),dto.getStyle());
+            dao.updateGoods(new ObjectId(dto.getId()),dto.getAvatar(),dto.getDescription(),dto.getLabel(),dto.getMoney(),dto.getName(),dto.getPic(),dto.getStyle(), dto.getRepairCostPic());
         }
     }
 

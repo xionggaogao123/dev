@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.db.lancustom.MonetaryGoodsDao;
+import com.fulaan.lancustom.dto.MonetaryGoodsDto;
 import com.fulaan.lancustom.dto.PhoneCostDto;
+import com.pojo.lancustom.MonetaryGoodsEntry;
 import com.pojo.lancustom.PhoneCostEntry;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,8 @@ import com.pojo.lancustom.MobileReturnEntry;
 public class MobileReturnService {
 
     mobileReturnDao mobileReturnDao = new mobileReturnDao();
+
+    MonetaryGoodsDao monetaryGoodsDao = new MonetaryGoodsDao();
     
     @Autowired
     private EBusinessOrderService eBusinessOrderService;
@@ -111,42 +116,17 @@ public class MobileReturnService {
     }
 
     /**
-     * 可维修手机型号列表
-     * @return
-     */
-    public List<String> getAllPhoneModel() {
-        List<PhoneCostEntry> entryList = mobileReturnDao.getAllPhoneModel();
-        List<String> stringList = new ArrayList<String>();
-        if (entryList.size() > 0){
-            for (PhoneCostEntry phoneCostEntry : entryList){
-                stringList.add(phoneCostEntry.getModel());
-            }
-        }
-        return stringList;
-    }
-
-    /**
-     *当前手机型号价目表
-     * @param phoneModel
-     * @return
-     */
-    public String getCostPicUrlByPhoneModel(String phoneModel) {
-        String result = mobileReturnDao.getCostPicUrlByPhoneModel(phoneModel);
-        return result;
-    }
-
-    /**
-     * 手机型号维修价目列表
+     *手机型号维修价目列表
      * @return
      */
     public List<PhoneCostDto> getPhoneRepairCostList() {
-        List<PhoneCostEntry> entryList = mobileReturnDao.getPhoneRepairCostList();
+        List<MonetaryGoodsEntry> list = monetaryGoodsDao.getPhoneRepairCostList();
         List<PhoneCostDto> phoneCostDtos = new ArrayList<PhoneCostDto>();
-        if (entryList.size() > 0){
-            for (PhoneCostEntry phoneCostEntry : entryList){
-                phoneCostDtos.add(new PhoneCostDto(phoneCostEntry));
-            }
+        for (MonetaryGoodsEntry g : list) {
+            PhoneCostDto gd = new PhoneCostDto(g);
+            phoneCostDtos.add(gd);
         }
+
         return phoneCostDtos;
     }
 }

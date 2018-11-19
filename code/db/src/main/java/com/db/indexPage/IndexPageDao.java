@@ -119,7 +119,8 @@ public class IndexPageDao extends BaseDao {
                 .append("isr", Constant.ZERO);
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("typ",type).append("cid", new BasicDBObject(Constant.MONGO_IN, olist)));
-        values.add(new BasicDBObject("typ", Constant.TEN).append("rlt", new BasicDBObject(Constant.MONGO_IN, olist)).append("olt",role));
+        values.add(new BasicDBObject("typ", Constant.TEN).append("rlt", new BasicDBObject(Constant.MONGO_IN, olist)).append("olt", role));
+        values.add(new BasicDBObject("typ", Constant.TEN).append("uid", userId));
         values.add(new BasicDBObject("typ", Constant.NINE).append("rlt", new BasicDBObject(Constant.MONGO_IN, userIds)));
         query.append(Constant.MONGO_OR,values);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query,
@@ -192,6 +193,7 @@ public class IndexPageDao extends BaseDao {
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("typ",type).append("cid", new BasicDBObject(Constant.MONGO_IN, olist)));
         values.add(new BasicDBObject("typ", Constant.TEN).append("rlt", new BasicDBObject(Constant.MONGO_IN, olist)).append("olt", role));
+        values.add(new BasicDBObject("typ", Constant.TEN).append("uid", userId));
         values.add(new BasicDBObject("typ", Constant.NINE).append("rlt", new BasicDBObject(Constant.MONGO_IN, userIds)));
         query.append(Constant.MONGO_OR,values);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query);

@@ -75,7 +75,10 @@ public class AppMarketService {
             "com.android.gallery3d&"+
             "com.freeme.ota&"+
             "com.android.settings&"+
-            "com.freeme.gallery";
+            "com.freeme.gallery&" +
+            "com.myos.videoplayer&" +
+            "com.myos.systemupdate&" +
+            "com.android.calendar";
 
     public void saveAppDetail(AppDetailDTO appDetailDTO, ObjectId userId) {
         appDetailDao.saveAppDetailEntry(appDetailDTO.buildEntry(userId));

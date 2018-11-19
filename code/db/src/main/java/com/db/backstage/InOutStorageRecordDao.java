@@ -83,7 +83,7 @@ public class InOutStorageRecordDao extends BaseDao {
         //出库
         query.append("storageRecordStatus", "5");
 
-        query.append("deliveryMethod", "快递");
+//        query.append("deliveryMethod", "快递");//送货上门也展示
 
         List<String> stringList = new ArrayList<String>();
         stringList.add("");
@@ -135,7 +135,7 @@ public class InOutStorageRecordDao extends BaseDao {
         //出库
         query.append("storageRecordStatus", "5");
 
-        query.append("deliveryMethod", "快递");
+//        query.append("deliveryMethod", "快递");//送货上门也展示
         //发货状态
         List<String> stringList = new ArrayList<String>();
         stringList.add("");
@@ -547,7 +547,7 @@ public class InOutStorageRecordDao extends BaseDao {
         if ("5".equals(storageRecordStatus)){
             //出库
             query.append("storageRecordStatus", "5");
-            query.append("deliveryMethod", "快递");
+//            query.append("deliveryMethod", "快递");//送货上门也展示
             //发货状态
             List<String> stringList = new ArrayList<String>();
             stringList.add("");

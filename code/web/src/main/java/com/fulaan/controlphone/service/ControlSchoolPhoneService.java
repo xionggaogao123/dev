@@ -95,7 +95,7 @@ public class ControlSchoolPhoneService {
             "com.android.settings&"+
             "com.freeme.gallery&" +
             "com.myos.videoplayer&" +
-            "com.myos.systemupdate" +
+            "com.myos.systemupdate&" +
             "com.android.calendar";
     //sugar 系统 应用过滤
     public static final String APP_SYSTEM_PACKAGE_NAME = "com.myos.camera&" +
@@ -104,7 +104,7 @@ public class ControlSchoolPhoneService {
             "com.myos.filemanager&" +
             "com.android.calendar&" +
             "com.myos.videoplayer&" +
-            "com.myos.systemupdate" +
+            "com.myos.systemupdate&" +
             "com.myos.music";
     //音乐
     public static final String APP_MUSIC_PACKAGE_NAME = "com.android.music&com.myos.music";

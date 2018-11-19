@@ -1258,4 +1258,18 @@ public class UserDao extends BaseDao {
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
         return dbo == null ? null : new UserEntry((BasicDBObject) dbo);
     }
+
+    /**
+     * 重置账号
+     * @param mobile
+     */
+    public void resetUserMobile(String mobile) {
+        BasicDBObject query = new BasicDBObject("nm", mobile);
+        BasicDBObject updateValue = new BasicDBObject();
+        updateValue.append("nm", mobile+"0");
+        updateValue.append("mn", mobile+"0");
+        BasicDBObject update = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+    }
 }

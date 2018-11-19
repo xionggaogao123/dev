@@ -49,4 +49,14 @@ public class UserMobileDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("mob", mobile);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_MOBILE, query);
     }
+
+    /**
+     * 账号重置
+     * @param mobile
+     */
+    public void resetUserMobile(String mobile) {
+        BasicDBObject query = new BasicDBObject("mob", mobile);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("mob", mobile+"0"));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_MOBILE, query, update);
+    }
 }

@@ -10,7 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by scott on 2017/8/28.
@@ -122,6 +124,44 @@ public class NewVersionBindRelationDao extends BaseDao{
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new NewVersionBindRelationEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+    public Map<ObjectId,String> getAllSonEntriesByMainUserId(
+            ObjectId mainUserId
+    ){
+        Map<ObjectId,String> entries
+                =new HashMap<ObjectId, String>();
+        BasicDBObject query = new BasicDBObject()
+                .append("muid",mainUserId)
+                .append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                NewVersionBindRelationEntry newVersionBindRelationEntry = new NewVersionBindRelationEntry(dbObject);
+                entries.put(newVersionBindRelationEntry.getUserId(),newVersionBindRelationEntry.getUserName());
+            }
+        }
+        return entries;
+    }
+
+    public Map<ObjectId,String> getCommunitySonEntriesByMainUserId(
+            List<ObjectId> userIds
+    ){
+        Map<ObjectId,String> entries
+                =new HashMap<ObjectId, String>();
+        BasicDBObject query = new BasicDBObject()
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("ir", Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                NewVersionBindRelationEntry newVersionBindRelationEntry = new NewVersionBindRelationEntry(dbObject);
+                entries.put(newVersionBindRelationEntry.getUserId(),newVersionBindRelationEntry.getUserName());
             }
         }
         return entries;

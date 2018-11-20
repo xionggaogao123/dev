@@ -903,6 +903,11 @@ public class AppCommentService {
             }
         }
         List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(uids);
+        List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+        for(String st3:uids){
+            nameObjectIdList.add(new ObjectId(st3));
+        }
+        Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
         Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
         if(udtos2 != null && udtos2.size()>0){
             for(UserDetailInfoDTO dto4 : udtos2){
@@ -921,6 +926,10 @@ public class AppCommentService {
             UserDetailInfoDTO dto9 = map3.get(dto5.getUserId());
             if(dto9 != null){
                 String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                String newName = nameMap.get(new ObjectId(dto5.getUserId()));
+                if(newName!=null && !newName.equals("")){
+                    name = newName;
+                }
                 dto5.setUserName(name);
                 dto5.setUserUrl(dto9.getImgUrl());
             }
@@ -929,12 +938,20 @@ public class AppCommentService {
             UserDetailInfoDTO dto10 = map3.get(dto6.getUserId());
             if(dto10 != null){
                 String name = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                String newName = nameMap.get(new ObjectId(dto6.getUserId()));
+                if(newName!=null && !newName.equals("")){
+                    name = newName;
+                }
                 dto6.setUserName(name);
                 dto6.setUserUrl(dto10.getImgUrl());
             }
             if(dto6.getBackId() != null && dto6.getBackId() != "" && map3.get(dto6.getBackId())!= null){
                 UserDetailInfoDTO dto11 = map3.get(dto6.getBackId());
                 String name2 = StringUtils.isNotEmpty(dto11.getNickName())?dto11.getNickName():dto11.getUserName();
+                String newName2 = nameMap.get(new ObjectId(dto6.getBackId()));
+                if(newName2!=null && !newName2.equals("")){
+                    name2 = newName2;
+                }
                 dto6.setBackName(name2);
             }
         }
@@ -1077,6 +1094,11 @@ public class AppCommentService {
             }
         }
         List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(uids);
+        List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+        for(String st3:uids){
+            nameObjectIdList.add(new ObjectId(st3));
+        }
+        Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
         Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
         if(udtos2 != null && udtos2.size()>0){
             for(UserDetailInfoDTO dto4 : udtos2){
@@ -1095,6 +1117,10 @@ public class AppCommentService {
             UserDetailInfoDTO dto9 = map3.get(dto5.getUserId());
             if(dto9 != null){
                 String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                String newName = nameMap.get(new ObjectId(dto5.getUserId()));
+                if(newName!=null && !newName.equals("")){
+                    name = newName;
+                }
                 dto5.setUserName(name);
                 dto5.setUserUrl(dto9.getImgUrl());
             }
@@ -1103,12 +1129,20 @@ public class AppCommentService {
             UserDetailInfoDTO dto10 = map3.get(dto6.getUserId());
             if(dto10 != null){
                 String name = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                String newName = nameMap.get(new ObjectId(dto6.getUserId()));
+                if(newName!=null && !newName.equals("")){
+                    name = newName;
+                }
                 dto6.setUserName(name);
                 dto6.setUserUrl(dto10.getImgUrl());
             }
             if(dto6.getBackId() != null && dto6.getBackId() != "" && map3.get(dto6.getBackId())!= null){
                 UserDetailInfoDTO dto11 = map3.get(dto6.getBackId());
                 String name2 = StringUtils.isNotEmpty(dto11.getNickName())?dto11.getNickName():dto11.getUserName();
+                String newName2 = nameMap.get(new ObjectId(dto6.getBackId()));
+                if(newName2!=null && !newName2.equals("")){
+                    name2 = newName2;
+                }
                 dto6.setBackName(name2);
             }
         }
@@ -1183,6 +1217,11 @@ public class AppCommentService {
             }
         }
         List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(uids);
+        List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+        for(String st3:uids){
+            nameObjectIdList.add(new ObjectId(st3));
+        }
+        Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
         Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
         if(udtos2 != null && udtos2.size()>0){
             for(UserDetailInfoDTO dto4 : udtos2){
@@ -1201,6 +1240,10 @@ public class AppCommentService {
             UserDetailInfoDTO dto9 = map3.get(dto5.getUserId());
             if(dto9 != null){
                 String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                String newName = nameMap.get(new ObjectId(dto5.getUserId()));
+                if(newName!=null&& !newName.equals("")){
+                    name=newName;
+                }
                 dto5.setUserName(name);
                 dto5.setUserUrl(dto9.getImgUrl());
             }
@@ -1209,12 +1252,20 @@ public class AppCommentService {
             UserDetailInfoDTO dto10 = map3.get(dto6.getUserId());
             if(dto10 != null){
                 String name = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                String newName = nameMap.get(new ObjectId(dto6.getUserId()));
+                if(newName!=null&& !newName.equals("")){
+                    name=newName;
+                }
                 dto6.setUserName(name);
                 dto6.setUserUrl(dto10.getImgUrl());
             }
             if(dto6.getBackId() != null && dto6.getBackId() != "" && map3.get(dto6.getBackId())!= null){
                 UserDetailInfoDTO dto11 = map3.get(dto6.getBackId());
                 String name2 = StringUtils.isNotEmpty(dto11.getNickName())?dto11.getNickName():dto11.getUserName();
+                String newName2 = nameMap.get(new ObjectId(dto6.getBackId()));
+                if(newName2!=null&& !newName2.equals("")){
+                    name2=newName2;
+                }
                 dto6.setBackName(name2);
             }
         }
@@ -2133,6 +2184,11 @@ public class AppCommentService {
         }
 
         List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+        for(String st3:uids){
+            nameObjectIdList.add(new ObjectId(st3));
+        }
+        Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
         Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
         if(udtos != null && udtos.size()>0){
             for(UserDetailInfoDTO dto4 : udtos){
@@ -2152,12 +2208,20 @@ public class AppCommentService {
             UserDetailInfoDTO dto9 = map.get(dto5.getUserId());
             if(dto9 != null) {
                 String name = StringUtils.isNotEmpty(dto9.getNickName()) ? dto9.getNickName() : dto9.getUserName();
+                String newName = nameMap.get(new ObjectId(dto5.getUserId()));
+                if(newName!=null && !newName.equals("")){
+                    name = newName;
+                }
                 dto5.setUserName(name);
                 dto5.setUserUrl(dto9.getImgUrl());
             }
             if(dto5.getBackId() != null && dto5.getBackId() != "" && map.get(dto5.getBackId())!= null){
                 UserDetailInfoDTO dto10 = map.get(dto5.getBackId());
                 String name2 = StringUtils.isNotEmpty(dto10.getNickName()) ? dto10.getNickName() : dto10.getUserName();
+                String newName2 = nameMap.get(new ObjectId(dto5.getBackId()));
+                if(newName2!=null && !newName2.equals("")){
+                    name2 = newName2;
+                }
                 dto5.setBackName(name2);
             }
         }
@@ -2218,6 +2282,11 @@ public class AppCommentService {
             }
         }
         List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+        for(String st3:uids){
+            nameObjectIdList.add(new ObjectId(st3));
+        }
+        Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
         Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
         if(udtos != null && udtos.size()>0){
             for(UserDetailInfoDTO dto4 : udtos){
@@ -2228,12 +2297,20 @@ public class AppCommentService {
             UserDetailInfoDTO dto9 = map.get(dto5.getUserId());
             if(dto9 != null){
                 String name = StringUtils.isNotEmpty(dto9.getNickName()) ? dto9.getNickName() : dto9.getUserName();
+                String newName = nameMap.get(new ObjectId(dto5.getUserId()));
+                if(newName!=null && !newName.equals("")){
+                    name = newName;
+                }
                 dto5.setUserName(name);
                 dto5.setUserUrl(dto9.getImgUrl());
             }
             if(dto5.getBackId() != null && dto5.getBackId() != "" && map.get(dto5.getBackId())!= null){
                 UserDetailInfoDTO dto10 = map.get(dto5.getBackId());
                 String name2 = StringUtils.isNotEmpty(dto10.getNickName()) ? dto10.getNickName() : dto10.getUserName();
+                String newName2 = nameMap.get(new ObjectId(dto5.getBackId()));
+                if(newName2!=null && !newName2.equals("")){
+                    name2 = newName2;
+                }
                 dto5.setBackName(name2);
             }
         }
@@ -2288,6 +2365,11 @@ public class AppCommentService {
             }
         }
         List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+        for(String st3:uids){
+            nameObjectIdList.add(new ObjectId(st3));
+        }
+        Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
         Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
         if(udtos != null && udtos.size()>0){
             for(UserDetailInfoDTO dto4 : udtos){
@@ -2309,12 +2391,20 @@ public class AppCommentService {
             UserDetailInfoDTO dto9 = map.get(dto5.getUserId());
             if(dto9 != null){
                 String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                String newName = nameMap.get(new ObjectId(dto5.getUserId()));
+                if(newName!=null && !newName.equals("")){
+                    name = newName;
+                }
                 dto5.setUserName(name);
                 dto5.setUserUrl(dto9.getImgUrl());
             }
             if(dto5.getBackId() != null && dto5.getBackId() != "" && map.get(dto5.getBackId())!= null){
                 UserDetailInfoDTO dto10 = map.get(dto5.getBackId());
                 String name2 = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                String newName2 = nameMap.get(new ObjectId(dto5.getBackId()));
+                if(newName2!=null && !newName2.equals("")){
+                    name2 = newName2;
+                }
                 dto5.setBackName(name2);
             }
         }
@@ -2966,17 +3056,13 @@ public class AppCommentService {
     public List<Map<String,Object>> getNewMyCommunityChildList(ObjectId userId,ObjectId communityId,ObjectId contactId){
         List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
         List<NewVersionCommunityBindEntry> entries = newVersionBindService.getCommunityAndMainUserId(communityId, userId);
-        List<NewVersionBindRelationEntry> newVersionBindRelationEntries = newVersionBindRelationDao.getEntriesByMainUserId(userId);
+        Map<ObjectId,String> nameMap = newVersionBindRelationDao.getAllSonEntriesByMainUserId(userId);
         if(entries.size()>0){
             List<ObjectId> oids = new ArrayList<ObjectId>();
             List<String> stringList = new ArrayList<String>();
-            Map<ObjectId,String> nameMap = new HashMap<ObjectId, String>();
             for(NewVersionCommunityBindEntry entry :entries){
                 oids.add(entry.getUserId());
                 stringList.add(entry.getUserId().toString());
-            }
-            for(NewVersionBindRelationEntry newVersionBindRelationEntry:newVersionBindRelationEntries){
-                nameMap.put(newVersionBindRelationEntry.getUserId(),newVersionBindRelationEntry.getUserName());
             }
             List<ObjectId> objectIdLists = appOperationDao.getEntryMap(oids,contactId, 3);
             List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(stringList);
@@ -3250,6 +3336,12 @@ public class AppCommentService {
 
 
             List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(objectIdList);
+            List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+            for(String st3:objectIdList){
+                nameObjectIdList.add(new ObjectId(st3));
+            }
+            Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
+
             Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
             if(udtos2 != null && udtos2.size()>0){
                 for(UserDetailInfoDTO dto4 : udtos2){
@@ -3270,6 +3362,10 @@ public class AppCommentService {
                     UserDetailInfoDTO dto9 = map3.get(en.getUserId().toString());
                     if(dto9 != null){
                         String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                        String newName = nameMap.get(en.getUserId());
+                        if(newName!=null && !newName.equals("")){
+                            name = newName;
+                        }
                         dto.setUserName(name);
                         dto.setUserUrl(dto9.getImgUrl());
                     }
@@ -3283,12 +3379,20 @@ public class AppCommentService {
                             UserDetailInfoDTO dto10 = map3.get(dto1.getUserId());
                             if(dto10 != null){
                                 String name2 = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                                String newName2 = nameMap.get(new ObjectId(dto1.getUserId()));
+                                if(newName2!=null && !newName2.equals("")){
+                                    name2 = newName2;
+                                }
                                 dto1.setUserName(name2);
                                 dto1.setUserUrl(dto10.getImgUrl());
                             }
                             if(dto1.getBackId() != null && dto1.getBackId() != "" && map3.get(dto1.getBackId())!= null){
                                 UserDetailInfoDTO dto11 = map3.get(dto1.getBackId());
                                 String name3 = StringUtils.isNotEmpty(dto11.getNickName())?dto11.getNickName():dto11.getUserName();
+                                String newName3 = nameMap.get(new ObjectId(dto1.getBackId()));
+                                if(newName3!=null && !newName3.equals("")){
+                                    name3 = newName3;
+                                }
                                 dto1.setBackName(name3);
                             }
                             dtoList.add(dto1);
@@ -3329,6 +3433,11 @@ public class AppCommentService {
                 //UserDetailInfoDTO userInfo = userService.getUserInfoById(sonId.toString());
 
                 List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(objectIdList);
+                List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+                for(String st3:objectIdList){
+                    nameObjectIdList.add(new ObjectId(st3));
+                }
+                Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
                 Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
                 if(udtos2 != null && udtos2.size()>0){
                     for(UserDetailInfoDTO dto4 : udtos2){
@@ -3351,6 +3460,10 @@ public class AppCommentService {
                         UserDetailInfoDTO userInfo = map3.get(en.getUserId().toString());
                         if(userInfo != null){
                             String name = StringUtils.isNotEmpty(userInfo.getNickName())?userInfo.getNickName():userInfo.getUserName();
+                            String newName = nameMap.get(en.getUserId());
+                            if(newName!=null && !newName.equals("")){
+                                name = newName;
+                            }
                             dto.setUserName(name);
                             dto.setUserUrl(userInfo.getImgUrl());
                         }
@@ -3364,12 +3477,20 @@ public class AppCommentService {
                                 UserDetailInfoDTO dto10 = map3.get(dto1.getUserId());
                                 if(dto10 != null){
                                     String name2 = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                                    String newName2 = nameMap.get(new ObjectId(dto1.getUserId()));
+                                    if(newName2!=null && !newName2.equals("")){
+                                        name2 = newName2;
+                                    }
                                     dto1.setUserName(name2);
                                     dto1.setUserUrl(dto10.getImgUrl());
                                 }
                                 if(dto1.getBackId() != null && dto1.getBackId() != "" && map3.get(dto1.getBackId())!= null){
                                     UserDetailInfoDTO dto11 = map3.get(dto1.getBackId());
                                     String name3 = StringUtils.isNotEmpty(dto11.getNickName())?dto11.getNickName():dto11.getUserName();
+                                    String newName3 = nameMap.get(new ObjectId(dto1.getBackId()));
+                                    if(newName3!=null && !newName3.equals("")){
+                                        name3 = newName3;
+                                    }
                                     dto1.setBackName(name3);
                                 }
                                 dtoList.add(dto1);

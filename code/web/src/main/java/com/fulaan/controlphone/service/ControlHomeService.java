@@ -1,11 +1,17 @@
 package com.fulaan.controlphone.service;
 
 import com.db.controlphone.ControlHomeTimeDao;
+import com.db.controlphone.ControlVersionDao;
+import com.fulaan.mqtt.MQTTSendMsg;
 import com.pojo.controlphone.ControlHomeTimeEntry;
+import com.pojo.controlphone.ControlVersionEntry;
+import com.pojo.controlphone.MQTTType;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +23,8 @@ import java.util.Map;
 public class ControlHomeService {
 
     private ControlHomeTimeDao controlHomeTimeDao = new ControlHomeTimeDao();
+
+    private ControlVersionDao controlVersionDao = new ControlVersionDao();
 
 
 
@@ -77,9 +85,31 @@ public class ControlHomeService {
                     weekHour*60000);
             controlHomeTimeDao.addEntry(controlHomeTimeEntry1);
         }
+        //向学生端推送消息
+        long current=System.currentTimeMillis();
+        try {
+            MQTTSendMsg.sendMessage(MQTTType.mi.getEname(), sonId.toString(), current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.mi.getEname();
+            this.addControlVersion(sonId,userId,scontent,2);
+        }catch (Exception e){
+
+        }
 
     }
-
+    //添加社区发出版本（老师和家长通用）
+    public void addControlVersion(ObjectId communityId,ObjectId userId,String version,int type){
+        ControlVersionEntry entry = controlVersionDao.getEntry(communityId,userId, type);
+        if(entry!=null){
+            entry.setVersion(version);
+            entry.setDateTime(new Date().getTime());
+            controlVersionDao.addEntry(entry);
+        }else{
+            ControlVersionEntry controlVersionEntry = new ControlVersionEntry(communityId,userId,version,1,type);
+            controlVersionDao.addEntry(controlVersionEntry);
+        }
+    }
 
     public Map<String,Object> getHomeEntryList(ObjectId parentId,ObjectId sonId){
         Map<String,Object> map = new HashMap<String, Object>();

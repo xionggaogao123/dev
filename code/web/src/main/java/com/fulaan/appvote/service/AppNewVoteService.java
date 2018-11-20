@@ -676,7 +676,13 @@ public class AppNewVoteService {
         if(appNewVoteEntry.getVoteTypeList()==null || !appNewVoteEntry.getVoteTypeList().contains(new Integer(role))){
             throw new Exception("无投票权限");
         }
-
+        long current = System.currentTimeMillis();
+        if(appNewVoteEntry.getVoteStartTime()>current){
+            throw new Exception("投票未开始");
+        }
+        if(appNewVoteEntry.getVoteEndTime()<current){
+            throw new Exception("投票已结束");
+        }
         List<ObjectId> appVoteUserList = new ArrayList<ObjectId>();
         if(appNewVoteEntry.getVoteUesrList()!=null){
             appVoteUserList = appNewVoteEntry.getVoteUesrList();
@@ -737,6 +743,15 @@ public class AppNewVoteService {
         }
         if(appNewVoteEntry.getApplyTypeList()==null || !appNewVoteEntry.getApplyTypeList().contains(new Integer(role))){
             throw new Exception("无报名权限");
+        }
+        if(appNewVoteEntry.getType()==2){
+            long current = System.currentTimeMillis();
+            if(appNewVoteEntry.getApplyStartTime()>current){
+                throw new Exception("报名未开始");
+            }
+            if(appNewVoteEntry.getApplyEndTime()<current){
+                throw new Exception("报名已结束");
+            }
         }
         List<ObjectId> applyUserList = new ArrayList<ObjectId>();
         if(appNewVoteEntry.getApplyUserList()!=null){

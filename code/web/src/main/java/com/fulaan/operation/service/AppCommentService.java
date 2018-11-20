@@ -2966,12 +2966,17 @@ public class AppCommentService {
     public List<Map<String,Object>> getNewMyCommunityChildList(ObjectId userId,ObjectId communityId,ObjectId contactId){
         List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
         List<NewVersionCommunityBindEntry> entries = newVersionBindService.getCommunityAndMainUserId(communityId, userId);
+        List<NewVersionBindRelationEntry> newVersionBindRelationEntries = newVersionBindRelationDao.getEntriesByMainUserId(userId);
         if(entries.size()>0){
             List<ObjectId> oids = new ArrayList<ObjectId>();
             List<String> stringList = new ArrayList<String>();
+            Map<ObjectId,String> nameMap = new HashMap<ObjectId, String>();
             for(NewVersionCommunityBindEntry entry :entries){
                 oids.add(entry.getUserId());
                 stringList.add(entry.getUserId().toString());
+            }
+            for(NewVersionBindRelationEntry newVersionBindRelationEntry:newVersionBindRelationEntries){
+                nameMap.put(newVersionBindRelationEntry.getUserId(),newVersionBindRelationEntry.getUserName());
             }
             List<ObjectId> objectIdLists = appOperationDao.getEntryMap(oids,contactId, 3);
             List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(stringList);
@@ -2986,6 +2991,10 @@ public class AppCommentService {
                 UserDetailInfoDTO dto9 = map.get(str);
                 if(dto9 != null){
                     String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                    String name2 = nameMap.get(new ObjectId(str));
+                    if(name2!=null && !name2.equals("")){
+                        name = name2;
+                    }
                     stringObjectMap.put("userId",str);
                     stringObjectMap.put("imgUrl",dto9.getImgUrl());
                     stringObjectMap.put("userName",name);

@@ -91,4 +91,12 @@ public class CommonQuestionEntry extends BaseDBObject {
     public void setType(int isRemove){
         setSimpleValue("type",isRemove);
     }
+
+    public String getClasses(){
+        return getSimpleStringValue("classes");
+    }
+
+    public void setClasses(String classes){
+        setSimpleValue("classes",classes);
+    }
 }

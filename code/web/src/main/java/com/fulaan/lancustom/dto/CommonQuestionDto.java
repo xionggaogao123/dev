@@ -42,20 +42,41 @@ public class CommonQuestionDto {
             this.answer = c.getAnswer();
             this.pid = c.getPid() == null?"":c.getPid().toString();
             this.type = c.getType();
-            if (c.getType() == 1) {
-                this.typee = "账号及登录问题";
-            } else if (c.getType() == 2) {
-                this.typee = "关联孩子问题";
-            } else if (c.getType() == 3) {
-                this.typee = "作业使用问题";
-            } else if (c.getType() == 4) {
-                this.typee = "成绩单使用问题";
-            } else if (c.getType() == 5) {
-                this.typee = "效管控使用问题";
-            } else if (c.getType() == 6) {
-                this.typee = "家管控使用问题";
-            } else {
-                this.typee = "其他问题";
+
+//            if (c.getType() == 1) {
+//                this.typee = "账号及登录问题";
+//            } else if (c.getType() == 2) {
+//                this.typee = "关联孩子问题";
+//            } else if (c.getType() == 3) {
+//                this.typee = "作业使用问题";
+//            } else if (c.getType() == 4) {
+//                this.typee = "成绩单使用问题";
+//            } else if (c.getType() == 5) {
+//                this.typee = "效管控使用问题";
+//            } else if (c.getType() == 6) {
+//                this.typee = "家管控使用问题";
+//            } else {
+//                this.typee = "其他问题";
+//            }
+            //新版本要编辑模块名称
+            if (c.getClasses() != null){
+                this.typee = c.getClasses();
+            }else {
+                if (c.getType() == 1) {
+                    this.typee = "账号及登录问题";
+                } else if (c.getType() == 2) {
+                    this.typee = "关联孩子问题";
+                } else if (c.getType() == 3) {
+                    this.typee = "作业使用问题";
+                } else if (c.getType() == 4) {
+                    this.typee = "成绩单使用问题";
+                } else if (c.getType() == 5) {
+                    this.typee = "效管控使用问题";
+                } else if (c.getType() == 6) {
+                    this.typee = "家管控使用问题";
+                } else {
+                    this.typee = "其他问题";
+                }
             }
         } else {
             new CommonQuestionDto();

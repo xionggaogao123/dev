@@ -20,10 +20,10 @@ public class CommonQuestionDao extends BaseDao {
         return entry.getID();
     }
     
-    public void updateQuestion(ObjectId id, String question, String answer, int type) {
+    public void updateQuestion(ObjectId id, String question, String answer, int type, String classes) {
         DBObject query = new BasicDBObject(Constant.ID, id);
         BasicDBObject updateValue=new BasicDBObject()
-            .append(Constant.MONGO_SET,new BasicDBObject("question",question).append("answer",answer).append("type", type));
+            .append(Constant.MONGO_SET,new BasicDBObject("question",question).append("answer",answer).append("type", type).append("classes", classes));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_COMMON_QUESTION,query,updateValue);
     }
     

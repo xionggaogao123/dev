@@ -63,7 +63,7 @@ public class CommonQuestionService {
             CommonQuestionEntry entry = dto.buildAddEntry();
             commonQuestionDao.addEntry(entry);
         } else {
-            commonQuestionDao.updateQuestion(new ObjectId(dto.getId()), dto.getQuestion(), dto.getAnswer(), dto.getType());
+            commonQuestionDao.updateQuestion(new ObjectId(dto.getId()), dto.getQuestion(), dto.getAnswer(), dto.getType(), dto.getTypee());
         }
        
     }

@@ -10,6 +10,7 @@ import com.db.fcommunity.MineCommunityDao;
 import com.db.forum.FVoteDao;
 import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
+import com.db.instantmessage.RedDotDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -34,6 +35,7 @@ import com.pojo.forum.FVoteDTO;
 import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
+import com.pojo.instantmessage.RedDotEntry;
 import com.pojo.integral.IntegralType;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.NewVersionBindRelationEntry;
@@ -83,6 +85,8 @@ public class AppNewVoteService {
     private AppVoteDao appVoteDao = new AppVoteDao();
 
     private FVoteDao fVoteDao = new FVoteDao();
+
+    private RedDotDao redDotDao = new RedDotDao();
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     @Autowired
@@ -1025,9 +1029,43 @@ public class AppNewVoteService {
         if(appNewVoteEntry !=null && userId.equals(appNewVoteEntry.getUserId())){
             appNewVoteDao.delEntry(id);
             appVoteOptionDao.delAllEntry(id);
+            IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
             //删除首页记录
             indexPageDao.delEntry(id);
+            if(indexContentEntry!=null){
+                //获取已签到人数
+                List<ObjectId> objectIdList = indexContentEntry.getReaList();
+                //消除多余红点
+                List<ObjectId> communityIds = appNewVoteEntry.getCommunityList();
+                if(communityIds!=null){
+                    List<ObjectId> objectIdList1 = communityDao.getGroupIdsByCommunityIds(communityIds);
+                    if(objectIdList==null){
+                        objectIdList = new ArrayList<ObjectId>();
+                    }
+                    for(ObjectId cid :objectIdList1){
+                        this.updateUser(objectIdList,cid);
+                    }
+                }
+
+            }
+
         }
+    }
+
+    //消除多余红点
+    public void updateUser(final List<ObjectId> objectIds,final ObjectId groupId){
+        new Thread(){
+            public void run() {
+                MemberDao memberDao1 = new MemberDao();
+                List<ObjectId> members=memberDao1.getExtraMemberIds(groupId, objectIds);
+                for(ObjectId objectId:members){
+                    RedDotEntry redDotEntry = redDotDao.getEntryByUserId(objectId,ApplyTypeEn.notice.getType());
+                    if(redDotEntry!=null && redDotEntry.getNewNumber()>0){
+                        redDotDao.updateEntry(redDotEntry.getID(),redDotEntry.getNewNumber()-1);
+                    }
+                }
+            }
+        }.start();
     }
 
     //处理旧数据

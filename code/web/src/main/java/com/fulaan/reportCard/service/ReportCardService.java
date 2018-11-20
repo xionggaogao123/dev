@@ -7,6 +7,7 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.indexPage.WebHomePageDao;
+import com.db.instantmessage.RedDotDao;
 import com.db.operation.AppNoticeDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
@@ -31,6 +32,7 @@ import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
+import com.pojo.instantmessage.RedDotEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
@@ -104,6 +106,8 @@ public class ReportCardService {
     private ModuleTimeDao moduleTimeDao=  new ModuleTimeDao();
 
     private IndexContentDao indexContentDao = new IndexContentDao();
+
+    private RedDotDao redDotDao = new RedDotDao();
 
     public static void main(String[] args) throws Exception {
         ReportCardService reportCardService = new ReportCardService();
@@ -249,6 +253,19 @@ public class ReportCardService {
                     //首页撤回
                     //删除首页记录
                     indexPageDao.delEntry(id);
+                    IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
+                    if(indexContentEntry!=null){
+                        //获取已签到人数
+                        List<ObjectId> objectIdList = indexContentEntry.getReaList();
+                        if(objectIdList==null){
+                            objectIdList = new ArrayList<ObjectId>();
+                        }
+                        //消除多余红点
+                        ObjectId groupId = entry.getGroupId();
+                        //消除多余红点
+                        this.updateUser(objectIdList,groupId);
+
+                    }
                 }else{
                     throw new Exception("已过有效时间!");
                 }
@@ -259,6 +276,21 @@ public class ReportCardService {
 
     }
 
+    //消除多余红点
+    public void updateUser(final List<ObjectId> objectIds,final ObjectId groupId){
+        new Thread(){
+            public void run() {
+                MemberDao memberDao1 = new MemberDao();
+                List<ObjectId> members=memberDao1.getExtraMemberIds(groupId, objectIds);
+                for(ObjectId objectId:members){
+                    RedDotEntry redDotEntry = redDotDao.getEntryByUserId(objectId,ApplyTypeEn.notice.getType());
+                    if(redDotEntry!=null && redDotEntry.getNewNumber()>0){
+                        redDotDao.updateEntry(redDotEntry.getID(),redDotEntry.getNewNumber()-1);
+                    }
+                }
+            }
+        }.start();
+    }
     public Map<String,Object> searchReportCardSignList(ObjectId groupExamDetailId){
         Map<String,Object> result = new HashMap<String,Object>();
         List<User> sign = new ArrayList<User>();

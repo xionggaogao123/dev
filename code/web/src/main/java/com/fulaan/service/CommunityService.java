@@ -1473,17 +1473,24 @@ public class CommunityService {
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
             MemberEntry entry5 = memberMap.get(groupId + "$" + userId);
             if(entry1!=null && entry5!=null){
-                if(entry5.getRole() > entry1.getRole()){
-                    communityDetailDTO.setOperation(1);//权限压制，可删除
+//                if(entry5.getRole() > entry1.getRole()){
+//                    communityDetailDTO.setOperation(1);//权限压制，可删除
+//                }else if(entry.getCommunityUserId().equals(userId)){
+//                    communityDetailDTO.setOperation(1);//发布人相同，可删除
+//                }else{
+//                    communityDetailDTO.setOperation(0);//不可删除
+//                    if(entry1.getRole()==0){//同为普通成员
+//                        if(objectIdList1.contains(userId) && !objectIdList1.contains(entry.getCommunityUserId())){
+//                            communityDetailDTO.setOperation(1);//我是大V        你不是
+//                        }
+//                    }
+//                }
+                if(entry5.getRole() ==2){
+                    communityDetailDTO.setOperation(1);//社长可删除
                 }else if(entry.getCommunityUserId().equals(userId)){
                     communityDetailDTO.setOperation(1);//发布人相同，可删除
                 }else{
-                    communityDetailDTO.setOperation(0);//不可删除
-                    if(entry1.getRole()==0){//同为普通成员
-                        if(objectIdList1.contains(userId) && !objectIdList1.contains(entry.getCommunityUserId())){
-                            communityDetailDTO.setOperation(1);//我是大V        你不是
-                        }
-                    }
+                    communityDetailDTO.setOperation(0);
                 }
             }else{
                 communityDetailDTO.setOperation(0);//不可删除

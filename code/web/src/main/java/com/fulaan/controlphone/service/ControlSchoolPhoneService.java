@@ -1309,6 +1309,10 @@ public class ControlSchoolPhoneService {
         List<ControlHomeTimeEntry>  controlHomeTimeEntries = controlHomeTimeDao.getAllEntryList(parentId, sonId);
         long s1 = 30;
         long s2 = 30;
+        //普通
+        PhoneSchoolTimeDTO dayPhoneSchoolTimeDTO = null;
+        //特殊
+        PhoneSchoolTimeDTO weekPhoneSchoolTimeDTO = null;
         for (ControlHomeTimeEntry entry : controlHomeTimeEntries){
             PhoneSchoolTimeDTO phoneTimeDTO = new PhoneSchoolTimeDTO();
             if(entry.getType()==1){
@@ -1343,7 +1347,81 @@ public class ControlSchoolPhoneService {
             phoneTimeDTO.setBedTime(entry.getBedTimeFrom()+"-"+entry.getBedTimeTo());
             phoneTimeDTO.setStart("");
             phoneTimeDTO.setEnd("");
+            if(entry.getWeek()==1) {
+                dayPhoneSchoolTimeDTO = phoneTimeDTO;
+            }else if(entry.getWeek()==6){
+                weekPhoneSchoolTimeDTO = phoneTimeDTO;
+            }
             phoneTimeDTOs.add(phoneTimeDTO);
+        }
+        //循环设置7天数据
+        for(int j=1;j<8;j++){
+            if(j==1){
+                if(dayPhoneSchoolTimeDTO==null){
+                    PhoneSchoolTimeDTO phoneTimeDTO2 = new PhoneSchoolTimeDTO();
+                    phoneTimeDTO2.setCurrentTime("1");
+                    phoneTimeDTO2.setType(1);
+                    phoneTimeDTO2.setClassTime("07:30-17:30");
+                    phoneTimeDTO2.setBedTime("22:00-07:30");
+                    phoneTimeDTO2.setStart("");
+                    phoneTimeDTO2.setEnd("");
+                    phoneTimeDTOs.add(phoneTimeDTO2);
+                }
+            }else if(j==6){
+                if(weekPhoneSchoolTimeDTO==null){
+                    PhoneSchoolTimeDTO phoneTimeDTO2 = new PhoneSchoolTimeDTO();
+                    phoneTimeDTO2.setCurrentTime("6");
+                    phoneTimeDTO2.setType(1);
+                    phoneTimeDTO2.setClassTime("07:30-07:30");
+                    phoneTimeDTO2.setBedTime("22:00-07:30");
+                    phoneTimeDTO2.setStart("");
+                    phoneTimeDTO2.setEnd("");
+                    phoneTimeDTOs.add(phoneTimeDTO2);
+                }
+            }else{
+                if(j<6){
+                    if(dayPhoneSchoolTimeDTO==null){
+                        PhoneSchoolTimeDTO phoneTimeDTO2 = new PhoneSchoolTimeDTO();
+                        phoneTimeDTO2.setCurrentTime(j+"");
+                        phoneTimeDTO2.setType(1);
+                        phoneTimeDTO2.setClassTime("07:30-17:30");
+                        phoneTimeDTO2.setBedTime("22:00-07:30");
+                        phoneTimeDTO2.setStart("");
+                        phoneTimeDTO2.setEnd("");
+                        phoneTimeDTOs.add(phoneTimeDTO2);
+                    }else{
+                        PhoneSchoolTimeDTO phoneTimeDTO2 = new PhoneSchoolTimeDTO();
+                        phoneTimeDTO2.setCurrentTime(j+"");
+                        phoneTimeDTO2.setType(1);
+                        phoneTimeDTO2.setClassTime(dayPhoneSchoolTimeDTO.getClassTime());
+                        phoneTimeDTO2.setBedTime(dayPhoneSchoolTimeDTO.getBedTime());
+                        phoneTimeDTO2.setStart("");
+                        phoneTimeDTO2.setEnd("");
+                        phoneTimeDTOs.add(phoneTimeDTO2);
+                    }
+
+                }else{
+                    if(weekPhoneSchoolTimeDTO==null){
+                        PhoneSchoolTimeDTO phoneTimeDTO2 = new PhoneSchoolTimeDTO();
+                        phoneTimeDTO2.setCurrentTime(j+"");
+                        phoneTimeDTO2.setType(1);
+                        phoneTimeDTO2.setClassTime("07:30-07:30");
+                        phoneTimeDTO2.setBedTime("22:00-07:30");
+                        phoneTimeDTO2.setStart("");
+                        phoneTimeDTO2.setEnd("");
+                        phoneTimeDTOs.add(phoneTimeDTO2);
+                    }else{
+                        PhoneSchoolTimeDTO phoneTimeDTO2 = new PhoneSchoolTimeDTO();
+                        phoneTimeDTO2.setCurrentTime(j+"");
+                        phoneTimeDTO2.setType(1);
+                        phoneTimeDTO2.setClassTime(weekPhoneSchoolTimeDTO.getClassTime());
+                        phoneTimeDTO2.setBedTime(weekPhoneSchoolTimeDTO.getBedTime());
+                        phoneTimeDTO2.setStart("");
+                        phoneTimeDTO2.setEnd("");
+                        phoneTimeDTOs.add(phoneTimeDTO2);
+                    }
+                }
+            }
         }
         objectMap.put("homeUserTime",s1+"#"+s2);
         //计算生效的结果

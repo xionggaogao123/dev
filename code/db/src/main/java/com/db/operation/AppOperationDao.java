@@ -9,7 +9,9 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by James on 2017/8/25.
@@ -412,5 +414,120 @@ public class AppOperationDao extends BaseDao {
                         Constant.COLLECTION_APP_OPERATION,
                         query);
         return count;
+    }
+
+    /**
+     * 获取待阅留言反馈
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public Map<String,Object> getFeedbackMsgByReadyRead(ObjectId userId, int page, int pageSize) {
+        Map<String,Object> result = new HashMap<String, Object>();
+
+        BasicDBObject query = new BasicDBObject()
+                .append("rol",5)//留言反馈
+                .append("red", new BasicDBObject(Constant.MONGO_NE,1))//未读
+                .append("lev", Constant.ONE)//一级
+                .append("isr", 0); // 未删除
+
+        BasicDBObject queryAll = new BasicDBObject()
+                .append("rol",5)//留言反馈
+                .append("red", new BasicDBObject(Constant.MONGO_NE,1))//未读
+                .append("lev", Constant.ONE)//一级
+                .append("isr", 0); // 未删除
+
+        if (null != userId){
+            query.append("uid",userId);
+        }
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
+        List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppOperationEntry((BasicDBObject) obj));
+            }
+        }
+        result.put("entries", entryList);
+        int count = count(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_OPERATION,query);
+        result.put("count", count);
+        int countAll = count(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_OPERATION,queryAll);
+        result.put("countAll", countAll);
+        return result;
+    }
+
+    /**
+     * 获取已阅留言反馈
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public Map<String,Object> getFeedbackMsgByAlreadyRead(ObjectId userId, int page, int pageSize) {
+        Map<String,Object> result = new HashMap<String, Object>();
+
+        BasicDBObject query = new BasicDBObject()
+                .append("rol",5)//留言反馈
+                .append("red", 1)//已读
+                .append("lev", Constant.ONE)//一级
+                .append("isr", 0); // 未删除
+
+        BasicDBObject queryAll = new BasicDBObject()
+                .append("rol",5)//留言反馈
+                .append("red", 1)//已读
+                .append("lev", Constant.ONE)//一级
+                .append("isr", 0); // 未删除
+
+        if (null != userId){
+            query.append("uid",userId);
+        }
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
+        List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppOperationEntry((BasicDBObject) obj));
+            }
+        }
+        result.put("entries", entryList);
+        int count = count(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_OPERATION,query);
+        result.put("count", count);
+
+        int countAll = count(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_OPERATION,queryAll);
+        result.put("countAll", countAll);
+        return result;
+    }
+
+    //已读评论
+    public void updateAppOperationEntryToRead(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("red",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_OPERATION, query,updateValue);
+    }
+
+    /**
+     * 查看回复
+     * @param parentId
+     * @return
+     */
+    public AppOperationEntry getAnswerEntryByParentId(String parentId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("rol",5)//留言反馈
+                .append("pid",new ObjectId(parentId))//找父问题的答案
+                .append("lev", Constant.TWO)//二级
+                .append("isr", 0); // 未删除
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_OPERATION, query);
+        if (null != dbObject){
+            return new AppOperationEntry((BasicDBObject) dbObject);
+        }else{
+            return null;
+        }
     }
 }

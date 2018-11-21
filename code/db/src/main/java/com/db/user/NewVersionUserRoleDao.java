@@ -98,4 +98,17 @@ public class NewVersionUserRoleDao extends BaseDao{
         }
         return userRoleEntries;
     }
+
+    public Map<ObjectId,NewVersionUserRoleEntry> getEntryMap(List<ObjectId> userIds) {
+        Map<ObjectId,NewVersionUserRoleEntry> result = new HashMap<ObjectId, NewVersionUserRoleEntry>();
+        BasicDBObject query=new BasicDBObject("uid",new BasicDBObject(Constant.MONGO_IN, userIds));
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_USER_ROLE,query);
+        if(dbObjects.size() > 0){
+            for (DBObject dbObject: dbObjects){
+                NewVersionUserRoleEntry entry = new NewVersionUserRoleEntry(dbObject);
+                result.put(entry.getUserId(), entry);
+            }
+        }
+        return result;
+    }
 }

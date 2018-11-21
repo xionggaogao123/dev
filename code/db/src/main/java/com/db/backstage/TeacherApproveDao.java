@@ -9,6 +9,7 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -200,5 +201,22 @@ public class TeacherApproveDao extends BaseDao {
             return new TeacherApproveEntry((BasicDBObject) dbo);
         }
         return null;
+    }
+
+    public Map<ObjectId,TeacherApproveEntry> getTeacherEntryMap(List<ObjectId> userIds) {
+
+        Map<ObjectId,TeacherApproveEntry> result = new HashMap<ObjectId, TeacherApproveEntry>();
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("uid", new BasicDBObject(Constant.MONGO_IN, userIds));
+
+        query.append("typ", 2) .append("role", new BasicDBObject(Constant.MONGO_NE, 1)); //role 不为1的情况
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_TEACHER_APPROVE, query);
+        if (dbObjects.size() > 0) {
+            for (DBObject dbObject : dbObjects){
+                TeacherApproveEntry entry = new TeacherApproveEntry((BasicDBObject) dbObject);
+                result.put(entry.getUserId(), entry);
+            }
+        }
+        return result;
     }
 }

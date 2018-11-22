@@ -5331,7 +5331,7 @@ public class ControlPhoneService {
                     dto.setLevel(5);//匹配
                 }
                 boolean flag = false;
-                String cacheUserKey= CacheHandler.getUserKey(controlVersionEntry2.getUserId().toString());
+                String cacheUserKey= CacheHandler.getUserKey(ddto.getId());
                 if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
                     SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
                     if (null != sv && !sv.isEmpty()) {

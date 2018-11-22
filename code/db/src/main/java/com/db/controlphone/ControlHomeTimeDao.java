@@ -21,9 +21,9 @@ public class ControlHomeTimeDao extends BaseDao {
         return entry.getID().toString() ;
     }
 
-    public ControlHomeTimeEntry getEntry(ObjectId parentId,ObjectId userId,int type){
+    public ControlHomeTimeEntry getEntry(ObjectId parentId,ObjectId userId,int week){
         BasicDBObject query = new BasicDBObject();
-        query.append("isr",Constant.ZERO).append("pid",parentId).append("uid",userId).append("week",type);
+        query.append("isr",Constant.ZERO).append("pid",parentId).append("uid",userId).append("week",week);
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_HOME_CONTROL_TIME, query,Constant.FIELDS);
         if(dbObject!=null){
             return new ControlHomeTimeEntry((BasicDBObject)dbObject);

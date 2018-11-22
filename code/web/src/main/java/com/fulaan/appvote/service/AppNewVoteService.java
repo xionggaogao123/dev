@@ -7,6 +7,7 @@ import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.MineCommunityDao;
+import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.forum.FVoteDao;
 import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
@@ -27,10 +28,7 @@ import com.pojo.appvote.AppNewVoteEntry;
 import com.pojo.appvote.AppVoteEntry;
 import com.pojo.appvote.AppVoteOptionEntry;
 import com.pojo.backstage.TeacherApproveEntry;
-import com.pojo.fcommunity.AttachmentEntry;
-import com.pojo.fcommunity.CommunityEntry;
-import com.pojo.fcommunity.MineCommunityEntry;
-import com.pojo.fcommunity.VideoEntry;
+import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
@@ -89,6 +87,8 @@ public class AppNewVoteService {
     private RedDotDao redDotDao = new RedDotDao();
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
+
+    private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
     @Autowired
     private FVoteService fVoteService;
 
@@ -309,7 +309,8 @@ public class AppNewVoteService {
         List<ObjectId> communityIds =  new ArrayList<ObjectId>();
         NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
         if(communityId==null || communityId.equals("")){
-            communityIds = this.getCommunitys3(newVersionBindRelationEntry.getMainUserId(), 1, 100);
+            List<ObjectId> oids = newVersionCommunityBindDao.getEntries(newVersionBindRelationEntry.getMainUserId(),userId);
+            communityIds.addAll(oids);
         }else{
             communityIds.add(new ObjectId(communityId));
         }

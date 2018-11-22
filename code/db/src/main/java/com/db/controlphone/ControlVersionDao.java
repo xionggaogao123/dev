@@ -39,7 +39,7 @@ public class ControlVersionDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_CONTROL_VERSION,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC);
+                        Constant.MONGO_SORTBY_DESC,0,10);
         List<ControlVersionEntry> entryList = new ArrayList<ControlVersionEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
@@ -65,6 +65,23 @@ public class ControlVersionDao extends BaseDao {
         }
         return entryList;
     }
+    public List<ControlVersionEntry> getNewAllStudentVersionList(List<ObjectId> userIds){
+        BasicDBObject query = new BasicDBObject();
+        query.append("uid",new BasicDBObject(Constant.MONGO_IN,userIds)).append("isr",Constant.ZERO);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_VERSION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ControlVersionEntry> entryList = new ArrayList<ControlVersionEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ControlVersionEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
 
     //个人单查询
     public ControlVersionEntry getEntry(ObjectId userId,int type) {

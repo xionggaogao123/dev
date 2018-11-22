@@ -1303,12 +1303,13 @@ public class ControlSchoolPhoneService {
         map.put("controlApp",mapList);
     }
     //获得家管控时间
-    public void getHomeControlTime(ObjectId parentId,ObjectId sonId,long current,String string,int week,long dateTime,Map<String,Object> objectMap,List<PhoneSchoolTimeDTO> phoneTimeDTOs){
+    public void getHomeControlTime(ObjectId parentId,ObjectId sonId,long current,String string,int week,long dateTime,Map<String,Object> objectMap,List<PhoneSchoolTimeDTO> phoneTimeDTOs,long hotm){
         Map<String,ControlHomeTimeEntry>  map = new HashMap<String, ControlHomeTimeEntry>();
         //查询默认管控
         List<ControlHomeTimeEntry>  controlHomeTimeEntries = controlHomeTimeDao.getAllEntryList(parentId, sonId);
-        long s1 = 30;
-        long s2 = 30;
+
+        long s1 = hotm;
+        long s2 = hotm;
         //普通
         PhoneSchoolTimeDTO dayPhoneSchoolTimeDTO = null;
         //特殊
@@ -1653,6 +1654,7 @@ public class ControlSchoolPhoneService {
             controlTimeDao.addEntry(entry1);
             controlTimeEntry = entry1;
         }
+        long hotm = timecu/60000;
         map.put("time",timecu/60000);
         ControlSetBackEntry setBackEntry = controlSetBackDao.getEntry();
         if(null != setBackEntry){
@@ -1685,7 +1687,7 @@ public class ControlSchoolPhoneService {
         String dateNowStr = sdf.format(zero);
         int week = getWeek(zero);
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
-        map.put("homeUserTime","30#30");
+        map.put("homeUserTime",hotm+"#"+hotm);
         //必须加入系统推荐
         if(trueSchoolIds.size()==0){
             if(controlTimeEntry.getControlType()==2 || controlTimeEntry.getControlType()==0){//以前为校管控或为管控
@@ -1733,7 +1735,7 @@ public class ControlSchoolPhoneService {
 
             //获取默认校管控
             List<PhoneSchoolTimeDTO> phoneTimeDTOs = new ArrayList<PhoneSchoolTimeDTO>();
-            this.getHomeControlTime(parentId,sonId,current, dateNowStr, week, zero, map, phoneTimeDTOs);
+            this.getHomeControlTime(parentId,sonId,current, dateNowStr, week, zero, map, phoneTimeDTOs,hotm);
             map.put("controlList",phoneTimeDTOs);
             //获取默认应用管控
             this.getAppControlTime(entries2,current,map);

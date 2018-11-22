@@ -3,6 +3,8 @@ package com.fulaan.controlphone.controller;
 import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
+import com.fulaan.controlphone.dto.ControlMapDTO;
+import com.fulaan.controlphone.service.ControlPhoneService;
 import com.fulaan.controlphone.service.ControlSchoolPhoneService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
@@ -28,6 +30,8 @@ import java.util.Map;
 public class ControlSchoolController extends BaseController {
     @Autowired
     private ControlSchoolPhoneService controlSchoolPhoneService;
+    @Autowired
+    private ControlPhoneService controlPhoneService;
 
     /**
      * 老师首页加载基础信息
@@ -336,6 +340,54 @@ public class ControlSchoolController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 老师触发学生端上传定位信息
+     */
+    @ApiOperation(value = "家长触发学生端上传定位信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/loadTeacherStudentMap")
+    @ResponseBody
+    public String loadTeacherStudentMap(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            ObjectId parentId = controlPhoneService.getMainUserId(new ObjectId(sonId));
+            controlPhoneService.loadStudentMap(parentId, new ObjectId(sonId));
+            respObj.setMessage("上传中");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("家长触发学生端上传定位信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 获取学生当前地图定位数据
+     */
+    @ApiOperation(value = "获取地图定位数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getTeacherStudentMap")
+    @ResponseBody
+    public String getTeacherStudentMap(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            ObjectId parentId = controlPhoneService.getMainUserId(new ObjectId(sonId));
+            ControlMapDTO controlMapDTO = controlPhoneService.getStudentMap(parentId, new ObjectId(sonId));
+            respObj.setMessage(controlMapDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取学生当前地图定位数据失败!");
         }
         return JSON.toJSONString(respObj);
     }

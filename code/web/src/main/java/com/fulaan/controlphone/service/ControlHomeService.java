@@ -1,9 +1,11 @@
 package com.fulaan.controlphone.service;
 
 import com.db.controlphone.ControlHomeTimeDao;
+import com.db.controlphone.ControlTimeDao;
 import com.db.controlphone.ControlVersionDao;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.pojo.controlphone.ControlHomeTimeEntry;
+import com.pojo.controlphone.ControlTimeEntry;
 import com.pojo.controlphone.ControlVersionEntry;
 import com.pojo.controlphone.MQTTType;
 import com.sys.constants.Constant;
@@ -25,6 +27,8 @@ public class ControlHomeService {
     private ControlHomeTimeDao controlHomeTimeDao = new ControlHomeTimeDao();
 
     private ControlVersionDao controlVersionDao = new ControlVersionDao();
+
+    private ControlTimeDao controlTimeDao = new ControlTimeDao();
 
 
 
@@ -93,6 +97,8 @@ public class ControlHomeService {
             String dateString = formatter.format(new Date(current));
             String scontent = dateString + MQTTType.mi.getEname();
             this.addControlVersion(sonId,userId,scontent,2);
+            controlTimeDao.delEntry(sonId, current);
+
         }catch (Exception e){
 
         }
@@ -120,17 +126,27 @@ public class ControlHomeService {
         map.put("weekStartTime","7:30");
         map.put("weekEndTime","22:00");
         map.put("weekHour","30");
+        boolean fale = false;
         for(ControlHomeTimeEntry controlHomeTimeEntry: controlHomeTimeEntries){
             if(controlHomeTimeEntry.getWeek()==Constant.ONE){//周常
                 map.put("dayStartTime",controlHomeTimeEntry.getSchoolTimeTo());
                 map.put("dayEndTime",controlHomeTimeEntry.getBedTimeFrom());
                 map.put("dayHour",controlHomeTimeEntry.getHour()/60000);
+                fale = true;
             }else if(controlHomeTimeEntry.getWeek()==Constant.SIX){//周末
                 map.put("weekStartTime",controlHomeTimeEntry.getSchoolTimeTo());
                 map.put("weekEndTime",controlHomeTimeEntry.getBedTimeFrom());
                 map.put("weekHour",controlHomeTimeEntry.getHour()/60000);
+                fale = true;
             }else{
 
+            }
+        }
+        if(!fale){
+            ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
+            if(controlTimeEntry != null){
+                map.put("dayHour",controlTimeEntry.getTime()/60000);
+                map.put("weekHour",controlTimeEntry.getTime()/60000);
             }
         }
         return map;

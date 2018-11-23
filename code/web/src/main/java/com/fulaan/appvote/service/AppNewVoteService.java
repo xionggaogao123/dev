@@ -144,9 +144,26 @@ public class AppNewVoteService {
                 groupIds.add(communityEntry.getGroupId());
                 communityIds.add(communityEntry.getID());
             }
+            //角色列表
+            Set<Integer> set = new HashSet<Integer>();
+            set.addAll(appNewVoteEntry.getApplyTypeList());
+            set.addAll(appNewVoteEntry.getVoteTypeList());
+            List<Integer> roleList =  new ArrayList<Integer>();
+            StringBuffer sb3 = new StringBuffer();
+            roleList.addAll(set);
+            if(roleList.contains(new Integer(1))){
+                sb3.append("学生、");
+            }
+            if(roleList.contains(new Integer(2))){
+                sb3.append("家长、");
+            }
+            if(roleList.contains(new Integer(3))){
+                sb3.append("老师、");
+            }
+            String desc3 = sb3.toString().substring(0,sb3.toString().length()-1);
             if(communityIds.size()>0){
                 for(ObjectId communityId : communityIds){
-                    PictureRunNable.addTongzhi(communityId.toString(), appNewVoteDTO.getUserId(), 5);
+                    PictureRunNable.addTongzhi2(communityId.toString(), appNewVoteDTO.getUserId(), 5,desc3);
                     cids.add(communityId.toString());
                 }
             }
@@ -158,12 +175,6 @@ public class AppNewVoteService {
             dto1.setReceiveIdList(cids);
             dto1.setCommunityId(null);
             dto1.setContactId(appNewVoteEntry.getID().toString());
-            //角色列表
-            Set<Integer> set = new HashSet<Integer>();
-            set.addAll(appNewVoteEntry.getApplyTypeList());
-            set.addAll(appNewVoteEntry.getVoteTypeList());
-            List<Integer> roleList =  new ArrayList<Integer>();
-            roleList.addAll(set);
             dto1.setRoleList(roleList);
             IndexPageEntry entry = dto1.buildAddEntry();
             indexPageDao.addEntry(entry);

@@ -122,6 +122,75 @@ public class PictureRunNable{
         }.start();
     }
 
+    public static void addTongzhi2(final String communityId,final String userId,final int type,final String desc) {
+        new Thread(){
+            public void run() {
+
+                System.out.println("新的线程在执行...");
+                EmService emService = new EmService();
+                CommunityDao communityDao = new CommunityDao();
+                MemberDao memberDao =  new MemberDao();
+                UserDao userDao = new UserDao();
+                try{
+                    List<String> targets = new ArrayList<String>();
+                    CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(communityId));
+                    UserEntry userEntry = userDao.findByUserId(new ObjectId(userId));
+                    //接受群组
+                    targets.add(communityEntry.getEmChatId());
+                    //targets.add("5a4c874e3d4df91f36167b5c");
+                    Map<String, String> ext = new HashMap<String, String>();
+                    Map<String, String> sendMessage = new HashMap<String, String>();
+                    //sendMessage.put("type", MsgType.IMG);
+                    //sendMessage.put("url", "https://a1.easemob.com/fulan/fulanmall/chatfiles/2b3ce640-0cb7-11e8-8a92-29b46c527a8a");
+                    //sendMessage.put("filename","operationBook.jpg");
+                    //sendMessage.put("secret","KzzmSgy3EeisbBEBikKn-2bhdi55QYWQdkgC8mYR_o3-LmTX");
+                    sendMessage.put("type", MsgType.TEXT);
+                    String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                    MemberEntry memberEntry = memberDao.getUser(communityEntry.getGroupId(), new ObjectId(userId));
+                    if(memberEntry.getNickName()!=null){
+                        name = memberEntry.getNickName();
+                    }
+                    String str = "社员";
+                    if(memberEntry!=null){
+                        if(memberEntry.getRole()==0){
+                            str = "社员";
+                        }else if(memberEntry.getRole()==1){
+                            str = "副社长";
+                        }else if(memberEntry.getRole()==2){
+                            str = "社长";
+                        }
+                    }
+                    if(type==1){
+                        sendMessage.put("msg", "作业提醒：\n"+str+" "+name+" 发布了一条新作业 \n请各位家长及时查看！");
+                    }else if(type==2){
+                        sendMessage.put("msg", "通知提醒：\n"+str+" "+name+" 发布了一条新通知 \n请各位家长及时查看！");
+                    }else if(type==3){
+                        sendMessage.put("msg", "兴趣社团提醒：\n"+str+" "+name+" 发布了一条新兴趣社团 \n请各位家长及时查看！");
+                    }else if(type==4){
+                        sendMessage.put("msg", "参考资料提醒：\n"+str+" "+name+" 发布了一条新参考资料 \n请各位家长及时查看！");
+                    }else if(type==5){
+                        sendMessage.put("msg", "投票通知提醒：\n"+str+" "+name+" 发布了一条新投票，投票参与者："+desc+" \n请及时查看！");
+                    }else if(type==6){
+                        sendMessage.put("msg", "成绩单提醒：\n"+str+" "+name+" 发布了一条新成绩单 \n请各位家长及时查看！");
+                    }
+                    ext.put("groupStyle","community");
+                    ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
+                    ext.put("nickName", name);
+                    ext.put("userId", userId.toString());
+                    //sendMessage.put("msg", "作业通知：\n社长 张老师 发布了一条新作业 \n请各位家长及时查看！");
+                    emService.sendTextMessage("chatrooms", targets, userId, ext, sendMessage);
+                }catch(Exception e){
+                    logger.error("error",e);
+                }finally {
+                    emService = null;
+                    communityDao = null;
+                    memberDao =  null;
+                    userDao = null;
+                }
+            }
+        }.start();
+    }
+
     public static void send(final String contactId,final String userId,final int function,final int type,final String content) {
         new Thread(){
             public void run() {

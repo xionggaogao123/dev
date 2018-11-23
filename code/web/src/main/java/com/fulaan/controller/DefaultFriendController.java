@@ -6,6 +6,7 @@ import com.fulaan.communityValidate.service.ValidateInfoService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.pojo.User;
+import com.fulaan.systemMessage.service.SystemMessageService;
 import com.fulaan.user.service.UserService;
 import com.pojo.activity.FriendApply;
 import com.sys.constants.Constant;
@@ -49,6 +50,9 @@ public class DefaultFriendController extends BaseController {
         ObjectId uid = getUserId();
         long start = System.currentTimeMillis();
         List<User> userList = friendService.getFrinds(uid);
+        if(userList.size()>1000){
+            SystemMessageService.sendMoreNotice(uid, 2);
+        }
         long end = System.currentTimeMillis();
         System.out.print(end-start);
         respObj.setMessage(userList);

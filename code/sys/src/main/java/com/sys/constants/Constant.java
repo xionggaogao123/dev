@@ -1034,6 +1034,8 @@ public class Constant {
     public static final String COLLECTION_LOG_MESSAGE = "logmessage";
     //系统推送消息
     public static final String COLLECTION_SYSTEM_MESSAGE = "systemmessage";
+    //消息提醒时间记录
+    public static final String COLLECTION_MESSAGE_DATE = "systemmessagedate";
 
     //校本资源表
     public static final String COLLECTION_SCHOOL_BOOK_APP = "schoolBookApp";

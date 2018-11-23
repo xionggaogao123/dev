@@ -28,6 +28,7 @@ import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.*;
 import com.fulaan.referenceData.service.ReferenceDataService;
+import com.fulaan.systemMessage.service.SystemMessageService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.pojo.activity.FriendApplyEntry;
@@ -480,6 +481,9 @@ public class CommunityService {
      * @param uid
      */
     public List<CommunityDTO> getCommunitys(ObjectId uid, int page, int pageSize) {
+        if(pageSize==100){//因为去除复兰社群和复兰大学社群导致社群数量不对的临时处理方法
+            pageSize=102;
+        }
         List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
         List<CommunityDTO> list = new ArrayList<CommunityDTO>();
         List<ObjectId> groupIds=new ArrayList<ObjectId>();
@@ -509,12 +513,18 @@ public class CommunityService {
                 }
             }
         }
+        if(list.size()>=100){//社群数量即将超过100
+            SystemMessageService.sendMoreNotice(uid,1);
+        }
         return list;
     }
     
     
     
     public List<CommunityDTO> getCommunitys4(ObjectId uid, int page, int pageSize) {
+        if(pageSize==100){//因为去除复兰社群和复兰大学社群导致社群数量不对的临时处理方法
+            pageSize=102;
+        }
         List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
         List<CommunityDTO> list = new ArrayList<CommunityDTO>();
         List<ObjectId> groupIds=new ArrayList<ObjectId>();
@@ -543,7 +553,9 @@ public class CommunityService {
                 }
             }
         }
-        
+        if(list.size()>=100){//社群数量即将超过100
+            SystemMessageService.sendMoreNotice(uid,1);
+        }
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
         objectIds.add(uid);
         Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIds, objectIds);
@@ -570,6 +582,9 @@ public class CommunityService {
      * @param uid
      */
     public List<ObjectId> getCommunitys3(ObjectId uid, int page, int pageSize) {
+        if(pageSize==100){//因为去除复兰社群和复兰大学社群导致社群数量不对的临时处理方法
+            pageSize=102;
+        }
         List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
         List<ObjectId> list = new ArrayList<ObjectId>();
         List<ObjectId> communityIds = new ArrayList<ObjectId>();
@@ -579,6 +594,9 @@ public class CommunityService {
         List<CommunityEntry> communityEntries = communityDao.findByNotObjectIds(communityIds);
         for(CommunityEntry communityEntry:communityEntries){
             list.add(communityEntry.getID());
+        }
+        if(list.size()>=100){//社群数量即将超过100
+            SystemMessageService.sendMoreNotice(uid,1);
         }
         return list;
     }
@@ -601,6 +619,9 @@ public class CommunityService {
      * @param uid
      */
     public List<CommunityDTO> getCommunitys2(ObjectId uid, int page, int pageSize) {
+        if(pageSize==100){//因为去除复兰社群和复兰大学社群导致社群数量不对的临时处理方法
+            pageSize=102;
+        }
         List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
         List<CommunityDTO> list = new ArrayList<CommunityDTO>();
         List<ObjectId> groupIds=new ArrayList<ObjectId>();
@@ -625,6 +646,9 @@ public class CommunityService {
                     dto.setHeadImage(entry.getHeadImage());
                 }
             }
+        }
+        if(list.size()>=100){//社群数量即将超过100
+            SystemMessageService.sendMoreNotice(uid,1);
         }
         return list;
     }

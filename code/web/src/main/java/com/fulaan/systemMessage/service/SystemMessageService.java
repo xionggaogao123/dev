@@ -1,6 +1,7 @@
 package com.fulaan.systemMessage.service;
 
 import cn.jpush.api.push.model.audience.Audience;
+import com.db.backstage.MessageDateDao;
 import com.db.backstage.PushMessageDao;
 import com.db.backstage.SystemMessageDao;
 import com.db.backstage.TeacherApproveDao;
@@ -11,6 +12,7 @@ import com.db.excellentCourses.HourClassDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.MineCommunityDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppNewOperationDao;
 import com.db.operation.AppNoticeDao;
@@ -30,6 +32,7 @@ import com.fulaan.systemMessage.dto.AppNewOperationDTO;
 import com.fulaan.systemMessage.dto.SimpleUserDTO;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
+import com.pojo.backstage.MessageDateEntry;
 import com.pojo.backstage.PictureType;
 import com.pojo.backstage.PushMessageEntry;
 import com.pojo.controlphone.ControlSimpleEntry;
@@ -820,6 +823,67 @@ public class SystemMessageService extends BaseService {
         dto1.setContactId(id.toString());
         IndexPageEntry entry = dto1.buildAddEntry();
         indexPageDao.addEntry(entry);
+
+    }
+
+    /**
+     * 发送超限提醒（同步消息提醒）
+     */
+    public static void sendMoreNotice(final ObjectId userId,final int type){
+        new Thread(){
+           public void run() {
+                if(type==1){
+                    MineCommunityDao mineCommunityDao = new MineCommunityDao();
+                   int count = mineCommunityDao.count(userId);
+                   if (count <= 102) {
+                       return;
+                   }
+                }
+                MessageDateDao messageDateDao = new MessageDateDao();
+                MessageDateEntry messageDateEntry = messageDateDao.getEntry(userId, type);
+                long date = 15*24*60*60*1000;
+                long currentTime = System.currentTimeMillis();
+                if(messageDateEntry==null){
+                    messageDateEntry = new MessageDateEntry(userId,type);
+                }else{
+                    long loadTime = currentTime - messageDateEntry.getDateTime();
+                    if(loadTime<date){
+                        return;
+                    }
+                }
+                SystemMessageDao systemMessageDao = new SystemMessageDao();
+                String description = "";
+                if(type==1){//社群
+                    description  = "您的社群数量已超过100，请控制社群数量!";
+                }else if(type==2){//好友
+                    description  = "您的通讯录好友数量已超过1000,请控制好友数量!";
+                }
+                //添加系统信息
+                SystemMessageDTO dto = new SystemMessageDTO();
+                dto.setType(6);
+                dto.setAvatar("");
+                dto.setName("");
+                dto.setFileUrl("");
+                dto.setSourceId("");
+                dto.setContent(description);
+                dto.setFileType(1);
+                dto.setSourceName("");
+                dto.setSourceType(0);
+                dto.setTitle("");
+                String id = systemMessageDao.addEntry(dto.buildAddEntry());
+                IndexPageDao indexPageDao = new IndexPageDao();
+                //添加首页记录
+                IndexPageDTO dto1 = new IndexPageDTO();
+                dto1.setType(CommunityType.system.getType());
+                dto1.setUserId(userId.toString());
+                dto1.setCommunityId(userId.toString());
+                dto1.setContactId(id.toString());
+                IndexPageEntry entry = dto1.buildAddEntry();
+                indexPageDao.addEntry(entry);
+                messageDateEntry.setDateTime(currentTime);
+                messageDateDao.addEntry(messageDateEntry);
+            }
+        }.start();
 
     }
 

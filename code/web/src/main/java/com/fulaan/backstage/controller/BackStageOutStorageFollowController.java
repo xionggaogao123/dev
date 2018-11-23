@@ -197,4 +197,32 @@ public class BackStageOutStorageFollowController extends BaseController {
         return respObj;
     }
 
+
+
+    /**
+     * 出库跟踪-注册绑定IMEI和账号
+     * @param mobile
+     * @param imeiNo
+     * @return
+     */
+    @ApiOperation(value = "出库跟踪-注册绑定IMEI和账号", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/updateOutStorageFollowUserInfo")
+    @ResponseBody
+    public RespObj updateOutStorageFollowUserInfo(@RequestParam("mobile") String mobile,
+                                                  @RequestParam("imeiNo") String imeiNo) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            String result = backStageOutStorageFollowService.updateOutStorageFollowUserInfo(mobile, imeiNo);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 }

@@ -611,4 +611,27 @@ public class InOutStorageRecordDao extends BaseDao {
         }
         return inOutStorageEntry;
     }
+
+    /**
+     * 出库跟踪-注册绑定IMEI和账号
+     * @param mobile
+     * @param imeiNo
+     * @return
+     */
+    public void updateOutStorageFollowUserInfo(String mobile, String imeiNo ,String studentId) {
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",0);
+        query.append("storageRecordStatus","5");//出库
+//        query.append("imeiNo",new BasicDBObject(Constant.MONGO_NE, ""));//imeiNo 不为空
+        query.append("imeiNo", imeiNo);
+
+        BasicDBObject updateParam = new BasicDBObject();
+        updateParam.append("studentMobile", mobile);
+        updateParam.append("studentName", mobile);//初次注册 手机号是姓名
+        updateParam.append("studentId", studentId);
+
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
+    }
 }

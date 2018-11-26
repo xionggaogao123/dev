@@ -7,10 +7,12 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import com.db.backstage.TeacherApproveDao;
+import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
+import com.db.user.UserDao;
 import com.fulaan.count.dto.JxmCountDto;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.jiaschool.service.HomeSchoolService;
@@ -22,6 +24,8 @@ public class CountService {
     
     private SchoolCommunityDao schoolCommunityDao = new SchoolCommunityDao();
     
+    private GroupDao groupDao = new GroupDao();
+    
     private MemberDao memberDao = new MemberDao();
     
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
@@ -29,6 +33,8 @@ public class CountService {
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
     
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
+    
+    private UserDao userDao = new UserDao();
     
     
     /**
@@ -55,8 +61,10 @@ public class CountService {
             //社区数
             List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
             jxmCountDto.setCommunityCount(communityIdList.size());
+            //通过社区id查找群组
+            List<ObjectId> groupIdList = groupDao.getCommunitysIdsList(communityIdList);
             //成员id
-            List<ObjectId> memberList = memberDao.getAllGroupIdsMembers(communityIdList);
+            List<ObjectId> memberList = memberDao.getAllGroupIdsMembers(groupIdList);
             jxmCountDto.setUserCount(memberList.size());
             //大V老师的id
             List<ObjectId> objectIdList = teacherApproveDao.selectMap(memberList);
@@ -67,7 +75,8 @@ public class CountService {
             //学生数量
             Integer stuNum = 0;
             for (ObjectId cId : communityIdList) {
-                stuNum += newVersionCommunityBindDao.countStudentIdListByCommunityId(cId);
+                List<ObjectId> userId = newVersionCommunityBindDao.getStudentListByCommunityId(cId);
+                stuNum += userDao.getStudentNum(userId);
             }
             jxmCountDto.setStudentCount(stuNum);
             

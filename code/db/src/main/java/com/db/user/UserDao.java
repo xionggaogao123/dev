@@ -672,6 +672,14 @@ public class UserDao extends BaseDao {
         }
         return userIdList;
     }
+    //查找所有的学生数量
+    public Integer getStudentNum(List<ObjectId> studentIds) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("_id", new BasicDBObject(Constant.MONGO_IN, studentIds));
+        int num = count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
+       
+        return num;
+    }
 
 
     /**

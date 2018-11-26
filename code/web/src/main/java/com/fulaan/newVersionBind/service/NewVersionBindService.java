@@ -40,6 +40,8 @@ import com.pojo.user.*;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -409,6 +411,36 @@ public class NewVersionBindService {
         }
         return dtos;
     }
+    
+    
+    
+    public void addBindVirtualCommunityNew(String thirdName,
+                                        ObjectId communityId,ObjectId mainUserId){
+      
+        NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
+        if(null!=entry){
+            if(entry.getRemoveStatus()==1){
+                //entry.setNumber(number);
+                VirtualUserEntry virtualUserEntry = virtualUserDao.findByNamesOnly(communityId,thirdName);
+                if(virtualUserEntry!=null && !virtualUserEntry.getUserId().equals(entry.getUserId())){
+                    entry.setUserId(virtualUserEntry.getUserId());
+                }
+                newVersionCommunityBindDao.saveEntry(entry);
+                newVersionCommunityBindDao.updateEntryStatus(entry.getID());
+            }
+        }else{
+            VirtualUserEntry virtualUserEntry = virtualUserDao.findByNamesOnly(communityId,thirdName);
+            if(virtualUserEntry!=null){
+                NewVersionCommunityBindEntry bindEntry = new NewVersionCommunityBindEntry(communityId, mainUserId, virtualUserEntry.getUserId(), thirdName, null);
+                newVersionCommunityBindDao.saveEntry(bindEntry);
+            }else{
+                NewVersionCommunityBindEntry bindEntry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(), thirdName, null);
+                newVersionCommunityBindDao.saveEntry(bindEntry);
+            }
+
+        }
+    }
+    
     public List<NewVersionBindRelationDTO> getAllCommunityBindStudentList(ObjectId mainUserId){
         List<NewVersionBindRelationDTO> dtos = new ArrayList<NewVersionBindRelationDTO>();
         List<NewVersionCommunityBindEntry> entries = newVersionCommunityBindDao.getBindEntries(null,mainUserId);
@@ -421,9 +453,28 @@ public class NewVersionBindService {
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
         Map<ObjectId,CommunityEntry> communityEntryMap=communityDao.findMapInfo(communityIds);
         for(NewVersionCommunityBindEntry entry:entries){
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindRelationEntry(mainUserId, entry.getUserId());
             NewVersionBindRelationDTO dto =new NewVersionBindRelationDTO();
             dto.setBindId(entry.getID().toString());
-            dto.setThirdName(entry.getThirdName());
+            if (StringUtils.isNotBlank(entry.getThirdName())) {
+                dto.setThirdName(entry.getThirdName());
+            } else {
+                if (newVersionBindRelationEntry != null) {
+                    if (StringUtils.isNotBlank(newVersionBindRelationEntry.getUserName())) {
+                        dto.setThirdName(newVersionBindRelationEntry.getUserName());
+                    } else {
+                        UserEntry userEntry = userDao.getUserEntry(newVersionBindRelationEntry.getUserId(), Constant.FIELDS);
+                        if (userEntry != null) {
+                            dto.setThirdName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName() :userEntry.getUserName());
+                        }
+                        
+                    }
+                    
+                    this.addBindVirtualCommunityNew(newVersionBindRelationEntry.getUserName(), entry.getCommunityId(), mainUserId);
+                }
+            }
+           
+            
             dto.setMainUserId(entry.getMainUserId().toString());
             dto.setUserId(entry.getUserId().toString());
             dto.setStudentNumber(entry.getNumber());
@@ -892,6 +943,9 @@ public class NewVersionBindService {
                                                 ObjectId userId,
                                                 String thirdName,
                                                 ObjectId bindId) throws Exception{
+       
+    
+        
             NewVersionCommunityBindEntry entryOne = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
             if ((entryOne != null&& entryOne.getID().equals(bindId))||entryOne == null) {
                 NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntryById(bindId);
@@ -942,7 +996,7 @@ public class NewVersionBindService {
                                                 ObjectId userId,
                                                 String studentNumber,
                                                 String thirdName) throws Exception{
-        
+    
             VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(communityId,thirdName,studentNumber);
             if(virtualUserEntry!=null){ //已存在虚拟用户,进行关联绑定操作
                 VirtualAndUserEntry virtualAndUserEntry = virtualAndUserDao.getEntry(virtualUserEntry.getUserId(), communityId);
@@ -1040,6 +1094,7 @@ public class NewVersionBindService {
 
     public void addBindVirtualCommunity(String thirdName,
                                         ObjectId communityId,ObjectId mainUserId)throws Exception{
+      
         NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
         if(null!=entry){
             if(entry.getRemoveStatus()==1){
@@ -1068,6 +1123,7 @@ public class NewVersionBindService {
     
     public void addBindVirtualCommunityCopy(String thirdName,String number,
                                         ObjectId communityId,ObjectId mainUserId)throws Exception{
+       
         NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
         if(null!=entry){
             if(entry.getRemoveStatus()==1){
@@ -1653,4 +1709,41 @@ public class NewVersionBindService {
         AccountLogEntry accountLogEntry = new AccountLogEntry(userId,contactId,description);
         accountLogDao.addEntry(accountLogEntry);
     }
+    
+    /**
+     * 
+     *〈简述〉
+     *〈详细描述〉
+     * @author Administrator
+     * @param communityIds
+     * @param thirdName
+     * @throws Exception
+     */
+    public String validateChildren(String communityIds, String thirdName) throws Exception{
+        String[] ss = communityIds.split(",");
+        for (String s:ss) {
+            List<VirtualUserEntry> virtualUserList = virtualUserDao.getAllVirtualUsers(new ObjectId(s));
+            if (CollectionUtils.isEmpty(virtualUserList)) {
+                return "老师还没有添加学生名单";
+            } else {
+                Boolean flag = false;
+                for (VirtualUserEntry v : virtualUserList) {
+                    if (v.getUserName().equals(thirdName.trim())) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    String communityName = communityDao.getCommunityName(new ObjectId(s));
+                    return "没有在社群"+"'"+communityName+"'"+"班级名单中找到您的小孩";
+                }else {
+                    return "小孩姓名和班级名单一致";
+                }
+            }
+        }
+        return null;
+        
+    }
+    
+   
 }

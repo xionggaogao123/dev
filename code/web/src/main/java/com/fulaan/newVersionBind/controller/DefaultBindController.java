@@ -468,6 +468,8 @@ public class DefaultBindController extends BaseController {
         }
         return respObj;
     }
+    
+    
 
     /**
      *
@@ -1071,4 +1073,90 @@ public class DefaultBindController extends BaseController {
     }
 
 
+    @ApiOperation(value = "验证", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("validateChildren")
+    @ResponseBody
+    public RespObj validateChildren(String communityIds, String thirdName) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            newVersionBindService.validateChildren(communityIds, thirdName);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            String s = newVersionBindService.validateChildren(communityIds, thirdName);
+            respObj.setMessage(s);
+         } catch (Exception e) {
+             // TODO: handle exception
+             respObj.setMessage(e.getMessage());
+         }
+        return respObj;
+        
+    }
+    
+    /**
+     * 多选添加虚拟学生
+     * @param thirdName
+     * @param number
+     * @param communityIds
+     * @returnOe
+     */
+    @ApiOperation(value = "多选绑定社区下的虚拟学生", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/addMoreBindVirtualCommunityNew")
+    @ResponseBody
+    public RespObj addMoreBindVirtualCommunityNew(@RequestParam(value="thirdName") String thirdName,@RequestParam(value="number") String number,  @RequestParam(value="communityIds") String communityIds){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            if(communityIds!=null){
+                String[] strings =communityIds.split(",");
+                for(String str:strings){
+                    if (StringUtils.isNotBlank(number)) {
+                        newVersionBindService.addBindVirtualCommunityCopy(thirdName.trim(), number, new ObjectId(str), getUserId());
+                    } else {
+                        newVersionBindService.addBindVirtualCommunity(thirdName.trim(),new ObjectId(str),getUserId());
+                    }
+                    
+                }
+            }
+            String s = newVersionBindService.validateChildren(communityIds, thirdName);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(s);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+    
+    /**
+     * 多选绑定
+     */
+    @ApiOperation(value = "多选绑定编辑学生学号信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/editMoreStudentNumberAndThirdNameNew")
+    @ResponseBody
+    public RespObj editMoreStudentNumberAndThirdNameNew(String communityIds,
+                                                 @ObjectIdType ObjectId userId,
+                                                 String thirdName,
+                                                 String studentNumber,
+                                                 String bindId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            if(communityIds !=null){
+                String[] strings = communityIds.split(",");
+                for(String str: strings){
+                    if (StringUtils.isNotBlank(studentNumber)) {
+                        newVersionBindService.updateStudentNumberAndThirdNameCopy(new ObjectId(str), getUserId(), userId, studentNumber, thirdName);
+                    } else {
+                        newVersionBindService.updateStudentNumberAndThirdName(new ObjectId(str), getUserId(), userId, thirdName,new ObjectId(bindId));
+                    }
+                    
+                }
+            }
+            String s = newVersionBindService.validateChildren(communityIds, thirdName);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(s);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
 }

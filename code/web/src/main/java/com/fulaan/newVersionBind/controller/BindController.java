@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -381,8 +382,9 @@ public class BindController extends BaseController {
                     }
                 }
             }
+            String s = newVersionBindService.validateChildren(communityIds, thirdName);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("添加成功!");
+            respObj.setMessage(s);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }
@@ -414,7 +416,8 @@ public class BindController extends BaseController {
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("编辑成功！");
+            String s = newVersionBindService.validateChildren(communityIds, thirdName);
+            respObj.setMessage(s);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }
@@ -461,6 +464,24 @@ public class BindController extends BaseController {
            respObj.setErrorMessage(e.getMessage());
        }
        return respObj;
+   }
+   
+   @ApiOperation(value = "验证", httpMethod = "GET", produces = "application/json")
+   @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+   @RequestMapping("validateChildren")
+   @ResponseBody
+   public RespObj validateChildren(String communityIds, String thirdName) {
+       RespObj respObj = new RespObj(Constant.FAILD_CODE);
+       try {
+           String s = newVersionBindService.validateChildren(communityIds, thirdName);
+           respObj.setCode(Constant.SUCCESS_CODE);
+           respObj.setMessage(s);
+        } catch (Exception e) {
+            // TODO: handle exception
+            respObj.setErrorMessage(e.getMessage());
+        }
+       return respObj;
+       
    }
 
 }

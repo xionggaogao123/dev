@@ -359,7 +359,10 @@ public class BusinessManageService {
             if(hourClassEntry.getRoomId()!=null&& !hourClassEntry.getRoomId().equals("")){
                 houc.setRoomId(hourClassEntry.getRoomId());
             }else{
-                houc.setRoomId(coursesRoomEntry.getRoomId());
+                if(coursesRoomEntry!=null){
+                    houc.setRoomId(coursesRoomEntry.getRoomId());
+                }
+
             }
             hourClassDTOs.add(houc);
 

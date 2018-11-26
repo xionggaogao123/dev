@@ -1082,7 +1082,7 @@ public class DefaultBindController extends BaseController {
         try {
             newVersionBindService.validateChildren(communityIds, thirdName);
             respObj.setCode(Constant.SUCCESS_CODE);
-            String s = newVersionBindService.validateChildren(communityIds, thirdName);
+            int s = newVersionBindService.validateChildren(communityIds, thirdName);
             respObj.setMessage(s);
          } catch (Exception e) {
              // TODO: handle exception
@@ -1117,7 +1117,7 @@ public class DefaultBindController extends BaseController {
                     
                 }
             }
-            String s = newVersionBindService.validateChildren(communityIds, thirdName);
+            int s = newVersionBindService.validateChildren(communityIds, thirdName);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(s);
         }catch (Exception e){
@@ -1151,7 +1151,7 @@ public class DefaultBindController extends BaseController {
                     
                 }
             }
-            String s = newVersionBindService.validateChildren(communityIds, thirdName);
+            int s = newVersionBindService.validateChildren(communityIds, thirdName);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(s);
         }catch (Exception e){

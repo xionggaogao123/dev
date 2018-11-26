@@ -413,6 +413,36 @@ public class AppCommentDao extends BaseDao {
                         query);
         return count;
     }
+    
+    
+    public int getWebAllDatePageNumberByTime(List<ObjectId> userIds,String communityId,String subjectId, Long timeStart,Long timeEnd) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        BasicDBObject query = new BasicDBObject()
+                .append("sta", new BasicDBObject(Constant.MONGO_IN, ilist))
+                .append("isr", 0); // 未删除
+        if(subjectId != null && !subjectId.equals("")){
+            query.append("sid",new ObjectId(subjectId));
+        }
+        if(communityId!=null && !communityId.equals("")){
+            query.append("rid",new ObjectId(communityId));
+        }else{
+            query.append("rid",new BasicDBObject(Constant.MONGO_IN, userIds));
+        }
+        if (timeStart != null && timeStart != 0l) {
+            query.append("dtm", new BasicDBObject(Constant.MONGO_GTE, timeStart));
+        }
+        
+        if (timeEnd != null && timeEnd != 0l) {
+            query.append("dtm", new BasicDBObject(Constant.MONGO_LT, timeEnd));
+        }
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query);
+        return count;
+    }
     /**
      * 符合搜索条件的对象个数
      * @return

@@ -358,71 +358,7 @@ public class BindController extends BaseController {
         return respObj;
     }
 
-    /**
-     * 多选添加虚拟学生
-     * @param thirdName
-     * @param number
-     * @param communityIds
-     * @return
-     */
-    @ApiOperation(value = "多选绑定社区下的虚拟学生", httpMethod = "POST", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/addMoreBindVirtualCommunity")
-    @ResponseBody
-    public RespObj addMoreBindVirtualCommunity(@RequestParam(value="thirdName") String thirdName,@RequestParam(value="number") String number,@RequestParam(value="communityIds") String communityIds){
-        RespObj respObj = new RespObj(Constant.FAILD_CODE);
-        try{
-            if(communityIds!=null){
-                String[] strings =communityIds.split(",");
-                for(String str:strings){
-                    if (StringUtils.isNotBlank(number)) {
-                        newVersionBindService.addBindVirtualCommunityCopy(thirdName.trim(), number, new ObjectId(str), getUserId());
-                    } else {
-                        newVersionBindService.addBindVirtualCommunity(thirdName.trim(),new ObjectId(str),getUserId());
-                    }
-                }
-            }
-            String s = newVersionBindService.validateChildren(communityIds, thirdName);
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage(s);
-        }catch (Exception e){
-            respObj.setErrorMessage(e.getMessage());
-        }
-        return respObj;
-    }
     
-    /**
-     * 多选绑定
-     */
-    @ApiOperation(value = "多选绑定编辑学生学号信息", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/editMoreStudentNumberAndThirdName")
-    @ResponseBody
-    public RespObj editMoreStudentNumberAndThirdName(String communityIds,
-                                                 @ObjectIdType ObjectId userId,
-                                                 String thirdName,
-                                                 String studentNumber,
-                                                 String bindId){
-        RespObj respObj = new RespObj(Constant.FAILD_CODE);
-        try{
-            if(communityIds !=null){
-                String[] strings = communityIds.split(",");
-                for(String str: strings){
-                    if (StringUtils.isNotBlank(studentNumber)) {
-                        newVersionBindService.updateStudentNumberAndThirdNameCopy(new ObjectId(str), getUserId(), userId, studentNumber, thirdName);
-                    } else {
-                        newVersionBindService.updateStudentNumberAndThirdName(new ObjectId(str), getUserId(), userId, thirdName,new ObjectId(bindId));
-                    }
-                }
-            }
-            respObj.setCode(Constant.SUCCESS_CODE);
-            String s = newVersionBindService.validateChildren(communityIds, thirdName);
-            respObj.setMessage(s);
-        }catch (Exception e){
-            respObj.setErrorMessage(e.getMessage());
-        }
-        return respObj;
-    }
     
     /**
      * 查询全部包含虚拟学生
@@ -473,7 +409,7 @@ public class BindController extends BaseController {
    public RespObj validateChildren(String communityIds, String thirdName) {
        RespObj respObj = new RespObj(Constant.FAILD_CODE);
        try {
-           String s = newVersionBindService.validateChildren(communityIds, thirdName);
+           int s = newVersionBindService.validateChildren(communityIds, thirdName);
            respObj.setCode(Constant.SUCCESS_CODE);
            respObj.setMessage(s);
         } catch (Exception e) {
@@ -482,6 +418,72 @@ public class BindController extends BaseController {
         }
        return respObj;
        
+   }
+   
+   /**
+    * 多选添加虚拟学生
+    * @param thirdName
+    * @param number
+    * @param communityIds
+    * @return
+    */
+   @ApiOperation(value = "多选绑定社区下的虚拟学生", httpMethod = "POST", produces = "application/json")
+   @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+   @RequestMapping("/addMoreBindVirtualCommunity")
+   @ResponseBody
+   public RespObj addMoreBindVirtualCommunity(@RequestParam(value="thirdName") String thirdName,@RequestParam(value="number") String number,@RequestParam(value="communityIds") String communityIds){
+       RespObj respObj = new RespObj(Constant.FAILD_CODE);
+       try{
+           if(communityIds!=null){
+               String[] strings =communityIds.split(",");
+               for(String str:strings){
+                   if (StringUtils.isNotBlank(number)) {
+                       newVersionBindService.addBindVirtualCommunityCopy(thirdName.trim(), number, new ObjectId(str), getUserId());
+                   } else {
+                       newVersionBindService.addBindVirtualCommunity(thirdName.trim(),new ObjectId(str),getUserId());
+                   }
+               }
+           }
+           int s = newVersionBindService.validateChildren(communityIds, thirdName);
+           respObj.setCode(Constant.SUCCESS_CODE);
+           respObj.setMessage(s);
+       }catch (Exception e){
+           respObj.setErrorMessage(e.getMessage());
+       }
+       return respObj;
+   }
+   
+   /**
+    * 多选绑定
+    */
+   @ApiOperation(value = "多选绑定编辑学生学号信息", httpMethod = "GET", produces = "application/json")
+   @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+   @RequestMapping("/editMoreStudentNumberAndThirdName")
+   @ResponseBody
+   public RespObj editMoreStudentNumberAndThirdName(String communityIds,
+                                                @ObjectIdType ObjectId userId,
+                                                String thirdName,
+                                                String studentNumber,
+                                                String bindId){
+       RespObj respObj = new RespObj(Constant.FAILD_CODE);
+       try{
+           if(communityIds !=null){
+               String[] strings = communityIds.split(",");
+               for(String str: strings){
+                   if (StringUtils.isNotBlank(studentNumber)) {
+                       newVersionBindService.updateStudentNumberAndThirdNameCopy(new ObjectId(str), getUserId(), userId, studentNumber, thirdName);
+                   } else {
+                       newVersionBindService.updateStudentNumberAndThirdName(new ObjectId(str), getUserId(), userId, thirdName,new ObjectId(bindId));
+                   }
+               }
+           }
+           respObj.setCode(Constant.SUCCESS_CODE);
+           int s = newVersionBindService.validateChildren(communityIds, thirdName);
+           respObj.setMessage(s);
+       }catch (Exception e){
+           respObj.setErrorMessage(e.getMessage());
+       }
+       return respObj;
    }
 
 }

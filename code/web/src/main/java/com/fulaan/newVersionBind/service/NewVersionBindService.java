@@ -1719,12 +1719,13 @@ public class NewVersionBindService {
      * @param thirdName
      * @throws Exception
      */
-    public String validateChildren(String communityIds, String thirdName) throws Exception{
+    public int validateChildren(String communityIds, String thirdName) throws Exception{
         String[] ss = communityIds.split(",");
         for (String s:ss) {
             List<VirtualUserEntry> virtualUserList = virtualUserDao.getAllVirtualUsers(new ObjectId(s));
             if (CollectionUtils.isEmpty(virtualUserList)) {
-                return "老师还没有添加学生名单";
+                //return "老师还没有添加学生名单";
+                return 1;
             } else {
                 Boolean flag = false;
                 for (VirtualUserEntry v : virtualUserList) {
@@ -1735,13 +1736,15 @@ public class NewVersionBindService {
                 }
                 if (!flag) {
                     String communityName = communityDao.getCommunityName(new ObjectId(s));
-                    return "没有在社群"+"'"+communityName+"'"+"班级名单中找到您的小孩";
+                    //return "没有在社群"+"'"+communityName+"'"+"班级名单中找到您的小孩";
+                    return 2;
                 }else {
-                    return "小孩姓名和班级名单一致";
+                    //return "小孩姓名和班级名单一致";
+                    return 3;
                 }
             }
         }
-        return null;
+        return 0;
         
     }
     

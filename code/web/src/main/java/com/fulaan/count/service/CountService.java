@@ -1,7 +1,10 @@
 package com.fulaan.count.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
+import com.db.operation.AppCommentDao;
 import com.db.user.UserDao;
 import com.fulaan.count.dto.JxmCountDto;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
@@ -35,6 +39,8 @@ public class CountService {
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
     
     private UserDao userDao = new UserDao();
+    //作业
+    private AppCommentDao appCommentDao;
     
     
     /**
@@ -55,6 +61,14 @@ public class CountService {
         return homeSchoolDTOs;
     }
 
+    /**
+     * 
+     *〈简述〉家校美统计
+     *〈详细描述〉
+     * @author Administrator
+     * @param schooleId
+     * @return
+     */
     public JxmCountDto jxmCount(String schooleId) {
         JxmCountDto jxmCountDto = new JxmCountDto();
         if (schooleId != null) {
@@ -79,9 +93,19 @@ public class CountService {
                 stuNum += userDao.getStudentNum(userId);
             }
             jxmCountDto.setStudentCount(stuNum);
+            //本日发布作业数量
             
         }
         
         return jxmCountDto;
     }
+    
+    /*public Map<Integer, Long> getTimePointOneDay() {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH)+1;
+        int day = c.get(Calendar.DATE);
+        
+        
+    }*/
 }

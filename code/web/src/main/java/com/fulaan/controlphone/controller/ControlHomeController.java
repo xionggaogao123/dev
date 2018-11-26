@@ -46,7 +46,7 @@ public class ControlHomeController  extends BaseController{
             respObj.setMessage("设置家管控时间成功");
         }catch(Exception e){
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setMessage("设置家管控时间失败");
+            respObj.setErrorMessage("设置家管控时间失败");
             logger.error("error",e);
         }
        return respObj;
@@ -65,10 +65,28 @@ public class ControlHomeController  extends BaseController{
             respObj.setMessage(map);
         }catch(Exception e){
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setMessage("设置家管控时间失败");
+            respObj.setErrorMessage("设置家管控时间失败");
             logger.error("error",e);
         }
         return respObj;
     }
 
+
+    @ApiOperation(value = "启动监听", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/startMqtt")
+    @ResponseBody
+    public RespObj startMqtt(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+           controlHomeService.startMqtt();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("启动成功");
+        }catch(Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+            logger.error("error",e);
+        }
+        return respObj;
+    }
 }

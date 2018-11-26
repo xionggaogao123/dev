@@ -5303,13 +5303,13 @@ public class ControlPhoneService {
                         flag = true;
                     }
                 }
-                if(!flag){
-                    dto.setVersion("未登录");
-                    dto.setLevel(6);//未登录
-                }
                 if(controlVersionEntry2.getStatus()==0){
                     dto.setVersion("网络不好或可能已关机");
                     dto.setLevel(5);//匹配
+                }
+                if(!flag){
+                    dto.setVersion("未登录");
+                    dto.setLevel(6);//未登录
                 }
                 dto.setDateTime(0l);
                 dtos.add(dto);

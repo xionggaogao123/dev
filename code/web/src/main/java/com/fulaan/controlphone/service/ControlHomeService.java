@@ -1,8 +1,10 @@
 package com.fulaan.controlphone.service;
 
 import com.db.controlphone.ControlHomeTimeDao;
+import com.db.controlphone.ControlSimpleDao;
 import com.db.controlphone.ControlTimeDao;
 import com.db.controlphone.ControlVersionDao;
+import com.fulaan.mqtt.MQTTRecvMsg;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.pojo.controlphone.ControlHomeTimeEntry;
 import com.pojo.controlphone.ControlTimeEntry;
@@ -29,6 +31,8 @@ public class ControlHomeService {
     private ControlVersionDao controlVersionDao = new ControlVersionDao();
 
     private ControlTimeDao controlTimeDao = new ControlTimeDao();
+
+    private ControlSimpleDao controlSimpleDao =  new ControlSimpleDao();
 
 
 
@@ -150,6 +154,11 @@ public class ControlHomeService {
             }
         }
         return map;
+    }
+
+
+    public void startMqtt() throws Exception{
+        MQTTRecvMsg.receMessage();
     }
 
 }

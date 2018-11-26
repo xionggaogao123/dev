@@ -460,17 +460,21 @@ public class NewVersionBindService {
                 dto.setThirdName(entry.getThirdName());
             } else {
                 if (newVersionBindRelationEntry != null) {
+                    String name = "";
                     if (StringUtils.isNotBlank(newVersionBindRelationEntry.getUserName())) {
                         dto.setThirdName(newVersionBindRelationEntry.getUserName());
+                        name = newVersionBindRelationEntry.getUserName();
                     } else {
                         UserEntry userEntry = userDao.getUserEntry(newVersionBindRelationEntry.getUserId(), Constant.FIELDS);
                         if (userEntry != null) {
+                            name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName() :userEntry.getUserName();
                             dto.setThirdName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName() :userEntry.getUserName());
+                            
                         }
                         
                     }
-                    
-                    this.addBindVirtualCommunityNew(newVersionBindRelationEntry.getUserName(), entry.getCommunityId(), mainUserId);
+                    newVersionCommunityBindDao.updateThirdName(entry.getCommunityId(), entry.getMainUserId(), entry.getUserId(), name);
+                    this.addBindVirtualCommunityNew(name, entry.getCommunityId(), mainUserId);
                 }
             }
            

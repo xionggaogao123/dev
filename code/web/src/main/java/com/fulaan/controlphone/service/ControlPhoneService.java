@@ -5290,8 +5290,13 @@ public class ControlPhoneService {
                             dto.setVersion("匹配");
                             dto.setLevel(3);//匹配
                         }else{
-                            dto.setVersion("网络不好或可能已关机");
-                            dto.setLevel(5);//匹配
+                            if(controlVersionEntry2.getStatus()==1){
+                                dto.setVersion("匹配");
+                                dto.setLevel(3);//匹配
+                            }else{
+                                dto.setVersion("网络不好或可能已关机");
+                                dto.setLevel(5);//匹配
+                            }
                         }
                     }
                 }
@@ -5306,6 +5311,9 @@ public class ControlPhoneService {
                 if(controlVersionEntry2.getStatus()==0){
                     dto.setVersion("网络不好或可能已关机");
                     dto.setLevel(5);//匹配
+                }else{
+                    dto.setVersion("匹配");
+                    dto.setLevel(3);//匹配
                 }
                 if(!flag){
                     dto.setVersion("未登录");

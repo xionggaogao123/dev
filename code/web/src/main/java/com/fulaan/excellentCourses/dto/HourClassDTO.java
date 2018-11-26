@@ -27,6 +27,8 @@ public class HourClassDTO {
     private String ownName;
     private String subjectName;
 
+    private String roomId;
+
     public HourClassDTO(){
 
     }
@@ -292,5 +294,13 @@ public class HourClassDTO {
 
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 }

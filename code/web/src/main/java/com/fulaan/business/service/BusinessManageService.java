@@ -23,7 +23,6 @@ import com.fulaan.excellentCourses.dto.CoursesOrderResultDTO;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.fulaan.excellentCourses.service.CoursesRoomService;
-import com.fulaan.excellentCourses.service.ExcellentCoursesService;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
@@ -353,9 +352,17 @@ public class BusinessManageService {
         map.put("dto",dto2);
         //课时相关
         List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(id);
         List<HourClassDTO> hourClassDTOs = new ArrayList<HourClassDTO>();
         for(HourClassEntry hourClassEntry : hourClassEntries){
-            hourClassDTOs.add(new HourClassDTO(hourClassEntry));
+            HourClassDTO houc = new HourClassDTO(hourClassEntry);
+            if(hourClassEntry.getRoomId()!=null&& !hourClassEntry.getRoomId().equals("")){
+                houc.setRoomId(hourClassEntry.getRoomId());
+            }else{
+                houc.setRoomId(coursesRoomEntry.getRoomId());
+            }
+            hourClassDTOs.add(houc);
+
         }
         map.put("hourList",hourClassDTOs);
         //用户订单查询

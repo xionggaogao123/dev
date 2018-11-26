@@ -4815,7 +4815,7 @@ public class ExcellentCoursesService {
                for(HourClassEntry hourClassEntry :hourClassEntries){
                    String rid = hourClassEntry.getRoomId();
                    if(rid!=null && !rid.equals("") && hourClassEntry.getIsHe()!=1){//去除合并过的直播间
-                       map.put(hourClassEntry.getUserId(),rid);
+                       map.put(hourClassEntry.getOwnId(),rid);
                        if(rid.equals(roomId)){
                            falge = true;
                        }
@@ -4824,7 +4824,7 @@ public class ExcellentCoursesService {
                for(HourClassEntry hourClassEntry :hourClassEntries){
                    if(hourClassEntry.getRoomId()==null || hourClassEntry.getRoomId().equals("")){
                        UserClassRoomEntry userClassRoomEntry = new UserClassRoomEntry();
-                       ObjectId userId = hourClassEntry.getUserId();
+                       ObjectId userId = hourClassEntry.getOwnId();
                        userClassRoomEntry.setUserId(userId);
                        userClassRoomEntry.setContactId(id);
                        String newRoomId = map.get(userId);

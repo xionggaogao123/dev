@@ -618,7 +618,7 @@ public class InOutStorageRecordDao extends BaseDao {
      * @param imeiNo
      * @return
      */
-    public void updateOutStorageFollowUserInfo(String mobile, String imeiNo ,String studentId) {
+    public void updateOutStorageFollowUserInfo(String mobile, String imeiNo, String studentId, String studentName) {
         //封装查询参数
         BasicDBObject query = new BasicDBObject();
         query.append("isr",0);
@@ -628,7 +628,7 @@ public class InOutStorageRecordDao extends BaseDao {
 
         BasicDBObject updateParam = new BasicDBObject();
         updateParam.append("studentMobile", mobile);
-        updateParam.append("studentName", mobile);//初次注册 手机号是姓名
+        updateParam.append("studentName", studentName);//初次注册 手机号是姓名
         updateParam.append("studentId", studentId);
 
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);

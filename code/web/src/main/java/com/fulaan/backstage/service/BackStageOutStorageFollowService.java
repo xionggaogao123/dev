@@ -981,7 +981,7 @@ public class BackStageOutStorageFollowService {
             if (null == userEntry){
                 return "用户信息不存在！";
             }
-            inOutStorageRecordDao.updateOutStorageFollowUserInfo(mobile, imeiNo, userEntry.getGenerateUserCode());
+            inOutStorageRecordDao.updateOutStorageFollowUserInfo(mobile, imeiNo, userEntry.getGenerateUserCode(), userEntry.getUserName());
             return Constant.SUCCESS;
         }catch (Exception e){
             return Constant.FAILD;

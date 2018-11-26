@@ -195,4 +195,8 @@ public class CoursesRoomEntry extends BaseDBObject {
         setSimpleValue("isr",isRemove);
     }
 
+    public String getDateTime(){
+        return getSimpleStringValue("liv");
+    }
+
 }

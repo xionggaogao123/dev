@@ -23,6 +23,7 @@ import com.fulaan.excellentCourses.dto.CoursesOrderResultDTO;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.fulaan.excellentCourses.service.CoursesRoomService;
+import com.fulaan.excellentCourses.service.ExcellentCoursesService;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
@@ -2263,6 +2264,7 @@ public class BusinessManageService {
         HourClassEntry hourClassEntry = hourClassDao.getEntry(id);
         if(hourClassEntry!=null){
             hourClassEntry.setRoomId(roomId);
+            hourClassEntry.setIsHe(1);
             hourClassDao.addEntry(hourClassEntry);
         }
     }

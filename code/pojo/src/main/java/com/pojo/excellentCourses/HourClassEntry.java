@@ -29,6 +29,7 @@ import java.util.Date;
  * subjectName    老师绑定学科       snm
  *
  * roomId          直播间id         指向特定直播间（为了某些省事的操作所做的坑爹要求）
+ * isHe            是否合并过        0 未    1 是
  *
  */
 public class HourClassEntry extends BaseDBObject {
@@ -239,6 +240,13 @@ public class HourClassEntry extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+
+    public void setIsHe(int isHe){
+        setSimpleValue("ish",isHe);
+    }
+    public int getIsHe(){
+        return getSimpleIntegerValueDef("ish",0);
     }
 
 }

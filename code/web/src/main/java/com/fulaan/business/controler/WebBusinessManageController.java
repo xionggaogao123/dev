@@ -6,6 +6,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.business.service.BusinessManageService;
 import com.fulaan.controlphone.dto.CoursesBusinessDTO;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
+import com.fulaan.excellentCourses.service.ExcellentCoursesService;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.pojo.User;
 import com.sys.constants.Constant;
@@ -655,6 +656,8 @@ public class WebBusinessManageController extends BaseController {
                 respObj.setCode(Constant.FAILD_CODE);
                 respObj.setErrorMessage(map);
             }
+            //分配直播间
+            ExcellentCoursesService.updateClassRoom(new ObjectId(id));
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

@@ -136,7 +136,9 @@ public class BackStageInOutStorageService {
                         tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
 //                        tjsonIn.get("needRepairComment") == null ? stringlist : (ArrayList<String>)tjsonIn.get("needRepairComment")
                         tjsonIn.get("needRepairComment") == null ? stringlist : jsontoList(tjsonIn.get("needRepairComment")),
-                        "0"//未读
+                        "0",//未读
+                        "-1",
+                        tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
                 );
                 dbObjectList.add(inOutStorageEntry.getBaseEntry());
             }

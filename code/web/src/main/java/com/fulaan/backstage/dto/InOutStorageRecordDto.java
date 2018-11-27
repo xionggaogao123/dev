@@ -51,6 +51,8 @@ public class InOutStorageRecordDto {
     private String repairType;
     private String isr;
     private String creationTime;
+    private String afterRecycleStatus;
+    private String oldImeiNo;
 
 
     public InOutStorageRecordDto(InOutStorageEntry entry){
@@ -96,6 +98,8 @@ public class InOutStorageRecordDto {
         this.repairType = entry.getRepairType();
         this.isr = entry.getIsr();
         this.creationTime = entry.getCreationTime();
+        this.afterRecycleStatus = entry.getAfterRecycleStatus();
+        this.oldImeiNo = entry.getOldImeiNo();
     }
 
     public String getId() {
@@ -432,5 +436,21 @@ public class InOutStorageRecordDto {
 
     public void setProjectId(String projectId) {
         this.projectId = projectId;
+    }
+
+    public String getAfterRecycleStatus() {
+        return afterRecycleStatus;
+    }
+
+    public void setAfterRecycleStatus(String afterRecycleStatus) {
+        this.afterRecycleStatus = afterRecycleStatus;
+    }
+
+    public String getOldImeiNo() {
+        return oldImeiNo;
+    }
+
+    public void setOldImeiNo(String oldImeiNo) {
+        this.oldImeiNo = oldImeiNo;
     }
 }

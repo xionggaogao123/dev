@@ -174,7 +174,9 @@ public class BackStageRepairManageService {
                 map.get("payFrom") == null ? "" : map.get("payFrom").toString(),
                 "",
                 "",
-                "0"//未读
+                "0",//未读
+                "-1",
+                map.get("imeiNo") == null ? "" : map.get("imeiNo").toString()
             );
         result = inOutStorageRecordDao.addRepairManage(inOutStorageEntry);
         return result;
@@ -219,6 +221,8 @@ public class BackStageRepairManageService {
         List<String> resultList = new ArrayList<String>();
         //更新待维修数据
         String repairId = inOutStorageRecordDao.updateRepairManage(map);
+        String afterRecycleStatus = map.get("afterRecycleStatus") == null ? "" : map.get("afterRecycleStatus").toString();
+        String oldImeiNo = map.get("oldImeiNo") == null ? "" : map.get("oldImeiNo").toString();
         resultList.add("更新待维修数据Id:"+repairId);
         //当维修完成，选择 出库发货
         if ("出库发货".equals(map.get("afterRepair").toString())){
@@ -228,6 +232,8 @@ public class BackStageRepairManageService {
         //当维修完成，选择 手机入库
         if ("手机入库".equals(map.get("afterRepair").toString())){
             String result = completeRepairToInStorage(map);
+            //手机维修后选择入库 出库跟踪状态变为 5 已退货、
+            inOutStorageRecordDao.updateCompleteRecyleStatus(oldImeiNo,"5");
             resultList.add("手机入库:"+result);
         }
         //当维修完成，选择 更换新手机
@@ -295,7 +301,9 @@ public class BackStageRepairManageService {
                 map.get("payFrom") == null ? "" : map.get("payFrom").toString(),
                 map.get("afterRepair") == null ? "" : map.get("afterRepair").toString(),
                 map.get("repairType") == null ? "" : map.get("repairType").toString(),
-                "0"//未读
+                "0",//未读
+                "1",
+                map.get("oldImeiNo") == null ? "" : map.get("oldImeiNo").toString()
         );
         result +="发货记录：";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
@@ -344,7 +352,9 @@ public class BackStageRepairManageService {
                 map.get("payFrom") == null ? "" : map.get("payFrom").toString(),
                 map.get("afterRepair") == null ? "" : map.get("afterRepair").toString(),
                 map.get("repairType") == null ? "" : map.get("repairType").toString(),
-                "0"//未读
+                "0",//未读
+                "-1",
+                tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
         );
         result +="入库记录：";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry1);
@@ -416,7 +426,9 @@ public class BackStageRepairManageService {
                 map.get("payFrom") == null ? "" : map.get("payFrom").toString(),
                 map.get("afterRepair") == null ? "" : map.get("afterRepair").toString(),
                 map.get("repairType") == null ? "" : map.get("repairType").toString(),
-                "0"//未读
+                "0",//未读
+                "-1",
+                tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
         );
         result +="入库记录：";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry1);
@@ -530,7 +542,9 @@ public class BackStageRepairManageService {
                 map.get("payFrom") == null ? "" : map.get("payFrom").toString(),
                 map.get("afterRepair") == null ? "" : map.get("afterRepair").toString(),
                 map.get("repairType") == null ? "" : map.get("repairType").toString(),
-                "0"//未读
+                "0",//未读
+                "1",
+                map.get("oldImeiNo") == null ? "" : map.get("oldImeiNo").toString()
         );
         result += "出库记录：";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);

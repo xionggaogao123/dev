@@ -162,7 +162,7 @@ public class InOutStorageRecordDao extends BaseDao {
      * @param map
      * @return
      */
-    public String updateDeliveryLogisticsInfoById(Map map) {
+    public String updateDeliveryLogisticsInfoById(Map map, String afterRecycleStatus) {
         BasicDBObject query = new BasicDBObject();
         query.append(Constant.ID, new ObjectId(map.get("id").toString()));
 
@@ -182,6 +182,10 @@ public class InOutStorageRecordDao extends BaseDao {
             updateParam.append("color",map.get("color").toString());
         }
 
+        if (!"".equals(afterRecycleStatus)) {
+            updateParam.append("afterRecycleStatus",afterRecycleStatus);
+        }
+
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
         return map.get("id").toString();
@@ -192,7 +196,7 @@ public class InOutStorageRecordDao extends BaseDao {
      * @param map
      * @return
      */
-    public String updateDeliveryLogisticsInfoByIds(Map map) {
+    public String updateDeliveryLogisticsInfoByIds(Map map, String afterRecycleStatus) {
         BasicDBObject query = new BasicDBObject();
         //对拼接的Id做处理
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
@@ -212,6 +216,10 @@ public class InOutStorageRecordDao extends BaseDao {
         }
         if (map.get("expressNo") != null) {
             updateParam.append("expressNo",map.get("expressNo").toString());
+        }
+
+        if (!"".equals(afterRecycleStatus)) {
+            updateParam.append("afterRecycleStatus",afterRecycleStatus);
         }
 
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
@@ -344,7 +352,7 @@ public class InOutStorageRecordDao extends BaseDao {
         Map<String, Object> result = new HashMap<String, Object>();
         //封装查询参数
         BasicDBObject query = new BasicDBObject();
-        query.append("isr",0);
+        query.append("isr",new BasicDBObject(Constant.MONGO_NE, 2));//不是废弃数据
         query.append("storageRecordStatus","5");//出库
         query.append("imeiNo",new BasicDBObject(Constant.MONGO_NE, ""));//imeiNo 不为空
         if (!"".equals(inputParams)) {
@@ -450,13 +458,14 @@ public class InOutStorageRecordDao extends BaseDao {
      * 更改选中数据为已回收 即isr 为 1
      * @param id
      */
-    public void singleRecycleInStorageById(String id) {
+    public void singleRecycleInStorageById(String id, String afterRecycleStatus) {
         //封装查询参数
         BasicDBObject query = new BasicDBObject();
         query.append(Constant.ID,new ObjectId(id));
 
         BasicDBObject updateParam = new BasicDBObject();
         updateParam.append("isr",1);
+        updateParam.append("afterRecycleStatus",afterRecycleStatus);
 
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
@@ -467,7 +476,7 @@ public class InOutStorageRecordDao extends BaseDao {
      * 更改选中数据为已回收 即isr 为 1
      * @param ids
      */
-    public void batchRecycleInStorageByIds(String ids) {
+    public void batchRecycleInStorageByIds(String ids, String afterRecycleStatus) {
         //封装查询参数
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
         if (ids != ""){
@@ -483,6 +492,7 @@ public class InOutStorageRecordDao extends BaseDao {
 
         BasicDBObject updateParam = new BasicDBObject();
         updateParam.append("isr",1);
+        updateParam.append("afterRecycleStatus",afterRecycleStatus);
 
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
@@ -631,6 +641,39 @@ public class InOutStorageRecordDao extends BaseDao {
         updateParam.append("studentName", studentName);//初次注册 手机号是姓名
         updateParam.append("studentId", studentId);
 
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
+    }
+
+    /**
+     * 废弃展示进程状态的数据
+     * @param oldImeiNo
+     */
+    public void abandonCompleteRecyleData(String oldImeiNo) {
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",1);//完成回收的
+        query.append("imeiNo",oldImeiNo);
+
+        BasicDBObject updateParam = new BasicDBObject();
+        updateParam.append("isr", 2);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
+
+    }
+
+    /**
+     * 更新展示进程状态的数据 状态
+     * @param oldImeiNo
+     */
+    public void updateCompleteRecyleStatus(String oldImeiNo, String afterRecycleStatus) {
+        //封装查询参数
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",1);//完成回收的
+        query.append("imeiNo",oldImeiNo);
+
+        BasicDBObject updateParam = new BasicDBObject();
+        updateParam.append("afterRecycleStatus", afterRecycleStatus);
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updateParam);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PHONES_IN_OUT_STORAGE_RECORD,query,updateValue);
     }

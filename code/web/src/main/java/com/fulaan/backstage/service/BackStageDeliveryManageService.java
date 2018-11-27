@@ -88,7 +88,26 @@ public class BackStageDeliveryManageService {
      * @return
      */
     public String updateDeliveryLogisticsInfoById(Map map) {
-        return inOutStorageRecordDao.updateDeliveryLogisticsInfoById(map);
+        String result = "";
+
+        String afterRecycleStatus = map.get("afterRecycleStatus") == null ? "" : map.get("afterRecycleStatus").toString();
+        String oldImeiNo = map.get("oldImeiNo") == null ? "" : map.get("oldImeiNo").toString();
+        if ("1".equals(afterRecycleStatus)){
+            //1 维修中
+            //维修直接出库 需要将出库跟踪中的 维修中记录置废 再将出库记录 afterRecycleStatus 更新成 2 维修完成
+            //更新出入库记录的手机 物流 信息
+            inOutStorageRecordDao.abandonCompleteRecyleData(oldImeiNo);//isr 置为2
+            result += inOutStorageRecordDao.updateDeliveryLogisticsInfoById(map,"2");
+        }else if ("3".equals(afterRecycleStatus)){
+            //3 等待更换手机(换货)
+            //换货出库 需要将出库跟踪中的 等待更换手机记录置废 再将出库记录 afterRecycleStatus 更新成 4 手机已更换
+            result += inOutStorageRecordDao.updateDeliveryLogisticsInfoById(map,"4");
+            inOutStorageRecordDao.abandonCompleteRecyleData(oldImeiNo);//isr 置为2
+        }else{
+            //库存新增出库 afterRecycleStatus 更新成 0 使用中
+            result += inOutStorageRecordDao.updateDeliveryLogisticsInfoById(map,"0");
+        }
+        return result;
     }
 
     /**
@@ -97,7 +116,27 @@ public class BackStageDeliveryManageService {
      * @return
      */
     public String updateDeliveryLogisticsInfoByIds(Map map) {
-        return inOutStorageRecordDao.updateDeliveryLogisticsInfoByIds(map);
+//        return inOutStorageRecordDao.updateDeliveryLogisticsInfoByIds(map);
+        String result = "";
+
+        String afterRecycleStatus = map.get("afterRecycleStatus") == null ? "" : map.get("afterRecycleStatus").toString();
+        String oldImeiNo = map.get("oldImeiNo") == null ? "" : map.get("oldImeiNo").toString();
+        if ("1".equals(afterRecycleStatus)){
+            //1 维修中
+            //维修直接出库 需要将出库跟踪中的 维修中记录置废 再将出库记录 afterRecycleStatus 更新成 2 维修完成
+            //更新出入库记录的手机 物流 信息
+            inOutStorageRecordDao.abandonCompleteRecyleData(oldImeiNo);//isr 置为2
+            result += inOutStorageRecordDao.updateDeliveryLogisticsInfoByIds(map,"2");
+        }else if ("3".equals(afterRecycleStatus)){
+            //3 等待更换手机(换货)
+            //换货出库 需要将出库跟踪中的 等待更换手机记录置废 再将出库记录 afterRecycleStatus 更新成 4 手机已更换
+            result += inOutStorageRecordDao.updateDeliveryLogisticsInfoByIds(map,"4");
+            inOutStorageRecordDao.abandonCompleteRecyleData(oldImeiNo);//isr 置为2
+        }else{
+            //库存新增出库 afterRecycleStatus 更新成 0 使用中
+            result += inOutStorageRecordDao.updateDeliveryLogisticsInfoByIds(map,"0");
+        }
+        return result;
     }
 
     /**
@@ -126,8 +165,25 @@ public class BackStageDeliveryManageService {
         String result = "";
         //更新库存中的imeiNo为出库状态
         result += storageManageDao.updateStorageInfoByImeiNo(map)+",";
-        //更新出入库记录的手机 物流 信息
-        result += inOutStorageRecordDao.updateDeliveryLogisticsInfoById(map);
+
+        String afterRecycleStatus = map.get("afterRecycleStatus") == null ? "" : map.get("afterRecycleStatus").toString();
+        String oldImeiNo = map.get("oldImeiNo") == null ? "" : map.get("oldImeiNo").toString();
+        if ("1".equals(afterRecycleStatus)){
+            //1 维修中
+            //维修换新出库 需要将出库跟踪中的 维修中记录置废 再将出库记录 afterRecycleStatus 更新成 4 手机已更换
+            //更新出入库记录的手机 物流 信息
+            inOutStorageRecordDao.abandonCompleteRecyleData(oldImeiNo);//isr 置为2
+            result += inOutStorageRecordDao.updateDeliveryLogisticsInfoById(map,"4");
+        }else if ("3".equals(afterRecycleStatus)){
+            //3 等待更换手机(换货)
+            //换货出库 需要将出库跟踪中的 等待更换手机记录置废 再将出库记录 afterRecycleStatus 更新成 4 手机已更换
+            inOutStorageRecordDao.abandonCompleteRecyleData(oldImeiNo);//isr 置为2
+            result += inOutStorageRecordDao.updateDeliveryLogisticsInfoById(map,"4");
+        }else{
+            //库存新增出库 afterRecycleStatus 更新成 0 使用中
+            result += inOutStorageRecordDao.updateDeliveryLogisticsInfoById(map,"0");
+        }
+
         return result;
     }
 

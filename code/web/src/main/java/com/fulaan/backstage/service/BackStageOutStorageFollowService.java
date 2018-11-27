@@ -189,11 +189,12 @@ public class BackStageOutStorageFollowService {
     public List<String> singleRecycleInStorage(Map<String,Object> params) {
         List<String> result = new ArrayList<String>();
         //更改选中数据为已回收 即isr 为 1
-        inOutStorageRecordDao.singleRecycleInStorageById(params.get("id").toString());
+//        inOutStorageRecordDao.singleRecycleInStorageById(params.get("id").toString());
         result.add("回收记录ID："+params.get("id").toString());
         //当选则 维修入库
         // 1 添加当前手机进 维修管理
         if ("维修入库".equals(params.get("recycleType").toString())){
+            inOutStorageRecordDao.singleRecycleInStorageById(params.get("id").toString(),"1");//1 维修中
              String stringResult = addSinglePhoneToRepair(params);
              result.add(stringResult);
         }
@@ -202,6 +203,7 @@ public class BackStageOutStorageFollowService {
         // 1 添加当前手机 退货入库记录
         // 2 并更新当前手机 库存数据 状态 退货入库
         if ("退货入库".equals(params.get("recycleType").toString())){
+            inOutStorageRecordDao.singleRecycleInStorageById(params.get("id").toString(),"5");//5 已退货
             String stringResult = singlePhoneToReturn(params);
             result.add(stringResult);
         }
@@ -211,6 +213,7 @@ public class BackStageOutStorageFollowService {
         // 2 添加 当前用户 待出库记录
         // 3 并更新当前手机 库存数据 状态 换货入库
         if ("换货入库".equals(params.get("recycleType").toString())){
+            inOutStorageRecordDao.singleRecycleInStorageById(params.get("id").toString(),"3");//3 等待更换手机
             String stringResult = singlePhoneToExchangeReturn(params);
             result.add(stringResult);
         }
@@ -281,7 +284,9 @@ public class BackStageOutStorageFollowService {
                 "6",//待维修
                 tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
                 stringlist,
-                "0"//未读
+                "0",//未读
+                "1",
+                tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
         );
         result += "维修管理:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
@@ -343,7 +348,9 @@ public class BackStageOutStorageFollowService {
                 "1",//退货入库
                 tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
                 stringlist,
-                "0"//未读
+                "0",//未读
+                "5",
+                tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
         );
         result += "退货入库log:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
@@ -415,7 +422,9 @@ public class BackStageOutStorageFollowService {
                 "3",//换货入库
                 tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
                 stringlist,
-                "0"//未读
+                "0",//未读
+                "3",
+                tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
         );
         result += "换货入库log:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
@@ -455,7 +464,9 @@ public class BackStageOutStorageFollowService {
                 "5",//待换货出库
                 tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
                 stringlist,
-                "0"//未读
+                "0",//未读
+                "3",
+                tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
         );
         result += "待换货出库log:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry1);
@@ -526,7 +537,9 @@ public class BackStageOutStorageFollowService {
                 "4",//回收入库
                 tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
                 stringlist,
-                "0"//未读
+                "0",//未读
+                "-1",
+                tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
         );
         result += "回收入库log:";
         result += inOutStorageRecordDao.addProjectOutStorageRecord(inOutStorageEntry);
@@ -550,11 +563,12 @@ public class BackStageOutStorageFollowService {
     public List<String> batchRecycleInStorage(Map<String,Object> params) {
         List<String> result = new ArrayList<String>();
         //更改选中数据为已回收 即isr 为 1
-        inOutStorageRecordDao.batchRecycleInStorageByIds(params.get("ids").toString());
+//        inOutStorageRecordDao.batchRecycleInStorageByIds(params.get("ids").toString());
         result.add("回收记录ID："+params.get("ids").toString());
         //当选则 维修入库
         // 1 添加当前手机进 维修管理
         if ("维修入库".equals(params.get("recycleType").toString())){
+            inOutStorageRecordDao.batchRecycleInStorageByIds(params.get("ids").toString(),"1");//1 维修中
             String stringResult = addBatchlePhoneToRepair(params);
             result.add(stringResult);
         }
@@ -563,6 +577,7 @@ public class BackStageOutStorageFollowService {
         // 1 添加当前手机 退货入库记录
         // 2 并更新当前手机 库存数据 状态 退货入库
         if ("退货入库".equals(params.get("recycleType").toString())){
+            inOutStorageRecordDao.batchRecycleInStorageByIds(params.get("ids").toString(),"5");//5 已退货
             String stringResult = batchPhoneToReturn(params);
             result.add(stringResult);
         }
@@ -572,6 +587,7 @@ public class BackStageOutStorageFollowService {
         // 2 添加 当前用户 待出库记录
         // 3 并更新当前手机 库存数据 状态 换货入库
         if ("换货入库".equals(params.get("recycleType").toString())){
+            inOutStorageRecordDao.batchRecycleInStorageByIds(params.get("ids").toString(),"3");//3 等待更换手机
             String stringResult = batchPhoneToExchangeReturn(params);
             result.add(stringResult);
         }
@@ -646,7 +662,9 @@ public class BackStageOutStorageFollowService {
                     "6",//待维修
                     tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
                     stringlist,
-                    "0"//未读
+                    "0",//未读
+                    "1",
+                    tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
             );
             dbObjectList.add(inOutStorageEntry.getBaseEntry());
         }
@@ -716,7 +734,9 @@ public class BackStageOutStorageFollowService {
                     "1",//退货入库
                     tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
                     stringlist,
-                    "0"//未读
+                    "0",//未读
+                    "5",
+                    tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
             );
             dbObjectList.add(inOutStorageEntry.getBaseEntry());
         }
@@ -799,7 +819,9 @@ public class BackStageOutStorageFollowService {
                     "3",//换货入库
                     tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
                     stringlist,
-                    "0"//未读
+                    "0",//未读
+                    "3",
+                    tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
             );
             dbObjectList.add(inOutStorageEntry.getBaseEntry());
 
@@ -838,7 +860,9 @@ public class BackStageOutStorageFollowService {
                     "5",//待换货出库
                     tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
                     stringlist,
-                    "0"//未读
+                    "0",//未读
+                    "3",
+                    tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
             );
             dbObjectList.add(inOutStorageEntry1.getBaseEntry());
         }
@@ -913,7 +937,9 @@ public class BackStageOutStorageFollowService {
                     "4",//回收入库
                     tjsonIn.get("commentType") == null ? "" : tjsonIn.get("commentType").toString(),
                     stringlist,
-                    "0"//未读
+                    "0",//未读
+                    "-1",
+                    tjsonIn.get("imeiNo") == null ? "" : tjsonIn.get("imeiNo").toString()
             );
             dbObjectList.add(inOutStorageEntry.getBaseEntry());
 

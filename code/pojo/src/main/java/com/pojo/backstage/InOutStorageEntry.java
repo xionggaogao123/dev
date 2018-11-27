@@ -56,7 +56,7 @@ import java.util.List;
  * recycleComment	回收备注
  * repairRange		维修范围
  * repairCost		维修价格
- * storageRecordStatus 记录出入库状态( 0 新机入库 参考小兰退货 "serviceVersion":1, 退货 "serviceVersion":2, 维修(入库)      "serviceVersion":3, 换货     4 回收入库    5 出库(数据存在物流信息表示发货) 6, 待维修)
+ * storageRecordStatus 记录出入库状态( 0 新机入库 参考小兰退货 "serviceVersion":1, 退货 "serviceVersion":2, 维修(入库)      "serviceVersion":3, 换货     4 回收入库    5 出库(数据存在物流信息表示发货) 6, 待维修 )
  *维修入库新加字段
  * isPay 是否已付款
  * payFrom 付款方
@@ -68,6 +68,10 @@ import java.util.List;
  * creationMonth 数据创建月
  * isr 为2 废弃数据
  * isReadFlag 未读0 已读1
+ *
+// * 出库跟踪回收增加状态（storageRecordStatus 为5 isr 为1 是已回收数据）
+ * afterRecycleStatus 0 使用中(新增的出库) 1 维修中 2 维修完成 3 等待更换手机 4 手机已更换 5 已退货(默认 -1 无关状态)
+ * oldImeiNo 记录换货前imeiNo
  */
 public class InOutStorageEntry extends BaseDBObject {
 
@@ -116,7 +120,9 @@ public class InOutStorageEntry extends BaseDBObject {
                              String storageRecordStatus,
                              String commentType,
                              List<String> needRepairComment,
-                             String isReadFlag
+                             String isReadFlag,
+                             String afterRecycleStatus,
+                             String oldImeiNo
     ) {
         BasicDBObject basicDBObject = new BasicDBObject()
                 .append("imeiNo", imeiNo)
@@ -159,6 +165,8 @@ public class InOutStorageEntry extends BaseDBObject {
                 .append("creationYear", calendar.get(Calendar.YEAR)+"")
                 .append("creationMonth", (calendar.get(Calendar.MONTH)+1)+"")
                 .append("isReadFlag", isReadFlag)
+                .append("afterRecycleStatus", afterRecycleStatus)
+                .append("oldImeiNo", oldImeiNo)
                 .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -202,7 +210,9 @@ public class InOutStorageEntry extends BaseDBObject {
                              String payFrom,
                              String afterRepair,
                              String repairType,
-                             String isReadFlag
+                             String isReadFlag,
+                             String afterRecycleStatus,
+                             String oldImeiNo
     ) {
         BasicDBObject basicDBObject = new BasicDBObject()
                 .append("imeiNo", imeiNo)
@@ -249,6 +259,8 @@ public class InOutStorageEntry extends BaseDBObject {
                 .append("creationYear", calendar.get(Calendar.YEAR)+"")
                 .append("creationMonth", (calendar.get(Calendar.MONTH)+1)+"")
                 .append("isReadFlag", isReadFlag)
+                .append("afterRecycleStatus", afterRecycleStatus)
+                .append("oldImeiNo", oldImeiNo)
                 .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -445,6 +457,14 @@ public class InOutStorageEntry extends BaseDBObject {
 
     public String getIsReadFlag() {
         return getSimpleStringValue("isReadFlag");
+    }
+
+    public String getAfterRecycleStatus() {
+        return getSimpleStringValue("afterRecycleStatus");
+    }
+
+    public String getOldImeiNo() {
+        return getSimpleStringValue("oldImeiNo");
     }
 
 }

@@ -79,4 +79,14 @@ public class CommonQuestionService {
         commonQuestionDao.updateIsr(goodId);
         
     }
+
+    /**
+     * 新版常见问题
+     * @param cDto
+     * @return
+     */
+    public void saveQuestionType(CommonQuestionDto cDto) {
+        CommonQuestionEntry entry = cDto.buildAddTypeEntry();
+        commonQuestionDao.addEntry(entry);
+    }
 }

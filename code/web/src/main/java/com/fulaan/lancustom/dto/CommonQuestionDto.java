@@ -95,6 +95,11 @@ public class CommonQuestionDto {
         return entry;
     }
 
+    public CommonQuestionEntry buildAddTypeEntry(){
+        CommonQuestionEntry entry = new CommonQuestionEntry(this.typee);
+        return entry;
+    }
+
     public String getId() {
         return id;
     }

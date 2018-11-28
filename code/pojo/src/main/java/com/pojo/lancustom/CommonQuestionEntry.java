@@ -51,6 +51,20 @@ public class CommonQuestionEntry extends BaseDBObject {
             .append("isr", Constant.ZERO);
         setBaseEntry(dbObject);
     }
+
+    /**
+     * 新增问题类型构造
+     * @param classes
+     */
+    public CommonQuestionEntry(String classes) {
+        BasicDBObject dbObject=new BasicDBObject()
+                .append("question", "")
+                .append("answer", "")
+                .append("type", -1)//新版废弃字段
+                .append("classes", classes)
+                .append("isr", Constant.ZERO);
+        setBaseEntry(dbObject);
+    }
     
     public String getQuestion() {
         return getSimpleStringValue("question");

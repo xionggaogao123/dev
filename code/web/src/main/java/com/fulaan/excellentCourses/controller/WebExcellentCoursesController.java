@@ -1090,8 +1090,8 @@ public class WebExcellentCoursesController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            excellentCoursesService.updateOneClass(new ObjectId(dto.getParentId()),dto ,getUserId(),dto.getStatus());
-            respObj.setMessage("修改成功");
+            String roomId = excellentCoursesService.updateOneClass(new ObjectId(dto.getParentId()),dto ,getUserId(),dto.getStatus());
+            respObj.setMessage(roomId);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

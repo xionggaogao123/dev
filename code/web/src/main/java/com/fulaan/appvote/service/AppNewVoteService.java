@@ -664,7 +664,7 @@ public class AppNewVoteService {
         String result = "";
         float num =(float)a/b;
 
-        DecimalFormat df = new DecimalFormat("0.0");
+        DecimalFormat df = new DecimalFormat("0.00");
 
         result = df.format(num);
 

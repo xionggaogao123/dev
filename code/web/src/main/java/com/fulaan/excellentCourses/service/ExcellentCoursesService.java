@@ -3469,7 +3469,9 @@ public class ExcellentCoursesService {
                     +coursesRoomEntry.getUserId()+"&publishname="
                     +excellentCoursesEntry.getUserName()+"&publishpassword="
                     +coursesRoomEntry.getPublisherpass();*/
-
+            if(hourClassEntry.getRoomId()!=null&& !hourClassEntry.getRoomId().equals("")){
+                return "cclive://"+coursesRoomEntry.getUserId()+"/"+hourClassEntry.getRoomId()+"/"+userName+"/"+coursesRoomEntry.getPublisherpass();
+            }
             return "cclive://"+coursesRoomEntry.getUserId()+"/"+coursesRoomEntry.getRoomId()+"/"+userName+"/"+coursesRoomEntry.getPublisherpass();
         }
         return  "";
@@ -4512,7 +4514,7 @@ public class ExcellentCoursesService {
         this.addLogMessage(id.toString(),"修改了课程："+excellentCoursesEntry.getTitle()+"的总价",LogMessageType.courses.getDes(),userId.toString());
     }
     //修改课节
-    public void updateOneClass(ObjectId id,HourClassDTO dto,ObjectId userId,int type)throws Exception{
+    public String updateOneClass(ObjectId id,HourClassDTO dto,ObjectId userId,int type)throws Exception{
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         if(excellentCoursesEntry==null){
             throw new Exception("课程不存在！");
@@ -4530,10 +4532,19 @@ public class ExcellentCoursesService {
         long sTm = hourClassEntry.getStartTime();
         String str = DateTimeUtils.getLongToStrTimeTwo(sTm).substring(0,11);
         long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        boolean falge = false;
         if(hourClassEntry.getID()!=null){
+            HourClassEntry hourClassEntry2 = hourClassDao.getEntry(hourClassEntry.getID());
+            if(hourClassEntry2.getOwnId()!=null && !hourClassEntry2.getOwnId().equals(hourClassEntry.getOwnId())){//换老师
+                falge = true;
+            }
+            //暂时用以前的直播间
+            hourClassEntry.setRoomId(hourClassEntry2.getRoomId());
+            hourClassEntry.setIsHe(hourClassEntry.getIsHe());
             hourClassDao.addEntry(hourClassEntry);
             pushMessageDao.updateEntry(hourClassEntry.getID(),sTm,strNum);
         }else{
+            falge = true;
             hourClassDao.addEntry(hourClassEntry);
             this.sendMessage(excellentCoursesEntry.getTitle(),hourClassEntry.getID(),sTm,strNum);
             //添加订单
@@ -4541,12 +4552,25 @@ public class ExcellentCoursesService {
                 addClassTime(hourClassEntry);
             }
         }
+        if(hourClassEntry.getIsHe()==1){//已合并的不考虑分配
+            falge = false;
+        }
         this.addLogMessage(hourClassEntry.getID().toString(),"修改了课程："+excellentCoursesEntry.getTitle()+"的第"+dto.getOrder()+"课节",LogMessageType.courses.getDes(),userId.toString());
         //排序
         sortClassTime(excellentCoursesEntry);
         //分配直播间
-        ExcellentCoursesService.updateClassRoom(excellentCoursesEntry.getID());
+        if(falge){//
+            //long current = System.currentTimeMillis();  2018-11-26 13:59:00
+            if(excellentCoursesEntry.getCreateTime()>1543211940000l){
+                ExcellentCoursesService.updateNewClassRoom(excellentCoursesEntry.getID(),hourClassEntry.getID());
+            }
+        }
+        HourClassEntry hourClassEntry1 = hourClassDao.getEntry(hourClassEntry.getID());
+        return hourClassEntry1.getRoomId();
     }
+//    public String createOneRoom(){
+//
+//    }
 
     //增加课节订单
     public void addClassTime(HourClassEntry classEntry){
@@ -4814,10 +4838,10 @@ public class ExcellentCoursesService {
                boolean falge = true;
                for(HourClassEntry hourClassEntry :hourClassEntries){
                    String rid = hourClassEntry.getRoomId();
-                   if(rid!=null && !rid.equals("") && hourClassEntry.getIsHe()!=1){//去除合并过的直播间
+                   if(rid!=null && !rid.equals("")){
                        map.put(hourClassEntry.getOwnId(),rid);
                        if(rid.equals(roomId)){
-                           falge = true;
+                           falge = false;
                        }
                    }
                }
@@ -4832,7 +4856,7 @@ public class ExcellentCoursesService {
                            hourClassEntry.setRoomId(newRoomId);
                            userClassRoomEntry.setRoomId(newRoomId);
                        }else{
-                           if(falge){//主直播间已使用
+                           if(falge){//主直播间未使用
                                falge = false;
                                hourClassEntry.setRoomId(roomId);
                                map.put(userId,roomId);
@@ -4869,5 +4893,102 @@ public class ExcellentCoursesService {
                }
            }
        }.start();
+    }
+
+    //分配直播间
+    public static void updateNewClassRoom(ObjectId id,ObjectId oldClassId){
+        ExcellentCoursesDao excellentCoursesDao = new ExcellentCoursesDao();
+        CoursesRoomDao coursesRoomDao = new CoursesRoomDao();
+        HourClassDao hourClassDao = new HourClassDao();
+        UserClassRoomDao userClassRoomDao = new UserClassRoomDao();
+        CoursesRoomService coursesRoomService = new CoursesRoomService();
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(id);
+        if(coursesRoomEntry==null){
+            return;
+        }
+        String roomId = coursesRoomEntry.getRoomId();
+        Map<ObjectId,String> map = new HashMap<ObjectId, String>();
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        boolean falge = true;//默认主直播间
+        if(userClassRoomDao.booleanEntry(coursesRoomEntry.getRoomId())){//已用
+            falge = false;
+        }
+        for(HourClassEntry hourClassEntry :hourClassEntries){
+            String rid = hourClassEntry.getRoomId();
+            if(rid!=null && !rid.equals("")){//判断主直播间是否已使用
+                if(rid.equals(roomId)){
+                    falge = false;
+                }
+            }
+            if(rid!=null && !rid.equals("") && hourClassEntry.getIsHe()!=1 && !hourClassEntry.getID().equals(oldClassId)){//去除合并过的直播间和刚刚改动的课节
+                map.put(hourClassEntry.getOwnId(),rid);
+            }
+        }
+        for(HourClassEntry hourClassEntry :hourClassEntries){
+            if(hourClassEntry.getRoomId()==null || hourClassEntry.getRoomId().equals("") || hourClassEntry.getID().equals(oldClassId)){
+                UserClassRoomEntry userClassRoomEntry = new UserClassRoomEntry();
+                ObjectId userId = hourClassEntry.getOwnId();
+                userClassRoomEntry.setUserId(userId);
+                userClassRoomEntry.setContactId(id);
+                String newRoomId = map.get(userId);
+                //查询记录
+                UserClassRoomEntry userClassRoomEntry1 = userClassRoomDao.getEntry(userId,id);
+                if(newRoomId!=null){//已存在
+                    hourClassEntry.setRoomId(newRoomId);
+                    userClassRoomEntry.setRoomId(newRoomId);
+                }else{
+                    if(falge){//主直播间未使用
+                        //判断是否存在曾经已有的直播间(记录查询)
+                        if(userClassRoomEntry1!=null){
+                            //已有
+                            hourClassEntry.setRoomId(userClassRoomEntry1.getRoomId());
+                            map.put(userId,userClassRoomEntry1.getRoomId());
+                        }else{
+                            //无
+                            falge = false;
+                            hourClassEntry.setRoomId(roomId);
+                            map.put(userId,roomId);
+                            userClassRoomEntry.setRoomId(roomId);
+                        }
+                    }else{//无对应直播间
+                        //判断是否存在曾经已有的直播间(记录查询)
+                        if(userClassRoomEntry1!=null){
+                            //已有
+                            hourClassEntry.setRoomId(userClassRoomEntry1.getRoomId());
+                            map.put(userId,userClassRoomEntry1.getRoomId());
+                        }else{//无记录
+                            //创建直播间
+                            int minute = 0;
+                            minute = hourClassEntry.getCurrentTime()/60000 - 5;
+                            if(minute>5){
+
+                            }else{
+                                minute = 5;
+                            }
+                            String roomId2 = coursesRoomService.createSimpleBackCourses(
+                                    coursesRoomEntry.getName(),
+                                    coursesRoomEntry.getDescription(),
+                                    hourClassEntry.getID(),
+                                    coursesRoomEntry.getDateTime(),
+                                    minute);
+                            hourClassEntry.setRoomId(roomId2);
+                            map.put(userId,roomId2);
+                            userClassRoomEntry.setRoomId(roomId2);
+                        }
+                    }
+
+                }
+                //无记录保存直播间关系
+                if(userClassRoomEntry1==null){
+                    userClassRoomDao.addEntry(userClassRoomEntry);
+                }
+                //修改直播间
+                hourClassDao.addEntry(hourClassEntry);
+            }
+        }
     }
 }

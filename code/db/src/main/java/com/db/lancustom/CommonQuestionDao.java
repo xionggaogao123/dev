@@ -71,6 +71,7 @@ public class CommonQuestionDao extends BaseDao {
         if (StringUtils.isNotBlank(name)) {
             query.append("question", new BasicDBObject(Constant.MONGO_REGEX,name));
         }
+        query.append("pid", new BasicDBObject(Constant.MONGO_EXIST,true));
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_COMMON_QUESTION,
             query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -124,6 +125,58 @@ public class CommonQuestionDao extends BaseDao {
         }
         return entries;
     }
-    
-    
+
+
+    /**
+     * 修复数据 获取所有数据
+     * @return
+     */
+    public List<CommonQuestionEntry> getAllCommonQuestion() {
+        List<CommonQuestionEntry> entries = new ArrayList<CommonQuestionEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr", 0);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_COMMON_QUESTION,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new CommonQuestionEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+    /**
+     * 修复数据 查找是类型的数据
+     * @return
+     */
+    public List<CommonQuestionEntry> getAllTypeCommonQuestion() {
+        List<CommonQuestionEntry> entries = new ArrayList<CommonQuestionEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr", 0);
+//        query.append("pid", new BasicDBObject(Constant.MONGO_NE,null));
+        query.append("pid", new BasicDBObject(Constant.MONGO_EXIST,false));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_COMMON_QUESTION,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new CommonQuestionEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+    /**
+     * 新版修复删除
+     */
+    public void updateRemoveAllIsr(List<ObjectId> ids) {
+        DBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids));
+        BasicDBObject updateValue=new BasicDBObject()
+                .append(Constant.MONGO_SET,new BasicDBObject("isr",2));//新版修复删除
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COMMON_QUESTION,query,updateValue);
+    }
+
+    /**
+     * 插入集合
+     * @param dbObjects
+     */
+    public void insertAll(List<DBObject> dbObjects) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_COMMON_QUESTION, dbObjects);
+    }
 }

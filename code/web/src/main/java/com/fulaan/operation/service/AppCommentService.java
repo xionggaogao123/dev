@@ -3508,6 +3508,231 @@ public class AppCommentService {
         return map;
     }
 
+    /**
+     * 查询改作业下的某个孩子的提交列表
+     */
+    public Map<String,Object> getWebChildAppcommentList(ObjectId id,String sonId,ObjectId userId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        AppCommentEntry aen = appCommentDao.getEntry(id);
+        map.put("dto",new AppCommentDTO(aen));
+        int num = 0;
+        List<AppOperationDTO> dtos = new ArrayList<AppOperationDTO>();
+        if(aen.getShowType()==1){
+            //所有学生
+            List<String> objectIdList2 = newVersionBindService.getStudentIdListByCommunityId(aen.getRecipientId());
+            //代提交用户
+            List<ParentChildConnectionEntry> objectIdList3 = parentChildConnectionDao.getEntryByList(aen.getRecipientId());
+            List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+            for(String str : objectIdList2){
+                objectIdList1.add(new ObjectId(str));
+            }
+
+
+            List<UserEntry> userEntries = userService.getUserByList(objectIdList1);
+            List<String> objectIdList = new ArrayList<String>();
+            List<ObjectId> oidsa = new ArrayList<ObjectId>();
+            for(UserEntry userEntry3: userEntries){
+                objectIdList.add(userEntry3.getID().toString());
+                oidsa.add(userEntry3.getID());
+            }
+            for(ParentChildConnectionEntry pe : objectIdList3){
+                oidsa.add(pe.getUserId());
+            }
+            //查询已提交
+            List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidsa, 3, page, pageSize);
+            num = appOperationDao.countStudentLoadTimesFor(id, oidsa, 3);
+            List<ObjectId> plist = new ArrayList<ObjectId>();
+            for(AppOperationEntry appOperationEntry : entries){
+                plist.add(appOperationEntry.getID());
+            }
+            //添加二级评论
+            List<AppOperationEntry> entries2= appOperationDao.getSecondList(plist);
+            List<AppOperationDTO> dtos2 = new ArrayList<AppOperationDTO>();
+            if(entries2 != null && entries2.size()>0){
+                for(AppOperationEntry en2 : entries2){
+                    AppOperationDTO dto = new AppOperationDTO(en2);
+                    objectIdList.add(dto.getUserId());
+                    if(dto.getBackId() != null && dto.getBackId() != ""){
+                        objectIdList.add(dto.getBackId());
+                    }
+                    dtos2.add(dto);
+                }
+            }
+
+
+            List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(objectIdList);
+            List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+            for(String st3:objectIdList){
+                nameObjectIdList.add(new ObjectId(st3));
+            }
+            Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
+
+            Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
+            if(udtos2 != null && udtos2.size()>0){
+                for(UserDetailInfoDTO dto4 : udtos2){
+                    map3.put(dto4.getId(),dto4);
+                }
+            }
+
+            for(ParentChildConnectionEntry entry:objectIdList3){
+                UserDetailInfoDTO ud = new UserDetailInfoDTO();
+                ud.setNickName(entry.getUserName());
+                ud.setImgUrl(entry.getAvatar());
+                map3.put(entry.getUserId().toString(),ud);
+            }
+
+            if(entries != null && entries.size()>0){
+                for(AppOperationEntry en : entries){
+                    AppOperationDTO dto = new AppOperationDTO(en);
+                    UserDetailInfoDTO dto9 = map3.get(en.getUserId().toString());
+                    if(dto9 != null){
+                        String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                        String newName = nameMap.get(en.getUserId());
+                        if(newName!=null && !newName.equals("")){
+                            name = newName;
+                        }
+                        dto.setUserName(name);
+                        dto.setUserUrl(dto9.getImgUrl());
+                    }
+                    if(userId.equals(en.getParentId())){
+                        dto.setRole(4);//可删除
+                    }
+
+                    List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
+                    for(AppOperationDTO dto1: dtos2){
+                        if(dto1.getLevel()==2 && dto.getId().equals(dto1.getParentId())){
+                            UserDetailInfoDTO dto10 = map3.get(dto1.getUserId());
+                            if(dto10 != null){
+                                String name2 = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                                String newName2 = nameMap.get(new ObjectId(dto1.getUserId()));
+                                if(newName2!=null && !newName2.equals("")){
+                                    name2 = newName2;
+                                }
+                                dto1.setUserName(name2);
+                                dto1.setUserUrl(dto10.getImgUrl());
+                            }
+                            if(dto1.getBackId() != null && dto1.getBackId() != "" && map3.get(dto1.getBackId())!= null){
+                                UserDetailInfoDTO dto11 = map3.get(dto1.getBackId());
+                                String name3 = StringUtils.isNotEmpty(dto11.getNickName())?dto11.getNickName():dto11.getUserName();
+                                String newName3 = nameMap.get(new ObjectId(dto1.getBackId()));
+                                if(newName3!=null && !newName3.equals("")){
+                                    name3 = newName3;
+                                }
+                                dto1.setBackName(name3);
+                            }
+                            dtoList.add(dto1);
+                        }
+                    }
+                    dto.setAlist(dtoList);
+                    dtos.add(dto);
+                }
+            }
+
+        }else{
+            List<ObjectId> oidst = new ArrayList<ObjectId>();
+            if(sonId!=null && !sonId.equals("")){
+                oidst.add(new ObjectId(sonId));
+                //查询已提交
+                List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidst, 3, page, pageSize);
+                num = appOperationDao.countStudentLoadTimesFor(id, oidst, 3);
+
+                List<ObjectId> plist = new ArrayList<ObjectId>();
+                for(AppOperationEntry appOperationEntry : entries){
+                    plist.add(appOperationEntry.getID());
+                }
+                List<String> objectIdList = new ArrayList<String>();
+                objectIdList.add(sonId);
+                //添加二级评论
+                List<AppOperationEntry> entries2= appOperationDao.getSecondList(plist);
+                List<AppOperationDTO> dtos2 = new ArrayList<AppOperationDTO>();
+                if(entries2 != null && entries2.size()>0){
+                    for(AppOperationEntry en2 : entries2){
+                        AppOperationDTO dto = new AppOperationDTO(en2);
+                        objectIdList.add(dto.getUserId());
+                        if(dto.getBackId() != null && dto.getBackId() != ""){
+                            objectIdList.add(dto.getBackId());
+                        }
+                        dtos2.add(dto);
+                    }
+                }
+                //UserDetailInfoDTO userInfo = userService.getUserInfoById(sonId.toString());
+
+                List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(objectIdList);
+                List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+                for(String st3:objectIdList){
+                    nameObjectIdList.add(new ObjectId(st3));
+                }
+                Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
+                Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
+                if(udtos2 != null && udtos2.size()>0){
+                    for(UserDetailInfoDTO dto4 : udtos2){
+                        map3.put(dto4.getId(),dto4);
+                    }
+                }
+
+                //代提交用户
+                List<ParentChildConnectionEntry> objectIdList3 = parentChildConnectionDao.getEntryByList(aen.getRecipientId());
+                for(ParentChildConnectionEntry entry:objectIdList3){
+                    UserDetailInfoDTO ud = new UserDetailInfoDTO();
+                    ud.setNickName(entry.getUserName());
+                    ud.setImgUrl(entry.getAvatar());
+                    map3.put(entry.getUserId().toString(),ud);
+                }
+
+                if(entries != null && entries.size()>0){
+                    for(AppOperationEntry en : entries){
+                        AppOperationDTO dto = new AppOperationDTO(en);
+                        UserDetailInfoDTO userInfo = map3.get(en.getUserId().toString());
+                        if(userInfo != null){
+                            String name = StringUtils.isNotEmpty(userInfo.getNickName())?userInfo.getNickName():userInfo.getUserName();
+                            String newName = nameMap.get(en.getUserId());
+                            if(newName!=null && !newName.equals("")){
+                                name = newName;
+                            }
+                            dto.setUserName(name);
+                            dto.setUserUrl(userInfo.getImgUrl());
+                        }
+                        if(userId.equals(en.getParentId())){
+                            dto.setRole(4);//可删除
+                        }
+
+                        List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
+                        for(AppOperationDTO dto1: dtos2){
+                            if(dto1.getLevel()==2 && dto.getId().equals(dto1.getParentId())){
+                                UserDetailInfoDTO dto10 = map3.get(dto1.getUserId());
+                                if(dto10 != null){
+                                    String name2 = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                                    String newName2 = nameMap.get(new ObjectId(dto1.getUserId()));
+                                    if(newName2!=null && !newName2.equals("")){
+                                        name2 = newName2;
+                                    }
+                                    dto1.setUserName(name2);
+                                    dto1.setUserUrl(dto10.getImgUrl());
+                                }
+                                if(dto1.getBackId() != null && dto1.getBackId() != "" && map3.get(dto1.getBackId())!= null){
+                                    UserDetailInfoDTO dto11 = map3.get(dto1.getBackId());
+                                    String name3 = StringUtils.isNotEmpty(dto11.getNickName())?dto11.getNickName():dto11.getUserName();
+                                    String newName3 = nameMap.get(new ObjectId(dto1.getBackId()));
+                                    if(newName3!=null && !newName3.equals("")){
+                                        name3 = newName3;
+                                    }
+                                    dto1.setBackName(name3);
+                                }
+                                dtoList.add(dto1);
+                            }
+                        }
+                        dto.setAlist(dtoList);
+                        dtos.add(dto);
+
+                    }
+                }
+            }
+        }
+        map.put("list",dtos);
+        map.put("count",num);
+        return map;
+    }
+
     //修改孩子详情
     public String updateSonDesc(String name,ObjectId id,ObjectId parentId,ObjectId communityId){
         ParentChildConnectionEntry entry = parentChildConnectionDao.getEntryByById(parentId,name,communityId);

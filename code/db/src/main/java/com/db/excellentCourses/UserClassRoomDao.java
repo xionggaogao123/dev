@@ -28,4 +28,14 @@ public class UserClassRoomDao extends BaseDao {
             return null;
         }
     }
+
+    public boolean booleanEntry(String roomId){
+        BasicDBObject query=new BasicDBObject("rid",roomId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_CLASS_ROOM,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.db.fcommunity;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.CommunityDetailEntry;
@@ -339,6 +340,17 @@ if (receiveType == 1) {
         } else if (receiveType == 2) {
             query.append("cmuid", new BasicDBObject(Constant.MONGO_NE,userId));
         }
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
+    }
+    
+    //统计帖子数量
+    public int countTz(List<ObjectId> communityIds, int type, long startTime, long endTime) {
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("cmty", type).append("r", 0).append("ti", new BasicDBObject(Constant.MONGO_GTE, startTime)).append("cmid",new BasicDBObject(Constant.MONGO_IN, communityIds)));
+        values.add(new BasicDBObject("ti", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        query.put(Constant.MONGO_AND, values);
+        
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
     }
 

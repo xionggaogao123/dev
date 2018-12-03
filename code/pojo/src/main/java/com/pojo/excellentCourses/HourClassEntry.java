@@ -2,10 +2,12 @@ package com.pojo.excellentCourses;
 
 import com.mongodb.BasicDBObject;
 import com.pojo.base.BaseDBObject;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by James on 2018-04-26.
@@ -248,5 +250,6 @@ public class HourClassEntry extends BaseDBObject {
     public int getIsHe(){
         return getSimpleIntegerValueDef("ish",0);
     }
+  
 
 }

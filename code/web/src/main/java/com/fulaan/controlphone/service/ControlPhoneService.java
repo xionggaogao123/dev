@@ -279,6 +279,9 @@ public class ControlPhoneService {
 
         return dtos;
     }
+    
+    private AppTsDao appTsDao = new AppTsDao();
+    
     //添加 修改 老师应用
     public void addTeaCommunityAppList(ObjectId userId,ObjectId communityId,ObjectId appId,int type){
         ControlAppEntry entry = controlAppDao.getEntry(userId,communityId);
@@ -308,6 +311,7 @@ public class ControlPhoneService {
                 entry.setAppIdList(appIds);
                 controlAppDao.updEntry(entry);
             }else if (type==2){//推送
+                appTsDao.addEntry(new AppTsEntry(communityId));
                 List<ObjectId> appIds = entry.getAppIdList();
                 appIds.add(appId);
                 entry.setAppIdList(appIds);
@@ -381,6 +385,7 @@ public class ControlPhoneService {
                 entry.setAppIdList(appIds);
                 controlAppUserDao.updEntry(entry);
             }else if (type==2){//推送
+                //appTsDao.addEntry(new AppTsEntry());
                 List<ObjectId> appIds = entry.getAppIdList();
                 appIds.add(appId);
                 entry.setAppIdList(appIds);
@@ -4738,6 +4743,8 @@ public class ControlPhoneService {
             }
             this.addParentAppList(parentId,contactId,appId,isCheckId);
         }else if(type==2){//社区
+          //所在社群
+            List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(contactId);
             this.addTeaCommunityAppList(parentId,contactId,appId,isCheckId);
         }
         return 1;

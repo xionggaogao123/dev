@@ -232,6 +232,18 @@ public class AppNoticeDao extends BaseDao{
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
                 getMyReceivedAppNoticeQueryConditionSec(title,communityId,subjectId,groupIds, userId));
     }
+    
+    public int countAppNoticeEntries(List<ObjectId> communityIds,Long startTime, Long endTime){
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject()
+            .append("ti", new BasicDBObject(Constant.MONGO_GTE, startTime))
+            .append("ir",Constant.ZERO).append("cmId",new BasicDBObject(Constant.MONGO_IN, communityIds)));
+        values.add(new BasicDBObject().append("ti", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        query.put(Constant.MONGO_AND, values);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+            query);
+    }
 
 
     public BasicDBObject getMyReceivedAppNoticeQueryCondition(List<ObjectId> groupIds, ObjectId userId){

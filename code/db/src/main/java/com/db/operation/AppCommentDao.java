@@ -2,6 +2,7 @@ package com.db.operation;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.operation.AppCommentEntry;
@@ -415,28 +416,30 @@ public class AppCommentDao extends BaseDao {
     }
     
     
-    public int getWebAllDatePageNumberByTime(List<ObjectId> userIds,String communityId,String subjectId, Long timeStart,Long timeEnd) {
+    public int getWebAllDatePageNumberByTime(List<ObjectId> communityIds,String subjectId, Long timeStart,Long timeEnd) {
         List<Integer> ilist = new ArrayList<Integer>();
         ilist.add(1);
         ilist.add(0);
-        BasicDBObject query = new BasicDBObject()
-                .append("sta", new BasicDBObject(Constant.MONGO_IN, ilist))
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1 = new BasicDBObject().append("sta", new BasicDBObject(Constant.MONGO_IN, ilist))
                 .append("isr", 0); // 未删除
         if(subjectId != null && !subjectId.equals("")){
-            query.append("sid",new ObjectId(subjectId));
-        }
-        if(communityId!=null && !communityId.equals("")){
-            query.append("rid",new ObjectId(communityId));
-        }else{
-            query.append("rid",new BasicDBObject(Constant.MONGO_IN, userIds));
-        }
-        if (timeStart != null && timeStart != 0l) {
-            query.append("dtm", new BasicDBObject(Constant.MONGO_GTE, timeStart));
+            query1.append("sid",new ObjectId(subjectId));
         }
         
-        if (timeEnd != null && timeEnd != 0l) {
-            query.append("dtm", new BasicDBObject(Constant.MONGO_LT, timeEnd));
+        query1.append("rid",new BasicDBObject(Constant.MONGO_IN, communityIds));
+        
+        if (timeStart != null && timeStart != 0l) {
+            query1.append("ctm", new BasicDBObject(Constant.MONGO_GTE, timeStart));
         }
+        values.add(query1);
+        BasicDBObject query2 = new BasicDBObject();
+        if (timeEnd != null && timeEnd != 0l) {
+            query2.append("ctm", new BasicDBObject(Constant.MONGO_LT, timeEnd));
+        }
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_APP_COMMENT,

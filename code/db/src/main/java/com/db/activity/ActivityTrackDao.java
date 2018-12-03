@@ -25,7 +25,7 @@ public class ActivityTrackDao extends BaseDao {
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("uid", new BasicDBObject(Constant.MONGO_IN, ids)));
         values.add(new BasicDBObject("rid", new BasicDBObject(Constant.MONGO_IN, ids)).append("att", 1));
-        query.put(Constant.MONGO_OR, values);
+        query.put(Constant.MONGO_AND, values);
         BasicDBObject sortfield = new BasicDBObject();
         sortfield.put("ct", -1);
         List<DBObject> objectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_TRACK_NAME, query, Constant.FIELDS, sortfield, begin, pageSize);

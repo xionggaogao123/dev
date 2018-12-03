@@ -644,6 +644,8 @@ public class Constant {
     public static final String COLLECTION_FORUM_COMMUNITY_DETAIL = "fcommunitydetail";
 
     public static final String COLLECTION_FPRUM_LATEST_GROUP_DYNAMIC = "latestgroupdynamic";
+    
+    public static final String COLLECTION_FORUM_COMMUNITY_HY = "fcommunityHy";
 
     //家校互动附件表
     public static final String COLLECTION_FORUM_COMMUNITY_ATTACHMENT = "communityattachment";
@@ -981,6 +983,8 @@ public class Constant {
     public static final String COLLECTION_CONTROL_PHONE = "controlphone";
     //管控社区推荐应用表
     public static final String COLLECTION_CONTROL_APP = "controlapp";
+  //管控引用推送时间
+    public static final String COLLECTION_CONTROL_APP_TS = "controlappTs";
     //管控家长推荐应用表
     public static final String COLLECTION_CONTROL_PARENT_APP = "controlparentapp";
     //管控防沉迷时间设置

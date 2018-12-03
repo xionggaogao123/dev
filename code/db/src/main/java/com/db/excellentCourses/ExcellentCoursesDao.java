@@ -589,5 +589,17 @@ public class ExcellentCoursesDao extends BaseDao {
                         query);
         return count;
     }
+    
+    public List<ObjectId> getCourseIdByCid(List<ObjectId> cmid) {
+        List<ObjectId> l = new ArrayList<ObjectId>();
+        BasicDBObject query =new BasicDBObject("isr",0).append("sta",2);
+        query.append("clt", new BasicDBObject(Constant.MONGO_IN,cmid));
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+            Constant.FIELDS);
+        for(DBObject d : dbList) {
+             l.add((ObjectId)d.get("_id"));
+        }
+        return l;
+    }
 
 }

@@ -2,6 +2,7 @@ package com.fulaan.fgroup;
 
 import com.db.business.BusinessRoleDao;
 import com.db.business.CommunitySpeakingDao;
+import com.db.fcommunity.CommunityHyDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.easemob.server.EaseMobAPI;
 import com.easemob.server.comm.constant.MsgType;
@@ -27,6 +28,8 @@ import com.pojo.business.BusinessRoleEntry;
 import com.pojo.business.CommunitySpeakingEntry;
 import com.pojo.business.RoleType;
 import com.pojo.fcommunity.CommunityDetailType;
+import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.CommunityHyEntry;
 import com.pojo.fcommunity.GroupEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
@@ -945,6 +948,8 @@ public class DefaultGroupController extends BaseController {
 
 
     }
+    
+    private CommunityHyDao communityHyDao = new CommunityHyDao();
 
     /**
      * 判断该社群是否存在//是否禁言
@@ -964,6 +969,10 @@ public class DefaultGroupController extends BaseController {
             }*/
             Map<String,Object> map = new HashMap<String, Object>();
             GroupEntry groupEntry  = groupService.getMoreGroupIdByEmchatId2(emChatId);
+            if (groupEntry.getCommunityId() != null) {
+                CommunityHyEntry communityHyEntry = new CommunityHyEntry(new ObjectId(), groupEntry.getCommunityId());
+                communityHyDao.save(communityHyEntry);
+            }
             if(groupEntry==null){//单聊
                 map.put("isGroup", true);
                 map.put("time", 0);

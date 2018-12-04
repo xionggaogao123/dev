@@ -55,7 +55,7 @@ public class AppCommentController extends BaseController {
         dto.setAdminId(getUserId().toString());
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            String result = appCommentService.addCommentEntry(dto,dto.getComList());
+            String result = appCommentService.addThreeCommentEntry(dto,wdto.getTutorList());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
             if(result.equals("含")){
@@ -387,6 +387,38 @@ public class AppCommentController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * web分页查找全部
+     * @return
+     */
+    @ApiOperation(value = "web分页查找全部/web分页查找全部", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectWebAllKeyPageList")
+    @ResponseBody
+    public String selectWebAllKeyPageList(@ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
+                                           @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize,
+                                           @ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam(value = "communityId",defaultValue = "") String communityId,
+                                           @ApiParam(name = "subjectId", required = true, value = "学科id") @RequestParam(value = "subjectId",defaultValue = "") String subjectId,
+                                           @ApiParam(name = "keyword", required = true, value = "学科id") @RequestParam(value = "keyword",defaultValue = "") String keyword){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            long current=System.currentTimeMillis();
+            //获得时间批次
+            long dateTime=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+            Map<String,Object> dtos = appCommentService.selectWebAllKeyPageList(dateTime, getUserId(), page, pageSize, communityId, subjectId, keyword);
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("web分页查找失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 查找当前点击的事件学生收到作业情况列表
      * @return
@@ -487,6 +519,31 @@ public class AppCommentController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("根据作业id查找当前评论列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 编辑查询
+     * @return
+     */
+    @ApiOperation(value = "编辑查询", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getOneOperation")
+    @ResponseBody
+    public String getOneOperation(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            AppCommentDTO dto = appCommentService.getOneOperation(new ObjectId(id));
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("编辑查询失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -725,7 +782,7 @@ public class AppCommentController extends BaseController {
     @ApiResponse(code=200,message = "success", response = String.class)
     @RequestMapping("/selectCommentDesc")
     @ResponseBody
-    public String selectCommentDesc(@ApiParam(name="id",value="作业id") @RequestParam(value="id") String id){
+    public RespObj selectCommentDesc(@ApiParam(name="id",value="作业id") @RequestParam(value="id") String id){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -737,7 +794,7 @@ public class AppCommentController extends BaseController {
             respObj.setMessage("查询暂不发布的作业失败!");
 
         }
-        return JSON.toJSONString(respObj);
+        return respObj;
 
     }
 

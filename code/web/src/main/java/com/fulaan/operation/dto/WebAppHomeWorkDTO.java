@@ -23,6 +23,8 @@ public class WebAppHomeWorkDTO {
     private List<Attachement> voiceList=new ArrayList<Attachement>();
     private List<Attachement> imageList=new ArrayList<Attachement>();
     private List<Attachement> attachements=new ArrayList<Attachement>();
+
+    private String tutorList;//助教和对应社群
     /*  "id": "",
         "subjectId":this.selectedSubjectId,
         "title":tit,
@@ -147,5 +149,14 @@ public class WebAppHomeWorkDTO {
 
     public void setShowType(int showType) {
         this.showType = showType;
+    }
+
+
+    public String getTutorList() {
+        return tutorList;
+    }
+
+    public void setTutorList(String tutorList) {
+        this.tutorList = tutorList;
     }
 }

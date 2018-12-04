@@ -7,10 +7,12 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.operation.AppCommentEntry;
 import com.sys.constants.Constant;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by James on 2017/8/25.
@@ -393,6 +395,45 @@ public class AppCommentDao extends BaseDao {
         }
         return entryList;
     }
+
+    public List<AppCommentEntry> selectWebAllKeyPageList(List<ObjectId> userIds,String communityId,String subjectId,int page,int pageSize,String keyword) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        BasicDBObject query = new BasicDBObject()
+                .append("sta", new BasicDBObject(Constant.MONGO_IN, ilist))
+                .append("isr", 0); // 未删除
+        if(subjectId != null && !subjectId.equals("")){
+            query.append("sid",new ObjectId(subjectId));
+        }
+        if(communityId!=null && !communityId.equals("")){
+            query.append("rid",new ObjectId(communityId));
+        }else{
+            query.append("rid",new BasicDBObject(Constant.MONGO_IN, userIds));
+        }
+
+        if(StringUtils.isNotBlank(keyword)){
+            BasicDBList list = new BasicDBList();
+            Pattern pattern = Pattern.compile("^.*" + keyword + ".*$", Pattern.CASE_INSENSITIVE);
+            list.add(new BasicDBObject().append("des", new BasicDBObject(Constant.MONGO_REGEX, pattern)));
+            list.add(new BasicDBObject().append("tit", new BasicDBObject(Constant.MONGO_REGEX, pattern)));
+            query.append(Constant.MONGO_OR, list);
+        }
+
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
+        List<AppCommentEntry> entryList = new ArrayList<AppCommentEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppCommentEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     public int getWebAllDatePageNumber(List<ObjectId> userIds,String communityId,String subjectId) {
         List<Integer> ilist = new ArrayList<Integer>();
         ilist.add(1);
@@ -408,6 +449,37 @@ public class AppCommentDao extends BaseDao {
         }else{
             query.append("rid",new BasicDBObject(Constant.MONGO_IN, userIds));
         }
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query);
+        return count;
+    }
+
+    public int getWebAllKeyPageNumber(List<ObjectId> userIds,String communityId,String subjectId,String keyword) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        BasicDBObject query = new BasicDBObject()
+                .append("sta", new BasicDBObject(Constant.MONGO_IN, ilist))
+                .append("isr", 0); // 未删除
+        if(subjectId != null && !subjectId.equals("")){
+            query.append("sid",new ObjectId(subjectId));
+        }
+        if(communityId!=null && !communityId.equals("")){
+            query.append("rid",new ObjectId(communityId));
+        }else{
+            query.append("rid",new BasicDBObject(Constant.MONGO_IN, userIds));
+        }
+
+        if(StringUtils.isNotBlank(keyword)){
+            BasicDBList list = new BasicDBList();
+            Pattern pattern = Pattern.compile("^.*" + keyword + ".*$", Pattern.CASE_INSENSITIVE);
+            list.add(new BasicDBObject().append("des", new BasicDBObject(Constant.MONGO_REGEX, pattern)));
+            list.add(new BasicDBObject().append("tit", new BasicDBObject(Constant.MONGO_REGEX, pattern)));
+            query.append(Constant.MONGO_OR, list);
+        }
+
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_APP_COMMENT,

@@ -61,7 +61,7 @@ public class AppCommentDTO {
     private String sendUser;//孩子名称
     private String comList;//社群组合
     private int isLoad;
-    private int showType; //是否展示  0 展示  1不展示
+    private int showType; //是否展示  1 展示  2不展示
     private int isTutorId; //是否是助教   不是   是
     private int isPublic; //是否公开 0公开 1：不公开
 

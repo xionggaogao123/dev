@@ -785,6 +785,17 @@ public class WebGroupController extends BaseController {
         map.put("offlineCount", msgCount);
         return RespObj.SUCCESS(map);
     }
-
+    /**
+     * 获取全部成员
+     * @return
+     */
+    @ApiOperation(value = "获取全部成员", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getNewMembers")
+    @ResponseBody
+    public RespObj getNewMembers(String groupId) {
+        ObjectId objectId =  communityService.getGroupId(new ObjectId(groupId));
+        return RespObj.SUCCESS(memberService.getNewAllGroupMembers(objectId, getUserId()));
+    }
 
 }

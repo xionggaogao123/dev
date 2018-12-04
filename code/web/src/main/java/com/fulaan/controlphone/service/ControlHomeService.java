@@ -157,8 +157,17 @@ public class ControlHomeService {
     }
 
 
-    public void startMqtt() throws Exception{
-        MQTTRecvMsg.receMessage();
+    public void startMqtt(){
+        new Thread(){
+            public void run() {
+                try{
+                    MQTTRecvMsg.receMessage();
+                }catch (Exception e){
+
+                }
+            }
+        }.start();
+
     }
 
 }

@@ -4540,7 +4540,7 @@ public class ExcellentCoursesService {
             }
             //暂时用以前的直播间
             hourClassEntry.setRoomId(hourClassEntry2.getRoomId());
-            hourClassEntry.setIsHe(hourClassEntry.getIsHe());
+            hourClassEntry.setIsHe(hourClassEntry2.getIsHe());
             hourClassDao.addEntry(hourClassEntry);
             pushMessageDao.updateEntry(hourClassEntry.getID(),sTm,strNum);
         }else{

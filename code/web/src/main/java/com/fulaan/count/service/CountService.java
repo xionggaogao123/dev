@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.db.backstage.TeacherApproveDao;
@@ -31,8 +33,10 @@ import com.db.user.UserDao;
 import com.fulaan.count.dto.JxmCountDto;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.jiaschool.service.HomeSchoolService;
+import com.fulaan.operation.service.AppCommentService;
 import com.pojo.fcommunity.CommunityHyEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
+import com.pojo.operation.AppCommentEntry;
 
 @Service
 public class CountService {
@@ -64,6 +68,7 @@ public class CountService {
     private HourClassDao hourClassDao = new HourClassDao();
     //推荐应用数量
     private AppTsDao appTsDao = new AppTsDao();
+    
     
     
     /**
@@ -207,13 +212,32 @@ public class CountService {
         return jxmCountDto;
     }
     
+    //作业图表
+    public void zytb(String schooleId, String startTime, String endTime) {
+        if(StringUtils.isNotBlank(schooleId)) {
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            long startTimeL = 0;
+            long endTimeL = 0;
+            if (StringUtils.isNotBlank(startTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(startTime);
+                startTimeL = map.get(1);
+            }
+            if (StringUtils.isNotBlank(endTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(endTime);
+                endTimeL = map.get(7);
+            }
+            List<AppCommentEntry> list = appCommentDao.getWebAllDatePageByTime(communityIdList, null, startTimeL, endTimeL);
+        }
+        
+    }
+    
     public int getzbNum(List<ObjectId> communityIdList, long  startTime,long endTime) {
         List<ObjectId> courseId = excellentCourseDao.getCourseIdByCid(communityIdList);
         return hourClassDao.countHourClass(courseId, startTime, endTime);
     }
     
     public int listToSet(List<CommunityHyEntry> list) {
-        Set<ObjectId> set = new HashSet<>();
+        Set<ObjectId> set = new HashSet<ObjectId>();
         for(CommunityHyEntry c : list) {
             set.add(c.getCommunityId());
         }
@@ -261,4 +285,44 @@ public class CountService {
         }
         return map;
     }
+    
+    public Map<Integer, Long> getTimePointOneDay(String time) {
+        Map<Integer, Long> map = new HashMap<Integer, Long>();
+        String dateStr1 = time+" " + "00:00:00";
+        String dateStr2 = time+" " + "04:00:00";
+        String dateStr3 = time+" " + "08:00:00";
+        String dateStr4 = time+" " + "12:00:00";
+        String dateStr5 = time+" " + "16:00:00";
+        String dateStr6 = time+" " + "20:00:00";
+        String dateStr7 = time+" " + "24:00:00";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date date1 = sdf.parse(dateStr1);
+            map.put(1, date1.getTime());
+            
+            Date date2 = sdf.parse(dateStr2);
+            map.put(2, date2.getTime());
+            
+            Date date3 = sdf.parse(dateStr3);
+            map.put(3, date3.getTime());
+            
+            Date date4 = sdf.parse(dateStr4);
+            map.put(4, date4.getTime());
+            
+            Date date5 = sdf.parse(dateStr5);
+            map.put(5, date5.getTime());
+            
+            Date date6 = sdf.parse(dateStr6);
+            map.put(6, date6.getTime());
+            
+            Date date7 = sdf.parse(dateStr7);
+            map.put(7, date7.getTime());
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return map;
+    }
+    
+    
 }

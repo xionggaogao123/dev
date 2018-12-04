@@ -446,6 +446,44 @@ public class AppCommentDao extends BaseDao {
                         query);
         return count;
     }
+    
+    public List<AppCommentEntry> getWebAllDatePageByTime(List<ObjectId> communityIds,String subjectId, Long timeStart,Long timeEnd) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1 = new BasicDBObject().append("sta", new BasicDBObject(Constant.MONGO_IN, ilist))
+                .append("isr", 0); // 未删除
+        if(subjectId != null && !subjectId.equals("")){
+            query1.append("sid",new ObjectId(subjectId));
+        }
+        
+        query1.append("rid",new BasicDBObject(Constant.MONGO_IN, communityIds));
+        
+        if (timeStart != null && timeStart != 0l) {
+            query1.append("ctm", new BasicDBObject(Constant.MONGO_GTE, timeStart));
+        }
+        values.add(query1);
+        BasicDBObject query2 = new BasicDBObject();
+        if (timeEnd != null && timeEnd != 0l) {
+            query2.append("ctm", new BasicDBObject(Constant.MONGO_LT, timeEnd));
+        }
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query);
+        List<AppCommentEntry> entryList = new ArrayList<AppCommentEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppCommentEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+    
     /**
      * 符合搜索条件的对象个数
      * @return

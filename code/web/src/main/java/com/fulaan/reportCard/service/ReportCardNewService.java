@@ -3027,7 +3027,7 @@ public class ReportCardNewService {
                           
                             cellItem.setCellValue(compareScore(scoreStrArry[i]));
                           
-                            cellItem.setCellType(HSSFCell.CELL_TYPE_BLANK);
+                            //cellItem.setCellType(HSSFCell.CELL_TYPE_BLANK);
                             
                             
                         } else {
@@ -3038,27 +3038,27 @@ public class ReportCardNewService {
                             cellItem.setCellValue(-1);*/
                         }
                     }
-                    /*if (ss.length>1) {
+                    if (ss.length>1) {
                         if (detailEntry.getRecordScoreType() == Constant.ONE) {
-                            cellItem = rowItem.createCell(1+((ss.length)*2));
-                            cellItem.setCellValue(-1);
+                            /*cellItem = rowItem.createCell(1+((ss.length)*2));
+                            cellItem.setCellValue(-1);*/
 
                             cellItem = rowItem.createCell(1+ss.length);
                       
-                            //cellItem.setCellValue(compareScore(scoreStrArry[scoreStrArry.length-1]));
+                            cellItem.setCellValue(compareScore(scoreStrArry[scoreStrArry.length-1]));
                             
-                            cellItem.setCellType(HSSFCell.CELL_TYPE_BLANK);
+                            //cellItem.setCellType(HSSFCell.CELL_TYPE_BLANK);
                             
                             
                         } else {
                             cellItem = rowItem.createCell(1+ss.length);
                             cellItem.setCellValue(compareScoreLevel(Integer.valueOf(scoreLevelStrArry[scoreLevelStrArry.length-1])));
 
-                            cellItem = rowItem.createCell(2+((ss.length)*2));
-                            cellItem.setCellValue(-1);
+                            /*cellItem = rowItem.createCell(2+((ss.length)*2));
+                            cellItem.setCellValue(-1);*/
                         }
                         
-                    }*/
+                    }
                 }
                 
                 rowLine++;

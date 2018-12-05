@@ -1,4 +1,8 @@
 package com.fulaan.count.dto;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * <简述>作业图表dto
@@ -10,35 +14,37 @@ package com.fulaan.count.dto;
  */
 public class ZytbDto {
 
-    private String subjectName;
+    private List<String> subjectName = new ArrayList<String>();
     
-    private String subjectId;
+    private List<String> subjectId = new ArrayList<String>();
     
-    private int num;
+    private List<Integer> num = new ArrayList<Integer>();
 
-    public String getSubjectName() {
+    public List<String> getSubjectName() {
         return subjectName;
     }
 
-    public void setSubjectName(String subjectName) {
+    public void setSubjectName(List<String> subjectName) {
         this.subjectName = subjectName;
     }
 
-    public String getSubjectId() {
+    public List<String> getSubjectId() {
         return subjectId;
     }
 
-    public void setSubjectId(String subjectId) {
+    public void setSubjectId(List<String> subjectId) {
         this.subjectId = subjectId;
     }
 
-    public int getNum() {
+    public List<Integer> getNum() {
         return num;
     }
 
-    public void setNum(int num) {
+    public void setNum(List<Integer> num) {
         this.num = num;
     }
+
+    
     
     
 }

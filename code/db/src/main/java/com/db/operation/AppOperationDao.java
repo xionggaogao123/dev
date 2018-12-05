@@ -195,6 +195,25 @@ public class AppOperationDao extends BaseDao {
         }
         return entryList;
     }
+    
+    public Integer getEntryListByParentId3(List<ObjectId> contactId,int role) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",new BasicDBObject(Constant.MONGO_IN, contactId))
+                .append("rol",role)
+                .append("lev", 1)//一级
+                .append("isr", 0); // 未删除
+        
+               return count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query);
+        /*List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppOperationEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;*/
+    }
     public List<AppOperationEntry> getEntryListByUserIdAndId(ObjectId userId,ObjectId contactId,int role) {
         BasicDBObject query = new BasicDBObject()
                 .append("cid",contactId)

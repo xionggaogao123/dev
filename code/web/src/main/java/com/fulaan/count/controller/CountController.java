@@ -12,6 +12,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.fulaan.base.BaseController;
 import com.fulaan.count.dto.JxmCountDto;
+import com.fulaan.count.dto.TczyDto;
+import com.fulaan.count.dto.ZytbDto;
 import com.fulaan.count.service.CountService;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.operation.service.AppCommentService;
@@ -111,16 +113,59 @@ public class CountController extends BaseController {
         try {
             String startTime = null;
             String endTime = null;
-            if(StringUtils.isNotBlank(seTime) && !("").equals(seTime)&& !("null").equals(seTime)) {
-                List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
-                startTime = list.get(0);
-                endTime = list.get(1);
-            }
-            countService.zytb(schooleId, startTime, endTime);
+            
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            ZytbDto zytbDto = countService.zytb(schooleId, startTime, endTime);
+            respObj.setMessage(zytbDto);
         } catch (Exception e) {
-            // TODO: handle exception
+            ZytbDto zytbDto = countService.zytb(schooleId, null,null);
+            respObj.setMessage(zytbDto);
+            
         }
         
         return respObj;
     }
+    
+    @ApiOperation(value = "作业发布统计按学科", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/tczyList")
+    @ResponseBody
+    public RespObj tczyList(String subjectId, String schooleId) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        try {
+            List<TczyDto> l = countService.tczy(subjectId, schooleId);
+            respObj.setMessage(l);
+        } catch (Exception e) {
+           
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("失败!");
+        }
+        
+        return respObj;
+    }
+    
+    /*@ApiOperation(value = "作业发布统计按班级", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/bjzyList")
+    @ResponseBody
+    public RespObj bjzyList(String communityId, String schooleId) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        try {
+            List<TczyDto> l = countService.bjzy(communityId, String schooleId);
+            respObj.setMessage(l);
+        } catch (Exception e) {
+           
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("失败!");
+        }
+        
+        return respObj;
+    }*/
 }

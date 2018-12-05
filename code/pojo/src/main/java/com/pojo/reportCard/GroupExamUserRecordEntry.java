@@ -54,6 +54,34 @@ public class GroupExamUserRecordEntry extends BaseDBObject{
                                     ObjectId userId,
                                     ObjectId groupId,
                                     ObjectId examType,
+                                    ObjectId subjectId,
+                                    ObjectId communityId,
+                                    double score,
+                                    int scoreLevel,
+                                    int rank,
+                                    int status,
+                                    int sort){
+        BasicDBObject basicDBObject=new BasicDBObject()
+                .append("sid",subjectId)
+                .append("etp",examType)
+                .append("eid",groupExamDetailId)
+                .append("uid",userId)
+                .append("muid",mainUserId)
+                .append("st",status)
+                .append("gid",groupId)
+                .append("sc",score)
+                .append("scl",scoreLevel)
+                .append("rk",rank)
+                .append("cmId",communityId)
+                .append("sort", sort);
+        setBaseEntry(basicDBObject);
+    }
+    
+    public GroupExamUserRecordEntry(ObjectId groupExamDetailId,
+                                    ObjectId mainUserId,
+                                    ObjectId userId,
+                                    ObjectId groupId,
+                                    ObjectId examType,
                                     String subjectIds,
                                     ObjectId communityId,
                                     String score,
@@ -74,6 +102,35 @@ public class GroupExamUserRecordEntry extends BaseDBObject{
                 .append("rk",rank)
                 .append("cmId",communityId)
                 .append("rks", rankStr);
+        setBaseEntry(basicDBObject);
+    }
+    public GroupExamUserRecordEntry(ObjectId groupExamDetailId,
+                                    ObjectId mainUserId,
+                                    ObjectId userId,
+                                    ObjectId groupId,
+                                    ObjectId examType,
+                                    String subjectIds,
+                                    ObjectId communityId,
+                                    String score,
+                                    String scoreLevel,
+                                    int rank,
+                                    int status,
+                                    String rankStr,
+                                    int sort){
+        BasicDBObject basicDBObject=new BasicDBObject()
+                .append("sids",subjectIds)
+                .append("etp",examType)
+                .append("eid",groupExamDetailId)
+                .append("uid",userId)
+                .append("muid",mainUserId)
+                .append("st",status)
+                .append("gid",groupId)
+                .append("scs",score)
+                .append("scls",scoreLevel)
+                .append("rk",rank)
+                .append("cmId",communityId)
+                .append("rks", rankStr)
+                .append("sort", sort);
         setBaseEntry(basicDBObject);
     }
     
@@ -195,5 +252,13 @@ public class GroupExamUserRecordEntry extends BaseDBObject{
 
     public ObjectId getGroupExamDetailId(){
         return getSimpleObjecIDValue("eid");
+    }
+    
+    public void setSort(int status){
+        setSimpleValue("sort",status);
+    }
+
+    public int getSort(){
+        return getSimpleIntegerValueDef("sort",0);
     }
 }

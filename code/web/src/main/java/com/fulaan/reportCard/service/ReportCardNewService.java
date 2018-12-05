@@ -686,6 +686,19 @@ public class ReportCardNewService {
             }
         });
         
+        Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+            @Override
+            public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                int result=0;
+                if(o1.getSort() < o2.getSort()) {
+                    result = -1;
+                } else {
+                    result = 1;
+                }
+                return result;
+            }
+        });
+        
         
         return recordExamScoreDTOs;
     }
@@ -1260,7 +1273,7 @@ public class ReportCardNewService {
         dto.setExamTime(examTime);
         if (StringUtils.isEmpty(id)) {
             String communityId = dto.getCommunityId();
-            Set<ObjectId> userIds = new HashSet<ObjectId>();
+            Set<ObjectId> userIds = new LinkedHashSet<ObjectId>();
             Map<ObjectId,ObjectId> userMainIds=new HashMap<ObjectId, ObjectId>();
             List<NewVersionCommunityBindEntry> entries
                     = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
@@ -1276,6 +1289,7 @@ public class ReportCardNewService {
 
             ObjectId groupExamDetailId = groupExamDetailDao.saveGroupExamDetailEntry(dto.buildEntry());
             List<GroupExamUserRecordEntry> userRecordEntries = new ArrayList<GroupExamUserRecordEntry>();
+            int k = 0;
             for (ObjectId uId : userIds) {
                 if (StringUtils.isNotEmpty(dto.getSubjectId())) {
                     userRecordEntries.add(new GroupExamUserRecordEntry(
@@ -1289,7 +1303,8 @@ public class ReportCardNewService {
                         -2D,
                         -2,
                         0,
-                        Constant.ZERO
+                        Constant.ZERO,
+                        k
                         ));
                 } else {
                     int i;
@@ -1320,10 +1335,11 @@ public class ReportCardNewService {
                         scoreStr.toString(),
                         0,
                         Constant.ZERO,
-                        scoreStrr.toString()
+                        scoreStrr.toString(),
+                        k
                         ));
                 }
-                
+                k++;
             }
             if (StringUtils.isNotEmpty(dto.getSubjectId())) {
                 WebHomePageEntry homePageEntry = new WebHomePageEntry(Constant.FIVE, userId,

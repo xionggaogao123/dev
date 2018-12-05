@@ -11,15 +11,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.db.backstage.TeacherApproveDao;
 import com.db.controlphone.AppTsDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.HourClassDao;
+import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.CommunityHyDao;
 import com.db.fcommunity.GroupDao;
@@ -29,14 +30,19 @@ import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
+import com.db.operation.AppOperationDao;
 import com.db.user.UserDao;
+import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.count.dto.JxmCountDto;
+import com.fulaan.count.dto.TczyDto;
+import com.fulaan.count.dto.ZytbDto;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
-import com.fulaan.jiaschool.service.HomeSchoolService;
-import com.fulaan.operation.service.AppCommentService;
+import com.mongodb.BasicDBObject;
 import com.pojo.fcommunity.CommunityHyEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.operation.AppCommentEntry;
+import com.pojo.operation.AppOperationEntry;
+import com.pojo.wrongquestion.SubjectClassEntry;
 
 @Service
 public class CountService {
@@ -68,6 +74,12 @@ public class CountService {
     private HourClassDao hourClassDao = new HourClassDao();
     //推荐应用数量
     private AppTsDao appTsDao = new AppTsDao();
+    //科目
+    private SubjectClassDao subjectClassDao = new SubjectClassDao();
+    //作业提交
+    private AppOperationDao appOperationDao = new AppOperationDao();
+    
+    private CommunityDao communityDao = new CommunityDao();
     
     
     
@@ -212,25 +224,6 @@ public class CountService {
         return jxmCountDto;
     }
     
-    //作业图表
-    public void zytb(String schooleId, String startTime, String endTime) {
-        if(StringUtils.isNotBlank(schooleId)) {
-            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
-            long startTimeL = 0;
-            long endTimeL = 0;
-            if (StringUtils.isNotBlank(startTime)) {
-                Map<Integer, Long> map = this.getTimePointOneDay(startTime);
-                startTimeL = map.get(1);
-            }
-            if (StringUtils.isNotBlank(endTime)) {
-                Map<Integer, Long> map = this.getTimePointOneDay(endTime);
-                endTimeL = map.get(7);
-            }
-            List<AppCommentEntry> list = appCommentDao.getWebAllDatePageByTime(communityIdList, null, startTimeL, endTimeL);
-        }
-        
-    }
-    
     public int getzbNum(List<ObjectId> communityIdList, long  startTime,long endTime) {
         List<ObjectId> courseId = excellentCourseDao.getCourseIdByCid(communityIdList);
         return hourClassDao.countHourClass(courseId, startTime, endTime);
@@ -323,6 +316,87 @@ public class CountService {
         }
         return map;
     }
+    
+    //作业图表
+    public ZytbDto zytb(String schooleId, String startTime, String endTime) {
+        ZytbDto zytbDto = new ZytbDto();
+        if(StringUtils.isNotBlank(schooleId)) {
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            long startTimeL = 0;
+            long endTimeL = 0;
+            if (StringUtils.isNotBlank(startTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(startTime);
+                startTimeL = map.get(1);
+            }
+            if (StringUtils.isNotBlank(endTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(endTime);
+                endTimeL = map.get(7);
+            }
+            
+            List<SubjectClassEntry> subjectClassEntriesL = subjectClassDao.getList();
+            for (SubjectClassEntry s : subjectClassEntriesL) {
+                int num = appCommentDao.getWebAllDatePageNumberByTime(communityIdList, s.getID().toString(), startTimeL, endTimeL);
+                zytbDto.getNum().add(num);
+                zytbDto.getSubjectName().add(s.getName());
+                zytbDto.getSubjectId().add(s.getID().toString());
+            }
+        }
+        return zytbDto;
+    }
+    
+    //作业发布统计按学科
+    public List<TczyDto> tczy(String subjectId, String schooleId) {
+        List<TczyDto> tczyDto = new ArrayList<TczyDto>();
+        if(StringUtils.isNotBlank(schooleId)) {
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            List<BasicDBObject> acList = appCommentDao.count(communityIdList, subjectId, 0l, 0l,0,0);
+            for (BasicDBObject db : acList) {
+                TczyDto t = new TczyDto();
+                ObjectId aid = ((BasicDBObject)db.get("_id")).getObjectId("aid");
+                t.setUserName(userDao.findByUserId(aid).getUserName());
+                ObjectId sid = ((BasicDBObject)db.get("_id")).getObjectId("sid");
+                t.setSubjectName(subjectClassDao.getEntry(sid).getName());
+                Integer count = (Integer)db.get("count");
+                t.setFaNum(count);
+                List<AppCommentEntry> appList = appCommentDao.getWebAllDatePageByTimePage(communityIdList, sid.toString(), aid.toString(), 0l, 0l, 0, 0);
+                if (CollectionUtils.isNotEmpty(appList)) {
+                    SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+                    t.setFbDate(s.format(new Date(appList.get(0).getCreateTime())));
+                    List<ObjectId> appId = new ArrayList<ObjectId>();
+                    int tjp = 0;
+                    for(AppCommentEntry a : appList) {
+                        appId.add(a.getID());
+                        tjp += a.getLoadNumber();
+                    }
+                    t.setTjPeoNum(tjp);
+                    Integer entries2 =appOperationDao.getEntryListByParentId3(appId, 3);
+                    t.setTjNum(entries2);
+                }
+                tczyDto.add(t);
+                
+            }
+        }
+        return tczyDto;
+    }
+    //作业统计按班级
+    public List<TczyDto> bjzy(String communityId, String schooleId) {
+        List<TczyDto> tczyDto = new ArrayList<TczyDto>();
+        if(StringUtils.isNotBlank(schooleId)) {
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            List<BasicDBObject> acList = appCommentDao.count1(communityIdList, null, 0l, 0l,0,0);
+            for (BasicDBObject db : acList) {
+                TczyDto t = new TczyDto();
+                ObjectId rid = ((BasicDBObject)db.get("_id")).getObjectId("rid");
+                t.setClassName(communityDao.findByObjectId(rid).getCommunityName());
+                Integer count = (Integer)db.get("count");
+                t.setFaNum(count);
+                
+            }
+        }
+        return tczyDto;
+    }
+    
+    
     
     
 }

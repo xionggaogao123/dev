@@ -26,6 +26,7 @@ public class GroupExamUserRecordDTO {
     private String rankStr;
     private String examType;
     private String subjectId;
+    private Integer sort;
 
 
     public GroupExamUserRecordDTO(){
@@ -135,6 +136,7 @@ public class GroupExamUserRecordDTO {
                 examUserRecordEntry.getExamType().toString():Constant.EMPTY;
         this.subjectId=null!=examUserRecordEntry.getSubjectIds()?
                 examUserRecordEntry.getSubjectIds():Constant.EMPTY;
+                this.sort=examUserRecordEntry.getSort();
         /*this.rankStr=null!=examUserRecordEntry.getRankStr()?
             examUserRecordEntry.getRankStr():Constant.EMPTY;*/
     }
@@ -265,6 +267,14 @@ public class GroupExamUserRecordDTO {
 
     public void setRankStr(String rankStr) {
         this.rankStr = rankStr;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
     
     

@@ -1040,6 +1040,234 @@ public class AppCommentService {
     }
 
     /**
+     * 查询当前作业提交名单
+     */
+    public Map<String,Object> selectNewThreeStudentLoad(ObjectId userId,ObjectId id) throws Exception{
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得作业
+        AppCommentEntry aen = appCommentDao.getEntry(id);
+        if(aen==null){
+            throw new Exception("课程已被删除");
+        }
+        //所有学生
+        List<ObjectId> objectIdList1 = newVersionBindService.getObjectIdListByCommunityId(aen.getRecipientId());
+        //代提交虚拟孩子
+        List<ParentChildConnectionEntry> entries1 = parentChildConnectionDao.getEntryByList(aen.getRecipientId());
+
+        //过滤虚拟孩子
+        List<UserEntry> userEntries = userService.getUserByList(objectIdList1);
+        //总应提交人数
+        List<ObjectId> shouldUserList = new ArrayList<ObjectId>();
+        //实际孩子
+        List<String> trueUserList = new ArrayList<String>();
+        //待提交孩子
+        List<String> replaceUserList = new ArrayList<String>();
+
+        for(UserEntry userEntry3: userEntries) {
+            shouldUserList.add(userEntry3.getID());
+            trueUserList.add(userEntry3.getID().toString());
+        }
+        for(ParentChildConnectionEntry pentry : entries1){
+            shouldUserList.add(pentry.getUserId());
+            replaceUserList.add(pentry.getUserId().toString());
+        }
+        //已提交已阅数量
+        int readNum = 0;
+        //已提交未阅数量
+        int unReadNum = 0;
+        //查询已提交人数
+        List<AppOperationEntry> allEntry = appOperationDao.getAllStudentOperationList(id, shouldUserList, 3);
+        List<AppOperationEntry> entries =new ArrayList<AppOperationEntry>();
+        int rn = 0;
+        int un = 0;
+        for(AppOperationEntry appEntry : allEntry){
+            if(appEntry.getRead()==1){//已阅
+                readNum++;
+                rn++;
+
+                entries.add(appEntry);
+
+            }else{//未阅
+                unReadNum++;
+                un++;
+
+                entries.add(appEntry);
+
+            }
+            //去重
+            String userIdStr = appEntry.getUserId().toString();
+            trueUserList.remove(userIdStr);
+            replaceUserList.remove(userIdStr);
+        }
+        //获得该作业的所有发放学生
+        int num2 = shouldUserList.size();
+        aen.setAllLoadNumber(num2);
+
+
+        List<AppOperationDTO> dtos = new ArrayList<AppOperationDTO>();
+        List<String> uids = new ArrayList<String>();
+        uids.add(aen.getAdminId().toString());
+        List<ObjectId> plist = new ArrayList<ObjectId>();
+        if(entries != null && entries.size()>0){
+            for(AppOperationEntry en : entries){
+                AppOperationDTO dto = new AppOperationDTO(en);
+                uids.add(dto.getUserId());
+                plist.add(en.getID());
+                dtos.add(dto);
+            }
+        }
+        //所有已提交
+        //组装二级评论
+        List<AppOperationEntry> entries2= appOperationDao.getSecondList(plist);
+        List<AppOperationDTO> dtos2 = new ArrayList<AppOperationDTO>();
+        if(entries2 != null && entries2.size()>0){
+            for(AppOperationEntry en2 : entries2){
+                AppOperationDTO dto = new AppOperationDTO(en2);
+                uids.add(dto.getUserId());
+                if(dto.getBackId() != null && dto.getBackId() != ""){
+                    uids.add(dto.getBackId());
+                }
+                dtos2.add(dto);
+            }
+        }
+        List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(uids);
+        List<ObjectId> nameObjectIdList = new ArrayList<ObjectId>();
+        for(String st3:uids){
+            nameObjectIdList.add(new ObjectId(st3));
+        }
+        Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(nameObjectIdList);
+        Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos2 != null && udtos2.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos2){
+                map3.put(dto4.getId(),dto4);
+            }
+        }
+        //代提交
+        for(ParentChildConnectionEntry pentry : entries1){
+            UserDetailInfoDTO dt = new UserDetailInfoDTO();
+            dt.setNickName(pentry.getUserName());
+            dt.setImgUrl(pentry.getAvatar());
+            map3.put(pentry.getUserId().toString(), dt);
+        }
+
+        for(AppOperationDTO dto5 : dtos){
+            UserDetailInfoDTO dto9 = map3.get(dto5.getUserId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                String newName = nameMap.get(new ObjectId(dto5.getUserId()));
+                if(newName!=null && !newName.equals("")){
+                    name = newName;
+                }
+                dto5.setUserName(name);
+                dto5.setUserUrl(dto9.getImgUrl());
+            }
+        }
+        for(AppOperationDTO dto6 : dtos2){
+            UserDetailInfoDTO dto10 = map3.get(dto6.getUserId());
+            if(dto10 != null){
+                String name = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                String newName = nameMap.get(new ObjectId(dto6.getUserId()));
+                if(newName!=null && !newName.equals("")){
+                    name = newName;
+                }
+                dto6.setUserName(name);
+                dto6.setUserUrl(dto10.getImgUrl());
+            }
+            if(dto6.getBackId() != null && dto6.getBackId() != "" && map3.get(dto6.getBackId())!= null){
+                UserDetailInfoDTO dto11 = map3.get(dto6.getBackId());
+                String name2 = StringUtils.isNotEmpty(dto11.getNickName())?dto11.getNickName():dto11.getUserName();
+                String newName2 = nameMap.get(new ObjectId(dto6.getBackId()));
+                if(newName2!=null && !newName2.equals("")){
+                    name2 = newName2;
+                }
+                dto6.setBackName(name2);
+            }
+        }
+        for(AppOperationDTO dto6 : dtos){
+            if(dto6.getLevel()==1){
+                List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
+                for(AppOperationDTO dto7 : dtos2){
+                    if(dto7.getLevel()==2 && dto6.getId().equals(dto7.getParentId())){
+                        dtoList.add(dto7);
+                    }
+                }
+                dto6.setAlist(dtoList);
+            }
+        }
+
+        //真实未提交
+        List<UserDetailInfoDTO> unList = userService.findUserInfoByUserIds(trueUserList);
+        List<User> ulsit = new ArrayList<User>();
+        for(UserDetailInfoDTO userDetailInfoDTO : unList){
+            String name3 = StringUtils.isNotEmpty(userDetailInfoDTO.getNickName())?userDetailInfoDTO.getNickName():userDetailInfoDTO.getUserName();
+            User user = new User();
+            user.setAvator(userDetailInfoDTO.getImgUrl());
+            user.setSex(userDetailInfoDTO.getSex());
+            user.setNickName(name3);
+            user.setUserName(name3);
+            user.setUserId(userDetailInfoDTO.getId());
+            ulsit.add(user);
+        }
+        //虚拟未提交
+        for(ParentChildConnectionEntry pentry : entries1){
+            if(replaceUserList.contains(pentry.getUserId().toString())){
+                User user = new User();
+                user.setAvator(pentry.getAvatar());
+                user.setSex(0);
+                user.setNickName(pentry.getUserName());
+                user.setUserName(pentry.getUserName());
+                user.setUserId(pentry.getUserId().toString());
+                ulsit.add(user);
+            }
+        }
+        //已提交      -  分为未阅和已阅
+        List<AppOperationDTO> readLoadList =  new ArrayList<AppOperationDTO>();
+        List<AppOperationDTO> unReadLoadList =  new ArrayList<AppOperationDTO>();
+        for(AppOperationDTO appOperationDTO : dtos){
+            if(appOperationDTO.getRead()==1){
+                readLoadList.add(appOperationDTO);
+            }else{
+                unReadLoadList.add(appOperationDTO);
+            }
+        }
+        //已提交已阅
+        map.put("readLoadList",readLoadList);
+        //已提交未阅
+        map.put("unReadLoadList",unReadLoadList);
+        int loadNumber = num2 - ulsit.size();
+        //已提交人数
+        map.put("loadNumber",loadNumber);
+        //未提交
+        map.put("unLoadList",ulsit);
+        //未提交人数
+        map.put("unLoadNumber",ulsit.size());
+        aen.setLoadNumber(loadNumber);
+        appCommentDao.updEntry(aen);
+        AppCommentDTO dtoa = new AppCommentDTO(aen);
+        if(aen.getTutorId()!=null&&!aen.getTutorId().toString().equals(aen.getAdminId().toString())){//助教不与发布人相同
+            if(aen.getTutorId().toString().equals(userId.toString())){
+                dtoa.setIsTutorId(1);
+            }
+        }else{
+
+        }
+        UserDetailInfoDTO dto12 = map3.get(dtoa.getAdminId());
+        String name = StringUtils.isNotEmpty(dto12.getNickName())?dto12.getNickName():dto12.getUserName();
+        dtoa.setAdminName(name);
+        dtoa.setAdminUrl(dto12.getImgUrl());
+        if(dtoa.getAdminId() != null && dtoa.getAdminId().equals(userId.toString())){
+            dtoa.setType(1);
+        }else if(dtoa.getTutorId()!=null && dtoa.getTutorId().equals(userId.toString())){
+            dtoa.setType(1);
+        }else{
+            dtoa.setType(2);
+        }
+        map.put("desc",dtoa);
+        map.put("hasChild",1);
+        return map;
+    }
+
+    /**
      * 分页查询已阅
      */
     public Map<String,Object> selectReadStudentLoad(ObjectId userId,ObjectId id,int page,int pageSize) throws Exception{
@@ -2060,7 +2288,7 @@ public class AppCommentService {
                     dlist.add(new ObjectId(dto.getId()));
                 }
             }
-            List<AppCommentEntry> entries3 = appCommentDao.selectWebAllKeyPageList(dlist, communityId, subjectId, page, pageSize,keyword);
+            List<AppCommentEntry> entries3 = appCommentDao.selectWebAllKeyPageList(dlist, communityId, subjectId, page, pageSize, keyword);
             count = appCommentDao.getWebAllKeyPageNumber(dlist,communityId, subjectId,keyword);
             List<ObjectId> idList = new ArrayList<ObjectId>();
             entries.addAll(entries1);

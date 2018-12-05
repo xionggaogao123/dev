@@ -124,7 +124,7 @@ public class ControlHomeService {
     public Map<String,Object> getHomeEntryList(ObjectId parentId,ObjectId sonId){
         Map<String,Object> map = new HashMap<String, Object>();
         List<ControlHomeTimeEntry> controlHomeTimeEntries =  controlHomeTimeDao.getEntryList(parentId, sonId);
-        map.put("dayStartTime","17:00");
+        map.put("dayStartTime","17:30");
         map.put("dayEndTime","22:00");
         map.put("dayHour","30");
         map.put("weekStartTime","7:30");

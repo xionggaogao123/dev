@@ -149,7 +149,7 @@ public class CountController extends BaseController {
         return respObj;
     }
     
-    /*@ApiOperation(value = "作业发布统计按班级", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "作业发布统计按班级", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -158,7 +158,7 @@ public class CountController extends BaseController {
     public RespObj bjzyList(String communityId, String schooleId) {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         try {
-            List<TczyDto> l = countService.bjzy(communityId, String schooleId);
+            List<TczyDto> l = countService.bjzy(communityId, schooleId);
             respObj.setMessage(l);
         } catch (Exception e) {
            
@@ -167,5 +167,5 @@ public class CountController extends BaseController {
         }
         
         return respObj;
-    }*/
+    }
 }

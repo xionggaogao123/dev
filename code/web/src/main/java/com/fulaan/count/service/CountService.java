@@ -390,7 +390,21 @@ public class CountService {
                 t.setClassName(communityDao.findByObjectId(rid).getCommunityName());
                 Integer count = (Integer)db.get("count");
                 t.setFaNum(count);
-                
+                List<AppCommentEntry> appList = appCommentDao.getWebAllDatePageByTimePage(rid, null, null, 0l, 0l, 0, 0);
+                if (CollectionUtils.isNotEmpty(appList)) {
+                    SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+                    t.setFbDate(s.format(new Date(appList.get(0).getCreateTime())));
+                    List<ObjectId> appId = new ArrayList<ObjectId>();
+                    int tjp = 0;
+                    for(AppCommentEntry a : appList) {
+                        appId.add(a.getID());
+                        tjp += a.getLoadNumber();
+                    }
+                    t.setTjPeoNum(tjp);
+                    Integer entries2 =appOperationDao.getEntryListByParentId3(appId, 3);
+                    t.setTjNum(entries2);
+                }
+                tczyDto.add(t);
             }
         }
         return tczyDto;

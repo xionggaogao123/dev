@@ -6,11 +6,9 @@ import com.db.backstage.InOutStorageRecordDao;
 import com.db.backstage.StorageManageDao;
 import com.db.user.UserDao;
 import com.fulaan.backstage.dto.InOutStorageRecordDto;
-import com.fulaan.backstage.dto.StorageManageDto;
 import com.fulaan.utils.HSSFUtils;
 import com.mongodb.DBObject;
 import com.pojo.backstage.InOutStorageEntry;
-import com.pojo.backstage.StorageManageEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -19,11 +17,9 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.stereotype.Service;
-import sun.rmi.runtime.Log;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1003,7 +999,7 @@ public class BackStageOutStorageFollowService {
             if ("".equals(mobile) || "".equals(imeiNo)){
                 return "手机号或者IMEI号为空！";
             }
-            UserEntry userEntry = userDao.findByMobile(mobile);
+            UserEntry userEntry = userDao.findByUserName(mobile);
             if (null == userEntry){
                 return "用户信息不存在！";
             }

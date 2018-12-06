@@ -15,6 +15,7 @@ import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.jiaschool.service.HomeSchoolService;
+import com.fulaan.newVersionBind.dto.BindChildrenDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.service.CommunityService;
@@ -656,6 +657,32 @@ public class BackStageUserManageController extends BaseController {
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**---------解除绑定关系------------**/
+    /**
+     *
+     * @param map
+     * parentId childrenId
+     * @return
+     */
+    @ApiOperation(value = "后台运营解除绑定关系", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/relieveBindRelationBack")
+    @ResponseBody
+    public RespObj relieveBindRelationBack(@RequestBody Map map){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            ObjectId parentId = new ObjectId(map.get("parentId").toString());
+            ObjectId childrenId = new ObjectId(map.get("childrenId").toString());
+            newVersionBindService.relieveBindRelationBack( parentId, childrenId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("手机管控解除成功");
+        }catch (Exception e){
+            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;

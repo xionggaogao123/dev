@@ -1500,6 +1500,15 @@ public class NewVersionBindService {
         }
     }
 
+    /**
+     * 在这个社区移交权限(后台运营)
+     * @param parentId
+     * @param studentId
+     */
+    public void relieveBindRelationBack(ObjectId parentId,ObjectId studentId){
+            delNewVersionEntry(parentId,studentId);
+            yijiao2(studentId,parentId);
+    }
 
 
 

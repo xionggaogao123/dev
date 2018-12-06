@@ -254,7 +254,11 @@ public class BackStageSchoolManageService {
         return null;
     }
 
-    public void addSchoolSort(String communityId,String schoolId){
+    /**
+     *  学校年级社群绑定
+     * @return
+     */
+    public void addSchoolSort(String communityId,String schoolId, String gradeVal){
         SchoolCommunityEntry schoolCommunityEntry = schoolCommunityDao.getEntryById(new ObjectId(communityId));
         if(schoolCommunityEntry==null){
             SchoolCommunityDTO dto = new SchoolCommunityDTO();
@@ -265,6 +269,11 @@ public class BackStageSchoolManageService {
             schoolCommunityEntry.setSchoolId(new ObjectId(schoolId));
             schoolCommunityDao.addEntry(schoolCommunityEntry);
         }
+        //社群更新增加年级(添加年月，为了后面自动升年级)
+        Calendar calendar = Calendar.getInstance();
+        int createGradeYear = calendar.get(Calendar.YEAR);
+        int createGradeMonth = calendar.get(Calendar.MONTH) + 1;
+        communityDao.updateCommunityGrade(communityId,gradeVal,createGradeYear,createGradeMonth);
     }
 
     public void delSchoolSort(ObjectId communityId){
@@ -284,7 +293,7 @@ public class BackStageSchoolManageService {
         logMessageDao.addEntry(dto.buildAddEntry());
     }
 
-    public Map<String,Object> getCommunityListBySchoolId(ObjectId schoolId,String communityName,int page,int pageSize){
+    public Map<String,Object> getCommunityListBySchoolId(ObjectId schoolId,String communityName,String gradeVal,int page,int pageSize){
         //学校信息
         HomeSchoolEntry homeSchoolEntry= homeSchoolDao.getEntryById(schoolId);
 
@@ -298,7 +307,7 @@ public class BackStageSchoolManageService {
         }
 
 
-        List<CommunityEntry> communityEntries = communityDao.findPageByObjectIdsName(communityIdList,communityName, page, pageSize);
+        List<CommunityEntry> communityEntries = communityDao.findPageByObjectIdsName(communityIdList,communityName, gradeVal, page, pageSize);
         int count = communityDao.getNotDelNumber(communityIdList);
         List<CommunityDTO> communityDTOs = new ArrayList<CommunityDTO>();
         List<ObjectId> groupIdList = new ArrayList<ObjectId>();
@@ -809,5 +818,55 @@ public class BackStageSchoolManageService {
             result = "修复失败！";
         }
         return result;
+    }
+
+    /**
+     *  社区id查询
+     * @return
+     */
+    public CommunityDTO selectNewToBindCommunity(String searchId) {
+        CommunityEntry communityEntry = communityDao.findBySearchId(searchId);
+        if(communityEntry!=null) {
+            CommunityDTO communityDTO = new CommunityDTO(communityEntry);
+            SchoolCommunityEntry schoolCommunityEntry = schoolCommunityDao.getEntryById(communityEntry.getID());
+            if (schoolCommunityEntry != null) {//已绑定
+                HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolCommunityEntry.getSchoolId());
+                if(homeSchoolEntry==null){
+                    communityDTO.setMemberCount(2);
+                    communityDTO.setOwerName("");
+                }else{
+                    communityDTO.setMemberCount(1);
+                    communityDTO.setOwerName(homeSchoolEntry.getName());
+                }
+            }else{//未绑定
+                communityDTO.setMemberCount(2);
+                communityDTO.setOwerName("");
+            }
+            //查社长
+            List<ObjectId> groupIdList = new ArrayList<ObjectId>();
+            groupIdList.add(new ObjectId(communityDTO.getGroupId()));
+            Map<ObjectId,List<MemberEntry>> communityIdMemberEntryMap = memberDao.getMembersGroupByGroup(groupIdList);
+                List<MemberEntry> memberEntryList = communityIdMemberEntryMap.get(new ObjectId(communityDTO.getGroupId()));
+                for (MemberEntry memberEntry : memberEntryList){
+                    //社长
+                    if (Constant.TWO == memberEntry.getRole()){
+                        communityDTO.setHead(new MemberDTO(memberEntry));
+                    }
+                }
+            return communityDTO;
+        }
+        return null;
+    }
+
+    /**
+     *  学校年级社群编辑
+     * @return
+     */
+    public void editSchoolCommunityInfo(String communityId, String communityName, String gradeVal) {
+        //社群更新增加年级(添加年月，为了后面自动升年级)
+        Calendar calendar = Calendar.getInstance();
+        int createGradeYear = calendar.get(Calendar.YEAR);
+        int createGradeMonth = calendar.get(Calendar.MONTH) + 1;
+        communityDao.updateEditCommunityGrade(communityId,communityName,gradeVal,createGradeYear,createGradeMonth);
     }
 }

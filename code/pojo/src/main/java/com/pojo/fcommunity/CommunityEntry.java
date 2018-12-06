@@ -103,4 +103,14 @@ public class CommunityEntry extends BaseDBObject {
     }
     return "";
   }
+
+  public String getGradeVal() {
+    return getSimpleStringValue("gradeVal");
+  }
+  public String getCreateGradeYear() {
+    return getSimpleStringValue("createGradeYear");
+  }
+  public String getCreateGradeMonth() {
+    return getSimpleStringValue("createGradeMonth");
+  }
 }

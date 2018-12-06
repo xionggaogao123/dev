@@ -6,6 +6,7 @@ import com.fulaan.backstage.dto.SchoolControlTimeDTO;
 import com.fulaan.backstage.service.BackStageAdminManageService;
 import com.fulaan.backstage.service.BackStageSchoolManageService;
 import com.fulaan.base.BaseController;
+import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.jiaschool.service.HomeSchoolService;
 import com.fulaan.user.service.UserService;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -199,6 +202,7 @@ public class BackStageSchoolManageController extends BaseController {
     @ResponseBody
     public String getCommunityListBySchoolId(@ApiParam(name="schoolId",required = false,value="schoolId") @RequestParam(value="schoolId",defaultValue = "") String schoolId,
                                              @ApiParam(name="communityName",required = false,value="communityName") @RequestParam(value="communityName",defaultValue = "") String communityName,
+                                             @ApiParam(name="gradeVal",required = false,value="gradeVal") @RequestParam(value="gradeVal",defaultValue = "") String gradeVal,
                                              @ApiParam(name="page",required = true,value="page") @RequestParam(value="page",defaultValue = "1") int page,
                                              @ApiParam(name="pageSize",required = true,value="pageSize") @RequestParam(value="pageSize",defaultValue = "5") int pageSize
     ){
@@ -211,7 +215,7 @@ public class BackStageSchoolManageController extends BaseController {
                 schoolId = backStageSchoolManageService.getSchoolIdByManageUid(getUserId());
 //                schoolId = backStageSchoolManageService.getSchoolIdByManageUid(new ObjectId("5ad453a43d4df940950b99e2"));
             }
-            Map<String,Object> map = backStageSchoolManageService.getCommunityListBySchoolId(new ObjectId(schoolId),communityName,page,pageSize);
+            Map<String,Object> map = backStageSchoolManageService.getCommunityListBySchoolId(new ObjectId(schoolId),communityName,gradeVal,page,pageSize);
             map.put("schoolId",schoolId);
             respObj.setMessage(map);
         } catch (Exception e) {
@@ -363,6 +367,82 @@ public class BackStageSchoolManageController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("操作失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  社区id查询
+     * @return
+     */
+    @ApiOperation(value = "社区id查询", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectNewToBindCommunity")
+    @ResponseBody
+    public String selectNewToBindCommunity(@ApiParam(name="searchId",required = true,value="searchId") String searchId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            CommunityDTO communityDTO = backStageSchoolManageService.selectNewToBindCommunity(searchId);
+            List<CommunityDTO> communityDTOs = new ArrayList<CommunityDTO>();
+            if(communityDTO != null){
+                communityDTOs.add(communityDTO);
+            }
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("list",communityDTOs);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("社区id查询失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  学校年级社群绑定
+     * @return
+     */
+    @ApiOperation(value = "学校年级社群绑定", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addSchoolSort")
+    @ResponseBody
+    public String addSchoolSort(@ApiParam(name="communityId",required = true,value="communityId") String communityId,
+                                @ApiParam(name="gradeVal",required = true,value="gradeVal") String gradeVal,//年级
+                                @ApiParam(name="schoolId",required = true,value="schoolId") String schoolId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            backStageSchoolManageService.addSchoolSort(communityId, schoolId, gradeVal);
+            respObj.setMessage("加入成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("加入失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  学校年级社群编辑
+     * @return
+     */
+    @ApiOperation(value = "学校年级社群编辑", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/editSchoolCommunityInfo")
+    @ResponseBody
+    public String editSchoolCommunityInfo(@ApiParam(name="communityId",required = true,value="communityId") String communityId,
+                                @ApiParam(name="gradeVal",required = true,value="gradeVal") String gradeVal,//年级
+                                @ApiParam(name="communityName",required = true,value="communityName") String communityName){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            backStageSchoolManageService.editSchoolCommunityInfo(communityId, communityName, gradeVal);
+            respObj.setMessage("加入成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("加入失败!");
         }
         return JSON.toJSONString(respObj);
     }

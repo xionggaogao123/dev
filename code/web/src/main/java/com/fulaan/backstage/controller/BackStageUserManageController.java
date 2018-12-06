@@ -354,6 +354,31 @@ public class BackStageUserManageController extends BaseController {
     }
 
     /**
+     * 社群后台设置用户社群角色（前端穿梭框方式）
+     * ids role
+     * @return
+     */
+    @ApiOperation(value = "社群后台设置用户社群角色（前端穿梭框方式）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/setCommunityRoleForTransfer")
+    @ResponseBody
+    public String setCommunityRoleForTransfer(@RequestBody Map map){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String message = backStageUserManageService.setCommunityRoleForTransfer(map);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(message);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("设置失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 解散群聊
      * 复制从 DefaultGroupController
      * emChatId

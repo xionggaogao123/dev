@@ -966,6 +966,21 @@ public class MemberDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER,query,updateValue);
     }
 
+    public void updateRoleByIds(Map map) {
+        //对拼接的Id做处理
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if (map.get("ids") != null){
+            for (String id : map.get("ids").toString().split(",")){
+                if (id != ""){
+                    objectIdList.add(new ObjectId(id));
+                }
+            }
+        }
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIdList));
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("rl",Integer.parseInt(map.get("role").toString())));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER,query,updateValue);
+    }
+
     public Map<String,Object> getAllMembersForPage(Map map) {
         Map<String,Object> result = new HashMap<String, Object>();
         int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
@@ -1104,5 +1119,33 @@ public class MemberDao extends BaseDao {
             groupIds.add(new MemberEntry(dbo).getGroupId());
         }
         return groupIds;
+    }
+
+    /**
+     * 获取某角色集合
+     * @param groupId
+     * @param role
+     * @return
+     */
+    public List<MemberEntry> getMembersByRole(ObjectId groupId, int role) {
+        BasicDBObject query = new BasicDBObject().append("grid", groupId).append("r", 0);
+        query.append("rl", role);
+        List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
+        for (DBObject dbo : dbObjects) {
+            memberEntries.add(new MemberEntry(dbo));
+        }
+        return memberEntries;
+    }
+
+    /**
+     * 批量设置社群角色
+     * @param objectIdNewList
+     * @param role
+     */
+    public void updateRoleByIds(List<ObjectId> objectIdNewList, int role) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN, objectIdNewList));
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("rl",role));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER,query,updateValue);
     }
 }

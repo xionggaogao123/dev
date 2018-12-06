@@ -53,6 +53,8 @@ public class CommunityDTO {
     //获取某个社区下绑定的孩子有哪些（userId在communityId下的孩子）
     private List<NewVersionBindRelationDTO> bindRelationDTOList;
 
+    private String gradeVal;
+
     public CommunityDTO() {
 
     }
@@ -74,6 +76,7 @@ public class CommunityDTO {
         this.owerId = communityEntry.getOwerID().toString();
         this.emChatId = communityEntry.getEmChatId();
         this.open = communityEntry.getOpen();
+        this.gradeVal = communityEntry.getGradeVal();
     }
 
     public String getOwerName() {
@@ -274,5 +277,13 @@ public class CommunityDTO {
 
     public void setBindRelationDTOList(List<NewVersionBindRelationDTO> bindRelationDTOList) {
         this.bindRelationDTOList = bindRelationDTOList;
+    }
+
+    public String getGradeVal() {
+        return gradeVal;
+    }
+
+    public void setGradeVal(String gradeVal) {
+        this.gradeVal = gradeVal;
     }
 }

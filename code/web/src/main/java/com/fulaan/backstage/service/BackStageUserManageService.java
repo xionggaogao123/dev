@@ -980,4 +980,58 @@ public class BackStageUserManageService {
         boolean isMatch = m.matches();
         return isMatch;
     }
+
+    public String setCommunityRoleForTransfer(Map map) {
+        String msg = "";
+        ObjectId groupId = new ObjectId(map.get("groupId").toString());
+        //判断是否设置社长
+        if (!StringUtils.isBlank(map.get("role").toString()) && Integer.parseInt(map.get("role").toString()) == 2){
+            //设置社长
+
+            //1 查出社长信息
+
+            MemberEntry memberEntry = memberDao.getHeader(groupId);
+
+            // 2 判断需要设置的是否为新社长
+            if (!StringUtils.isBlank(map.get("userId").toString()) && !memberEntry.getUserId().toString().equals(map.get("userId").toString())){
+                //是设置新社长
+                // 3 设置新社长
+                memberDao.updateRoleByIds(map);
+                // 4 老社长设置为社群成员
+                ObjectId id = memberEntry.getID();
+                int role = 0;
+                memberDao.updateRoleById(id, role);
+            }else {
+                memberDao.updateRoleByIds(map);
+            }
+        }else if (!StringUtils.isBlank(map.get("role").toString()) && Integer.parseInt(map.get("role").toString()) == 1){
+            //设置副社长
+//            int countDeputyHead = memberDao.countDeputyHead(groupId);//社区副社长人数
+            List<MemberEntry> memberEntries = memberDao.getMembersByRole(groupId,1);//社区副社长
+            //对拼接的Id做处理
+            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+            if (map.get("ids") != null){
+                for (String id : map.get("ids").toString().split(",")){
+                    if (id != ""){
+                        objectIdList.add(new ObjectId(id));
+                    }
+                }
+            }
+            //筛选被移除的副社长 转为 社员
+            List<ObjectId> objectIdNewList = new ArrayList<ObjectId>();
+            for (MemberEntry memberEntry : memberEntries){
+                if (!objectIdList.contains(memberEntry.getID())){
+                    objectIdNewList.add(memberEntry.getID());
+                }
+            }
+            memberDao.updateRoleByIds(map);//设置副社长
+            memberDao.updateRoleByIds(objectIdNewList, 0);//副社长转社员
+
+        }else{
+            memberDao.updateRoleByIds(map);
+        }
+
+        msg = "操作成功！";
+        return msg;
+    }
 }

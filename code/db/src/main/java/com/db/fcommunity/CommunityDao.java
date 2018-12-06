@@ -144,10 +144,13 @@ public class CommunityDao extends BaseDao {
         return communitys;
     }
 
-    public List<CommunityEntry> findPageByObjectIdsName(List<ObjectId> ids,String communityName,int page,int pageSize) {
+    public List<CommunityEntry> findPageByObjectIdsName(List<ObjectId> ids,String communityName,String gradeVal, int page,int pageSize) {
         BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
         if(!"".equals(communityName)){
             query.append("cmmn",communityName);
+        }
+        if(!"".equals(gradeVal)){
+            query.append("gradeVal",gradeVal);
         }
         query.append("r",Constant.ZERO);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS,
@@ -618,5 +621,35 @@ public class CommunityDao extends BaseDao {
         query.put(Constant.MONGO_OR, values);
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
         return dbObject == null ? null : new CommunityEntry(dbObject);
+    }
+
+
+    public void updateCommunityGrade(String communityId,String gradeVal, int createGradeYear, int createGradeMonth) {
+        ObjectId id = new ObjectId(communityId);
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, id);
+
+        BasicDBObject updateVal = new BasicDBObject();
+        updateVal.append("gradeVal", gradeVal);
+        updateVal.append("createGradeYear", createGradeYear);
+        updateVal.append("createGradeMonth", createGradeMonth);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, updateVal);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, update);
+    }
+
+    /**
+     *  学校年级社群编辑
+     * @return
+     */
+    public void updateEditCommunityGrade(String communityId, String communityName, String gradeVal, int createGradeYear, int createGradeMonth) {
+        ObjectId id = new ObjectId(communityId);
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, id);
+
+        BasicDBObject updateVal = new BasicDBObject();
+        updateVal.append("gradeVal", gradeVal);
+        updateVal.append("cmmn", communityName);
+        updateVal.append("createGradeYear", createGradeYear);
+        updateVal.append("createGradeMonth", createGradeMonth);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, updateVal);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, update);
     }
 }

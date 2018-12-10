@@ -611,6 +611,10 @@ public class AppCommentDao extends BaseDao {
             query1.append("sid",new ObjectId(subjectId));
         }
         
+        if(StringUtils.isNotBlank(aid)) {
+            query1.append("aid", new ObjectId(aid));
+        }
+        
         query1.append("rid",new BasicDBObject(Constant.MONGO_IN, communityIds));
         
         if (timeStart != null && timeStart != 0l) {
@@ -731,7 +735,7 @@ public class AppCommentDao extends BaseDao {
     }
     
     /**
-     * 根据用户名和学科分组查询作业数量
+     * 根据班级分组查询作业数量
      *
      * @param kws
      * @param level

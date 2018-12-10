@@ -2,16 +2,19 @@ package com.db.operation;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.appnotice.AppNoticeEntry;
+import com.pojo.operation.AppCommentEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -235,14 +238,196 @@ public class AppNoticeDao extends BaseDao{
     
     public int countAppNoticeEntries(List<ObjectId> communityIds,Long startTime, Long endTime){
         BasicDBObject query = new BasicDBObject();
+        BasicDBObject query1 = new BasicDBObject();
+        BasicDBObject query2 = new BasicDBObject();
+        query1.append("ir",Constant.ZERO).append("cmId",new BasicDBObject(Constant.MONGO_IN, communityIds));
         BasicDBList values = new BasicDBList();
-        values.add(new BasicDBObject()
-            .append("ti", new BasicDBObject(Constant.MONGO_GTE, startTime))
-            .append("ir",Constant.ZERO).append("cmId",new BasicDBObject(Constant.MONGO_IN, communityIds)));
-        values.add(new BasicDBObject().append("ti", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        if (startTime != null && startTime != 0l) {
+            query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, startTime));
+        }
+        if (endTime != null && endTime != 0l) {
+            query2.append("ti", new BasicDBObject(Constant.MONGO_LT, endTime));
+        }
+        values.add(query1);
+        values.add(query2);
         query.put(Constant.MONGO_AND, values);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
             query);
+    }
+    
+    /**
+     * 根据用户名和学科分组查询作业数量
+     *
+     * @param kws
+     * @param level
+     * @return result like this:[{"_id":1,"count":100}]
+     */
+    public List<BasicDBObject> count(List<ObjectId> communityIds,String subjectId, Long timeStart,Long timeEnd,int page,int pageSize) {
+   
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1 = new BasicDBObject().append("ir", 0); // 未删除
+        if(subjectId != null && !subjectId.equals("")){
+            query1.append("sid",new ObjectId(subjectId));
+        }
+        
+        query1.append("cmId",new BasicDBObject(Constant.MONGO_IN, communityIds));
+        
+        if (timeStart != null && timeStart != 0l) {
+            query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, timeStart));
+        }
+        values.add(query1);
+        BasicDBObject query2 = new BasicDBObject();
+        if (timeEnd != null && timeEnd != 0l) {
+            query2.append("ti", new BasicDBObject(Constant.MONGO_LT, timeEnd));
+        }
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        DBObject query4 = new BasicDBObject(Constant.MONGO_MATCH, query);
+        BasicDBObject group = new BasicDBObject();
+        group.put("uid", "$uid");
+        group.put("sid", "$sid");
+        BasicDBObject select = new BasicDBObject("_id", group);
+        select.put("count", new BasicDBObject("$sum", 1));
+        DBObject groupP = new BasicDBObject("$group", select);
+        //DBObject group = new BasicDBObject(Constant.MONGO_GROUP, new BasicDBObject("aid", "$aid").append("count", new BasicDBObject(Constant.MONGO_SUM, 1)));
+        AggregationOutput output;
+        List<BasicDBObject> retList = new ArrayList<BasicDBObject>();
+        try {
+            output = aggregate(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE, query4, groupP);
+            Iterator<DBObject> iter = output.results().iterator();
+            BasicDBObject dbob;
+            while (iter.hasNext()) {
+                dbob = (BasicDBObject) iter.next();
+                retList.add(dbob);
+            }
+        } catch (Exception e) {
+
+        }
+        return retList;
+    }
+    
+    /**
+     * 根据班级分组查询作业数量
+     *
+     * @param kws
+     * @param level
+     * @return result like this:[{"_id":1,"count":100}]
+     */
+    public List<BasicDBObject> count1(List<ObjectId> communityIds,String subjectId, Long timeStart,Long timeEnd,int page,int pageSize) {
+
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1 = new BasicDBObject().append("ir", 0); // 未删除
+        if(subjectId != null && !subjectId.equals("")){
+            query1.append("sid",new ObjectId(subjectId));
+        }
+        
+        query1.append("cmId",new BasicDBObject(Constant.MONGO_IN, communityIds));
+        
+        if (timeStart != null && timeStart != 0l) {
+            query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, timeStart));
+        }
+        values.add(query1);
+        BasicDBObject query2 = new BasicDBObject();
+        if (timeEnd != null && timeEnd != 0l) {
+            query2.append("ti", new BasicDBObject(Constant.MONGO_LT, timeEnd));
+        }
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        DBObject query4 = new BasicDBObject(Constant.MONGO_MATCH, query);
+        BasicDBObject group = new BasicDBObject();
+        group.put("cmId", "$cmId");
+        BasicDBObject select = new BasicDBObject("_id", group);
+        select.put("count", new BasicDBObject("$sum", 1));
+        DBObject groupP = new BasicDBObject("$group", select);
+        //DBObject group = new BasicDBObject(Constant.MONGO_GROUP, new BasicDBObject("aid", "$aid").append("count", new BasicDBObject(Constant.MONGO_SUM, 1)));
+        AggregationOutput output;
+        List<BasicDBObject> retList = new ArrayList<BasicDBObject>();
+        try {
+            output = aggregate(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE, query4, groupP);
+            Iterator<DBObject> iter = output.results().iterator();
+            BasicDBObject dbob;
+            while (iter.hasNext()) {
+                dbob = (BasicDBObject) iter.next();
+                retList.add(dbob);
+            }
+        } catch (Exception e) {
+
+        }
+        return retList;
+    }
+    
+    public List<AppNoticeEntry> getWebAllDatePageByTimePage(ObjectId communityIds,String subjectId, String aid,Long timeStart,Long timeEnd,int page,int pageSize) {
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1 = new BasicDBObject().append("ir", 0); // 未删除
+        if(subjectId != null && !subjectId.equals("")){
+            query1.append("sid",new ObjectId(subjectId));
+        }
+        
+        query1.append("cmId",communityIds);
+        
+        if (timeStart != null && timeStart != 0l) {
+            query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, timeStart));
+        }
+        values.add(query1);
+        BasicDBObject query2 = new BasicDBObject();
+        if (timeEnd != null && timeEnd != 0l) {
+            query2.append("ti", new BasicDBObject(Constant.MONGO_LT, timeEnd));
+        }
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+                        query,Constant.FIELDS,
+                        new BasicDBObject("ti", -1),(page - 1) * pageSize, pageSize);
+        List<AppNoticeEntry> entryList = new ArrayList<AppNoticeEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppNoticeEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+    
+    public List<AppNoticeEntry> getWebAllDatePageByTimePage(List<ObjectId> communityIds,String subjectId, String aid,Long timeStart,Long timeEnd,int page,int pageSize) {
+  
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1 = new BasicDBObject().append("ir", 0); // 未删除
+        if(subjectId != null && !subjectId.equals("")){
+            query1.append("sid",new ObjectId(subjectId));
+        }
+        if (StringUtils.isNotBlank(aid)) {
+            query1.append("uid", new ObjectId(aid));
+        }
+        
+        query1.append("cmId",new BasicDBObject(Constant.MONGO_IN, communityIds));
+        
+        if (timeStart != null && timeStart != 0l) {
+            query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, timeStart));
+        }
+        values.add(query1);
+        BasicDBObject query2 = new BasicDBObject();
+        if (timeEnd != null && timeEnd != 0l) {
+            query2.append("ti", new BasicDBObject(Constant.MONGO_LT, timeEnd));
+        }
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+                        query,Constant.FIELDS,
+                        new BasicDBObject("ti", -1),(page - 1) * pageSize, pageSize);
+        List<AppNoticeEntry> entryList = new ArrayList<AppNoticeEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppNoticeEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
     }
 
 
@@ -495,5 +680,7 @@ public class AppNoticeDao extends BaseDao{
         return entries;
     }
 
+    
+    
 
 }

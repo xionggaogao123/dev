@@ -333,7 +333,7 @@ public class CommunityDetailDao extends BaseDao {
     
     public int count(List<ObjectId> communityIds, int type, int receiveType, ObjectId userId) {
         BasicDBObject query = new BasicDBObject("cmid", new BasicDBObject(Constant.MONGO_IN,communityIds)).append("cmty", type).append("r", 0);
-if (receiveType == 1) {
+        if (receiveType == 1) {
             
         } else if (receiveType == 3) {
             query.append("cmuid", userId);
@@ -344,14 +344,47 @@ if (receiveType == 1) {
     }
     
     //统计帖子数量
-    public int countTz(List<ObjectId> communityIds, int type, long startTime, long endTime) {
+    public int countTz(List<ObjectId> communityIds, int type, Long startTime, Long endTime) {
         BasicDBObject query = new BasicDBObject();
+        BasicDBObject query1 = new BasicDBObject("cmty", type);
+        query1.append("r", 0).append("cmid",new BasicDBObject(Constant.MONGO_IN, communityIds));
+        BasicDBObject query2 = new BasicDBObject();
         BasicDBList values = new BasicDBList();
-        values.add(new BasicDBObject("cmty", type).append("r", 0).append("ti", new BasicDBObject(Constant.MONGO_GTE, startTime)).append("cmid",new BasicDBObject(Constant.MONGO_IN, communityIds)));
-        values.add(new BasicDBObject("ti", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        if (startTime != null && startTime != 0l) {
+            query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, startTime));
+        }
+        if (endTime != null && endTime != 0l) {
+            query2.append("ti", new BasicDBObject(Constant.MONGO_LT, endTime));
+        }
+        values.add(query1);
+        values.add(query2);
         query.put(Constant.MONGO_AND, values);
         
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
+    }
+    
+  //统计帖子数量
+    public List<CommunityDetailEntry> TzidList(List<ObjectId> communityIds, int type, Long startTime, Long endTime) {
+        BasicDBObject query = new BasicDBObject();
+        BasicDBObject query1 = new BasicDBObject("cmty", type);
+        query1.append("r", 0).append("cmid",new BasicDBObject(Constant.MONGO_IN, communityIds));
+        BasicDBObject query2 = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        if (startTime != null && startTime != 0l) {
+            query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, startTime));
+        }
+        if (endTime != null && endTime != 0l) {
+            query2.append("ti", new BasicDBObject(Constant.MONGO_LT, endTime));
+        }
+        values.add(query1);
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        List<CommunityDetailEntry> listt = new ArrayList<CommunityDetailEntry>();
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query,Constant.FIELDS);
+        for (DBObject d : list) {
+            listt.add(new CommunityDetailEntry(d));
+        }
+        return listt;
     }
 
     /**

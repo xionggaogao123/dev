@@ -178,14 +178,22 @@ public class HourClassDao extends BaseDao {
         return entryList;
     }
     
-    public Integer countHourClass(List<ObjectId> parentIds,long startTime, long endTime) {
+    public Integer countHourClass(List<ObjectId> parentIds,Long startTime, Long endTime) {
         
         
-        BasicDBObject query = new BasicDBObject();       
+        BasicDBObject query = new BasicDBObject(); 
+        BasicDBObject query1 = new BasicDBObject();
+        BasicDBObject query2 = new BasicDBObject();
+        query1.append("pid", new BasicDBObject(Constant.MONGO_IN, parentIds));
         BasicDBList values = new BasicDBList();
-        
-        values.add(new BasicDBObject().append("stm",  new BasicDBObject(Constant.MONGO_GTE, startTime)).append("pid", new BasicDBObject(Constant.MONGO_IN, parentIds)));
-        values.add(new BasicDBObject().append("stm",  new BasicDBObject(Constant.MONGO_LT, endTime)));
+        if (startTime != null && startTime != 0l) {
+            query1.append("stm",  new BasicDBObject(Constant.MONGO_GTE, startTime));
+        }
+        if (endTime != null && endTime != 0l) {
+            query2.append("stm",  new BasicDBObject(Constant.MONGO_LT, endTime));
+        }
+        values.add(query1);
+        values.add(query2);
         query.put(Constant.MONGO_AND, values);
   
         

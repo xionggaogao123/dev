@@ -26,6 +26,7 @@ import com.db.fcommunity.CommunityHyDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.fcommunity.PartInContentDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.operation.AppCommentDao;
@@ -35,9 +36,15 @@ import com.db.user.UserDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.count.dto.JxmCountDto;
 import com.fulaan.count.dto.TczyDto;
+import com.fulaan.count.dto.TzDto;
+import com.fulaan.count.dto.TztbDto;
+import com.fulaan.count.dto.XqstDto;
 import com.fulaan.count.dto.ZytbDto;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
+import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.mongodb.BasicDBObject;
+import com.pojo.appnotice.AppNoticeEntry;
+import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.CommunityHyEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.operation.AppCommentEntry;
@@ -80,6 +87,8 @@ public class CountService {
     private AppOperationDao appOperationDao = new AppOperationDao();
     
     private CommunityDao communityDao = new CommunityDao();
+    
+    private PartInContentDao partInContentDao = new PartInContentDao();
     
     
     
@@ -143,6 +152,7 @@ public class CountService {
             int zuoye4 = appCommentDao.getWebAllDatePageNumberByTime( communityIdList, null, map.get(4), map.get(5));
             int zuoye5 = appCommentDao.getWebAllDatePageNumberByTime( communityIdList, null, map.get(5), map.get(6));
             int zuoye6 = appCommentDao.getWebAllDatePageNumberByTime( communityIdList, null, map.get(6), map.get(7));
+            int zuoyeAll = appCommentDao.getWebAllDatePageNumberByTime( communityIdList, null, null, null);
             zuoyeNum.add(zuoye1);
             zuoyeNum.add(zuoye2);
             zuoyeNum.add(zuoye3);
@@ -150,6 +160,7 @@ public class CountService {
             zuoyeNum.add(zuoye5);
             zuoyeNum.add(zuoye6);
             jxmCountDto.setZuoyeNum(zuoyeNum);
+            jxmCountDto.setAllZuoyeNum(zuoyeAll);
             //本日通知发布数量
             List<Integer> noticeNum = new ArrayList<Integer>();
             int notice1 = appNoticeDao.countAppNoticeEntries(communityIdList,map.get(1), map.get(2));
@@ -158,6 +169,7 @@ public class CountService {
             int notice4 = appNoticeDao.countAppNoticeEntries(communityIdList,map.get(4), map.get(5));
             int notice5 = appNoticeDao.countAppNoticeEntries(communityIdList,map.get(5), map.get(6));
             int notice6 = appNoticeDao.countAppNoticeEntries(communityIdList,map.get(6), map.get(7));
+            int noticeAll = appNoticeDao.countAppNoticeEntries(communityIdList,null, null);
             noticeNum.add(notice1);
             noticeNum.add(notice2);
             noticeNum.add(notice3);
@@ -165,6 +177,7 @@ public class CountService {
             noticeNum.add(notice5);
             noticeNum.add(notice6);
             jxmCountDto.setNoticeNum(noticeNum);
+            jxmCountDto.setAllNoticeNum(noticeAll);
             //本日帖子发布数量
             List<Integer> tzNum = new ArrayList<Integer>();
             int tz1 = communityDetailDao.countTz(communityIdList,3, map.get(1), map.get(2));
@@ -173,6 +186,8 @@ public class CountService {
             int tz4 = communityDetailDao.countTz(communityIdList,3, map.get(4), map.get(5));
             int tz5 = communityDetailDao.countTz(communityIdList,3, map.get(5), map.get(6));
             int tz6 = communityDetailDao.countTz(communityIdList,3, map.get(6), map.get(7));
+            int tzAll = communityDetailDao.countTz(communityIdList,3, null, null);
+            
             tzNum.add(tz1);
             tzNum.add(tz2);
             tzNum.add(tz3);
@@ -180,6 +195,7 @@ public class CountService {
             tzNum.add(tz5);
             tzNum.add(tz6);
             jxmCountDto.setTzNum(tzNum);
+            jxmCountDto.setAllTzNum(tzAll);
             //本日社群活跃数量
             List<Integer> hyNum = new ArrayList<Integer>();
             List<CommunityHyEntry> list1 = communityHyDao.communityHyCountEntry(communityIdList,map.get(1), map.get(2));
@@ -188,6 +204,7 @@ public class CountService {
             List<CommunityHyEntry> list4 = communityHyDao.communityHyCountEntry(communityIdList,map.get(4), map.get(5));
             List<CommunityHyEntry> list5 = communityHyDao.communityHyCountEntry(communityIdList,map.get(5), map.get(6));
             List<CommunityHyEntry> list6 = communityHyDao.communityHyCountEntry(communityIdList,map.get(6), map.get(7));
+            List<CommunityHyEntry> listAll = communityHyDao.communityHyCountEntry(communityIdList,null, null);
             hyNum.add(listToSet(list1));
             hyNum.add(listToSet(list2));
             hyNum.add(listToSet(list3));
@@ -195,6 +212,7 @@ public class CountService {
             hyNum.add(listToSet(list5));
             hyNum.add(listToSet(list6));
             jxmCountDto.setHyNum(hyNum);
+            jxmCountDto.setAllHyNum(listToSet(listAll));
             //本日直播课数量
             List<Integer> zbNum = new ArrayList<Integer>();
             zbNum.add(getzbNum(communityIdList,map.get(1), map.get(2)));
@@ -204,6 +222,7 @@ public class CountService {
             zbNum.add(getzbNum(communityIdList,map.get(5), map.get(6)));
             zbNum.add(getzbNum(communityIdList,map.get(6), map.get(7)));
             jxmCountDto.setZbNum(zbNum);
+            jxmCountDto.setAllZbNum(getzbNum(communityIdList,null, null));
             //本日推荐引用数量
             List<Integer> yyNum = new ArrayList<Integer>();
             int yy1 = appTsDao.tsCount(communityIdList,map.get(1), map.get(2));
@@ -212,6 +231,7 @@ public class CountService {
             int yy4 = appTsDao.tsCount(communityIdList,map.get(4), map.get(5));
             int yy5 = appTsDao.tsCount(communityIdList,map.get(5), map.get(6));
             int yy6 = appTsDao.tsCount(communityIdList,map.get(6), map.get(7));
+            int yyAll = appTsDao.tsCount(communityIdList,null, null);
             yyNum.add(yy1);
             yyNum.add(yy2);
             yyNum.add(yy3);
@@ -219,12 +239,13 @@ public class CountService {
             yyNum.add(yy5);
             yyNum.add(yy6);
             jxmCountDto.setYyNum(yyNum);
+            jxmCountDto.setAllYyNum(yyAll);
         }
         
         return jxmCountDto;
     }
     
-    public int getzbNum(List<ObjectId> communityIdList, long  startTime,long endTime) {
+    public int getzbNum(List<ObjectId> communityIdList, Long  startTime,Long endTime) {
         List<ObjectId> courseId = excellentCourseDao.getCourseIdByCid(communityIdList);
         return hourClassDao.countHourClass(courseId, startTime, endTime);
     }
@@ -317,6 +338,60 @@ public class CountService {
         return map;
     }
     
+    //比较日期大小
+    public boolean compareDate(String startTime, String endTime) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = sdf.parse(startTime);
+        Date endDate = sdf.parse(endTime);
+        if (startDate.getTime() <= endDate.getTime()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    //获取两个日期之间的日期集合
+    public List<String> getListDate(String startTime, String endTime) throws Exception{
+        List<String> dateList = new ArrayList<String>();
+        if (startTime.equals(endTime)) {
+            dateList.add(startTime);
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar c = Calendar.getInstance();
+            String nextDay = startTime;
+            dateList.add(nextDay);
+            while (!nextDay.equals(endTime)) {
+                Date d = sdf.parse(nextDay);
+                c.setTime(d);
+                c.add(Calendar.DATE, 1);
+                d = c.getTime();
+                nextDay = sdf.format(d);
+                dateList.add(nextDay);
+            }
+            
+
+        }
+        
+        return dateList;
+        
+    }
+    
+    //获得学科
+    public List<SubjectClassDTO> getSubjectClass() {
+        List<SubjectClassEntry> subjectClassEntriesL = subjectClassDao.getList();
+        SubjectClassDTO dto1 = new SubjectClassDTO();
+        dto1.setId("");
+        dto1.setName("全学科");
+        List<SubjectClassDTO> subjectClassDtoList = new ArrayList<SubjectClassDTO>();
+        subjectClassDtoList.add(dto1);
+        for (SubjectClassEntry s : subjectClassEntriesL) {
+            SubjectClassDTO dto = new SubjectClassDTO(s);
+            subjectClassDtoList.add(dto);
+        }
+        
+        return subjectClassDtoList;
+    }
+    
     //作业图表
     public ZytbDto zytb(String schooleId, String startTime, String endTime) {
         ZytbDto zytbDto = new ZytbDto();
@@ -345,11 +420,24 @@ public class CountService {
     }
     
     //作业发布统计按学科
-    public List<TczyDto> tczy(String subjectId, String schooleId) {
+    public Map<String, Object> tczy(String subjectId, String schooleId, String startTime, String endTime) {
+        Map<String, Object> mapResult = new HashMap<String, Object>();
         List<TczyDto> tczyDto = new ArrayList<TczyDto>();
         if(StringUtils.isNotBlank(schooleId)) {
+            
+            long startTimeL = 0;
+            long endTimeL = 0;
+            if (StringUtils.isNotBlank(startTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(startTime);
+                startTimeL = map.get(1);
+            }
+            if (StringUtils.isNotBlank(endTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(endTime);
+                endTimeL = map.get(7);
+            }
+            
             List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
-            List<BasicDBObject> acList = appCommentDao.count(communityIdList, subjectId, 0l, 0l,0,0);
+            List<BasicDBObject> acList = appCommentDao.count(communityIdList, subjectId, startTimeL, endTimeL,0,0);
             for (BasicDBObject db : acList) {
                 TczyDto t = new TczyDto();
                 ObjectId aid = ((BasicDBObject)db.get("_id")).getObjectId("aid");
@@ -358,7 +446,7 @@ public class CountService {
                 t.setSubjectName(subjectClassDao.getEntry(sid).getName());
                 Integer count = (Integer)db.get("count");
                 t.setFaNum(count);
-                List<AppCommentEntry> appList = appCommentDao.getWebAllDatePageByTimePage(communityIdList, sid.toString(), aid.toString(), 0l, 0l, 0, 0);
+                List<AppCommentEntry> appList = appCommentDao.getWebAllDatePageByTimePage(communityIdList, sid.toString(), aid.toString(), startTimeL, endTimeL, 0, 0);
                 if (CollectionUtils.isNotEmpty(appList)) {
                     SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
                     t.setFbDate(s.format(new Date(appList.get(0).getCreateTime())));
@@ -376,21 +464,36 @@ public class CountService {
                 
             }
         }
-        return tczyDto;
+        mapResult.put("count", tczyDto.size());
+        mapResult.put("dto", tczyDto);
+        return mapResult;
     }
     //作业统计按班级
-    public List<TczyDto> bjzy(String communityId, String schooleId) {
+    public Map<String, Object> bjzy(String communityId, String schooleId, String startTime, String endTime) {
+        Map<String, Object> mapResult = new HashMap<String, Object>();
         List<TczyDto> tczyDto = new ArrayList<TczyDto>();
         if(StringUtils.isNotBlank(schooleId)) {
+            
+            long startTimeL = 0;
+            long endTimeL = 0;
+            if (StringUtils.isNotBlank(startTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(startTime);
+                startTimeL = map.get(1);
+            }
+            if (StringUtils.isNotBlank(endTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(endTime);
+                endTimeL = map.get(7);
+            }
+            
             List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
-            List<BasicDBObject> acList = appCommentDao.count1(communityIdList, null, 0l, 0l,0,0);
+            List<BasicDBObject> acList = appCommentDao.count1(communityIdList, null, startTimeL, endTimeL,0,0);
             for (BasicDBObject db : acList) {
                 TczyDto t = new TczyDto();
                 ObjectId rid = ((BasicDBObject)db.get("_id")).getObjectId("rid");
                 t.setClassName(communityDao.findByObjectId(rid).getCommunityName());
                 Integer count = (Integer)db.get("count");
                 t.setFaNum(count);
-                List<AppCommentEntry> appList = appCommentDao.getWebAllDatePageByTimePage(rid, null, null, 0l, 0l, 0, 0);
+                List<AppCommentEntry> appList = appCommentDao.getWebAllDatePageByTimePage(rid, null, null, startTimeL, endTimeL, 0, 0);
                 if (CollectionUtils.isNotEmpty(appList)) {
                     SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
                     t.setFbDate(s.format(new Date(appList.get(0).getCreateTime())));
@@ -407,10 +510,229 @@ public class CountService {
                 tczyDto.add(t);
             }
         }
-        return tczyDto;
+        mapResult.put("count", tczyDto.size());
+        mapResult.put("dto", tczyDto);
+        return mapResult;
     }
     
+    //通知图表
+    public TztbDto tztb(String schooleId, String startTime, String endTime) throws Exception{
+        TztbDto tztbDto = new TztbDto();
+        List<String> dateList = new ArrayList<String>();
+        if (startTime != null && endTime != null) {
+            if(this.compareDate(startTime, endTime)) {
+                dateList = this.getListDate(startTime, endTime);
+                tztbDto.setDateList(dateList);
+            } else {
+                
+            }
+        }
+        if(StringUtils.isNotBlank(schooleId)) {
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            for (String s : dateList) {
+                Map<Integer, Long> map = this.getTimePointOneDay(s);
+                
+                tztbDto.getNum().add(appNoticeDao.countAppNoticeEntries(communityIdList,map.get(1), map.get(7)));
+            }
+            
+        }
+        
+        return tztbDto;
+    }
     
+    //老师发布通知次数
+    public Map<String, Object> tzsub(String subjectId, String schooleId, String startTime, String endTime) {
+        Map<String, Object> mapResult = new HashMap<String, Object>();
+        List<TzDto> tczyDto = new ArrayList<TzDto>();
+        if(StringUtils.isNotBlank(schooleId)) {
+            
+            long startTimeL = 0;
+            long endTimeL = 0;
+            if (StringUtils.isNotBlank(startTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(startTime);
+                startTimeL = map.get(1);
+            }
+            if (StringUtils.isNotBlank(endTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(endTime);
+                endTimeL = map.get(7);
+            }
+            
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            List<BasicDBObject> acList = appNoticeDao.count(communityIdList, subjectId, startTimeL, endTimeL,0,0);
+            for (BasicDBObject db : acList) {
+                TzDto t = new TzDto();
+                ObjectId aid = ((BasicDBObject)db.get("_id")).getObjectId("uid");
+                t.setName(userDao.findByUserId(aid).getUserName());
+                ObjectId sid = ((BasicDBObject)db.get("_id")).getObjectId("sid");
+                t.setSubjectName(subjectClassDao.getEntry(sid).getName());
+                Integer count = (Integer)db.get("count");
+                t.setFbNum(count);
+                if(db.containsField("rl")) {
+                    List<ObjectId> l =  (List<ObjectId>)db.get("rl");
+                    if (CollectionUtils.isNotEmpty(l)) {
+                        t.setPeoNum(l.size());
+                    } else {
+                        t.setPeoNum(0);
+                    }
+                } else {
+                    t.setPeoNum(0);
+                }
+                
+                List<AppNoticeEntry> appList = appNoticeDao.getWebAllDatePageByTimePage(communityIdList, sid.toString(), aid.toString(), startTimeL, endTimeL, 0, 0);
+                if (CollectionUtils.isNotEmpty(appList)) {
+                    SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+                    t.setFbDate(s.format(new Date(appList.get(0).getSubmitTime())));
+            
+                    
+                }
+                tczyDto.add(t);
+                
+            }
+        }
+        mapResult.put("count", tczyDto.size());
+        mapResult.put("dto", tczyDto);
+        return mapResult;
+    }
     
+  //通知统计按班级
+    public Map<String, Object> tzcom(String communityId, String schooleId, String startTime, String endTime) {
+        Map<String, Object> mapResult = new HashMap<String, Object>();
+        List<TzDto> tczyDto = new ArrayList<TzDto>();
+        if(StringUtils.isNotBlank(schooleId)) {
+            
+            long startTimeL = 0;
+            long endTimeL = 0;
+            if (StringUtils.isNotBlank(startTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(startTime);
+                startTimeL = map.get(1);
+            }
+            if (StringUtils.isNotBlank(endTime)) {
+                Map<Integer, Long> map = this.getTimePointOneDay(endTime);
+                endTimeL = map.get(7);
+            }
+            
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            List<BasicDBObject> acList = appNoticeDao.count1(communityIdList, null, startTimeL, endTimeL,0,0);
+            for (BasicDBObject db : acList) {
+                TzDto t = new TzDto();
+                ObjectId rid = ((BasicDBObject)db.get("_id")).getObjectId("cmId");
+                t.setClassName(communityDao.findByObjectId(rid).getCommunityName());
+                Integer count = (Integer)db.get("count");
+                t.setFbNum(count);
+                if(db.containsField("rl")) {
+                    List<ObjectId> l =  (List<ObjectId>)db.get("rl");
+                    if (CollectionUtils.isNotEmpty(l)) {
+                        t.setPeoNum(l.size());
+                    } else {
+                        t.setPeoNum(0);
+                    }
+                } else {
+                    t.setPeoNum(0);
+                }
+                List<AppNoticeEntry> appList = appNoticeDao.getWebAllDatePageByTimePage(rid, null, null, startTimeL, endTimeL, 0, 0);
+                if (CollectionUtils.isNotEmpty(appList)) {
+                    SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+                    t.setFbDate(s.format(new Date(appList.get(0).getSubmitTime())));
+                    
+                }
+                tczyDto.add(t);
+            }
+        }
+        mapResult.put("count", tczyDto.size());
+        mapResult.put("dto", tczyDto);
+        return mapResult;
+    }
+    
+    //兴趣社团图表
+    public XqstDto xqsttb(String schooleId, String startTime, String endTime) throws Exception{
+        XqstDto xqstDto = new XqstDto();
+        List<String> dateList = new ArrayList<String>();
+        if (startTime != null && endTime != null) {
+            if(this.compareDate(startTime, endTime)) {
+                dateList = this.getListDate(startTime, endTime);
+                xqstDto.setDateList(dateList);
+            } else {
+                
+            }
+        }
+        if(StringUtils.isNotBlank(schooleId)) {
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            for (String s : dateList) {
+                int totalCount = 0;
+                int allToatalCount = 0;
+                int zanCount = 0;
+                int allZanCount = 0;
+                int allNum = 0;
+                Map<Integer, Long> map = this.getTimePointOneDay(s);
+                
+                
+                xqstDto.getNum().add(communityDetailDao.countTz(communityIdList,3, map.get(1), map.get(7)));
+                List<CommunityDetailEntry> list = communityDetailDao.TzidList(communityIdList,3, map.get(1), map.get(7));
+                allNum += list.size();
+                for (CommunityDetailEntry entry : list) {
+                  //评论数
+                    totalCount += partInContentDao.countPartPartInContent(entry.getID());
+                    //点赞数
+                    zanCount += entry.getZanCount();
+                    allToatalCount += totalCount;
+                    allZanCount += zanCount;
+                }
+                xqstDto.setAllNum(allNum);
+                xqstDto.setAllPlNum(allToatalCount);
+                xqstDto.setAllZanNum(allZanCount);
+                xqstDto.getPlNum().add(totalCount);
+                xqstDto.getZanNum().add(zanCount);
+                
+            }
+            
+        }
+        
+        return xqstDto;
+    }
+    
+  //兴趣社团统计
+    public Map<String, Object> xqsttj(String schooleId, String startTime, String endTime) throws Exception{
+        Map<String, Object> mapp = new HashMap<String, Object>();
+        List<XqstDto> ll = new ArrayList<XqstDto>();
+        long startTimeL = 0;
+        long endTimeL = 0;
+        if (StringUtils.isNotBlank(startTime)) {
+            Map<Integer, Long> map = this.getTimePointOneDay(startTime);
+            startTimeL = map.get(1);
+        }
+        if (StringUtils.isNotBlank(endTime)) {
+            Map<Integer, Long> map = this.getTimePointOneDay(endTime);
+            endTimeL = map.get(7);
+        }
+       
+        if(StringUtils.isNotBlank(schooleId)) {
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+
+              
+             
+  
+            List<CommunityDetailEntry> list = communityDetailDao.TzidList(communityIdList,3, startTimeL, endTimeL);
+
+            for (CommunityDetailEntry entry : list) {
+                XqstDto xqstDto = new XqstDto();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                xqstDto.setDateStr(sdf.format(new Date(entry.getCreateTime())));
+                xqstDto.setName(entry.getCommunityTitle());
+                xqstDto.setUserName(userDao.findByUserId(entry.getCommunityUserId()).getUserName());
+                xqstDto.setYueNum(entry.getYueCount());
+                xqstDto.setPllNum(partInContentDao.countPartPartInContent(entry.getID()));
+                xqstDto.setZannNum(entry.getZanCount());
+                xqstDto.setSelfPlNum(partInContentDao.countPartPartInContent(entry.getID(), entry.getCommunityUserId()));
+                ll.add(xqstDto);
+            }
+                
+            mapp.put("num", list.size());
+            mapp.put("communityDetail", ll);
+            
+            
+        }
+        
+        return mapp;
+    }
     
 }

@@ -30,12 +30,21 @@ public class CommunityHyDao extends BaseDao {
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_HY, query);
     }
     
-    public List<CommunityHyEntry> communityHyCountEntry(List<ObjectId> communityIds, long startTime, long endTime) {
+    public List<CommunityHyEntry> communityHyCountEntry(List<ObjectId> communityIds, Long startTime, Long endTime) {
         List<CommunityHyEntry> detailEntries = new ArrayList<CommunityHyEntry>();
         BasicDBObject query = new BasicDBObject();
+        BasicDBObject query1 = new BasicDBObject();
+        BasicDBObject query2 = new BasicDBObject();
+        query1.append("cmid",new BasicDBObject(Constant.MONGO_IN, communityIds));
         BasicDBList values = new BasicDBList();
-        values.add(new BasicDBObject("ti",new BasicDBObject(Constant.MONGO_GTE, startTime)).append("cmid",new BasicDBObject(Constant.MONGO_IN, communityIds)));
-        values.add(new BasicDBObject("ti", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        if (startTime != null && startTime != 0l) {
+            query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, startTime));
+        }
+        if (endTime != null && endTime != 0l) {
+            query2.append("ti", new BasicDBObject(Constant.MONGO_LT, endTime));
+        }
+        values.add(query1);
+        values.add(query2);
         query.put(Constant.MONGO_AND, values);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_HY, query);
         for (DBObject dbo : dbObjects) {

@@ -64,6 +64,14 @@ public class PartInContentDao extends BaseDao {
                 .append("r", 0);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query);
     }
+    
+    public int countPartPartInContent(ObjectId detailId, ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cdid", detailId)
+                .append("uid", userId)
+                .append("r", 0);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query);
+    }
 
     public void saveParInContent(PartInContentEntry partInContentEntry) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, partInContentEntry.getBaseEntry());

@@ -1,8 +1,10 @@
 package com.fulaan.count.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +14,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.fulaan.base.BaseController;
 import com.fulaan.count.dto.JxmCountDto;
-import com.fulaan.count.dto.TczyDto;
+import com.fulaan.count.dto.TztbDto;
+import com.fulaan.count.dto.XqstDto;
 import com.fulaan.count.dto.ZytbDto;
 import com.fulaan.count.service.CountService;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
@@ -90,12 +93,12 @@ public class CountController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            List<SubjectClassDTO> result = appCommentService.selectTeacherSubjectList(getUserId());
-            respObj.setMessage(result);
+            List<SubjectClassDTO> list = countService.getSubjectClass();
+            respObj.setMessage(list);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setMessage("查询老师绑定的学科失败!");
+            respObj.setMessage("查询学科失败!");
 
         }
         return JSON.toJSONString(respObj);
@@ -112,8 +115,7 @@ public class CountController extends BaseController {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         try {
             String startTime = null;
-            String endTime = null;
-            
+            String endTime = null;            
             List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
             startTime = list.get(0);
             endTime = list.get(1);
@@ -135,15 +137,20 @@ public class CountController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/tczyList")
     @ResponseBody
-    public RespObj tczyList(String subjectId, String schooleId) {
+    public RespObj tczyList(String subjectId, String schooleId, String seTime) {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         try {
-            List<TczyDto> l = countService.tczy(subjectId, schooleId);
+            String startTime = null;
+            String endTime = null;
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            Map<String, Object> l = countService.tczy(subjectId, schooleId, startTime,endTime);
             respObj.setMessage(l);
         } catch (Exception e) {
-           
-            respObj.setCode(Constant.FAILD_CODE);
-            respObj.setMessage("失败!");
+            Map<String, Object> l = countService.tczy(subjectId, schooleId, null,null);
+            respObj.setMessage(l);
         }
         
         return respObj;
@@ -155,15 +162,182 @@ public class CountController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/bjzyList")
     @ResponseBody
-    public RespObj bjzyList(String communityId, String schooleId) {
+    public RespObj bjzyList(String communityId, String schooleId, String seTime) {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         try {
-            List<TczyDto> l = countService.bjzy(communityId, schooleId);
+            
+            String startTime = null;
+            String endTime = null;
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            Map<String, Object> l = countService.bjzy(communityId, schooleId, startTime,endTime);
             respObj.setMessage(l);
         } catch (Exception e) {
            
-            respObj.setCode(Constant.FAILD_CODE);
-            respObj.setMessage("失败!");
+            Map<String, Object> l = countService.bjzy(communityId, schooleId, null,null);
+            respObj.setMessage(l);
+        }
+        
+        return respObj;
+    }
+    
+    @ApiOperation(value = "通知统计图表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/tztb")
+    @ResponseBody
+    public RespObj tztb(String schooleId, String seTime) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        TztbDto l = new TztbDto();
+        try {
+            
+            String startTime = null;
+            String endTime = null;
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            l = countService.tztb(schooleId, startTime,endTime);
+            respObj.setMessage(l);
+        } catch (Exception e) {
+            
+            try {
+                l = countService.tztb(schooleId, null,null);
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            respObj.setMessage(l);
+      
+        }
+        
+        return respObj;
+    }
+    
+    @ApiOperation(value = "老师发布通知次数", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/tzsub")
+    @ResponseBody
+    public RespObj tzsub(String subjectId, String schooleId, String seTime) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        try {
+            
+            String startTime = null;
+            String endTime = null;
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            Map<String, Object> map = countService.tzsub(subjectId, schooleId,startTime,endTime);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            
+            
+            Map<String, Object> map = countService.tzsub(subjectId, schooleId,null,null);
+            respObj.setMessage(map);
+      
+        }
+        
+        return respObj;
+    }
+    
+    @ApiOperation(value = "班级通知统计", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/tzcom")
+    @ResponseBody
+    public RespObj tzcom(String communityId, String schooleId, String seTime) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        try {
+            
+            String startTime = null;
+            String endTime = null;
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            Map<String, Object> map = countService.tzcom(communityId, schooleId, startTime,endTime);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            
+            
+            Map<String, Object> map = countService.tzcom(communityId, schooleId,null,null);
+            respObj.setMessage(map);
+      
+        }
+        
+        return respObj;
+    }
+    
+    @ApiOperation(value = "兴趣社团图表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/xqsttb")
+    @ResponseBody
+    public RespObj xqsttb(String schooleId, String seTime) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        XqstDto l = new XqstDto();
+        try {
+            
+            String startTime = null;
+            String endTime = null;
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            l = countService.xqsttb(schooleId, startTime,endTime);
+            respObj.setMessage(l);
+        } catch (Exception e) {
+            
+            try {
+                l = countService.xqsttb(schooleId, null,null);
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            respObj.setMessage(l);
+      
+        }
+        
+        return respObj;
+    }
+    
+    @ApiOperation(value = "帖子发布数据统计", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/xqsttj")
+    @ResponseBody
+    public RespObj xqsttj(String schooleId, String seTime) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        Map<String, Object> l = new HashMap<String, Object>();
+        try {
+            
+            String startTime = null;
+            String endTime = null;
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            l = countService.xqsttj(schooleId, startTime,endTime);
+            respObj.setMessage(l);
+        } catch (Exception e) {
+            
+            try {
+                l = countService.xqsttj(schooleId, null,null);
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            respObj.setMessage(l);
+      
         }
         
         return respObj;

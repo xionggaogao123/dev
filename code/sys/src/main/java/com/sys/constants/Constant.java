@@ -1160,4 +1160,16 @@ public class Constant {
     public static final String COLLECTION_APP_NEW_VOTE="jxm_app_new_vote";
     //投票选项
     public static final String COLLECTION_APP_VOTE_OPTION="jxm_app_vote_option";
+
+    /*****************************************拓展选课*********************************************/
+    //拓展课学校设置
+    public static final String COLLECTION_EXTENDED_SCHOOL_SETTING = "jxm_extended_school_setting";
+    //拓展课课程标签
+    public static final String COLLECTION_EXTENDED_SCHOOL_LABEL = "jxm_extended_school_label";
+    //拓展课
+    public static final String COLLECTION_EXTENDED_COURSE = "jxm_extended_course";
+    //拓展课节
+    public static final String COLLECTION_EXTENDED_COURSE_CLASS = "jxm_extended_course_class";
+    //拓展课报名申请
+    public static final String COLLECTION_EXTENDED_USER_APPLY = "jxm_extended_user_apply";
 }

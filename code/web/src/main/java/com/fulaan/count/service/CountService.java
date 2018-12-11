@@ -16,8 +16,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
-
-import com.alipay.api.domain.MerchantMenber;
 import com.db.backstage.TeacherApproveDao;
 import com.db.controlphone.AppTsDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
@@ -55,11 +53,8 @@ import com.pojo.fcommunity.CommunityHyEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
-import com.pojo.operation.AppOperationEntry;
 import com.pojo.smalllesson.SmallLessonEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
-import com.sun.beans.decoder.ValueObject;
-import com.sys.constants.Constant;
 
 @Service
 public class CountService {
@@ -450,7 +445,7 @@ public class CountService {
     }
     
     //作业发布统计按学科
-    public Map<String, Object> tczy(String subjectId, String schooleId, String startTime, String endTime) {
+    public Map<String, Object> tczy(String subjectId, String schooleId, String startTime, String endTime,  int page, int pageSize) {
         Map<String, Object> mapResult = new HashMap<String, Object>();
         List<TczyDto> tczyDto = new ArrayList<TczyDto>();
         if(StringUtils.isNotBlank(schooleId)) {
@@ -495,11 +490,11 @@ public class CountService {
             }
         }
         mapResult.put("count", tczyDto.size());
-        mapResult.put("dto", tczyDto);
+        mapResult.put("dto", this.returnList(page, pageSize, tczyDto));
         return mapResult;
     }
     //作业统计按班级
-    public Map<String, Object> bjzy(String communityId, String schooleId, String startTime, String endTime) {
+    public Map<String, Object> bjzy(String communityId, String schooleId, String startTime, String endTime , int page, int pageSize) {
         Map<String, Object> mapResult = new HashMap<String, Object>();
         List<TczyDto> tczyDto = new ArrayList<TczyDto>();
         if(StringUtils.isNotBlank(schooleId)) {
@@ -541,7 +536,7 @@ public class CountService {
             }
         }
         mapResult.put("count", tczyDto.size());
-        mapResult.put("dto", tczyDto);
+        mapResult.put("dto", this.returnList(page, pageSize, tczyDto));
         return mapResult;
     }
     
@@ -571,7 +566,7 @@ public class CountService {
     }
     
     //老师发布通知次数
-    public Map<String, Object> tzsub(String subjectId, String schooleId, String startTime, String endTime) {
+    public Map<String, Object> tzsub(String subjectId, String schooleId, String startTime, String endTime, int page, int pageSize) {
         Map<String, Object> mapResult = new HashMap<String, Object>();
         List<TzDto> tczyDto = new ArrayList<TzDto>();
         if(StringUtils.isNotBlank(schooleId)) {
@@ -620,12 +615,12 @@ public class CountService {
             }
         }
         mapResult.put("count", tczyDto.size());
-        mapResult.put("dto", tczyDto);
+        mapResult.put("dto", this.returnList(page, pageSize, tczyDto));
         return mapResult;
     }
     
   //通知统计按班级
-    public Map<String, Object> tzcom(String communityId, String schooleId, String startTime, String endTime) {
+    public Map<String, Object> tzcom(String communityId, String schooleId, String startTime, String endTime, int page, int pageSize) {
         Map<String, Object> mapResult = new HashMap<String, Object>();
         List<TzDto> tczyDto = new ArrayList<TzDto>();
         if(StringUtils.isNotBlank(schooleId)) {
@@ -669,7 +664,7 @@ public class CountService {
             }
         }
         mapResult.put("count", tczyDto.size());
-        mapResult.put("dto", tczyDto);
+        mapResult.put("dto", this.returnList(page, pageSize, tczyDto));
         return mapResult;
     }
     
@@ -721,7 +716,7 @@ public class CountService {
     }
     
   //兴趣社团统计
-    public Map<String, Object> xqsttj(String schooleId, String startTime, String endTime) throws Exception{
+    public Map<String, Object> xqsttj(String schooleId, String startTime, String endTime,int page, int pageSize) throws Exception{
         Map<String, Object> mapp = new HashMap<String, Object>();
         List<XqstDto> ll = new ArrayList<XqstDto>();
         long startTimeL = 0;
@@ -757,7 +752,7 @@ public class CountService {
             }
                 
             mapp.put("num", list.size());
-            mapp.put("communityDetail", ll);
+            mapp.put("communityDetail", this.returnList(page, pageSize, ll));
             
             
         }
@@ -838,7 +833,7 @@ public class CountService {
     }
     
     //小课堂按班级统计
-    public Map<String, Object> xktbj(String schooleId, String startTime, String endTime) throws Exception{
+    public Map<String, Object> xktbj(String schooleId, String startTime, String endTime,int page, int pageSize) throws Exception{
         Map<String, Object> mapp = new HashMap<String, Object>();
         long startTimeL = 0;
         long endTimeL = 0;
@@ -876,13 +871,13 @@ public class CountService {
             }
             
         }
-        mapp.put("list", list);
+        mapp.put("list", this.returnList(page, pageSize, list));
         mapp.put("count", list.size());
         return mapp;
     }
     
   //小课堂按班级统计
-    public Map<String, Object> xktjs(String schooleId, String startTime, String endTime) throws Exception{
+    public Map<String, Object> xktjs(String schooleId, String startTime, String endTime,int page, int pageSize) throws Exception{
         Map<String, Object> mapp = new HashMap<String, Object>();
         long startTimeL = 0;
         long endTimeL = 0;
@@ -952,8 +947,22 @@ public class CountService {
             }
             
         }
-        mapp.put("list", list);
+        mapp.put("list", this.returnList(page, pageSize, list));
         mapp.put("count", list.size());
         return mapp;
+    }
+    
+    public List<?> returnList(int page, int pageSize, List<?> list) {
+        int start = pageSize*(page -1);
+        int end = start + page*pageSize -1;
+        if (list.size() < start) {
+            return null;
+        } else if (list.size() >= start && list.size() < end) {
+            return list.subList(start, list.size());
+        } else {
+            return list.subList(start, end);
+        }
+        
+        
     }
 }

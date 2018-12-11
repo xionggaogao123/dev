@@ -140,7 +140,7 @@ public class CountController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/tczyList")
     @ResponseBody
-    public RespObj tczyList(String subjectId, String schooleId, String seTime) {
+    public RespObj tczyList(String subjectId, String schooleId, String seTime, int page, int pageSize) {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         try {
             String startTime = null;
@@ -149,10 +149,10 @@ public class CountController extends BaseController {
             startTime = list.get(0);
             endTime = list.get(1);
             
-            Map<String, Object> l = countService.tczy(subjectId, schooleId, startTime,endTime);
+            Map<String, Object> l = countService.tczy(subjectId, schooleId, startTime,endTime,  page, pageSize);
             respObj.setMessage(l);
         } catch (Exception e) {
-            Map<String, Object> l = countService.tczy(subjectId, schooleId, null,null);
+            Map<String, Object> l = countService.tczy(subjectId, schooleId, null,null,  page, pageSize);
             respObj.setMessage(l);
         }
         
@@ -165,7 +165,7 @@ public class CountController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/bjzyList")
     @ResponseBody
-    public RespObj bjzyList(String communityId, String schooleId, String seTime) {
+    public RespObj bjzyList(String communityId, String schooleId, String seTime, int page, int pageSize) {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         try {
             
@@ -175,11 +175,11 @@ public class CountController extends BaseController {
             startTime = list.get(0);
             endTime = list.get(1);
             
-            Map<String, Object> l = countService.bjzy(communityId, schooleId, startTime,endTime);
+            Map<String, Object> l = countService.bjzy(communityId, schooleId, startTime,endTime,  page,  pageSize);
             respObj.setMessage(l);
         } catch (Exception e) {
            
-            Map<String, Object> l = countService.bjzy(communityId, schooleId, null,null);
+            Map<String, Object> l = countService.bjzy(communityId, schooleId, null,null,  page,  pageSize);
             respObj.setMessage(l);
         }
         
@@ -226,7 +226,7 @@ public class CountController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/tzsub")
     @ResponseBody
-    public RespObj tzsub(String subjectId, String schooleId, String seTime) {
+    public RespObj tzsub(String subjectId, String schooleId, String seTime , int page, int pageSize) {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         try {
             
@@ -236,12 +236,12 @@ public class CountController extends BaseController {
             startTime = list.get(0);
             endTime = list.get(1);
             
-            Map<String, Object> map = countService.tzsub(subjectId, schooleId,startTime,endTime);
+            Map<String, Object> map = countService.tzsub(subjectId, schooleId,startTime,endTime, page,  pageSize);
             respObj.setMessage(map);
         } catch (Exception e) {
             
             
-            Map<String, Object> map = countService.tzsub(subjectId, schooleId,null,null);
+            Map<String, Object> map = countService.tzsub(subjectId, schooleId,null,null,  page,  pageSize);
             respObj.setMessage(map);
       
         }
@@ -255,7 +255,7 @@ public class CountController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/tzcom")
     @ResponseBody
-    public RespObj tzcom(String communityId, String schooleId, String seTime) {
+    public RespObj tzcom(String communityId, String schooleId, String seTime, int page, int pageSize) {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         try {
             
@@ -265,12 +265,12 @@ public class CountController extends BaseController {
             startTime = list.get(0);
             endTime = list.get(1);
             
-            Map<String, Object> map = countService.tzcom(communityId, schooleId, startTime,endTime);
+            Map<String, Object> map = countService.tzcom(communityId, schooleId, startTime,endTime, page,  pageSize);
             respObj.setMessage(map);
         } catch (Exception e) {
             
             
-            Map<String, Object> map = countService.tzcom(communityId, schooleId,null,null);
+            Map<String, Object> map = countService.tzcom(communityId, schooleId,null,null,  page,  pageSize);
             respObj.setMessage(map);
       
         }
@@ -318,7 +318,7 @@ public class CountController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/xqsttj")
     @ResponseBody
-    public RespObj xqsttj(String schooleId, String seTime) {
+    public RespObj xqsttj(String schooleId, String seTime,int page, int pageSize) {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         Map<String, Object> l = new HashMap<String, Object>();
         try {
@@ -329,12 +329,12 @@ public class CountController extends BaseController {
             startTime = list.get(0);
             endTime = list.get(1);
             
-            l = countService.xqsttj(schooleId, startTime,endTime);
+            l = countService.xqsttj(schooleId, startTime,endTime, page,  pageSize);
             respObj.setMessage(l);
         } catch (Exception e) {
             
             try {
-                l = countService.xqsttj(schooleId, null,null);
+                l = countService.xqsttj(schooleId, null,null, page, pageSize);
             } catch (Exception e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -387,7 +387,7 @@ public class CountController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/xktbj")
     @ResponseBody
-    public RespObj xktbj(String schooleId, String seTime) {
+    public RespObj xktbj(String schooleId, String seTime,int page, int pageSize) {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         Map<String, Object> l = new HashMap<String, Object>();
         try {
@@ -398,12 +398,12 @@ public class CountController extends BaseController {
             startTime = list.get(0);
             endTime = list.get(1);
             
-            l = countService.xktbj(schooleId, startTime,endTime);
+            l = countService.xktbj(schooleId, startTime,endTime, page,  pageSize);
             respObj.setMessage(l);
         } catch (Exception e) {
             
             try {
-                l = countService.xktbj(schooleId, null,null);
+                l = countService.xktbj(schooleId, null,null, page,  pageSize);
             } catch (Exception e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -421,7 +421,7 @@ public class CountController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/xktjs")
     @ResponseBody
-    public RespObj xktjs(String schooleId, String seTime) {
+    public RespObj xktjs(String schooleId, String seTime,int page, int pageSize) {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         Map<String, Object> l = new HashMap<String, Object>();
         try {
@@ -432,12 +432,12 @@ public class CountController extends BaseController {
             startTime = list.get(0);
             endTime = list.get(1);
             
-            l = countService.xktjs(schooleId, startTime,endTime);
+            l = countService.xktjs(schooleId, startTime,endTime, page, pageSize);
             respObj.setMessage(l);
         } catch (Exception e) {
             
             try {
-                l = countService.xktjs(schooleId, null,null);
+                l = countService.xktjs(schooleId, null,null, page,  pageSize);
             } catch (Exception e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();

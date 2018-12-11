@@ -2,6 +2,7 @@ package com.db.smalllesson;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -10,6 +11,7 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -164,9 +166,11 @@ public class SmallLessonDao extends BaseDao {
         return null;
     }
     public SmallLessonEntry getEntry2(ObjectId userId) {
+        
+        
         BasicDBObject query = new BasicDBObject();
         query.append("isr",Constant.ZERO);
-        query.append("uid",userId);
+        query.append("uid",new BasicDBObject(Constant.MONGO_IN, userId));
         query.append("typ",0);
         DBObject obj =
                 findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query, Constant.FIELDS);
@@ -174,6 +178,118 @@ public class SmallLessonDao extends BaseDao {
             return new SmallLessonEntry((BasicDBObject) obj);
         }
         return null;
+        
+    }
+    
+    public List<ObjectId> getEntrySize(List<ObjectId> userId, Long startTime, Long endTime) {
+        List<ObjectId> l= new ArrayList<ObjectId>();
+        BasicDBObject query = new BasicDBObject();
+        BasicDBObject query1 = new BasicDBObject();
+        BasicDBObject query2 = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        query1.append("isr",Constant.ZERO);
+        query1.append("uid",new BasicDBObject(Constant.MONGO_IN, userId));
+        if (startTime != null && startTime != 0l) {
+            query1.append("dtm", new BasicDBObject(Constant.MONGO_GTE, startTime));
+        }
+        if (endTime != null && endTime != 0l) {
+            query2.append("dtm", new BasicDBObject(Constant.MONGO_LT, endTime));
+        }
+        values.add(query1);
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query);
+        for (DBObject d : list) {
+            l.add(new SmallLessonEntry(d).getUserId());
+        }
+        return l;
+    }
+    
+    public List<SmallLessonEntry> getEntrySize1(List<ObjectId> userId, Long startTime, Long endTime) {
+        List<SmallLessonEntry> l= new ArrayList<SmallLessonEntry>();
+        BasicDBObject query = new BasicDBObject();
+        BasicDBObject query1 = new BasicDBObject();
+        BasicDBObject query2 = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        query1.append("isr",Constant.ZERO);
+        query1.append("uid",new BasicDBObject(Constant.MONGO_IN, userId));
+        if (startTime != null && startTime != 0l) {
+            query1.append("dtm", new BasicDBObject(Constant.MONGO_GTE, startTime));
+        }
+        if (endTime != null && endTime != 0l) {
+            query2.append("dtm", new BasicDBObject(Constant.MONGO_LT, endTime));
+        }
+        values.add(query1);
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query);
+        for (DBObject d : list) {
+            l.add(new SmallLessonEntry(d));
+        }
+        return l;
+    }
+    
+    public List<SmallLessonEntry> getEntrySize2(ObjectId userId, Long startTime, Long endTime) {
+        List<SmallLessonEntry> l= new ArrayList<SmallLessonEntry>();
+        BasicDBObject query = new BasicDBObject();
+        BasicDBObject query1 = new BasicDBObject();
+        BasicDBObject query2 = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        query1.append("isr",Constant.ZERO);
+        query1.append("uid",userId);
+        if (startTime != null && startTime != 0l) {
+            query1.append("dtm", new BasicDBObject(Constant.MONGO_GTE, startTime));
+        }
+        if (endTime != null && endTime != 0l) {
+            query2.append("dtm", new BasicDBObject(Constant.MONGO_LT, endTime));
+        }
+        values.add(query1);
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query);
+        for (DBObject d : list) {
+            l.add(new SmallLessonEntry(d));
+        }
+        return l;
+    }
+    
+    public List<BasicDBObject> getEntryByUserId(List<ObjectId> userId, Long startTime, Long endTime) {
+        List<SmallLessonEntry> l= new ArrayList<SmallLessonEntry>();
+        BasicDBObject query = new BasicDBObject();
+        BasicDBObject query1 = new BasicDBObject();
+        BasicDBObject query2 = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        query1.append("isr",Constant.ZERO);
+        query1.append("uid",new BasicDBObject(Constant.MONGO_IN, userId));
+        if (startTime != null && startTime != 0l) {
+            query1.append("dtm", new BasicDBObject(Constant.MONGO_GTE, startTime));
+        }
+        if (endTime != null && endTime != 0l) {
+            query2.append("dtm", new BasicDBObject(Constant.MONGO_LT, endTime));
+        }
+        values.add(query1);
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        DBObject query4 = new BasicDBObject(Constant.MONGO_MATCH, query);
+        BasicDBObject group = new BasicDBObject();
+        group.put("uid", "$uid");
+        BasicDBObject select = new BasicDBObject("_id", group);
+        select.put("count", new BasicDBObject("$sum", 1));
+        DBObject groupP = new BasicDBObject("$group", select);
+        AggregationOutput output;
+        List<BasicDBObject> retList = new ArrayList<BasicDBObject>();
+        try {
+            output = aggregate(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query4, groupP);
+            Iterator<DBObject> iter = output.results().iterator();
+            BasicDBObject dbob;
+            while (iter.hasNext()) {
+                dbob = (BasicDBObject) iter.next();
+                retList.add(dbob);
+            }
+        } catch (Exception e) {
+
+        }
+        return retList;
     }
 
     public void updateSmallLessonEntry(ObjectId id,String name){

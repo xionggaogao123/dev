@@ -1,5 +1,6 @@
 package com.fulaan.count.service;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import com.alipay.api.domain.MerchantMenber;
 import com.db.backstage.TeacherApproveDao;
 import com.db.controlphone.AppTsDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
@@ -29,15 +31,19 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.fcommunity.PartInContentDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
+import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
+import com.db.smalllesson.LessonUserResultDao;
+import com.db.smalllesson.SmallLessonDao;
 import com.db.user.UserDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.count.dto.JxmCountDto;
 import com.fulaan.count.dto.TczyDto;
 import com.fulaan.count.dto.TzDto;
 import com.fulaan.count.dto.TztbDto;
+import com.fulaan.count.dto.XktDto;
 import com.fulaan.count.dto.XqstDto;
 import com.fulaan.count.dto.ZytbDto;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
@@ -47,9 +53,13 @@ import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.CommunityHyEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
+import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
+import com.pojo.smalllesson.SmallLessonEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
+import com.sun.beans.decoder.ValueObject;
+import com.sys.constants.Constant;
 
 @Service
 public class CountService {
@@ -89,6 +99,12 @@ public class CountService {
     private CommunityDao communityDao = new CommunityDao();
     
     private PartInContentDao partInContentDao = new PartInContentDao();
+    
+    private NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
+    
+    private SmallLessonDao smallLessonDao = new SmallLessonDao();
+    
+    private LessonUserResultDao lessonUserResultDao = new LessonUserResultDao();
     
     
     
@@ -384,6 +400,20 @@ public class CountService {
         dto1.setName("全学科");
         List<SubjectClassDTO> subjectClassDtoList = new ArrayList<SubjectClassDTO>();
         subjectClassDtoList.add(dto1);
+        for (SubjectClassEntry s : subjectClassEntriesL) {
+            SubjectClassDTO dto = new SubjectClassDTO(s);
+            subjectClassDtoList.add(dto);
+        }
+        
+        return subjectClassDtoList;
+    }
+    
+  //获得学科
+    public List<SubjectClassDTO> getSubjectClass1() {
+        List<SubjectClassEntry> subjectClassEntriesL = subjectClassDao.getList();
+  
+        List<SubjectClassDTO> subjectClassDtoList = new ArrayList<SubjectClassDTO>();
+
         for (SubjectClassEntry s : subjectClassEntriesL) {
             SubjectClassDTO dto = new SubjectClassDTO(s);
             subjectClassDtoList.add(dto);
@@ -735,4 +765,195 @@ public class CountService {
         return mapp;
     }
     
+    
+  //小课堂图表
+    public XktDto xkttb(String schooleId, String startTime, String endTime) throws Exception{
+        long startTimeL = 0;
+        long endTimeL = 0;
+        if (StringUtils.isNotBlank(startTime)) {
+            Map<Integer, Long> map = this.getTimePointOneDay(startTime);
+            startTimeL = map.get(1);
+        }
+        if (StringUtils.isNotBlank(endTime)) {
+            Map<Integer, Long> map = this.getTimePointOneDay(endTime);
+            endTimeL = map.get(7);
+        }
+        XktDto xktDto = new XktDto();  
+        if(StringUtils.isNotBlank(schooleId)) {
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            List<SubjectClassDTO> subList = this.getSubjectClass1();
+        
+            for (SubjectClassDTO sct : subList) {
+                xktDto.getSubjectList().add(sct.getName());
+                
+            }
+            if (CollectionUtils.isNotEmpty(communityIdList)) {
+                List<ObjectId> l = this.selectTeacherSubjectList2(communityIdList);
+                if (CollectionUtils.isNotEmpty(l)) {
+                    List<ObjectId> list = smallLessonDao.getEntrySize(l, startTimeL, endTimeL);
+                    List<NewVersionSubjectEntry> nse = newVersionSubjectDao.getEntryByUid(list);
+                    Map<ObjectId, List<ObjectId>> map = new HashMap<ObjectId, List<ObjectId>>() ;
+                    for (NewVersionSubjectEntry n : nse) {
+                        map.put(n.getUserId(), n.getSubjectList());
+                    }
+                    for (SubjectClassDTO sct : subList) {
+                        int i = 0;
+                        for (ObjectId o : list) {
+                            List<ObjectId> ll = map.get(o);
+                            if (ll != null) {
+                                if (ll.contains(new ObjectId(sct.getId()))) {
+                                    i++;
+                                }
+                            }
+                            
+                        }
+                        xktDto.getNumList().add(i);
+                    }
+                }
+                
+            }
+            
+            
+        }
+        
+        return xktDto;
+    }
+    
+    /**
+     * 查询社群下的老师id
+     */
+    public List<ObjectId> selectTeacherSubjectList2(List<ObjectId> communityIdList){
+        return memberDao.getMembersByCid(communityIdList);
+        
+       
+    }
+    
+    /**
+     * 查询社群下的老师id
+     */
+    public List<ObjectId> selectTeacherSubjectList1(ObjectId communityIdList){
+        return memberDao.getMembersByCid(communityIdList);
+        
+       
+    }
+    
+    //小课堂按班级统计
+    public Map<String, Object> xktbj(String schooleId, String startTime, String endTime) throws Exception{
+        Map<String, Object> mapp = new HashMap<String, Object>();
+        long startTimeL = 0;
+        long endTimeL = 0;
+        if (StringUtils.isNotBlank(startTime)) {
+            Map<Integer, Long> map = this.getTimePointOneDay(startTime);
+            startTimeL = map.get(1);
+        }
+        if (StringUtils.isNotBlank(endTime)) {
+            Map<Integer, Long> map = this.getTimePointOneDay(endTime);
+            endTimeL = map.get(7);
+        }
+        List<XktDto> list = new ArrayList<XktDto>();
+        if(StringUtils.isNotBlank(schooleId)) {
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            for (ObjectId id : communityIdList) {
+                XktDto xktDto = new XktDto();
+                List<ObjectId> userList = this.selectTeacherSubjectList1(id);
+                List<SmallLessonEntry> slist = smallLessonDao.getEntrySize1(userList, startTimeL, endTimeL);
+                xktDto.setClassName(communityDao.findByObjectId(id).getCommunityName());
+                xktDto.setClassTimes(slist.size());
+                int t = 0;
+                int num = 0;
+                for (SmallLessonEntry e : slist) {
+                    t += e.getNodeTime();
+                    num += lessonUserResultDao.getNumber(e.getID());
+                }
+                if (slist.size()!=0) {
+                    xktDto.setAvgClassTime(new BigDecimal(t).divide(new BigDecimal(slist.size()),2).intValue());
+                } else {
+                    xktDto.setAvgClassTime(0);
+                }
+                
+                xktDto.setClassPerson(num);
+                list.add(xktDto);
+            }
+            
+        }
+        mapp.put("list", list);
+        mapp.put("count", list.size());
+        return mapp;
+    }
+    
+  //小课堂按班级统计
+    public Map<String, Object> xktjs(String schooleId, String startTime, String endTime) throws Exception{
+        Map<String, Object> mapp = new HashMap<String, Object>();
+        long startTimeL = 0;
+        long endTimeL = 0;
+        if (StringUtils.isNotBlank(startTime)) {
+            Map<Integer, Long> map = this.getTimePointOneDay(startTime);
+            startTimeL = map.get(1);
+        }
+        if (StringUtils.isNotBlank(endTime)) {
+            Map<Integer, Long> map = this.getTimePointOneDay(endTime);
+            endTimeL = map.get(7);
+        }
+        List<XktDto> list = new ArrayList<XktDto>();
+        if(StringUtils.isNotBlank(schooleId)) {
+            List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            List<ObjectId> l = this.selectTeacherSubjectList2(communityIdList);
+            
+            List<NewVersionSubjectEntry> nse = newVersionSubjectDao.getEntryByUid(l);
+            Map<ObjectId, List<ObjectId>> map = new HashMap<ObjectId, List<ObjectId>>() ;
+            for (NewVersionSubjectEntry n : nse) {
+                map.put(n.getUserId(), n.getSubjectList());
+            }
+            
+            List<BasicDBObject> acList = smallLessonDao.getEntryByUserId(l, startTimeL, endTimeL);
+            for (BasicDBObject db : acList) {
+                XktDto t = new XktDto();
+                ObjectId rid = ((BasicDBObject)db.get("_id")).getObjectId("uid");
+                t.setUserName(userDao.findByUserId(rid).getUserName());
+                //t.setClassName(communityDao.findByObjectId(rid).getCommunityName());
+                Integer count = (Integer)db.get("count");
+                
+                for (ObjectId o : communityIdList) {
+                    List<ObjectId> ll = this.selectTeacherSubjectList1(o);
+                    if (ll.contains(rid)) {
+                        t.setClassName(communityDao.findByObjectId(o).getCommunityName());
+                        break;
+                    }
+                }
+                
+                if (map.get(rid) != null) {
+                    if (CollectionUtils.isNotEmpty(map.get(rid))) {
+                        String s = "";
+                        for (ObjectId oName : map.get(rid)) {
+                            s = s + subjectClassDao.getEntry(oName).getName()+"、";
+                        }
+                        t.setSubject(s);
+                    }
+                    
+                }
+                List<SmallLessonEntry> listtt = smallLessonDao.getEntrySize2(rid, startTimeL, endTimeL);
+                
+                int tt = 0;
+                int num = 0;
+                for (SmallLessonEntry e : listtt) {
+                    tt += e.getNodeTime();
+                    num += lessonUserResultDao.getNumber(e.getID());
+                }
+                if (listtt.size() != 0) {
+                    t.setAvgClassTime(new BigDecimal(tt).divide(new BigDecimal(listtt.size()),2).intValue());
+                } else {
+                    t.setAvgClassTime(0);
+                }
+                
+                t.setClassPerson(num);
+                t.setClassTimes(listtt.size());
+                
+                list.add(t);
+            }
+            
+        }
+        mapp.put("list", list);
+        mapp.put("count", list.size());
+        return mapp;
+    }
 }

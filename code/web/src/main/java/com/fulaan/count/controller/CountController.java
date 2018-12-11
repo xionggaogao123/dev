@@ -1,6 +1,8 @@
 package com.fulaan.count.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.fulaan.base.BaseController;
 import com.fulaan.count.dto.JxmCountDto;
 import com.fulaan.count.dto.TztbDto;
+import com.fulaan.count.dto.XktDto;
 import com.fulaan.count.dto.XqstDto;
 import com.fulaan.count.dto.ZytbDto;
 import com.fulaan.count.service.CountService;
@@ -205,7 +208,7 @@ public class CountController extends BaseController {
         } catch (Exception e) {
             
             try {
-                l = countService.tztb(schooleId, null,null);
+                l = countService.tztb(schooleId, this.getTimePastSev().get(Constant.ZERO), this.getTimePastSev().get(Constant.ONE));
             } catch (Exception e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -297,7 +300,7 @@ public class CountController extends BaseController {
         } catch (Exception e) {
             
             try {
-                l = countService.xqsttb(schooleId, null,null);
+                l = countService.xqsttb(schooleId, this.getTimePastSev().get(Constant.ZERO), this.getTimePastSev().get(Constant.ONE));
             } catch (Exception e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -341,5 +344,121 @@ public class CountController extends BaseController {
         }
         
         return respObj;
+    }
+    
+    
+    @ApiOperation(value = "小课堂图表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/xkttb")
+    @ResponseBody
+    public RespObj xkttb(String schooleId, String seTime) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        XktDto l = new XktDto();
+        try {
+            
+            String startTime = null;
+            String endTime = null;
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            l = countService.xkttb(schooleId, startTime,endTime);
+            respObj.setMessage(l);
+        } catch (Exception e) {
+            
+            try {
+                l = countService.xkttb(schooleId, null,null);
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            respObj.setMessage(l);
+      
+        }
+        
+        return respObj;
+    }
+    
+    @ApiOperation(value = "小课堂班级统计", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/xktbj")
+    @ResponseBody
+    public RespObj xktbj(String schooleId, String seTime) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        Map<String, Object> l = new HashMap<String, Object>();
+        try {
+            
+            String startTime = null;
+            String endTime = null;
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            l = countService.xktbj(schooleId, startTime,endTime);
+            respObj.setMessage(l);
+        } catch (Exception e) {
+            
+            try {
+                l = countService.xktbj(schooleId, null,null);
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            respObj.setMessage(l);
+      
+        }
+        
+        return respObj;
+    }
+    
+    @ApiOperation(value = "小课堂教师统计", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/xktjs")
+    @ResponseBody
+    public RespObj xktjs(String schooleId, String seTime) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        Map<String, Object> l = new HashMap<String, Object>();
+        try {
+            
+            String startTime = null;
+            String endTime = null;
+            List<String> list = JSON.parseObject(seTime, new TypeReference<List<String>>() {});
+            startTime = list.get(0);
+            endTime = list.get(1);
+            
+            l = countService.xktjs(schooleId, startTime,endTime);
+            respObj.setMessage(l);
+        } catch (Exception e) {
+            
+            try {
+                l = countService.xktjs(schooleId, null,null);
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            respObj.setMessage(l);
+      
+        }
+        
+        return respObj;
+    }
+    
+    public Map<Integer, String> getTimePastSev() {
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        Date end = new Date();
+        Long startTime = end.getTime() -  3600 * 1000 * 24 * 7;
+        Date start = new Date(startTime);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String startStr = sdf.format(start);
+        String endStr = sdf.format(end);
+        map.put(0, startStr);
+        map.put(1, endStr);
+        return map;
     }
 }

@@ -6,6 +6,10 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.sys.constants.Constant;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bson.types.ObjectId;
 
 /**
@@ -33,6 +37,18 @@ public class NewVersionSubjectDao extends BaseDao{
         }else{
             return null;
         }
+    }
+    
+    public List<NewVersionSubjectEntry> getEntryByUid(List<ObjectId> subjectId){
+        List<NewVersionSubjectEntry> list = new ArrayList<NewVersionSubjectEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",new BasicDBObject(Constant.MONGO_IN, subjectId)).append("isr", Constant.ZERO);
+        List<DBObject> dbObject=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_SUBJECT,query,Constant.FIELDS);
+  
+        for (DBObject d : dbObject) {
+            list.add(new NewVersionSubjectEntry(d));
+        }
+        return list;
     }
 
     public NewVersionSubjectEntry getAllEntryByUserId(){

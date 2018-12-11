@@ -1,6 +1,7 @@
 package com.pojo.smalllesson;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
@@ -27,6 +28,10 @@ public class SmallLessonEntry extends BaseDBObject {
     public SmallLessonEntry(){
 
     }
+    
+    public SmallLessonEntry(DBObject dbo){
+        setBaseEntry((BasicDBObject)dbo);
+      }
     public SmallLessonEntry(BasicDBObject baseEntry){
         super(baseEntry);
     }

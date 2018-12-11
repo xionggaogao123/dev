@@ -39,6 +39,36 @@ public class MemberDao extends BaseDao {
         }
         return memberEntries;
     }
+    
+    public Integer getMembersByUidAndCid(ObjectId uid, List<ObjectId> cid) {
+        BasicDBObject query = new BasicDBObject("uid", uid).append("cmid", new BasicDBObject(Constant.MONGO_IN, cid)).append("r", Constant.ZERO);
+        int dbObjects = count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
+
+        
+        return dbObjects;
+    }
+    
+    public List<ObjectId> getMembersByCid(List<ObjectId> cid) {
+        List<ObjectId> list = new ArrayList<ObjectId>();
+        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN, cid)).append("r", Constant.ZERO);
+        List<DBObject> listt = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
+        for (DBObject d : listt) {
+            list.add(new MemberEntry(d).getUserId());
+        }
+        
+        return list;
+    }
+    
+    public List<ObjectId> getMembersByCid(ObjectId cid) {
+        List<ObjectId> list = new ArrayList<ObjectId>();
+        BasicDBObject query = new BasicDBObject().append("cmid", cid).append("r", Constant.ZERO);
+        List<DBObject> listt = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
+        for (DBObject d : listt) {
+            list.add(new MemberEntry(d).getUserId());
+        }
+        
+        return list;
+    }
 
     public List<ObjectId> getPageMembers(ObjectId groupId,int page,int pageSize){
         BasicDBObject query=new BasicDBObject("grid",groupId).append("r", Constant.ZERO);

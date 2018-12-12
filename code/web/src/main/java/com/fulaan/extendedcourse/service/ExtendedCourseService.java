@@ -379,7 +379,7 @@ public class ExtendedCourseService {
                     name = str;
                 }
                 mapDto.put("name",name);
-                mapDto.put("id",userEntry.getID());
+                mapDto.put("id",userEntry.getID().toString());
                 mapDto.put("avatar",AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
                 mapDto.put("isApply",false);
                 mapList2.add(mapDto);

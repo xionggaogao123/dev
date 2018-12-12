@@ -220,7 +220,7 @@ public class ExtendedCourseService {
         for(ExtendedCourseEntry entry:entries){
             ExtendedCourseDTO dto = new ExtendedCourseDTO(entry);
            /*private int status; //0  全部   1  报名中   2  学习中   3 已学完
-    private int stage;//   1 报名未开始   2 报名进行中  3 火速报名进行中  4 已抢光  5 报名已结束   （针对报名中）
+    private int stage;//   1 报名未开始   2 报名进行中  3 火速报名进行中  4 报名已抢光  5 已报名  6 报名已结束 （针对报名中）
     private int role;  // 1 老师  2 家长*/
             dto.setStatus(status);
 

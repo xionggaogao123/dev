@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -271,7 +270,7 @@ public class ExtendedCourseController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/registerMoreUser")
     @ResponseBody
-    public RespObj registerMoreUser(@RequestParam(value="userNames") List<String> userNames,
+    public RespObj registerMoreUser(@RequestParam(value="userNames") String userNames,
                                 @RequestParam(value="communityId") String communityId,
                                 HttpServletRequest request){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
@@ -282,12 +281,13 @@ public class ExtendedCourseController extends BaseController {
                 respObj.setCode(Constant.FAILD_CODE);
                 respObj.setErrorMessage("用户名不能为空！");
             }
-            if(userNames.size()>3){
+            String[] strings = userNames.split("#%");
+            if(strings.length>3){
                 respObj.setCode(Constant.FAILD_CODE);
                 respObj.setErrorMessage("最多可添加3个孩子！");
             }
             String userId = "";
-            for(String userName : userNames){
+            for(String userName : strings){
                 String uid =extendedCourseService.registerAvailableUser(request, userName, phoneNumber, Constant.TWO, userName, getUserId(),new ObjectId(communityId));
                 userId = userId + uid + ",";
             }

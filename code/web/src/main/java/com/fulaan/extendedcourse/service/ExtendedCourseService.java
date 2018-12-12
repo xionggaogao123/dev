@@ -16,6 +16,7 @@ import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.extendedcourse.dto.ExtendedCourseDTO;
 import com.fulaan.extendedcourse.dto.ExtendedSchoolLabelDTO;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.pojo.User;
 import com.fulaan.systemMessage.service.SystemMessageService;
 import com.pojo.extendedcourse.ExtendedCourseEntry;
@@ -25,7 +26,9 @@ import com.pojo.extendedcourse.ExtendedUserApplyEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
@@ -128,7 +131,7 @@ public class ExtendedCourseService {
         ExtendedCourseEntry entry = dto.addEntry();
         entry.setSchoolId(schoolId);
         extendedCourseDao.saveEntry(entry);
-        //添加课节记录
+        //添加课节记
 
 
         //添加首页记录
@@ -138,6 +141,36 @@ public class ExtendedCourseService {
 
 
         return "";
+    }
+    //todo 选课首页
+    public void sendIndexPageMessage(ExtendedCourseDTO dto,ObjectId userId){
+        IndexPageDTO dto2 = new IndexPageDTO();
+        dto2.setType(CommunityType.extended.getType());
+        dto2.setUserId(userId.toString());
+        dto2.setCommunityId(dto.getSchoolId());
+      //  dto2.setContactId(en.getID().toString());
+        IndexPageEntry entry2 = dto2.buildAddEntry();
+//        indexPageDao.addEntry(entry2);
+//        CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(en.getCommunityId()));
+//        IndexContentDTO indexContentDTO = new IndexContentDTO(
+//                "其他",
+//                dto.getTitle(),
+//                dto.getContent(),
+//                dto.getVideoDTOs(),
+//                dto.getImages(),
+//                dto.getAttachements(),
+//                dto.getVedios(),
+//                communityEntry.getCommunityName(),
+//                "");
+//        List<ObjectId> members=memberDao.getAllMemberIds(communityEntry.getGroupId());
+//        IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(uid.toString(),null, communityEntry.getGroupId().toString(),en.getCommunityId().toString(),3);
+//        indexContentEntry.setReadList(new ArrayList<ObjectId>());
+//        indexContentEntry.setContactId(en.getID());
+//        indexContentEntry.setContactType(10);
+//        indexContentEntry.setAllCount(members.size()-1);
+//        //更改所有该社群通知的总人数
+//        indexContentDao.updateNumberEntry(new ObjectId(en.getCommunityId()),members.size() - 1);
+//        indexContentDao.addEntry(indexContentEntry);
     }
 
 

@@ -4,6 +4,7 @@ import com.db.backstage.SystemMessageDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.*;
+import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.referenceData.ReferenceDataDao;
 import com.db.reportCard.GroupExamUserRecordDao;
@@ -23,6 +24,7 @@ import com.fulaan.forum.service.FInformationService;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.picturetext.runnable.PictureRunNable;
@@ -37,6 +39,7 @@ import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
+import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.CommunityType;
@@ -105,6 +108,8 @@ public class CommunityService {
     private ReferenceDataService referenceDataService = new ReferenceDataService();
 
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
+    private IndexContentDao indexContentDao = new IndexContentDao();
 
     private ModuleTimeDao moduleTimeDao = new ModuleTimeDao();
     private static final Logger logger = Logger.getLogger(CommunityService.class);
@@ -804,6 +809,37 @@ public class CommunityService {
             }
         }
         return obid;
+    }
+
+    //todo   火热分享首页
+    public void sendIndexPageMessage(CommunityDetailEntry en,CommunityMessage dto,ObjectId uid){
+        IndexPageDTO dto2 = new IndexPageDTO();
+        dto2.setType(CommunityType.hot.getType());
+        dto2.setUserId(uid.toString());
+        dto2.setCommunityId(en.getCommunityId().toString());
+        dto2.setContactId(en.getID().toString());
+        IndexPageEntry entry2 = dto2.buildAddEntry();
+        indexPageDao.addEntry(entry2);
+        CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(en.getCommunityId()));
+        IndexContentDTO indexContentDTO = new IndexContentDTO(
+                "其他",
+                dto.getTitle(),
+                dto.getContent(),
+                dto.getVideoDTOs(),
+                dto.getImages(),
+                dto.getAttachements(),
+                dto.getVedios(),
+                communityEntry.getCommunityName(),
+                "");
+        List<ObjectId> members=memberDao.getAllMemberIds(communityEntry.getGroupId());
+        IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(uid.toString(),null, communityEntry.getGroupId().toString(),en.getCommunityId().toString(),3);
+        indexContentEntry.setReadList(new ArrayList<ObjectId>());
+        indexContentEntry.setContactId(en.getID());
+        indexContentEntry.setContactType(10);
+        indexContentEntry.setAllCount(members.size()-1);
+        //更改所有该社群通知的总人数
+        indexContentDao.updateNumberEntry(new ObjectId(en.getCommunityId()),members.size() - 1);
+        indexContentDao.addEntry(indexContentEntry);
     }
 
     private long ConvertStrToLong(String voteDeadTime) throws Exception {

@@ -5,12 +5,16 @@ import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
+import com.db.indexPage.IndexContentDao;
+import com.db.indexPage.IndexPageDao;
 import com.db.indexPage.WebHomePageDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.operation.*;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.indexpage.dto.IndexContentDTO;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
@@ -32,9 +36,12 @@ import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.indexPage.IndexContentEntry;
+import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.integral.IntegralType;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.*;
 import com.pojo.user.NewVersionBindRelationEntry;
@@ -70,6 +77,9 @@ public class AppCommentService {
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     private AppRecordResultDao appRecordResultDao = new AppRecordResultDao();
     private ParentChildConnectionDao parentChildConnectionDao = new ParentChildConnectionDao();
+    private IndexPageDao indexPageDao = new IndexPageDao();
+
+    private IndexContentDao indexContentDao = new IndexContentDao();
 
     private ModuleTimeDao moduleTimeDao = new ModuleTimeDao();
     @Autowired
@@ -175,6 +185,7 @@ public class AppCommentService {
                 indexPageDao.addEntry(entry);
                 objectIdList.add(new ObjectId(dto3.getId()));
             }*/
+
             int status=Constant.ZERO;
             if(dto.getStatus()==0){
                 status=Constant.TWO;
@@ -224,6 +235,36 @@ public class AppCommentService {
             throw new Exception("特殊"+score);
         }*/
         return new Integer(score).toString();
+    }
+    //todo  作业首页
+    public void sendIndexPageMessage(AppCommentEntry en,AppCommentDTO dto,ObjectId groupId){
+        IndexPageDTO dto2 = new IndexPageDTO();
+        dto2.setType(CommunityType.newAppComment.getType());
+        dto2.setUserId(en.getAdminId().toString());
+        dto2.setCommunityId(en.getRecipientId().toString());
+        dto2.setContactId(en.getID().toString());
+        IndexPageEntry entry2 = dto2.buildAddEntry();
+        indexPageDao.addEntry(entry2);
+
+        IndexContentDTO indexContentDTO = new IndexContentDTO(
+                dto.getSubject(),
+                dto.getTitle(),
+                dto.getDescription(),
+                dto.getVideoList(),
+                dto.getImageList(),
+                dto.getAttachements(),
+                dto.getVoiceList(),
+                en.getRecipientName(),
+                "");
+        List<ObjectId> members=memberDao.getAllMemberIds(groupId);
+        IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(en.getAdminId().toString(),dto.getSubjectId(), groupId.toString(),en.getRecipientId().toString(),3);
+        indexContentEntry.setReadList(new ArrayList<ObjectId>());
+        indexContentEntry.setContactId(en.getID());
+        indexContentEntry.setContactType(9);
+        indexContentEntry.setAllCount(members.size()-1);
+        //更改所有该社群通知的总人数
+        indexContentDao.updateNumberEntry(en.getRecipientId(),members.size() - 1);
+        indexContentDao.addEntry(indexContentEntry);
     }
 
 

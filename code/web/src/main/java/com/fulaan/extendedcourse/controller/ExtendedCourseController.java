@@ -266,6 +266,39 @@ public class ExtendedCourseController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "添加新的孩子（限定）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/registerMoreUser")
+    @ResponseBody
+    public RespObj registerMoreUser(@RequestParam(value="userNames") String userNames,
+                                @RequestParam(value="communityId") String communityId,
+                                HttpServletRequest request){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            String phoneNumber = "12345678900";
+            //限定注册用户
+            if(userNames==null || userNames.equals("")){
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage("用户名不能为空！");
+            }
+            String[] string = userNames.split(",");
+            if(string.length>3){
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage("最多可添加3个孩子！");
+            }
+            String userId = "";
+            for(String userName : string){
+                String uid =extendedCourseService.registerAvailableUser(request, userName, phoneNumber, Constant.TWO, userName, getUserId(),new ObjectId(communityId));
+                userId = userId + uid + ",";
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(userId);
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 
     @ApiOperation(value = "查询社群", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})

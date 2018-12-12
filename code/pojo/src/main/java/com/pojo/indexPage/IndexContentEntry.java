@@ -24,7 +24,7 @@ import java.util.List;
  * groupId                  群组id              gid
  * communityId              社群id              cmid
  * contactId                关联来源            cid
- * contactType              关联类型            cty           1 通知    7 投票    8 成绩单
+ * contactType              关联类型            cty           1 通知    7 投票    8 成绩单      9 作业   10 火热分享  11 选课
  * watchPermission          观看类型            wat           1 家长    2 学生    3 学生和家长
  * videoList                视屏
  * attachmentEntries        附件

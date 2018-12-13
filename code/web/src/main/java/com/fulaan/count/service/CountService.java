@@ -873,6 +873,27 @@ public class CountService {
                 xqstDto.setSelfPlNum(partInContentDao.countPartPartInContent(entry.getID(), entry.getCommunityUserId()));
                 ll.add(xqstDto);
             }
+            
+            Collections.sort(ll, new Comparator<XqstDto>() {
+
+                @Override
+                public int compare(XqstDto o1, XqstDto o2) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    try {
+                        if (sdf.parse(o1.getDateStr()).getTime() < sdf.parse(o2.getDateStr()).getTime()) {
+                            return 1;
+                        } else if (new Date(01).getTime() == new Date(02).getTime()) {
+                            return 0;
+                        } else {
+                            return -1;
+                        }
+                    } catch (ParseException e) {
+                        // TODO Auto-generated catch block
+                        return 0;
+                    }
+                }
+                
+            });
                 
             mapp.put("num", list.size());
             mapp.put("communityDetail", this.returnList(page, pageSize, ll));

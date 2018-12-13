@@ -208,7 +208,7 @@ public class CountController extends BaseController {
         } catch (Exception e) {
             
             try {
-                l = countService.tztb(schooleId, null,null);
+                l = countService.tztb(schooleId, getTimePastSev().get(Constant.ZERO),getTimePastSev().get(Constant.ONE));
             } catch (Exception e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -300,7 +300,7 @@ public class CountController extends BaseController {
         } catch (Exception e) {
             
             try {
-                l = countService.xqsttb(schooleId, null,null);
+                l = countService.xqsttb(schooleId, getTimePastSev().get(Constant.ZERO),getTimePastSev().get(Constant.ONE));
             } catch (Exception e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();

@@ -678,7 +678,7 @@ public class CountService {
                     t.setPeoNum(0);
                 }*/
                 int peoNum = 0;
-                List<AppNoticeEntry> e = appNoticeDao.getAppNoticesByUId(aid);
+                List<AppNoticeEntry> e = appNoticeDao.getAppNoticesByUId(aid,startTimeL, endTimeL);
                 for (AppNoticeEntry ee:e) {
                     IndexContentEntry entry = indexContentDao.getEntry(ee.getID());
                     if (entry != null) {
@@ -764,7 +764,7 @@ public class CountService {
                 
                 
                 int peoNum = 0;
-                List<AppNoticeEntry> e = appNoticeDao.getAppNoticesByCmId(rid);
+                List<AppNoticeEntry> e = appNoticeDao.getAppNoticesByCmId(rid,startTimeL, endTimeL);
                 for (AppNoticeEntry ee:e) {
                     IndexContentEntry entry = indexContentDao.getEntry(ee.getID());
                     if (entry != null) {

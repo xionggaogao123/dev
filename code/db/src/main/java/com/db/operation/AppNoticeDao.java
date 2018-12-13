@@ -72,10 +72,23 @@ public class AppNoticeDao extends BaseDao{
         return entries;
     }
     
-    public List<AppNoticeEntry> getAppNoticesByCmId(ObjectId communityId
+    public List<AppNoticeEntry> getAppNoticesByCmId(ObjectId communityId, Long timeStart, Long timeEnd
                                                 ){
         List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
-        BasicDBObject query= new BasicDBObject("cmId", communityId).append("ir",Constant.ZERO);
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query = new BasicDBObject();
+        BasicDBObject query1= new BasicDBObject("cmId", communityId).append("ir",Constant.ZERO);
+        if (timeStart != null && timeStart != 0l) {
+            query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, timeStart));
+        }
+        
+        BasicDBObject query2 = new BasicDBObject();
+        if (timeEnd != null && timeEnd != 0l) {
+            query2.append("ti", new BasicDBObject(Constant.MONGO_LT, timeEnd));
+        }
+        values.add(query2);
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
                 Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -86,18 +99,31 @@ public class AppNoticeDao extends BaseDao{
         return entries;
     }
     
-    public List<AppNoticeEntry> getAppNoticesByUId(ObjectId communityId
+    public List<AppNoticeEntry> getAppNoticesByUId(ObjectId communityId, Long timeStart, Long timeEnd
         ){
-List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
-BasicDBObject query= new BasicDBObject("uid", communityId).append("ir",Constant.ZERO);
-List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
-Constant.FIELDS);
-if(null!=dbObjectList&&!dbObjectList.isEmpty()){
-for(DBObject dbObject:dbObjectList){
-entries.add(new AppNoticeEntry(dbObject));
-}
-}
-return entries;
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query = new BasicDBObject();
+        BasicDBObject query1= new BasicDBObject("uid", communityId).append("ir",Constant.ZERO);
+        if (timeStart != null && timeStart != 0l) {
+            query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, timeStart));
+        }
+        
+        BasicDBObject query2 = new BasicDBObject();
+        if (timeEnd != null && timeEnd != 0l) {
+            query2.append("ti", new BasicDBObject(Constant.MONGO_LT, timeEnd));
+        }
+        values.add(query2);
+        values.add(query2);
+        query.put(Constant.MONGO_AND, values);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+                Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppNoticeEntry(dbObject));
+            }
+        }
+        return entries;
 }
 
     public List<AppNoticeEntry> getMyAppNoticeList(int page,int pageSize){

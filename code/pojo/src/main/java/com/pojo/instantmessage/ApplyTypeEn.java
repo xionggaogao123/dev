@@ -17,7 +17,8 @@ public enum ApplyTypeEn {
     home(11,"家管控","same"),
     school(12,"校管控","same"),
     smallLesson(13,"小课堂登陆","same"),
-    smallDuring(14,"小课堂持续时间","same");
+    smallDuring(14,"小课堂持续时间","same"),
+    extend(15,"选课","same");
 //成绩单 火热分享 活动报名 参考资料 学习用品 兴趣小组
     private int type;
     private String des;

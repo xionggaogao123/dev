@@ -15,9 +15,9 @@ public enum CommunityType {
     allNotice(8,"集合通知", "allNotice"),
     reportCard(9, "成绩单", "reportCard"),
     newVote(10, "新投票", "newVote"),
-    binFen(11, "高二", "senior"),
-    gongYi(12, "高三", "senior"),
-    gangwei(13,"已毕业", "senior");
+    newAppComment(11, "作业", "zuoye"),
+    hot(12, "火热分享", "hot"),
+    extended(13,"选课", "extended");
     private int type;
     private String des;
     private String eName;

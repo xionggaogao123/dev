@@ -128,7 +128,7 @@ public class AppVoteService {
             appVoteDao.saveAppVote(appVoteEntry);
             if(appVoteDTO.getVisiblePermission()==1 || appVoteDTO.getVisiblePermission()==3){//家长
                 //发送通知
-                PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
+                PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5,appVoteDTO.getTitle());
 
                 //首页记录
                 IndexPageDTO dto1 = new IndexPageDTO();

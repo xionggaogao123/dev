@@ -100,7 +100,7 @@ public class ReferenceDataService {
             //向下兼容
             communityDetailDao.save(getOldEntry(entry));
             //发送通知
-            PictureRunNable.addTongzhi(str,dto.getUserId().toString(),4);
+            PictureRunNable.addTongzhi(str,dto.getUserId().toString(),4,dto.getTitle());
             /*//图片检测
         List<Attachement> alist = dto.getAttachements();
         if(dto.getType()==4){
@@ -313,7 +313,7 @@ public class ReferenceDataService {
                 String oid = referenceDataDao.addEntry(referenceDataEntry);
                 communityDetailDao.save(getOldEntry(referenceDataEntry));
                 //发送通知
-                PictureRunNable.addTongzhi(str,userId.toString(),4);
+                PictureRunNable.addTongzhi(str,userId.toString(),4,referenceDataEntry.getTitle());
                 objectIdList.add(new ObjectId(str));
             }
             //红点
@@ -332,6 +332,8 @@ public class ReferenceDataService {
         if(referenceDataEntry!=null){
             referenceDataDao.delEntry(id);
             communityDetailDao.delOldEntry(id.toString());
+            //发送通知  todo
+            //PictureRunNable.deleteTongzhi(referenceDataEntry.getCommunityId().toString(),referenceDataEntry.getUserId().toString(),4,referenceDataEntry.getTitle());
         }
     }
 

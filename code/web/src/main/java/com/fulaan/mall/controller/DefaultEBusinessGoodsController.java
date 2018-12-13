@@ -567,6 +567,76 @@ public class DefaultEBusinessGoodsController extends BaseController {
         }
         return model;
     }
+
+    /**
+     * 手机验证身份
+     *
+     * @param userName
+     * @param cacheKeyId
+     * @param code
+     * @param phoneNumber
+     * @param response
+     * @param request
+     * @return
+     */
+    @ApiOperation(value = "手机验证身份", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
+    @SessionNeedless
+    @RequestMapping(value = "/findUser/newValidate", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> newValidateUser(String userName, String cacheKeyId, String code, String phoneNumber,
+                                            HttpServletResponse response, HttpServletRequest request) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        //RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        model.put("code", 500);
+        Map<String, String> map = new HashMap<String, String>();
+
+
+        UserEntry ue = userService.findByUserName(userName);
+
+        if (null == ue) {
+            model.put("errorMessage", "用户名错误或非手机号注册");
+            model.put("message", "用户名错误或非手机号注册");
+            return model;
+        }
+
+        if (!ValidationUtils.isMobile(phoneNumber)) {
+            model.put("errorMessage", "手机格式不对，非法手机");
+            model.put("message", "手机格式不对，非法手机");
+            return model;
+        }
+
+//        UserEntry mobileEntry = userService.findByMobile(phoneNumber);
+
+//        if (null != mobileEntry && !mobileEntry.getUserName().toLowerCase().equals(ue.getUserName())) {
+//            model.put("errorMessage", "此手机已经被占用");
+//            model.put("message", "此手机已经被占用");
+//            return model;
+//        }
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
+        String value = CacheHandler.getStringValue(cacheKey);
+        if (StringUtils.isBlank(value)) {
+            model.put("errorMessage", "验证码失效或者为空，请重新获取");
+            model.put("message", "验证码失效或者为空，请重新获取");
+            return model;
+        }
+        String[] cache = value.split(",");
+        if (!cache[1].equals(phoneNumber)) {
+            model.put("errorMessage", "验证失败：手机号码与验证码不匹配");
+            model.put("message", "验证失败：手机号码与验证码不匹配");
+            return model;
+        }
+
+        if (cache[0].equals(code)) {
+            model.put("message", "身份验证成功");
+            model.put("code", 200);
+        } else {
+            model.put("errorMessage", "身份验证失败");
+            model.put("message", "身份验证失败");
+        }
+        return model;
+    }
+
     @ApiOperation(value = "mobile", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless

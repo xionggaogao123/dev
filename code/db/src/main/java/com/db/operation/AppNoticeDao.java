@@ -86,7 +86,7 @@ public class AppNoticeDao extends BaseDao{
         if (timeEnd != null && timeEnd != 0l) {
             query2.append("ti", new BasicDBObject(Constant.MONGO_LT, timeEnd));
         }
-        values.add(query2);
+        values.add(query1);
         values.add(query2);
         query.put(Constant.MONGO_AND, values);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
@@ -113,7 +113,7 @@ public class AppNoticeDao extends BaseDao{
         if (timeEnd != null && timeEnd != 0l) {
             query2.append("ti", new BasicDBObject(Constant.MONGO_LT, timeEnd));
         }
-        values.add(query2);
+        values.add(query1);
         values.add(query2);
         query.put(Constant.MONGO_AND, values);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,

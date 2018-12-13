@@ -71,6 +71,34 @@ public class AppNoticeDao extends BaseDao{
         }
         return entries;
     }
+    
+    public List<AppNoticeEntry> getAppNoticesByCmId(ObjectId communityId
+                                                ){
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        BasicDBObject query= new BasicDBObject("cmId", communityId).append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+                Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppNoticeEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+    
+    public List<AppNoticeEntry> getAppNoticesByUId(ObjectId communityId
+        ){
+List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+BasicDBObject query= new BasicDBObject("uid", communityId).append("ir",Constant.ZERO);
+List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+Constant.FIELDS);
+if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+for(DBObject dbObject:dbObjectList){
+entries.add(new AppNoticeEntry(dbObject));
+}
+}
+return entries;
+}
 
     public List<AppNoticeEntry> getMyAppNoticeList(int page,int pageSize){
         List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();

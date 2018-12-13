@@ -30,6 +30,7 @@ import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.fcommunity.PartInContentDao;
+import com.db.indexPage.IndexContentDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
@@ -54,6 +55,7 @@ import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.CommunityHyEntry;
+import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
@@ -104,6 +106,8 @@ public class CountService {
     private SmallLessonDao smallLessonDao = new SmallLessonDao();
     
     private LessonUserResultDao lessonUserResultDao = new LessonUserResultDao();
+    
+    private IndexContentDao indexContentDao = new IndexContentDao();
     
     
     
@@ -663,7 +667,7 @@ public class CountService {
                 t.setSubjectName(subjectClassDao.getEntry(sid).getName());
                 Integer count = (Integer)db.get("count");
                 t.setFbNum(count);
-                if(db.containsField("rl")) {
+                /*if(db.containsField("rl")) {
                     List<ObjectId> l =  (List<ObjectId>)db.get("rl");
                     if (CollectionUtils.isNotEmpty(l)) {
                         t.setPeoNum(l.size());
@@ -672,8 +676,17 @@ public class CountService {
                     }
                 } else {
                     t.setPeoNum(0);
+                }*/
+                int peoNum = 0;
+                List<AppNoticeEntry> e = appNoticeDao.getAppNoticesByUId(aid);
+                for (AppNoticeEntry ee:e) {
+                    IndexContentEntry entry = indexContentDao.getEntry(ee.getID());
+                    if (entry != null) {
+                        peoNum += entry.getReaList().size();
+                    }
                 }
                 
+                t.setPeoNum(peoNum);
                 List<AppNoticeEntry> appList = appNoticeDao.getWebAllDatePageByTimePage(communityIdList, sid.toString(), aid.toString(), startTimeL, endTimeL, 0, 0);
                 if (CollectionUtils.isNotEmpty(appList)) {
                     SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
@@ -738,7 +751,7 @@ public class CountService {
                 t.setClassName(communityDao.findByObjectId(rid).getCommunityName());
                 Integer count = (Integer)db.get("count");
                 t.setFbNum(count);
-                if(db.containsField("rl")) {
+                /*if(db.containsField("rl")) {
                     List<ObjectId> l =  (List<ObjectId>)db.get("rl");
                     if (CollectionUtils.isNotEmpty(l)) {
                         t.setPeoNum(l.size());
@@ -747,7 +760,20 @@ public class CountService {
                     }
                 } else {
                     t.setPeoNum(0);
+                }*/
+                
+                
+                int peoNum = 0;
+                List<AppNoticeEntry> e = appNoticeDao.getAppNoticesByCmId(rid);
+                for (AppNoticeEntry ee:e) {
+                    IndexContentEntry entry = indexContentDao.getEntry(ee.getID());
+                    if (entry != null) {
+                        peoNum += entry.getReaList().size();
+                    }
                 }
+                
+                t.setPeoNum(peoNum);
+               
                 List<AppNoticeEntry> appList = appNoticeDao.getWebAllDatePageByTimePage(rid, null, null, startTimeL, endTimeL, 0, 0);
                 if (CollectionUtils.isNotEmpty(appList)) {
                     SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");

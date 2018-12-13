@@ -388,6 +388,18 @@ public class ExtendedCourseService {
             dtos.add(dto);
         }
     }
+    public int getStatus(ExtendedCourseEntry entry){
+        long current = System.currentTimeMillis();
+        int status = 0;
+        if(entry.getVoteStartTime()>current){
+            status = 1;
+        }else if(entry.getVoteStartTime()<current && entry.getVoteEndTime()>current){
+            status = 2;
+        }else if(entry.getVoteEndTime()<current){
+            status = 3;
+        }
+        return status;
+    }
 
     /**
      * 查询报名名单（老师）
@@ -399,6 +411,7 @@ public class ExtendedCourseService {
             throw new Exception("课程已被删除！");
         }
         ExtendedCourseDTO dto = new ExtendedCourseDTO(entry);
+        dto.setStatus(getStatus(entry));
         List<ObjectId> userIds = extendedUserApplyDao.getIdsByCourseId(id, communityId);
         Map<ObjectId,UserEntry> userEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
         Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(userIds);
@@ -441,7 +454,7 @@ public class ExtendedCourseService {
             throw new Exception("课程已被删除！");
         }
         ExtendedCourseDTO dto = new ExtendedCourseDTO(entry);
-        dto.setStatus(0);
+        dto.setStatus(getStatus(entry));
         dto.setRole(2);
         long current = System.currentTimeMillis();
         List<ObjectId> userIds = entry.getUserSelectedList();
@@ -510,7 +523,7 @@ public class ExtendedCourseService {
             throw new Exception("课程已被删除！");
         }
         ExtendedCourseDTO dto = new ExtendedCourseDTO(entry);
-        dto.setStatus(0);
+        dto.setStatus(getStatus(entry));
         dto.setRole(2);
         long current = System.currentTimeMillis();
         if(entry.getApplyStartTime()>current){

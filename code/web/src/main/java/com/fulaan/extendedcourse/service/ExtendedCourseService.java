@@ -26,7 +26,6 @@ import com.pojo.extendedcourse.ExtendedUserApplyEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
-import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.NewVersionBindRelationEntry;
@@ -131,10 +130,10 @@ public class ExtendedCourseService {
         ExtendedCourseEntry entry = dto.addEntry();
         entry.setSchoolId(schoolId);
         extendedCourseDao.saveEntry(entry);
-        //添加课节记
+        //添加课节记录
 
 
-        //添加首页记录
+        //添加首页记录()
 
 
         //添加红点
@@ -149,7 +148,7 @@ public class ExtendedCourseService {
         dto2.setUserId(userId.toString());
         dto2.setCommunityId(dto.getSchoolId());
       //  dto2.setContactId(en.getID().toString());
-        IndexPageEntry entry2 = dto2.buildAddEntry();
+//        IndexPageEntry entry2 = dto2.buildAddEntry();
 //        indexPageDao.addEntry(entry2);
 //        CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(en.getCommunityId()));
 //        IndexContentDTO indexContentDTO = new IndexContentDTO(
@@ -777,6 +776,47 @@ public class ExtendedCourseService {
                     "");
             userList.add(user);
         }
+        objectMap.put("sonList",userList);
+        return objectMap;
+    }
+
+    /**
+     * 查询社群
+     */
+    public Map<String,Object> getSonCommunityList(ObjectId userId){
+        Map<String,Object> objectMap = new HashMap<String, Object>();
+        List<NewVersionCommunityBindEntry> entries = newVersionCommunityBindDao.getAllStudentBindEntries(userId);
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        for(NewVersionCommunityBindEntry newVersionCommunityBindEntry:entries ){
+            communityIds.add(newVersionCommunityBindEntry.getCommunityId());
+        }
+        List<SchoolCommunityEntry> schoolCommunityEntries = schoolCommunityDao.getReviewList2(communityIds);
+        List<ObjectId> seList = new ArrayList<ObjectId>();
+        for(SchoolCommunityEntry schoolCommunityEntry:schoolCommunityEntries){
+            seList.add(schoolCommunityEntry.getCommunityId());
+        }
+        List<CommunityEntry> communityEntries =  communityDao.findByObjectIds(seList);
+        List<Map<String,Object>> dtos = new ArrayList<Map<String,Object>>();
+        for(CommunityEntry communityEntry:communityEntries){
+            Map<String,Object> dtoMap = new HashMap<String, Object>();
+            dtoMap.put("communityName",communityEntry.getCommunityName());
+            dtoMap.put("id",communityEntry.getID().toString());
+            dtoMap.put("logo","http://doc.k6kt.com/5bc826c6c4a727797c1c355a.png");
+            dtoMap.put("isBind",true);
+            dtoMap.put("isTeacher",false);
+            dtos.add(dtoMap);
+        }
+        objectMap.put("list",dtos);
+        List<User> userList = new ArrayList<User>();
+        UserEntry userEntry =  userDao.findByUserId(userId);
+        String name = StringUtils.isBlank(userEntry.getNickName())?userEntry.getUserName():userEntry.getNickName();
+        User user=new User(name,
+                name,
+                userEntry.getID().toString(),
+                AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),
+                userEntry.getSex(),
+                "");
+        userList.add(user);
         objectMap.put("sonList",userList);
         return objectMap;
     }

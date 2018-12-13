@@ -318,5 +318,21 @@ public class ExtendedCourseController extends BaseController {
     }
 
 
+    @ApiOperation(value = "学生端查询社群", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getSonCommunityList")
+    @ResponseBody
+    public RespObj getSonCommunityList(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            //限定注册用户
+            Map<String,Object> result =  extendedCourseService.getSonCommunityList(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
 }

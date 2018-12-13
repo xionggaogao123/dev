@@ -332,8 +332,8 @@ public class ReferenceDataService {
         if(referenceDataEntry!=null){
             referenceDataDao.delEntry(id);
             communityDetailDao.delOldEntry(id.toString());
-            //发送通知
-            PictureRunNable.deleteTongzhi(referenceDataEntry.getCommunityId().toString(),referenceDataEntry.getUserId().toString(),4,referenceDataEntry.getTitle());
+            //发送通知  todo
+            //PictureRunNable.deleteTongzhi(referenceDataEntry.getCommunityId().toString(),referenceDataEntry.getUserId().toString(),4,referenceDataEntry.getTitle());
         }
     }
 

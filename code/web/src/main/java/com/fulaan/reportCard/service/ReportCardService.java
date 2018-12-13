@@ -253,7 +253,8 @@ public class ReportCardService {
                     //首页撤回
                     //删除首页记录
                     indexPageDao.delEntry(id);
-                    PictureRunNable.deleteTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6, entry.getExamName());
+                    //todo
+                    //PictureRunNable.deleteTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6, entry.getExamName());
                     IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
                     if(indexContentEntry!=null){
                         //获取已签到人数

@@ -167,9 +167,9 @@ public class WebExtendedCourseController extends BaseController {
         dto.setTypeId(null);
         dto.setTypeName("美术");
         dto.setApplyStartTime("2018-12-12 15:14:00");
-        dto.setApplyEndTime("2018-12-13 15:14:00");
-        dto.setVoteStartTime("2018-12-14 15:14:00");
-        dto.setVoteEndTime("2018-12-15 15:14:00");
+        dto.setApplyEndTime("2018-12-15 15:14:00");
+        dto.setVoteStartTime("2018-12-17 15:14:00");
+        dto.setVoteEndTime("2018-12-30 15:14:00");
         dto.setWeek(2);
         dto.setType(1);
         dto.setLessonType(8);

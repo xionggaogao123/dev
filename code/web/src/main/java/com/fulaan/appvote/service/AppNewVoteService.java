@@ -197,6 +197,80 @@ public class AppNewVoteService {
             indexContentDao.addEntry(indexContentEntry);
             //添加红点
             redDotService.addOtherEntryList(communityIds, new ObjectId(appNewVoteDTO.getUserId()), ApplyTypeEn.piao.getType(), 1);
+        }else{
+            //发送通知
+//            List<String> communityIds3 = appNewVoteDTO.getCommunityList();
+//            List<ObjectId> communityIds2 = new ArrayList<ObjectId>();
+//            if(communityIds3!=null){
+//                for(String st:communityIds3){
+//                    communityIds2.add(new ObjectId(st));
+//                }
+//            }
+//            List<CommunityEntry> communityEntries = communityDao.findByObjectIds(communityIds2);
+//            List<String> cids = new ArrayList<String>();
+//            StringBuffer sb2 = new StringBuffer();
+//            List<ObjectId> groupIds = new ArrayList<ObjectId>();
+//            List<ObjectId> communityIds = new ArrayList<ObjectId>();
+//            for(CommunityEntry communityEntry : communityEntries){
+//                sb2.append(communityEntry.getCommunityName());
+//                sb2.append("、");
+//                cids.add(communityEntry.getID().toString());
+//                groupIds.add(communityEntry.getGroupId());
+//                communityIds.add(communityEntry.getID());
+//            }
+//            //角色列表
+//            Set<Integer> set = new HashSet<Integer>();
+//            set.addAll(appNewVoteEntry.getApplyTypeList());
+//            set.addAll(appNewVoteEntry.getVoteTypeList());
+//            List<Integer> roleList =  new ArrayList<Integer>();
+//            StringBuffer sb3 = new StringBuffer();
+//            roleList.addAll(set);
+//            if(roleList.contains(new Integer(1))){
+//                sb3.append("学生、");
+//            }
+//            if(roleList.contains(new Integer(2))){
+//                sb3.append("家长、");
+//            }
+//            if(roleList.contains(new Integer(3))){
+//                sb3.append("老师、");
+//            }
+//            String desc3 = sb3.toString().substring(0,sb3.toString().length()-1);
+//            if(communityIds.size()>0){
+//                for(ObjectId communityId : communityIds){
+//                    //PictureRunNable.addTongzhi2(communityId.toString(), appNewVoteDTO.getUserId(), 5,desc3,appNewVoteDTO.getTitle());
+//                    cids.add(communityId.toString());
+//                }
+//            }
+//            String sb = sb2.toString().substring(0, sb2.length() - 1);
+//            //新首页记录
+//            IndexPageDTO dto1 = new IndexPageDTO();
+//            dto1.setType(CommunityType.newVote.getType());
+//            dto1.setUserId(appNewVoteDTO.getUserId());
+//            dto1.setReceiveIdList(cids);
+//            dto1.setCommunityId(null);
+//            dto1.setContactId(appNewVoteEntry.getID().toString());
+//            dto1.setRoleList(roleList);
+//            IndexPageEntry entry = dto1.buildAddEntry();
+//            indexPageDao.addEntry(entry);
+//            IndexContentDTO indexContentDTO = new IndexContentDTO(
+//                    appNewVoteDTO.getSubjectName(),
+//                    "通知-投票",
+//                    appNewVoteDTO.getTitle(),
+//                    appNewVoteDTO.getVideoList(),
+//                    appNewVoteDTO.getImageList(),
+//                    appNewVoteDTO.getAttachements(),
+//                    appNewVoteDTO.getVoiceList(),
+//                    sb.toString(),
+//                    "");
+//            Set<ObjectId> members=memberDao.getAllCommunityMemberIds(groupIds);
+//            IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(appNewVoteDTO.getUserId(),appNewVoteDTO.getSubjectId(), null,null,1);
+//            indexContentEntry.setReadList(new ArrayList<ObjectId>());
+//            indexContentEntry.setContactId(appNewVoteEntry.getID());
+//            indexContentEntry.setContactType(7);
+//            indexContentEntry.setAllCount(members.size());
+//            indexContentDao.addEntry(indexContentEntry);
+            //添加红点
+            //redDotService.addOtherEntryList(communityIds, new ObjectId(appNewVoteDTO.getUserId()), ApplyTypeEn.piao.getType(), 1);
         }
         int score = integralSufferService.addIntegral(new ObjectId(appNewVoteDTO.getUserId()), IntegralType.vote,4,1);
         return score+"";
@@ -1044,12 +1118,12 @@ public class AppNewVoteService {
             IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
             //删除首页记录
             indexPageDao.delEntry(id);
-            List<ObjectId> cids = appNewVoteEntry.getCommunityList();
-            if(cids!=null){
-                for(ObjectId objectId:cids){
-                    PictureRunNable.deleteTongzhi(objectId.toString(), appNewVoteEntry.getUserId().toString(), 5, appNewVoteEntry.getTitle());
-                }
-            }
+//            List<ObjectId> cids = appNewVoteEntry.getCommunityList();  //todo
+//            if(cids!=null){
+//                for(ObjectId objectId:cids){
+//                    PictureRunNable.deleteTongzhi(objectId.toString(), appNewVoteEntry.getUserId().toString(), 5, appNewVoteEntry.getTitle());
+//                }
+//            }
 
             if(indexContentEntry!=null){
                 //获取已签到人数

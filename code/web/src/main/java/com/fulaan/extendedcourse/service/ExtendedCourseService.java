@@ -1,13 +1,12 @@
 package com.fulaan.extendedcourse.service;
 
 import com.db.backstage.TeacherApproveDao;
-import com.db.extendedcourse.ExtendedCourseDao;
-import com.db.extendedcourse.ExtendedSchoolLabelDao;
-import com.db.extendedcourse.ExtendedSchoolSettingDao;
-import com.db.extendedcourse.ExtendedUserApplyDao;
+import com.db.extendedcourse.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MineCommunityDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.indexPage.IndexContentDao;
+import com.db.indexPage.IndexPageDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
@@ -16,16 +15,19 @@ import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.extendedcourse.dto.ExtendedCourseDTO;
 import com.fulaan.extendedcourse.dto.ExtendedSchoolLabelDTO;
+import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
+import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.pojo.User;
 import com.fulaan.systemMessage.service.SystemMessageService;
-import com.pojo.extendedcourse.ExtendedCourseEntry;
-import com.pojo.extendedcourse.ExtendedSchoolLabelEntry;
-import com.pojo.extendedcourse.ExtendedSchoolSettingEntry;
-import com.pojo.extendedcourse.ExtendedUserApplyEntry;
+import com.mongodb.DBObject;
+import com.pojo.extendedcourse.*;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.indexPage.IndexContentEntry;
+import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.jiaschool.SchoolCommunityEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.NewVersionBindRelationEntry;
@@ -33,9 +35,11 @@ import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import com.sys.utils.DateTimeUtils;
 import com.sys.utils.MD5Utils;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +59,8 @@ public class ExtendedCourseService {
 
     private ExtendedUserApplyDao extendedUserApplyDao = new ExtendedUserApplyDao();
 
+    private ExtendedCourseClassDao extendedCourseClassDao =new ExtendedCourseClassDao();
+
     private SchoolCommunityDao schoolCommunityDao = new SchoolCommunityDao();
 
     private CommunityDao communityDao = new CommunityDao();
@@ -72,6 +78,15 @@ public class ExtendedCourseService {
 
     private BackStageService backStageService = new BackStageService();
 
+    private IndexPageDao indexPageDao = new IndexPageDao();
+
+    private IndexContentDao indexContentDao = new IndexContentDao();
+    @Autowired
+    private RedDotService redDotService;
+
+    private static final String[] gradeString = new String[]{"","一年级","二年级","三年级","四年级","五年级","六年级","初一","初二","初三","高一","高二","高三"};
+
+    private static final String[] weekString = new String[]{"","周一","周二","三年级","四年级","五年级","六年级","初一","初二","初三","高一","高二","高三"};
 
     /**
      * 保存学校拓展课设置(开课类型)
@@ -123,6 +138,82 @@ public class ExtendedCourseService {
     }
 
     /**
+     * 批量增加课时
+     * @param list
+     */
+    public void addEntryBatch(List<ExtendedCourseClassEntry> list) {
+        List<DBObject> dbList = new ArrayList<DBObject>();
+        for (int i = 0; list != null && i < list.size(); i++) {
+            ExtendedCourseClassEntry si = list.get(i);
+            dbList.add(si.getBaseEntry());
+        }
+        //导入新纪录
+        if(dbList.size()>0) {
+            extendedCourseClassDao.addBatch(dbList);
+        }
+    }
+
+    //课节生成
+    public void addClassList(ObjectId id,ObjectId schoolId, long startTime,long endTime,int week,int lessonType){
+        List<String> strings = getDate(startTime,endTime,week,lessonType);
+        ExtendedCourseClassEntry entry = new ExtendedCourseClassEntry(schoolId,id,strings);
+        extendedCourseClassDao.saveEntry(entry);
+    }
+
+    public List<String> getDate(long startNum,long endNum,int wk,int lessonType){
+        List<String> str = new ArrayList<String>();
+        List<Long> numberList = new ArrayList<Long>();
+        //管控时间
+        Date date = new Date(startNum);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if(w==0){
+            w= 7;
+        }
+        boolean flage = true;
+        long ssstime = startNum;
+        String[] strings = new String[]{wk+""};
+        for(int j = 0; j < strings.length;j++){
+            int week = Integer.parseInt(strings[j]);
+            int i = 0;
+            if(w< week){
+                startNum = startNum + (week-w)*24*60*60*1000;
+            }else if(w==week){
+
+            }else{//3   1
+                startNum = startNum + (7-w+week)*24*60*60*1000;
+            }
+            if(endNum>=startNum){
+                numberList.add(startNum);
+            }else{
+                flage = false;
+            }
+            while(flage){
+                i++;
+                startNum += 7*24*60*60*1000;
+                if(endNum>=startNum){
+                    // str.add(DateTimeUtils.getLongToStrTimeTwo(startNum).substring(0,11));
+                    numberList.add(startNum);
+                }else{
+                    flage = false;
+                }
+                if(i>100){
+                    flage = false;
+                }
+            }
+            startNum = ssstime;
+            flage = true;
+        }
+        //排序
+        Collections.sort(numberList);
+        for(Long lo  :numberList){
+            str.add(DateTimeUtils.getLongToStrTimeTwo(lo).substring(0,11)+"*"+lessonType);
+        }
+        return str;
+    }
+
+    /**
      * 新增拓展课
      */
     public String saveExtendedCourse(ExtendedCourseDTO dto,ObjectId userId,ObjectId schoolId){
@@ -131,45 +222,65 @@ public class ExtendedCourseService {
         entry.setSchoolId(schoolId);
         extendedCourseDao.saveEntry(entry);
         //添加课节记录
-
-
-        //添加首页记录()
-
-
-        //添加红点
-
-
+        this.addClassList(entry.getID(),schoolId,entry.getVoteStartTime(),entry.getVoteEndTime(),entry.getWeek(),entry.getLessonType());
+        //添加首页记录() //添加红点
+        List<ObjectId> communityIds = schoolCommunityDao.getCommunityIdsListBySchoolId(schoolId);
+        List<CommunityEntry> communityEntrys =  communityDao.findByObjectIds(communityIds);
+        String gradeName = getGrade(dto.getGradeList());
+        List<String> cids = new ArrayList<String>();
+        for(CommunityEntry com:communityEntrys){
+            if(gradeName.contains(com.getGradeVal())){
+                cids.add(com.getID().toString());
+            }
+        }
+        this.sendIndexPageMessage(dto,userId,cids,entry.getID());
         return "";
     }
+
+    public  String getGrade(List<String> gradeList){
+        String name = "";
+        for(String str:gradeList){
+            int index = Integer.parseInt(str);
+            name = name + gradeString[index]+"、";
+        }
+        String string  = name.substring(0,name.length()-1);
+        return string;
+    }
+
     //todo 选课首页
-    public void sendIndexPageMessage(ExtendedCourseDTO dto,ObjectId userId){
+    public void sendIndexPageMessage(ExtendedCourseDTO dto,ObjectId userId,List<String> communityIds,ObjectId id){
+
         IndexPageDTO dto2 = new IndexPageDTO();
         dto2.setType(CommunityType.extended.getType());
         dto2.setUserId(userId.toString());
         dto2.setCommunityId(dto.getSchoolId());
-      //  dto2.setContactId(en.getID().toString());
-//        IndexPageEntry entry2 = dto2.buildAddEntry();
-//        indexPageDao.addEntry(entry2);
-//        CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(en.getCommunityId()));
-//        IndexContentDTO indexContentDTO = new IndexContentDTO(
-//                "其他",
-//                dto.getTitle(),
-//                dto.getContent(),
-//                dto.getVideoDTOs(),
-//                dto.getImages(),
-//                dto.getAttachements(),
-//                dto.getVedios(),
-//                communityEntry.getCommunityName(),
-//                "");
-//        List<ObjectId> members=memberDao.getAllMemberIds(communityEntry.getGroupId());
-//        IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(uid.toString(),null, communityEntry.getGroupId().toString(),en.getCommunityId().toString(),3);
-//        indexContentEntry.setReadList(new ArrayList<ObjectId>());
-//        indexContentEntry.setContactId(en.getID());
-//        indexContentEntry.setContactType(10);
-//        indexContentEntry.setAllCount(members.size()-1);
-//        //更改所有该社群通知的总人数
-//        indexContentDao.updateNumberEntry(new ObjectId(en.getCommunityId()),members.size() - 1);
-//        indexContentDao.addEntry(indexContentEntry);
+        dto2.setReceiveIdList(communityIds);
+        dto2.setContactId(id.toString());
+        IndexPageEntry entry = dto2.buildAddEntry();
+        indexPageDao.addEntry(entry);
+        IndexContentDTO indexContentDTO = new IndexContentDTO(
+                dto.getTypeName(),
+                "通知-投票",
+                dto.getCourseName(),
+                dto.getVideoList(),
+                dto.getImageList(),
+                dto.getAttachements(),
+                dto.getVoiceList(),
+                dto.getGradeName(),
+                "");
+        IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(dto.getUserId(),null, null,null,3);
+        indexContentEntry.setReadList(new ArrayList<ObjectId>());
+        indexContentEntry.setContactId(id);
+        indexContentEntry.setContactType(11);
+        indexContentEntry.setAllCount(0);
+        indexContentDao.addEntry(indexContentEntry);
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        for(String st:communityIds){
+            oids.add(new ObjectId(st));
+        }
+        //添加红点
+        redDotService.addOtherEntryList(oids, id, ApplyTypeEn.extend.getType(), 3);
+
     }
 
 

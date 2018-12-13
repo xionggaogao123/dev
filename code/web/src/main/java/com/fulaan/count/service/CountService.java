@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
+
 import com.db.backstage.TeacherApproveDao;
 import com.db.controlphone.AppTsDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
@@ -49,6 +52,7 @@ import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.mongodb.BasicDBObject;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
+import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.CommunityHyEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
@@ -120,6 +124,24 @@ public class CountService {
         }
         return homeSchoolDTOs;
     }
+    
+    public List<ObjectId> reList(List<ObjectId> communityIdList,String grade) {
+        List<ObjectId> communityIdList1 = new ArrayList<ObjectId>();
+        if (StringUtils.isNotBlank(grade)) {
+            for (ObjectId id : communityIdList) {
+                CommunityEntry e = communityDao.findByObjectId(id);
+                if (e != null) {
+                    if (StringUtils.isNotBlank(e.getGradeVal())) {
+                        if (e.getGradeVal().equals(grade)) {
+                            communityIdList1.add(id);
+                        }
+                    }
+                }
+            }
+            communityIdList = communityIdList1;
+        }
+        return communityIdList;
+    }
 
     /**
      * 
@@ -129,16 +151,22 @@ public class CountService {
      * @param schooleId
      * @return
      */
-    public JxmCountDto jxmCount(String schooleId) {
+    public JxmCountDto jxmCount(String schooleId, String grade) {
         JxmCountDto jxmCountDto = new JxmCountDto();
         if (schooleId != null) {
             //社区数
             List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            communityIdList = this.reList(communityIdList, grade);
+            
             jxmCountDto.setCommunityCount(communityIdList.size());
             //通过社区id查找群组
             List<ObjectId> groupIdList = groupDao.getCommunitysIdsList(communityIdList);
             //成员id
             List<ObjectId> memberList = memberDao.getAllGroupIdsMembers(groupIdList);
+            HashSet<ObjectId> h = new HashSet<ObjectId>(memberList);
+            memberList.clear();
+            memberList.addAll(h);
+            
             jxmCountDto.setUserCount(memberList.size());
             //大V老师的id
             List<ObjectId> objectIdList = teacherApproveDao.selectMap(memberList);
@@ -466,7 +494,7 @@ public class CountService {
             for (BasicDBObject db : acList) {
                 TczyDto t = new TczyDto();
                 ObjectId aid = ((BasicDBObject)db.get("_id")).getObjectId("aid");
-                t.setUserName(userDao.findByUserId(aid).getUserName());
+                t.setUserName(userDao.findByUserId(aid).getNickName());
                 ObjectId sid = ((BasicDBObject)db.get("_id")).getObjectId("sid");
                 t.setSubjectName(subjectClassDao.getEntry(sid).getName());
                 Integer count = (Integer)db.get("count");
@@ -489,12 +517,33 @@ public class CountService {
                 
             }
         }
+        
+        Collections.sort(tczyDto, new Comparator<TczyDto>() {
+
+            @Override
+            public int compare(TczyDto o1, TczyDto o2) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    if (sdf.parse(o1.getFbDate()).getTime() < sdf.parse(o2.getFbDate()).getTime()) {
+                        return 1;
+                    } else if (new Date(01).getTime() == new Date(02).getTime()) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    return 0;
+                }
+            }
+            
+        });
         mapResult.put("count", tczyDto.size());
         mapResult.put("dto", this.returnList(page, pageSize, tczyDto));
         return mapResult;
     }
     //作业统计按班级
-    public Map<String, Object> bjzy(String communityId, String schooleId, String startTime, String endTime , int page, int pageSize) {
+    public Map<String, Object> bjzy(String communityId, String grade, String schooleId, String startTime, String endTime , int page, int pageSize) {
         Map<String, Object> mapResult = new HashMap<String, Object>();
         List<TczyDto> tczyDto = new ArrayList<TczyDto>();
         if(StringUtils.isNotBlank(schooleId)) {
@@ -511,6 +560,7 @@ public class CountService {
             }
             
             List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            communityIdList = this.reList(communityIdList, grade);
             List<BasicDBObject> acList = appCommentDao.count1(communityIdList, null, startTimeL, endTimeL,0,0);
             for (BasicDBObject db : acList) {
                 TczyDto t = new TczyDto();
@@ -535,6 +585,27 @@ public class CountService {
                 tczyDto.add(t);
             }
         }
+        
+        Collections.sort(tczyDto, new Comparator<TczyDto>() {
+
+            @Override
+            public int compare(TczyDto o1, TczyDto o2) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    if (sdf.parse(o1.getFbDate()).getTime() < sdf.parse(o2.getFbDate()).getTime()) {
+                        return 1;
+                    } else if (new Date(01).getTime() == new Date(02).getTime()) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    return 0;
+                }
+            }
+            
+        });
         mapResult.put("count", tczyDto.size());
         mapResult.put("dto", this.returnList(page, pageSize, tczyDto));
         return mapResult;
@@ -587,7 +658,7 @@ public class CountService {
             for (BasicDBObject db : acList) {
                 TzDto t = new TzDto();
                 ObjectId aid = ((BasicDBObject)db.get("_id")).getObjectId("uid");
-                t.setName(userDao.findByUserId(aid).getUserName());
+                t.setName(userDao.findByUserId(aid).getNickName());
                 ObjectId sid = ((BasicDBObject)db.get("_id")).getObjectId("sid");
                 t.setSubjectName(subjectClassDao.getEntry(sid).getName());
                 Integer count = (Integer)db.get("count");
@@ -614,13 +685,34 @@ public class CountService {
                 
             }
         }
+        
+        Collections.sort(tczyDto, new Comparator<TzDto>() {
+
+            @Override
+            public int compare(TzDto o1, TzDto o2) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    if (sdf.parse(o1.getFbDate()).getTime() < sdf.parse(o2.getFbDate()).getTime()) {
+                        return 1;
+                    } else if (new Date(01).getTime() == new Date(02).getTime()) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    return 0;
+                }
+            }
+            
+        });
         mapResult.put("count", tczyDto.size());
         mapResult.put("dto", this.returnList(page, pageSize, tczyDto));
         return mapResult;
     }
     
   //通知统计按班级
-    public Map<String, Object> tzcom(String communityId, String schooleId, String startTime, String endTime, int page, int pageSize) {
+    public Map<String, Object> tzcom(String communityId, String grade,String schooleId, String startTime, String endTime, int page, int pageSize) {
         Map<String, Object> mapResult = new HashMap<String, Object>();
         List<TzDto> tczyDto = new ArrayList<TzDto>();
         if(StringUtils.isNotBlank(schooleId)) {
@@ -637,6 +729,8 @@ public class CountService {
             }
             
             List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            communityIdList = this.reList(communityIdList, grade);
+            
             List<BasicDBObject> acList = appNoticeDao.count1(communityIdList, null, startTimeL, endTimeL,0,0);
             for (BasicDBObject db : acList) {
                 TzDto t = new TzDto();
@@ -663,6 +757,27 @@ public class CountService {
                 tczyDto.add(t);
             }
         }
+        Collections.sort(tczyDto, new Comparator<TzDto>() {
+
+            @Override
+            public int compare(TzDto o1, TzDto o2) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    if (sdf.parse(o1.getFbDate()).getTime() < sdf.parse(o2.getFbDate()).getTime()) {
+                        return 1;
+                    } else if (new Date(01).getTime() == new Date(02).getTime()) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    return 0;
+                }
+            }
+            
+        });
+        
         mapResult.put("count", tczyDto.size());
         mapResult.put("dto", this.returnList(page, pageSize, tczyDto));
         return mapResult;
@@ -682,31 +797,39 @@ public class CountService {
         }
         if(StringUtils.isNotBlank(schooleId)) {
             List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            //所有评论数
+            int allToatalCount = 0;
+          //所有发帖数
+            int allNum = 0;
+            //int allZanCount = 0;
             for (String s : dateList) {
+              //评论数
                 int totalCount = 0;
-                int allToatalCount = 0;
+              //点赞数
                 int zanCount = 0;
-                int allZanCount = 0;
-                int allNum = 0;
+                
+                
                 Map<Integer, Long> map = this.getTimePointOneDay(s);
                 
                 
                 xqstDto.getNum().add(communityDetailDao.countTz(communityIdList,3, map.get(1), map.get(7)));
                 List<CommunityDetailEntry> list = communityDetailDao.TzidList(communityIdList,3, map.get(1), map.get(7));
                 allNum += list.size();
+                xqstDto.setFtNum(list.size());
                 for (CommunityDetailEntry entry : list) {
                   //评论数
                     totalCount += partInContentDao.countPartPartInContent(entry.getID());
                     //点赞数
                     zanCount += entry.getZanCount();
                     allToatalCount += totalCount;
-                    allZanCount += zanCount;
+            
                 }
                 xqstDto.setAllNum(allNum);
                 xqstDto.setAllPlNum(allToatalCount);
-                xqstDto.setAllZanNum(allZanCount);
+      
                 xqstDto.getPlNum().add(totalCount);
                 xqstDto.getZanNum().add(zanCount);
+                
                 
             }
             
@@ -743,7 +866,7 @@ public class CountService {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 xqstDto.setDateStr(sdf.format(new Date(entry.getCreateTime())));
                 xqstDto.setName(entry.getCommunityTitle());
-                xqstDto.setUserName(userDao.findByUserId(entry.getCommunityUserId()).getUserName());
+                xqstDto.setUserName(userDao.findByUserId(entry.getCommunityUserId()).getNickName());
                 xqstDto.setYueNum(entry.getYueCount());
                 xqstDto.setPllNum(partInContentDao.countPartPartInContent(entry.getID()));
                 xqstDto.setZannNum(entry.getZanCount());
@@ -833,7 +956,7 @@ public class CountService {
     }
     
     //小课堂按班级统计
-    public Map<String, Object> xktbj(String schooleId, String startTime, String endTime,int page, int pageSize) throws Exception{
+    public Map<String, Object> xktbj(String schooleId,String grade, String startTime, String endTime,int page, int pageSize) throws Exception{
         Map<String, Object> mapp = new HashMap<String, Object>();
         long startTimeL = 0;
         long endTimeL = 0;
@@ -848,6 +971,7 @@ public class CountService {
         List<XktDto> list = new ArrayList<XktDto>();
         if(StringUtils.isNotBlank(schooleId)) {
             List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            communityIdList = this.reList(communityIdList, grade);
             for (ObjectId id : communityIdList) {
                 XktDto xktDto = new XktDto();
                 List<ObjectId> userList = this.selectTeacherSubjectList1(id);
@@ -877,7 +1001,7 @@ public class CountService {
     }
     
   //小课堂按班级统计
-    public Map<String, Object> xktjs(String schooleId, String startTime, String endTime,int page, int pageSize) throws Exception{
+    public Map<String, Object> xktjs(String schooleId, String grade, String startTime, String endTime,int page, int pageSize) throws Exception{
         Map<String, Object> mapp = new HashMap<String, Object>();
         long startTimeL = 0;
         long endTimeL = 0;
@@ -892,6 +1016,7 @@ public class CountService {
         List<XktDto> list = new ArrayList<XktDto>();
         if(StringUtils.isNotBlank(schooleId)) {
             List<ObjectId> communityIdList = schoolCommunityDao.getCommunityIdsListBySchoolId(new ObjectId(schooleId));
+            communityIdList = this.reList(communityIdList, grade);
             List<ObjectId> l = this.selectTeacherSubjectList2(communityIdList);
             
             List<NewVersionSubjectEntry> nse = newVersionSubjectDao.getEntryByUid(l);
@@ -919,8 +1044,15 @@ public class CountService {
                 if (map.get(rid) != null) {
                     if (CollectionUtils.isNotEmpty(map.get(rid))) {
                         String s = "";
+                        int sss = 0;
                         for (ObjectId oName : map.get(rid)) {
-                            s = s + subjectClassDao.getEntry(oName).getName()+"、";
+                            if (sss != (map.get(rid).size()-1)) {
+                                s = s + subjectClassDao.getEntry(oName).getName()+"、";
+                            } else {
+                                s = s + subjectClassDao.getEntry(oName).getName();
+                            }
+                            
+                            sss++;
                         }
                         t.setSubject(s);
                     }
@@ -954,7 +1086,7 @@ public class CountService {
     
     public List<?> returnList(int page, int pageSize, List<?> list) {
         int start = pageSize*(page -1);
-        int end = start + page*pageSize -1;
+        int end = start + pageSize;
         if (list.size() < start) {
             return null;
         } else if (list.size() >= start && list.size() < end) {

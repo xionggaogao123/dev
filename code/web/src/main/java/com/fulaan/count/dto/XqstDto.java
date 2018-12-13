@@ -13,6 +13,8 @@ public class XqstDto {
     private String userName;
     
     private Integer yueNum;
+  //发帖数
+    private Integer ftNum;
     
     private Integer pllNum;
     
@@ -27,12 +29,13 @@ public class XqstDto {
     private List<Integer> zanNum = new ArrayList<Integer>();
     //评论数
     private List<Integer> plNum = new ArrayList<Integer>();
+    
     //所有发帖数
-    private Integer allNum;
+    private Integer allNum = 0;
     //所有点赞数
     private Integer allZanNum;
     //所有评论数
-    private Integer allPlNum;
+    private Integer allPlNum = 0;
     public List<String> getDateList() {
         return dateList;
     }
@@ -143,6 +146,14 @@ public class XqstDto {
 
     public void setSelfPlNum(Integer selfPlNum) {
         this.selfPlNum = selfPlNum;
+    }
+
+    public Integer getFtNum() {
+        return ftNum;
+    }
+
+    public void setFtNum(Integer ftNum) {
+        this.ftNum = ftNum;
     } 
     
     

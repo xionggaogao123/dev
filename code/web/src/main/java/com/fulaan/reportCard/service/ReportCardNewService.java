@@ -410,7 +410,7 @@ public class ReportCardNewService {
         indexContentDao.addEntry(indexContentEntry);
         //成绩单发送记录
         moduleTimeDao.addEntry(entry.getUserId(),ApplyTypeEn.repordcard.getType(),entry.getCommunityId());
-        PictureRunNable.addTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6);
+        PictureRunNable.addTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6,entry.getExamName());
     }
 
     public GroupExamVersionDTO getExamGroupVersion(ObjectId groupExamDetailId) throws Exception {
@@ -1652,7 +1652,7 @@ public class ReportCardNewService {
                     indexContentEntry2.setAllCount(members.size());
                     indexContentEntry2.setRemove(2);
                     indexContentDao.addEntry(indexContentEntry2);*/
-                PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6);
+                PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6,detailEntry.getExamName());
                 //成绩单发送记录
                 moduleTimeDao.addEntry(detailEntry.getUserId(),ApplyTypeEn.repordcard.getType(),detailEntry.getCommunityId());
             }

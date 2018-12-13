@@ -163,7 +163,7 @@ public class AppNewVoteService {
             String desc3 = sb3.toString().substring(0,sb3.toString().length()-1);
             if(communityIds.size()>0){
                 for(ObjectId communityId : communityIds){
-                    PictureRunNable.addTongzhi2(communityId.toString(), appNewVoteDTO.getUserId(), 5,desc3);
+                    PictureRunNable.addTongzhi2(communityId.toString(), appNewVoteDTO.getUserId(), 5,desc3,appNewVoteDTO.getTitle());
                     cids.add(communityId.toString());
                 }
             }
@@ -1044,6 +1044,13 @@ public class AppNewVoteService {
             IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
             //删除首页记录
             indexPageDao.delEntry(id);
+            List<ObjectId> cids = appNewVoteEntry.getCommunityList();
+            if(cids!=null){
+                for(ObjectId objectId:cids){
+                    PictureRunNable.deleteTongzhi(objectId.toString(), appNewVoteEntry.getUserId().toString(), 5, appNewVoteEntry.getTitle());
+                }
+            }
+
             if(indexContentEntry!=null){
                 //获取已签到人数
                 List<ObjectId> objectIdList = indexContentEntry.getReaList();

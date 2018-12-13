@@ -253,6 +253,7 @@ public class ReportCardService {
                     //首页撤回
                     //删除首页记录
                     indexPageDao.delEntry(id);
+                    PictureRunNable.deleteTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6, entry.getExamName());
                     IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
                     if(indexContentEntry!=null){
                         //获取已签到人数
@@ -443,7 +444,7 @@ public class ReportCardService {
 
         //成绩单发送记录
         moduleTimeDao.addEntry(entry.getUserId(),ApplyTypeEn.repordcard.getType(),entry.getCommunityId());
-        PictureRunNable.addTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6);
+        PictureRunNable.addTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6,entry.getExamName());
     }
 
     public GroupExamVersionDTO getExamGroupVersion(ObjectId groupExamDetailId) throws Exception {
@@ -1394,7 +1395,7 @@ public class ReportCardService {
                 indexContentEntry.setAllCount(examScoreDTOs.size());
                 indexContentDao.addEntry(indexContentEntry);*/
 
-                PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6);
+                PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6,detailEntry.getExamName());
                 //成绩单发送记录
                 moduleTimeDao.addEntry(detailEntry.getUserId(),ApplyTypeEn.repordcard.getType(),detailEntry.getCommunityId());
             }

@@ -162,7 +162,7 @@ public class AppCommentService {
             en.setAllLoadNumber(objectIdList3.size()+entries1.size());
             //发送通知
             if(dto.getStatus()==0){
-                PictureRunNable.addTongzhi(dto3.getId(),dto.getAdminId(),1);
+                PictureRunNable.addTongzhi(dto3.getId(),dto.getAdminId(),1,en.getTitle());
             }
 
             String oid = appCommentDao.addEntry(en);
@@ -335,7 +335,7 @@ public class AppCommentService {
             en.setAllLoadNumber(objectIdList3.size()+entries1.size());
             //发送通知
             if(dto.getStatus()==0){
-                PictureRunNable.addTongzhi(dto3.getID().toString(),dto.getAdminId(),1);
+                PictureRunNable.addTongzhi(dto3.getID().toString(),dto.getAdminId(),1,en.getTitle());
             }
 
             String oid = appCommentDao.addEntry(en);
@@ -438,7 +438,7 @@ public class AppCommentService {
             en.setAllLoadNumber(objectIdList3.size()+entries1.size());
             //发送通知
             if(dto.getStatus()==0){
-                PictureRunNable.addTongzhi(dto3.getId(),dto.getAdminId(),1);
+                PictureRunNable.addTongzhi(dto3.getId(),dto.getAdminId(),1,en.getTitle());
             }
 
             String oid = appCommentDao.addEntry(en);
@@ -3182,7 +3182,7 @@ public class AppCommentService {
             List<ObjectId> objectIdList = new ArrayList<ObjectId>();
             objectIdList.add(new ObjectId(str[0]));
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
-            PictureRunNable.addTongzhi(str[0],dto.getAdminId(),1);
+            PictureRunNable.addTongzhi(str[0],dto.getAdminId(),1, entry.getTitle());
             //作业发送记录
             moduleTimeDao.addEntry(new ObjectId(dto.getAdminId()),ApplyTypeEn.operation.getType(),entry.getRecipientId());
         }
@@ -3228,6 +3228,8 @@ public class AppCommentService {
                 appCommentDao.delAppCommentEntry(id);
                 //删除
                 webHomePageDao.removeContactId(id);
+                //发送通知
+                PictureRunNable.deleteTongzhi(e.getRecipientId().toString(),e.getAdminId().toString(),1,e.getTitle());
             }
         }else{
             throw new Exception("已过有效时间");

@@ -782,14 +782,14 @@ public class CommunityService {
         ObjectId obid = communityDetailDao.save(entry);
         if(message.getType()==3){
             //发送通知
-            PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),3);
+            PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),3,message.getTitle());
             //火热分享发送记录
             moduleTimeDao.addEntry(uid, ApplyTypeEn.hot.getType(),new ObjectId(message.getCommunityId()));
         }else if(message.getType()==4){
             //发送通知
             //向上（新版本参考资料）
             referenceDataService.addNewEntry(entry);
-            PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),4);
+            PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),4,message.getTitle());
         }
         if(message.getType()==2){
             //图片检测
@@ -2614,6 +2614,8 @@ public class CommunityService {
                 msg="通知";
             }else{
                 msg="火热分享";
+
+                PictureRunNable.deleteTongzhi(entry.getCommunityId().toString(), entry.getCommunityUserId().toString(), 3, entry.getCommunityTitle());
             }
             fInformationService.sendSystemMessage(entry.getCommunityUserId(),"你的"+msg+"\""+title+"\"已被管理员删除");
         }

@@ -139,7 +139,7 @@ public class AppNoticeService {
             appNoticeDTO.setUserId(userId.toString());
             ObjectId oid = appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
             //发送通知
-            PictureRunNable.addTongzhi(appNoticeDTO.getCommunityId(),appNoticeDTO.getUserId(),2);
+            PictureRunNable.addTongzhi(appNoticeDTO.getCommunityId(),appNoticeDTO.getUserId(),2,appNoticeDTO.getTitle());
 
             //图片检测
             List<Attachement> alist = appNoticeDTO.getImageList();
@@ -260,6 +260,7 @@ public class AppNoticeService {
                     indexPageDao.delEntry(noticeId);
                     //删除首页
                     webHomePageDao.removeContactId(noticeId);
+                    PictureRunNable.deleteTongzhi(appNoticeEntry.getCommunityId().toString(),appNoticeEntry.getUserId().toString(),2,appNoticeEntry.getTitle());
                     //获取已签到人数
                     List<ObjectId> objectIdList = appNoticeEntry.getReaList();
                     //消除多余红点

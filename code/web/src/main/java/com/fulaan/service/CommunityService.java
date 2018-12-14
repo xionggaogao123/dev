@@ -783,6 +783,7 @@ public class CommunityService {
         if(message.getType()==3){
             //发送通知
             PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),3,message.getTitle());
+            this.sendIndexPageMessage(entry,message,uid);
             //火热分享发送记录
             moduleTimeDao.addEntry(uid, ApplyTypeEn.hot.getType(),new ObjectId(message.getCommunityId()));
         }else if(message.getType()==4){

@@ -66,7 +66,7 @@ public class ExtendedCourseController extends BaseController {
     @RequestMapping("/selectExtendedCourseListFromSon")
     @ResponseBody
     public RespObj selectExtendedCourseListFromSon(@RequestParam(value="communityId") String communityId,
-                                            @RequestParam(value="keyword") String keyword,
+                                            @RequestParam(value="keyword",defaultValue = "") String keyword,
                                             @RequestParam(value="status",defaultValue = "0") int status,//0  全部   1  报名中   2  学习中   3 已学完
                                             @RequestParam(value="page") int page,
                                             @RequestParam(value="pageSize") int pageSize){

@@ -335,6 +335,10 @@ public class DefaultIndexPageController extends BaseController {
             respObj.setCode(Constant.SUCCESS_CODE);
             if(cardType==7){
                 indexPageService.readMessage(new ObjectId(id), getUserId());
+            }else if(cardType==10){
+                indexPageService.readHotMessage(new ObjectId(id), getUserId());
+            }else if(cardType==11){
+                indexPageService.readExtendedMessage(new ObjectId(id), getUserId());
             }
             respObj.setMessage("阅读成功！");
         } catch (Exception e) {

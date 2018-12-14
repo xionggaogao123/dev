@@ -163,6 +163,8 @@ public class AppCommentService {
             //发送通知
             if(dto.getStatus()==0){
                 PictureRunNable.addTongzhi(dto3.getId(),dto.getAdminId(),1,en.getTitle());
+                //添加临时记录
+                this.sendIndexPageMessage(en,dto,new ObjectId(dto3.getGroupId()));
             }
 
             String oid = appCommentDao.addEntry(en);
@@ -185,6 +187,7 @@ public class AppCommentService {
                 indexPageDao.addEntry(entry);
                 objectIdList.add(new ObjectId(dto3.getId()));
             }*/
+
 
             int status=Constant.ZERO;
             if(dto.getStatus()==0){
@@ -336,6 +339,8 @@ public class AppCommentService {
             //发送通知
             if(dto.getStatus()==0){
                 PictureRunNable.addTongzhi(dto3.getID().toString(),dto.getAdminId(),1,en.getTitle());
+                //添加临时记录
+                this.sendIndexPageMessage(en,dto,dto3.getGroupId());
             }
 
             String oid = appCommentDao.addEntry(en);
@@ -439,6 +444,8 @@ public class AppCommentService {
             //发送通知
             if(dto.getStatus()==0){
                 PictureRunNable.addTongzhi(dto3.getId(),dto.getAdminId(),1,en.getTitle());
+                //添加临时记录
+                this.sendIndexPageMessage(en,dto,new ObjectId(dto3.getGroupId()));
             }
 
             String oid = appCommentDao.addEntry(en);
@@ -3149,16 +3156,18 @@ public class AppCommentService {
      *
      */
     public String updateEntry(AppCommentDTO dto)throws Exception{
-        List<CommunityDTO> communityDTOList = communityService.getCommunitys2(new ObjectId(dto.getAdminId()), 1, 100);
         AppCommentEntry entry = dto.updateEntry();
         String st = dto.getComList();
         String[] str = st.split(",");
-        for(CommunityDTO dto2 : communityDTOList){
-            if(dto2.getId() != null && dto2.getId().equals(str[0])){
-                entry.setRecipientId(new ObjectId(str[0]));
-                entry.setRecipientName(dto2.getName());
-            }
+        CommunityEntry communityEntry = null;
+        if(ObjectId.isValid(str[0])){
+            communityEntry =   communityDao.findByObjectId(new ObjectId(str[0]));
         }
+        if(communityEntry==null){
+            throw new Exception("社群已被删除！");
+        }
+        entry.setRecipientId(communityEntry.getID());
+        entry.setRecipientName(communityEntry.getCommunityName());
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
@@ -3183,6 +3192,8 @@ public class AppCommentService {
             objectIdList.add(new ObjectId(str[0]));
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
             PictureRunNable.addTongzhi(str[0],dto.getAdminId(),1, entry.getTitle());
+            //添加临时记录
+            this.sendIndexPageMessage(entry,dto,communityEntry.getGroupId());
             //作业发送记录
             moduleTimeDao.addEntry(new ObjectId(dto.getAdminId()),ApplyTypeEn.operation.getType(),entry.getRecipientId());
         }

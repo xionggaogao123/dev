@@ -2442,6 +2442,29 @@ public class IndexPageService {
             }
         }
     }
+    public void readHotMessage(ObjectId id,ObjectId userId){
+        IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
+        if(indexContentEntry!=null){
+            List<ObjectId> reList = indexContentEntry.getReaList();
+            if(!reList.contains(userId) && !indexContentEntry.getUserId().equals(userId)) {//自己不可以签到
+                indexContentDao.pushReadList(userId, id);
+                //红点减一
+                redDotService.jianRedDot(userId, ApplyTypeEn.hot.getType());
+            }
+        }
+    }
+
+    public void readExtendedMessage(ObjectId id,ObjectId userId){
+        IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
+        if(indexContentEntry!=null){
+            List<ObjectId> reList = indexContentEntry.getReaList();
+            if(!reList.contains(userId) && !indexContentEntry.getUserId().equals(userId)) {//自己不可以签到
+                indexContentDao.pushReadList(userId, id);
+                //红点减一
+                redDotService.jianRedDot(userId, ApplyTypeEn.extend.getType());
+            }
+        }
+    }
 
     public void getNewSystemMessage(ObjectId syId,List<Map<String,Object>> obmap){
         SystemMessageEntry entry = systemMessageDao.getEntry(syId);

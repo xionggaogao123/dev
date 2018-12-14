@@ -378,7 +378,7 @@ public class ExtendedCourseService {
                 dto.setStage(6);
             }else{
                 if(entry.getType()==1){//抢课
-                    dto.setStage(3);
+                    dto.setStage(2);
                     List<ObjectId> userIds = entry.getUserSelectedList();
                     if(userIds!=null){
                         if(userIds.size()>= entry.getUserAllNumber()){//报名人数和班级人数相等(或大于)  && !userIds.contains(userId)
@@ -386,7 +386,7 @@ public class ExtendedCourseService {
                         }
                     }
                 }else if(entry.getType()==2){
-                    dto.setStage(2);
+                    dto.setStage(3);
                 }
             }
             dtos.add(dto);
@@ -469,14 +469,14 @@ public class ExtendedCourseService {
             dto.setStage(6);
         }else {
             if (entry.getType() == 1) {//抢课
-                dto.setStage(3);
+                dto.setStage(2);
                 if (userIds != null) {
                     if (userIds.size() >= entry.getUserAllNumber()) {//报名人数和班级人数相等(或大于)  && !userIds.contains(userId)
                         dto.setStage(4);
                     }
                 }
             } else if (entry.getType() == 2) {
-                dto.setStage(2);
+                dto.setStage(3);
             }
         }
         List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
@@ -537,7 +537,7 @@ public class ExtendedCourseService {
             dto.setStage(6);
         }else {
             if (entry.getType() == 1) {//抢课
-                dto.setStage(3);
+                dto.setStage(2);
                 List<ObjectId> userIds = entry.getUserSelectedList();
                 if (userIds != null) {
                     if (userIds.size() >= entry.getUserAllNumber()) {//报名人数和班级人数相等(或大于)  && !userIds.contains(userId)
@@ -549,7 +549,7 @@ public class ExtendedCourseService {
                     }
                 }
             } else if (entry.getType() == 2) {
-                dto.setStage(2);
+                dto.setStage(3);
                 List<ObjectId> userIds = entry.getUserApplyList();
                 if (userIds != null) {
                     // 取消报名

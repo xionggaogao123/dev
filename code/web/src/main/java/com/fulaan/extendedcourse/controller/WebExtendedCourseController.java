@@ -324,5 +324,82 @@ public class WebExtendedCourseController extends BaseController {
 
 
 
+    @ApiOperation(value = "查询社群", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getCommunityList")
+    @ResponseBody
+    public RespObj getCommunityList(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            //限定注册用户
+            Map<String,Object> result =  extendedCourseService.getCommunityList(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+
+    @ApiOperation(value = "添加新的孩子（限定）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/registerMoreUser")
+    @ResponseBody
+    public RespObj registerMoreUser(@RequestParam(value="userNames") String userNames,
+                                    @RequestParam(value="communityId") String communityId,
+                                    HttpServletRequest request){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            String phoneNumber = "12345678900";
+            //限定注册用户
+            if(userNames==null){
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage("用户名不能为空！");
+            }
+            String[] strings = userNames.split("#%");
+            if(strings.length>3){
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage("最多可添加3个孩子！");
+            }
+            String userId = "";
+            for(String userName : strings){
+                String uid =extendedCourseService.registerAvailableUser(request, userName, phoneNumber, Constant.TWO, userName, getUserId(),new ObjectId(communityId));
+                userId = userId + uid + ",";
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(userId);
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 查询所有课程（app  家长、老师共用 三种状态）
+     */
+    @ApiOperation(value = "查询课程列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/selectExtendedCourseList")
+    @ResponseBody
+    public RespObj selectExtendedCourseList(@RequestParam(value="communityId") String communityId,
+                                            @RequestParam(value="keyword",defaultValue = "") String keyword,
+                                            @RequestParam(value="status",defaultValue = "0") int status,//0  全部   1  报名中   2  学习中   3 已学完
+                                            @RequestParam(value="page",defaultValue = "1") int page,
+                                            @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> result = extendedCourseService.selectExtendedCourseList(new ObjectId(communityId),getUserId(),keyword,status,page,pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询课程列表失败");
+        }
+        return respObj;
+    }
+
 
 }

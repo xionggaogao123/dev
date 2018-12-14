@@ -430,6 +430,7 @@ public class ExtendedCourseService {
                         AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),
                         userEntry.getSex(),
                         "");
+                user.setId(userEntry.getID().toString());
                 userList.add(user);
             }
         }
@@ -898,6 +899,7 @@ public class ExtendedCourseService {
                     AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),
                     userEntry.getSex(),
                     "");
+            user.setId(userEntry.getID().toString());
             userList.add(user);
         }
         objectMap.put("sonList",userList);
@@ -940,6 +942,7 @@ public class ExtendedCourseService {
                 AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),
                 userEntry.getSex(),
                 "");
+        user.setId(userEntry.getID().toString());
         userList.add(user);
         objectMap.put("sonList",userList);
         return objectMap;

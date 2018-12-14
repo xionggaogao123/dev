@@ -3228,8 +3228,8 @@ public class AppCommentService {
                 appCommentDao.delAppCommentEntry(id);
                 //删除
                 webHomePageDao.removeContactId(id);
-//                //发送通知  //todo
-//                PictureRunNable.deleteTongzhi(e.getRecipientId().toString(),e.getAdminId().toString(),1,e.getTitle());
+               //发送通知
+                PictureRunNable.deleteTongzhi(e.getRecipientId().toString(),e.getAdminId().toString(),1,e.getTitle());
             }
         }else{
             throw new Exception("已过有效时间");

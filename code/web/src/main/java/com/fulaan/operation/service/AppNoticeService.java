@@ -260,7 +260,7 @@ public class AppNoticeService {
                     indexPageDao.delEntry(noticeId);
                     //删除首页
                     webHomePageDao.removeContactId(noticeId);
-//                    PictureRunNable.deleteTongzhi(appNoticeEntry.getCommunityId().toString(),appNoticeEntry.getUserId().toString(),2,appNoticeEntry.getTitle());//todo
+                    PictureRunNable.deleteTongzhi(appNoticeEntry.getCommunityId().toString(),appNoticeEntry.getUserId().toString(),2,appNoticeEntry.getTitle());//todo
                     //获取已签到人数
                     List<ObjectId> objectIdList = appNoticeEntry.getReaList();
                     //消除多余红点

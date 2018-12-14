@@ -160,6 +160,7 @@ public class AppCommentService {
             }
             //代提交虚拟孩子
             en.setAllLoadNumber(objectIdList3.size()+entries1.size());
+            String oid = appCommentDao.addEntry(en);
             //发送通知
             if(dto.getStatus()==0){
                 PictureRunNable.addTongzhi(dto3.getId(),dto.getAdminId(),1,en.getTitle());
@@ -167,7 +168,7 @@ public class AppCommentService {
                 this.sendIndexPageMessage(en,dto,new ObjectId(dto3.getGroupId()));
             }
 
-            String oid = appCommentDao.addEntry(en);
+
             //图片检测
             List<Attachement> alist = dto.getImageList();
             if(alist != null && alist.size()>0){

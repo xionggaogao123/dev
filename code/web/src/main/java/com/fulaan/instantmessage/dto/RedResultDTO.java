@@ -14,6 +14,7 @@ public class RedResultDTO {
     private RedDotDTO piao = new RedDotDTO("");
     private RedDotDTO happy = new RedDotDTO("");
     private RedDotDTO active = new RedDotDTO("");
+    private RedDotDTO extend =  new RedDotDTO("");
 
 
     public RedDotDTO getOperation() {
@@ -86,5 +87,13 @@ public class RedResultDTO {
 
     public void setActive(RedDotDTO active) {
         this.active = active;
+    }
+
+    public RedDotDTO getExtend() {
+        return extend;
+    }
+
+    public void setExtend(RedDotDTO extend) {
+        this.extend = extend;
     }
 }

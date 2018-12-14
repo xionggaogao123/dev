@@ -207,10 +207,42 @@ public class RedDotService {
                 dtos.setHappy(new RedDotDTO(entry1));
             }else if(entry1.getType()==ApplyTypeEn.active.getType()){
                 dtos.setActive(new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.extend.getType()){
+                dtos.setExtend(new RedDotDTO(entry1));
             }
         }
         return dtos;
     }
+
+    public void cleanIndexResult(ObjectId userId){
+        List<Integer> typeList = new ArrayList<Integer>();
+        //2)首页提示数=通知+作业+成绩单兴趣社团的提示数总和
+        /* operation(1,"作业", "other"),  //除了自己的老师
+    notice(2,"通知","same"),       // 除了自己
+    hot(3,"火热分享","same"),
+    text(4,"参考资料","same"),
+    repordcard(5,"成绩单","third"),//已绑定用户
+    study(6,"学习用品","same"),
+    piao(7,"投票","same"),
+    happy(8,"兴趣小组","same"),
+    active(9,"活动报名","same"),
+    daynotice(10,"每日通知","same"),
+    home(11,"家管控","same"),
+    school(12,"校管控","same"),
+    smallLesson(13,"小课堂登陆","same"),
+    smallDuring(14,"小课堂持续时间","same"),
+    extend(15,"选课","same");*/
+        typeList.add(ApplyTypeEn.operation.getType());
+        typeList.add(ApplyTypeEn.notice.getType());
+        typeList.add(ApplyTypeEn.hot.getType());
+        typeList.add(ApplyTypeEn.text.getType());
+        typeList.add(ApplyTypeEn.repordcard.getType());
+        typeList.add(ApplyTypeEn.piao.getType());
+        typeList.add(ApplyTypeEn.extend.getType());
+        redDotDao.cleanIndexEntry(userId, typeList);
+
+    }
+
     /**
      * 首页加载所有的红点记录
      * @param userId

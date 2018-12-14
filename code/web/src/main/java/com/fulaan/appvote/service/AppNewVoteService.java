@@ -384,6 +384,8 @@ public class AppNewVoteService {
         }
         map.put("list",dtos);
         map.put("count",count);
+        //清除红点
+        redDotService.cleanOtherResult(userId, ApplyTypeEn.piao.getType());
         return map;
     }
 
@@ -476,6 +478,8 @@ public class AppNewVoteService {
         }
         map.put("list",dtos);
         map.put("count",count);
+        //清除红点
+        redDotService.cleanOtherResult(userId, ApplyTypeEn.piao.getType());
         return map;
     }
 

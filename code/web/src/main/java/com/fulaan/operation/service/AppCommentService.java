@@ -1978,6 +1978,82 @@ public class AppCommentService {
         redDotService.cleanResult(userId,ApplyTypeEn.operation.getType(),dateTime);
         return map3;
     }
+
+    /**
+     * 查询单个详情
+     */
+    public List<AppCommentDTO> selectOneList(ObjectId id,ObjectId userId){
+        List<AppCommentDTO> dtoList = new ArrayList<AppCommentDTO>();
+        AppCommentEntry en = appCommentDao.getEntry(id);
+        List<String> uids = new ArrayList<String>();
+        AppCommentDTO dto3 = new AppCommentDTO(en);
+        List<ObjectId> idList = new ArrayList<ObjectId>();
+        if(dto3.getAdminId() != null && dto3.getAdminId().equals(userId.toString())){
+            String ctm = dto3.getCreateTime();
+            dto3.setCreateTime(ctm);
+            dto3.setType(1);
+            uids.add(dto3.getAdminId());
+            if(dto3.getTutorId()!=null && !dto3.getTutorId().equals("")){
+                uids.add(dto3.getTutorId());
+            }
+            dto3.setIsTutorId(0);
+            dtoList.add(dto3);
+        }else if(dto3.getTutorId()!=null && dto3.getTutorId().equals(userId.toString())){
+            String ctm = dto3.getCreateTime();
+            dto3.setCreateTime(ctm);
+            dto3.setType(1);
+            uids.add(dto3.getAdminId());
+            if(dto3.getTutorId()!=null && !dto3.getTutorId().equals("")){
+                uids.add(dto3.getTutorId());
+            }
+            dto3.setIsTutorId(1);
+            dtoList.add(dto3);
+        }else{
+            idList.add(en.getID());
+            String ctm = dto3.getCreateTime();
+            dto3.setCreateTime(ctm);
+            dto3.setType(2);
+            uids.add(dto3.getAdminId());
+            if(dto3.getTutorId()!=null && !dto3.getTutorId().equals("")){
+                uids.add(dto3.getTutorId());
+            }
+            dto3.setIsTutorId(0);
+            dtoList.add(dto3);
+        }
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if(idList.size()>0){
+            objectIdList  = appRecordResultDao.getEntryByParentList(idList,userId);
+        }
+        List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos != null && udtos.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos){
+                map.put(dto4.getId(),dto4);
+            }
+        }
+        for(AppCommentDTO dto5 : dtoList){
+            UserDetailInfoDTO dto9 = map.get(dto5.getAdminId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                dto5.setAdminName(name);
+                dto5.setAdminUrl(dto9.getImgUrl());
+            }
+            UserDetailInfoDTO dto10 = map.get(dto5.getTutorId());
+            if(dto10 != null){
+                String name = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                dto5.setTutorName(name);
+            }
+            dto5.setIsLoad(1);
+            if(objectIdList.size()>0){
+                if(objectIdList.contains(new ObjectId(dto5.getId()))){
+                    dto5.setIsLoad(2);
+                }
+            }
+        }
+        return dtoList;
+    }
+
+
     /**
      * 按日查找用户发放作业情况
      */

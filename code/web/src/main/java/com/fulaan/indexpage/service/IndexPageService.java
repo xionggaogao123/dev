@@ -45,7 +45,6 @@ import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
 import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
-import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.user.UserDetailInfoDTO;
@@ -2438,7 +2437,7 @@ public class IndexPageService {
             if(!reList.contains(userId) && !indexContentEntry.getUserId().equals(userId)) {//自己不可以签到
                 indexContentDao.pushReadList(userId, id);
                 //红点减一
-                redDotService.jianRedDot(userId, ApplyTypeEn.piao.getType());
+                //redDotService.jianRedDot(userId, ApplyTypeEn.piao.getType());
             }
         }
     }
@@ -2449,7 +2448,7 @@ public class IndexPageService {
             if(!reList.contains(userId) && !indexContentEntry.getUserId().equals(userId)) {//自己不可以签到
                 indexContentDao.pushReadList(userId, id);
                 //红点减一
-                redDotService.jianRedDot(userId, ApplyTypeEn.hot.getType());
+                //redDotService.jianRedDot(userId, ApplyTypeEn.hot.getType());
             }
         }
     }
@@ -2461,7 +2460,7 @@ public class IndexPageService {
             if(!reList.contains(userId) && !indexContentEntry.getUserId().equals(userId)) {//自己不可以签到
                 indexContentDao.pushReadList(userId, id);
                 //红点减一
-                redDotService.jianRedDot(userId, ApplyTypeEn.extend.getType());
+                //redDotService.jianRedDot(userId, ApplyTypeEn.extend.getType());
             }
         }
     }

@@ -214,7 +214,7 @@ public class AppVoteService {
         getVoteDtos(appVoteDTOs, appVoteEntries,userId);
         int count = appVoteDao.countGatherAppVotes(userId,groupIds);
         //清除红点
-       // redDotService.cleanOtherResult(userId, ApplyTypeEn.piao.getType());
+        redDotService.cleanOtherResult(userId, ApplyTypeEn.piao.getType());
         retMap.put("list", appVoteDTOs);
         retMap.put("page", page);
         retMap.put("pageSize", pageSize);

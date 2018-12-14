@@ -55,6 +55,31 @@ public class RedDotController extends BaseController {
     }
 
     /**
+     * 首页清除红点
+     * @return
+     */
+    @ApiOperation(value="首页清除红点",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/cleanIndexResult")
+    @ResponseBody
+    public String cleanIndexResult(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            redDotService.cleanIndexResult(getUserId());
+            respObj.setMessage("清除红点成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("清除红点成功!");
+
+        }
+        return JSON.toJSONString(respObj);
+
+    }
+
+
+    /**
      * 首页获得该用户每日通知红点记录
      * @return
      */

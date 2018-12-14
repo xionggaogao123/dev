@@ -260,8 +260,8 @@ public class ExtendedCourseService {
         indexPageDao.addEntry(entry);
         IndexContentDTO indexContentDTO = new IndexContentDTO(
                 dto.getTypeName(),
-                "通知-投票",
                 dto.getCourseName(),
+                dto.getDescription(),
                 dto.getVideoList(),
                 dto.getImageList(),
                 dto.getAttachements(),
@@ -319,6 +319,8 @@ public class ExtendedCourseService {
         map.put("count", count);
         map.put("list",dtos1);
         map.put("role",role);
+        //清除红点
+        redDotService.cleanThirdResult(userId, ApplyTypeEn.extend.getType());
         return map;
     }
 
@@ -355,6 +357,8 @@ public class ExtendedCourseService {
         map.put("count", count);
         map.put("list",dtos1);
         map.put("role",role);
+        //清除红点
+        redDotService.cleanThirdResult(userId, ApplyTypeEn.extend.getType());
         return map;
     }
 

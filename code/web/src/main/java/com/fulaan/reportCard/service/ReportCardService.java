@@ -217,7 +217,7 @@ public class ReportCardService {
                 if(!reList.contains(mainUserId)) {
                     indexContentDao.pushReadList(mainUserId, groupExamDetailId);
                     //红点减一
-                    redDotService.jianRedDot(mainUserId,ApplyTypeEn.repordcard.getType());
+                    //redDotService.jianRedDot(mainUserId,ApplyTypeEn.repordcard.getType());
                 }
             }
 
@@ -228,7 +228,7 @@ public class ReportCardService {
                 if(!reList.contains(mainUserId)) {
                     indexContentDao.pushReadList(mainUserId, groupExamDetailId);
                     //红点减一
-                    redDotService.jianRedDot(mainUserId,ApplyTypeEn.repordcard.getType());
+                    //redDotService.jianRedDot(mainUserId,ApplyTypeEn.repordcard.getType());
                 }
             }
         }
@@ -1071,7 +1071,7 @@ public class ReportCardService {
         retMap.put("page", page);
         retMap.put("pageSize", pageSize);
         //清除红点
-       // redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
+        redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
         return retMap;
     }
 

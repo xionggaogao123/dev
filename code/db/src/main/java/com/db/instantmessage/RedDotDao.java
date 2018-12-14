@@ -151,4 +151,13 @@ public class RedDotDao extends BaseDao {
         BasicDBObject updateValue = new BasicDBObject().append(Constant.MONGO_SET,new BasicDBObject("num", 0));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_RED_DOT, query, updateValue);
     }
+
+    //清空特定记录 same类型
+    public void cleanIndexEntry(ObjectId userId,List<Integer> types){
+        BasicDBObject query = new BasicDBObject("uid",userId);
+        query.append("typ", new BasicDBObject(Constant.MONGO_IN,types));
+        query .append("isr", 0); // 未删除
+        BasicDBObject updateValue = new BasicDBObject().append(Constant.MONGO_SET,new BasicDBObject("num", 0));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_RED_DOT, query, updateValue);
+    }
 }

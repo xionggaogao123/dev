@@ -473,7 +473,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -499,7 +499,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -658,7 +658,7 @@ public class AppNoticeService {
                 if(!reList.contains(userId)) {
                     indexContentDao.pushReadList(userId, id);
                     //红点减一
-                    redDotService.jianRedDot(userId,ApplyTypeEn.notice.getType());
+                    //redDotService.jianRedDot(userId,ApplyTypeEn.notice.getType());
                 }
             }
         }else{

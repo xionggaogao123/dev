@@ -99,12 +99,12 @@ public class AppNoticeDao extends BaseDao{
         return entries;
     }
     
-    public List<AppNoticeEntry> getAppNoticesByUId(ObjectId communityId, Long timeStart, Long timeEnd
+    public List<AppNoticeEntry> getAppNoticesByUId(ObjectId communityId,ObjectId subjectId, Long timeStart, Long timeEnd
         ){
         List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
         BasicDBList values = new BasicDBList();
         BasicDBObject query = new BasicDBObject();
-        BasicDBObject query1= new BasicDBObject("uid", communityId).append("ir",Constant.ZERO);
+        BasicDBObject query1= new BasicDBObject("uid", communityId).append("sid",subjectId).append("ir",Constant.ZERO);
         if (timeStart != null && timeStart != 0l) {
             query1.append("ti", new BasicDBObject(Constant.MONGO_GTE, timeStart));
         }

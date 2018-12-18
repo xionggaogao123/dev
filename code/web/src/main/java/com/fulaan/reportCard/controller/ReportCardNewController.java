@@ -28,6 +28,7 @@ import com.db.reportCard.ScoreRepresentDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
+import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.reportCard.dto.ExamGroupDTO;
 import com.fulaan.reportCard.dto.ExamGroupNewDto;
 import com.fulaan.reportCard.dto.ExamGroupScoreDTO;
@@ -664,6 +665,32 @@ public class ReportCardNewController extends BaseController {
           respObj.setErrorMessage(e.getMessage());
       }
       return respObj;
+  }
+  
+  
+  /**
+  *
+  * @param request
+  * @return
+  * @throws Exception
+  */
+ @ApiOperation(value = "根据社群和用户id获取所有班级", httpMethod = "GET", produces = "application/json")
+ @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+         @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+         @ApiResponse(code = 500, message = "服务器不能完成请求")})
+ @RequestMapping("/getCommunityByNjAndUserId")
+ @ResponseBody
+  public RespObj getCommunityByNjAndUserId(String grade) {
+     RespObj respObj = new RespObj(Constant.FAILD_CODE);
+     try {
+         List<CommunityDTO> list =  reportCardService.getCommunityByNjAndUserId(getUserId(), grade);
+         respObj.setCode(Constant.SUCCESS_CODE);
+         respObj.setMessage(list);
+    } catch (Exception e) {
+        
+        respObj.setErrorMessage(e.getMessage());
+    }
+     return respObj;
   }
 
 }

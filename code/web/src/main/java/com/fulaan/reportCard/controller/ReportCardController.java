@@ -617,6 +617,8 @@ public class ReportCardController extends BaseController {
         respObj.setMessage(result);
         return respObj;
     }
+    
+   
 
 
     @ApiOperation(value = "获取班级名单", httpMethod = "GET", produces = "application/json")
@@ -625,9 +627,9 @@ public class ReportCardController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getRoleCommunities")
     @ResponseBody
-    public RespObj getRoleCommunities() {
+    public RespObj getRoleCommunities(String grade, String communityId) {
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        List<VirtualCommunityUserDTO> dtos = reportCardService.getRoleCommunities(getUserId());
+        List<VirtualCommunityUserDTO> dtos = reportCardService.getRoleCommunities(getUserId(), grade, communityId);
         respObj.setMessage(dtos);
         return respObj;
     }
@@ -774,6 +776,27 @@ public class ReportCardController extends BaseController {
             e.printStackTrace();
         }
     }
+    
+    /**
+    *
+    * @param communityId
+    * @param page
+    * @param pageSize
+    * @return
+    */
+   @ApiOperation(value = "下载班级学生列表", httpMethod = "GET", produces = "application/json")
+   @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+           @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+           @ApiResponse(code = 500, message = "服务器不能完成请求")})
+   @RequestMapping("/downLoadUserList")
+   public void downLoadUserList(@ObjectIdType ObjectId communityId, HttpServletResponse response,
+                                HttpServletRequest request) {
+       try {
+       reportCardService.downLoadUserList(communityId,request,response);
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+   }
 
 
     /**

@@ -7,6 +7,7 @@ public class VirtualCommunityUserDTO {
 
     private String communityId;
     private String communityName;
+    private String sheZhang;
     private String fileName;
     private int userCount;
 
@@ -45,4 +46,14 @@ public class VirtualCommunityUserDTO {
     public void setUserCount(int userCount) {
         this.userCount = userCount;
     }
+
+    public String getSheZhang() {
+        return sheZhang;
+    }
+
+    public void setSheZhang(String sheZhang) {
+        this.sheZhang = sheZhang;
+    }
+    
+    
 }

@@ -13,6 +13,8 @@ import com.db.operation.AppNoticeDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
+import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.count.service.CountService;
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
@@ -112,6 +114,9 @@ public class ReportCardNewService {
     public ScoreRepresentDao scoreRepresentDao = new ScoreRepresentDao();
 
     private IndexContentDao indexContentDao = new IndexContentDao();
+    
+    @Autowired
+    private CountService countService;
     
     private static final Logger logger = Logger.getLogger(ReportCardNewService.class);
     
@@ -3477,5 +3482,34 @@ public class ReportCardNewService {
         groupExamDetailDao.updateFsShowType(groupExamDetailId, fsShowType);
         
         
+    }
+    
+    /**
+     * 
+     *〈简述〉根据用户id和年级属性获得社群
+     *〈详细描述〉
+     * @author Administrator
+     * @param userId
+     * @param grade
+     */
+    public List<CommunityDTO> getCommunityByNjAndUserId(ObjectId userId, String grade) {
+        List<CommunityDTO> cDto = new ArrayList<CommunityDTO>();
+        CommunityDTO oo = new CommunityDTO();
+        oo.setId("");
+        oo.setName("请选择");
+        cDto.add(oo);
+        List<ObjectId> ids = memberDao.getMyCommunityOIdsByUserId(userId);
+        if (CollectionUtils.isNotEmpty(ids)) {
+            if (StringUtils.isNotBlank(grade)) {
+                ids = countService.reList(ids, grade);
+            }
+            List<CommunityEntry> ceList = communityDao.findByObjectIds(ids);
+            for (CommunityEntry e : ceList) {
+                CommunityDTO o = new CommunityDTO(e);
+                cDto.add(o);
+            }
+        }
+        
+        return cDto;
     }
 }

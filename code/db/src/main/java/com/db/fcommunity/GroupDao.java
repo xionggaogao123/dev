@@ -5,6 +5,7 @@ import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.GroupEntry;
+import com.pojo.reportCard.VirtualCommunityEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -230,5 +231,25 @@ public class GroupDao extends BaseDao {
         }
         return memberEntries;
     }
+    
+    /**
+     * 根据社区id
+     *
+     */
+    public Map<ObjectId,GroupEntry> getCgMap(List<ObjectId> communityIds) {
+        Map<ObjectId,GroupEntry> map=new HashMap<ObjectId, GroupEntry>();
+        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN, communityIds)).append("r", 0);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
+        for (DBObject dbo : dbObjects) {
+            GroupEntry groupEntry = new GroupEntry(dbo);
+            if (groupEntry.getCommunityId() != null) {
+                //memberEntries.add(memberEntry.getID());
+                map.put(groupEntry.getCommunityId(), groupEntry);
+            }
+        }
+        return map;
+    }
+    
+    
 
 }

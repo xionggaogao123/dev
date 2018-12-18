@@ -2,6 +2,7 @@ package com.fulaan.reportCard.service;
 
 import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.IndexContentDao;
@@ -12,6 +13,7 @@ import com.db.operation.AppNoticeDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
+import com.fulaan.count.service.CountService;
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
@@ -73,7 +75,10 @@ public class ReportCardService {
     private UserService userService;
     @Autowired
     private RedDotService redDotService;
+    @Autowired
+    private CountService countService;
 
+    private GroupDao groupDao = new GroupDao();
     private GroupExamDetailDao groupExamDetailDao = new GroupExamDetailDao();
     private RecordScoreEvaluateDao recordScoreEvaluateDao = new RecordScoreEvaluateDao();
     private RecordLevelEvaluateDao recordLevelEvaluateDao = new RecordLevelEvaluateDao();
@@ -1714,15 +1719,39 @@ public class ReportCardService {
         return  virtualCommunityDao.getVirtualMap(communityIds);
     }
 
-    public List<VirtualCommunityUserDTO> getRoleCommunities(ObjectId userId) {
+    public List<VirtualCommunityUserDTO> getRoleCommunities(ObjectId userId, String grade, String communityId) {
         List<VirtualCommunityUserDTO> virtualCommunityUserDTOs
                 = new ArrayList<VirtualCommunityUserDTO>();
-        List<ObjectId> groupIds = memberDao.getManagerGroupIdsByUserId(userId);
-        List<CommunityEntry> entries = communityDao.getCommunityEntriesByGroupIds(groupIds);
         List<ObjectId> communityIds = new ArrayList<ObjectId>();
-        for (CommunityEntry communityEntry : entries) {
+        List<CommunityEntry> entries = new ArrayList<CommunityEntry>();
+        if (StringUtils.isNotBlank(communityId)) {
+            CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(communityId));
+            entries.add(communityEntry);
             communityIds.add(communityEntry.getID());
+        } else {
+            List<ObjectId> groupIds = memberDao.getManagerGroupIdsByUserId(userId);
+            entries = communityDao.getCommunityEntriesByGroupIds(groupIds);
+            //List<ObjectId> communityIds = new ArrayList<ObjectId>();
+            for (CommunityEntry communityEntry : entries) {
+                communityIds.add(communityEntry.getID());
+            }
+            if (StringUtils.isNotBlank(grade)) {
+                communityIds = countService.reList(communityIds, grade);
+                List<CommunityEntry> l = new ArrayList<CommunityEntry>();
+                for (CommunityEntry ce : entries) {
+                    for (ObjectId i: communityIds) {
+                        if (ce.getID().equals(i)) {
+                            l.add(ce);
+                        }
+                    }
+                }
+                entries = l;
+            }
         }
+        
+        List<ObjectId> geList = groupDao.getCommunitysIdsList(communityIds);
+        Map<ObjectId,String> mapp = memberDao.getMemberByGe(geList);
+        
         Map<ObjectId, VirtualCommunityEntry> map = virtualCommunityDao.getVirtualMap(communityIds);
         for (CommunityEntry communityEntry : entries) {
             VirtualCommunityUserDTO userDTO = new VirtualCommunityUserDTO();
@@ -1733,6 +1762,7 @@ public class ReportCardService {
             if (null != map.get(communityEntry.getID())) {
                 userDTO.setUserCount(map.get(communityEntry.getID()).getUserCount());
                 userDTO.setFileName(map.get(communityEntry.getID()).getFileName());
+                userDTO.setSheZhang(mapp.get(communityEntry.getID()));
             }
             virtualCommunityUserDTOs.add(userDTO);
         }
@@ -2452,5 +2482,43 @@ public class ReportCardService {
             groupExamDetailDao.updateShowType(groupExamDetailId, showType);
         }
         
+    }
+    
+    
+    
+    public void downLoadUserList(ObjectId communityId,HttpServletRequest request, HttpServletResponse response) {
+
+
+            List<VirtualUserEntry> virtualUserEntries = virtualUserDao.getAllVirtualUsers(communityId);
+
+            String sheetName = "学生录入模板";
+            HSSFWorkbook wb = new HSSFWorkbook();
+            HSSFSheet sheet = wb.createSheet(sheetName);
+            HSSFRow row = sheet.createRow(0);
+
+            HSSFCell cell = row.createCell(0);
+            cell.setCellValue("学生姓名");
+            
+            
+            
+            int rowLine = 1;
+            
+            HSSFRow rowItem;
+            HSSFCell cellItem;
+            
+            for (VirtualUserEntry userEntry : virtualUserEntries) {
+            rowItem = sheet.createRow(rowLine);
+            
+            cellItem = rowItem.createCell(0);
+            cellItem.setCellValue(userEntry.getUserName());
+            
+            
+            rowLine++;
+            }
+            String fileName = sheetName + ".xls";
+            String userAgent = request.getHeader("USER-AGENT");
+            HSSFUtils.exportExcel(userAgent,response, wb, fileName);
+
+
     }
 }

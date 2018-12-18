@@ -195,4 +195,6 @@ public class VirtualUserDao extends BaseDao{
         }
         return entries;
     }
+    
+    
 }

@@ -4,7 +4,9 @@ import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.pojo.fcommunity.GroupEntry;
 import com.pojo.fcommunity.MemberEntry;
+import com.pojo.reportCard.VirtualCommunityEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -801,6 +803,20 @@ public class MemberDao extends BaseDao {
         }
         return memberEntries;
     }
+    
+    public List<ObjectId> getMyCommunityOIdsByUserId(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject().append("uid", userId).append("r", 0);
+        BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            if(memberEntry.getCommunityId()!=null ){
+                memberEntries.add(memberEntry.getCommunityId());
+            }
+        }
+        return memberEntries;
+    }
 
 
     /**
@@ -1177,5 +1193,16 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN, objectIdNewList));
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("rl",role));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER,query,updateValue);
+    }
+    
+    public Map<ObjectId,String> getMemberByGe(List<ObjectId> geList) {
+        Map<ObjectId,String> map=new HashMap<ObjectId, String>();
+        BasicDBObject query = new BasicDBObject("grid",new BasicDBObject(Constant.MONGO_IN, geList));
+        query.append("rl",2);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
+        for (DBObject dbo : dbObjects) {
+            map.put(new MemberEntry(dbo).getCommunityId(), new MemberEntry(dbo).getNickName());
+        }
+        return map;
     }
 }

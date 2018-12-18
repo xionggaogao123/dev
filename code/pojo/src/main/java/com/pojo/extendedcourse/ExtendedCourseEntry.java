@@ -36,6 +36,8 @@ import java.util.List;
  *  userAllNumber            上课总人数                    unm
  *  classUserNumber          每班人数                      cun (为 0  不限制)
  *  roomName                 教室名称                      rnm
+ *  courseLabel              课程编号                      cll
+ *  courseCount              课程数                        cct
  *  List<VideoEntry> videoList,                        vl//视频
  *  List<AttachmentEntry> attachmentEntries,           ats//文件
  *  List<AttachmentEntry> imageList                    il//图片
@@ -75,6 +77,8 @@ public class ExtendedCourseEntry extends BaseDBObject {
             int userAllNumber,
             int classUserNumber,
             String roomName,
+            String courseLabel,
+            int courseCount,
             List<ObjectId> userApplyList,
             List<ObjectId> userSelectedList,
             List<AttachmentEntry> imageList,
@@ -103,6 +107,8 @@ public class ExtendedCourseEntry extends BaseDBObject {
                 .append("unm", userAllNumber)
                 .append("cun", classUserNumber)
                 .append("rnm", roomName)
+                .append("cll",courseLabel)
+                .append("cct",courseCount)
                 .append("ult", userApplyList)
                 .append("slt", userSelectedList)
                 .append("ats", MongoUtils.fetchDBObjectList(attachmentEntries))
@@ -114,6 +120,23 @@ public class ExtendedCourseEntry extends BaseDBObject {
         setBaseEntry(dbObject);
 
     }
+    public String getCourseLabel(){
+        return getSimpleStringValue("cll");
+    }
+
+    public void setCourseLabel(int courseLabel){
+        setSimpleValue("cll",courseLabel);
+    }
+
+    public int getCourseCount(){
+        return getSimpleIntegerValueDef("cct",0);
+    }
+
+    public void setCourseCount(int courseCount){
+        setSimpleValue("cct",courseCount);
+    }
+
+
     public int getType(){
         return getSimpleIntegerValue("typ");
     }

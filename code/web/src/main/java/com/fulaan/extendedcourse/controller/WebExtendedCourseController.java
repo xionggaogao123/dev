@@ -120,7 +120,7 @@ public class WebExtendedCourseController extends BaseController {
     /**
      * 查询课程标签列表
      */
-    @ApiOperation(value = "添加课程标签", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "查询课程标签列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/selectExtendedSchoolLabelList")
     @ResponseBody
@@ -162,16 +162,16 @@ public class WebExtendedCourseController extends BaseController {
 
     public static void main(String[] args){
         ExtendedCourseDTO dto = new ExtendedCourseDTO();
-        dto.setCourseName("新建拓展课1");
+        dto.setCourseName("新建拓展课19");
         dto.setDescription("美术拓展课");
         dto.setTypeId(null);
         dto.setTypeName("美术");
-        dto.setApplyStartTime("2018-12-15 15:14:00");
-        dto.setApplyEndTime("2018-12-16 15:14:00");
-        dto.setVoteStartTime("2018-12-17 15:14:00");
+        dto.setApplyStartTime("2018-12-18 11:14:00");
+        dto.setApplyEndTime("2018-12-18 11:30:00");
+        dto.setVoteStartTime("2018-12-21 15:14:00");
         dto.setVoteEndTime("2018-12-30 15:14:00");
         dto.setWeek(2);
-        dto.setType(2);
+        dto.setType(1);
         dto.setLessonType(8);
         dto.setTeacherName("James老师");
         dto.setTypeId("");
@@ -179,8 +179,8 @@ public class WebExtendedCourseController extends BaseController {
         gradeList.add("2");
         gradeList.add("3");
         dto.setGradeList(gradeList);
-        dto.setUserAllNumber(10);
-        dto.setClassUserNumber(2);
+        dto.setUserAllNumber(1);
+        dto.setClassUserNumber(1);
         dto.setRoomName("美术大教室");
         List<VideoDTO> videoList=new ArrayList<VideoDTO>();           //提交
         List<Attachement> imageList=new ArrayList<Attachement>();     //提交
@@ -390,7 +390,7 @@ public class WebExtendedCourseController extends BaseController {
                                             @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object> result = extendedCourseService.selectExtendedCourseList(new ObjectId(communityId),getUserId(),keyword,status,page,pageSize);
+            Map<String,Object> result = extendedCourseService.selectWebExtendedCourseList(new ObjectId(communityId),getUserId(),keyword,status,page,pageSize);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         }catch (Exception e){
@@ -401,5 +401,26 @@ public class WebExtendedCourseController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * 获得老师权限及是否展示
+     */
+    @ApiOperation(value = "获得老师权限及是否展示", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getTeacherRole")
+    @ResponseBody
+    public RespObj getTeacherRole(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> result = extendedCourseService.getUserRole(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询课程列表失败");
+        }
+        return respObj;
+    }
 
 }

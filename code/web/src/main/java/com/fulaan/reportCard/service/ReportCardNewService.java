@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.IndexContentDao;
@@ -29,6 +30,7 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.GroupEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexContentEntry;
@@ -117,6 +119,10 @@ public class ReportCardNewService {
     
     @Autowired
     private CountService countService;
+    
+    private MultiGroupExamDetailDao multiGroupExamDetailDao = new MultiGroupExamDetailDao();
+    
+    private GroupDao groupDao = new GroupDao();
     
     private static final Logger logger = Logger.getLogger(ReportCardNewService.class);
     
@@ -3164,6 +3170,50 @@ public class ReportCardNewService {
             throw new Exception("<p style='text-align:center;font-weight:bold;margin-top:-20px;'>提醒</p><div style='text-align:left;font-size:14px;margin-top:15px;'><span style='font-weight:bold'>上传的excel中有多余学生：</span></br>"+sbb.toString()+"</br></br><span style='font-weight:bold'>未在上传exel中找到以下学生成绩：</span></br>"+sb.toString()+"</br></br>请在页面直接录入以上学生成绩，</br>或者在Excel里调整以上学生姓名后再上传！</br></br><span style='font-size:12px'>注意：</br>如页面显示的不是新名单，可在左侧“学生管理”里编辑或者导入新的学生名单</span></div>");
         }
     }
+    
+    public void judgeVirtualUserMulti(ObjectId communityId, HSSFSheet sheet) throws Exception {
+       
+        List<VirtualUserEntry> l =virtualUserDao.getAllVirtualUsers(communityId);
+        int rowNum = sheet.getLastRowNum();
+        StringBuffer sb = new StringBuffer();
+        StringBuffer sbb = new StringBuffer();
+        for (VirtualUserEntry user : l) {
+            boolean flag = false;
+            for (int i =0;i<=rowNum;i++) {
+                String userName = getStringCellValue1(sheet.getRow(i).getCell(0));
+                if (StringUtils.isNotBlank(userName)) {
+                    if (user.getUserName().equals(userName)) {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if (!flag) {
+                sb.append(user.getUserName()).append("、");
+            }
+        }
+        for (int i =2;i<=rowNum;i++) {
+            boolean flag = false;
+            String userName = getStringCellValue1(sheet.getRow(i).getCell(0));
+            for (VirtualUserEntry user : l) {
+                if (StringUtils.isNotBlank(userName)) {
+                    if (user.getUserName().equals(userName)) {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if (!flag) {
+                if (StringUtils.isNotBlank(userName)) {
+                    sbb.append(userName).append("、");
+                }
+                
+            }
+        }
+        if (StringUtils.isNotBlank(sb.toString()) || StringUtils.isNotBlank(sbb.toString())) {
+            throw new Exception("<p style='text-align:center;font-weight:bold;margin-top:-20px;'>提醒</p><div style='text-align:left;font-size:14px;margin-top:15px;'><span style='font-weight:bold'>上传的excel中有多余学生：</span></br>"+sbb.toString()+"</br></br><span style='font-weight:bold'>未在上传exel中找到以下学生成绩：</span></br>"+sb.toString()+"</br></br>请在页面直接录入以上学生成绩，</br>或者在Excel里调整以上学生姓名后再上传！</br></br><span style='font-size:12px'>注意：</br>如页面显示的不是新名单，可在左侧“学生管理”里编辑或者导入新的学生名单</span></div>");
+        }
+    }
 
 
     public void importTemplate(String groupExamId,InputStream inputStream) throws Exception {
@@ -3492,12 +3542,15 @@ public class ReportCardNewService {
      * @param userId
      * @param grade
      */
-    public List<CommunityDTO> getCommunityByNjAndUserId(ObjectId userId, String grade) {
+    public List<CommunityDTO> getCommunityByNjAndUserId(ObjectId userId, String grade, String isWithN) {
         List<CommunityDTO> cDto = new ArrayList<CommunityDTO>();
-        CommunityDTO oo = new CommunityDTO();
-        oo.setId("");
-        oo.setName("请选择");
-        cDto.add(oo);
+        if (StringUtils.isBlank(isWithN)) {
+            CommunityDTO oo = new CommunityDTO();
+            oo.setId("");
+            oo.setName("请选择");
+            cDto.add(oo);
+        }
+        
         List<ObjectId> ids = memberDao.getMyCommunityOIdsByUserId(userId);
         if (CollectionUtils.isNotEmpty(ids)) {
             if (StringUtils.isNotBlank(grade)) {
@@ -3511,5 +3564,615 @@ public class ReportCardNewService {
         }
         
         return cDto;
+    }
+    
+    public Map<String, Object> getMultiReportList(ObjectId userId,String grade, String cId, int page, int pageSize) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<ObjectId> cidList = new ArrayList<ObjectId>();
+        if (StringUtils.isNotBlank(cId)) {
+            cidList.add(new ObjectId(cId));
+        } else {
+            if (StringUtils.isNotBlank(grade)) {
+                cidList = memberDao.getMyCommunityOIdsByUserId(userId);
+                cidList = countService.reList(cidList, grade);
+            }
+        }
+        List<MultiGroupExamDetailEntry> me = multiGroupExamDetailDao.getMappingDatas(cidList, page, pageSize);
+        List<MultiGroupExamDetailDto> med = new ArrayList<MultiGroupExamDetailDto>();
+        for (MultiGroupExamDetailEntry m : me) {
+            MultiGroupExamDetailDto o = new MultiGroupExamDetailDto(m);
+            String[] ss = m.getSubjectIds().split(",");
+            String s = "";
+            for (int i = 0; i < ss.length; i++) {
+                if (i != ss.length-1) {
+                    s = s + this.subjectMap().get(new ObjectId(ss[i])) + ",";
+                } else {
+                    s += this.subjectMap().get(new ObjectId(ss[i]));
+                }
+                
+            }
+            o.setSubjectName(s);
+            med.add(o);
+        }
+        Integer count = multiGroupExamDetailDao.getMappingDatas(cidList);
+        result.put("list", med);
+        result.put("count", count);
+        result.put("page", page);
+        result.put("pageSize", pageSize);
+        return result;
+    }
+    
+    /**
+     * 
+     *〈简述〉学科map
+     *〈详细描述〉
+     * @author Administrator
+     * @return
+     */
+    public Map<ObjectId, String> subjectMap() {
+        Map<ObjectId, String> map = new HashMap<ObjectId, String>();
+        List<SubjectClassEntry> list = subjectClassDao.getList();
+        for(SubjectClassEntry s : list) {
+            map.put(s.getID(), s.getName());
+        }
+        return map;
+    }
+    
+    /**
+     * 
+     *〈简述〉保存平台成绩
+     *〈详细描述〉
+     * @author Administrator
+     * @param dto
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public String saveMultiGroupExam(MultiGroupExamDetailDto dto, ObjectId userId) throws Exception{
+        String communityName = "";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        long examTime = dateFormat.parse(dto.getExamTime()).getTime();
+        List<ObjectId> cidList = new ArrayList<ObjectId>();
+        String[] ss = dto.getCommunityId().split(",");
+        for (int i =0; i < ss.length ; i++) {
+            cidList.add(new ObjectId(ss[i]));
+            CommunityEntry cEntry = communityDao.findByObjectId(new ObjectId(ss[i]));
+            if (i != (ss.length-1)) {
+                communityName = communityName + cEntry.getCommunityName() + ",";
+            } else {
+                communityName += cEntry.getCommunityName();
+            }
+            
+        }
+        
+        
+        MultiGroupExamDetailEntry entry = new MultiGroupExamDetailEntry(null,cidList , communityName, dto.getRecordScoreType(), userId, dto.getExamName(), dto.getSubjectIds(), examTime, dto.getGrade());
+        if (StringUtils.isNotBlank(dto.getId())) {
+            entry.setID(new ObjectId(dto.getId()));
+        } 
+        ObjectId id = multiGroupExamDetailDao.saveGroupExamDetailEntry(entry);
+        
+        if (StringUtils.isBlank(dto.getId())) {
+          //保存分数段代表
+            String[] sa = dto.getSubjectIds().split(",");
+            for (int i = 0;i < sa.length; i++) {
+                SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(sa[i]));
+                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(id, new ObjectId(sa[i]), sc.getName(), "100", "100", "90", "89", "80", "79", "60", "59", "0",i, Constant.ONE));
+            }
+            int i = sa.length;
+            if (sa.length>1) {
+                scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(id,  "总分", multiply(100, i), multiply(100, i), multiply(90, i), multiplyJy(90, i), multiply(80, i), multiplyJy(80, i), multiply(60, i), multiplyJy(60, i), "0", 50,Constant.ONE));
+            }
+            
+            for (int k =0; k < ss.length ; k++) {
+                
+                GroupEntry ge = groupDao.getByCommunityId(new ObjectId(ss[k]));
+                this.saveGeur(userId, id, dto.getSubjectIds(), ss[k], ge.getID().toString());
+            }
+        }
+        
+      
+        
+        return id.toString();
+    }
+    
+    
+    public void saveGeur( ObjectId userId, ObjectId groupExamDetailId, String subjectIds, String communityId, String groupId) {
+        Set<ObjectId> userIds = new LinkedHashSet<ObjectId>();
+        List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
+        for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
+            userIds.add(virtualUserEntry.getUserId());
+        }
+        
+        List<GroupExamUserRecordEntry> userRecordEntries = new ArrayList<GroupExamUserRecordEntry>();
+        int k = 0;
+        for (ObjectId uId : userIds) {
+            
+                int i;
+                if(subjectIds.split(",").length==1) {
+                    i = 1;
+                } else {
+                    i = subjectIds.split(",").length+1;
+                }
+                StringBuffer scoreStr = new StringBuffer();
+                for (int j = 0;j<i;j++) {
+                    scoreStr.append("-2,");
+                }
+                
+                StringBuffer scoreStrr = new StringBuffer();
+                for (int j = 0;j<i;j++) {
+                    scoreStrr.append("-1,");
+                }
+                
+                userRecordEntries.add(new GroupExamUserRecordEntry(
+                    groupExamDetailId,
+                    userId,
+                    uId,
+                    StringUtils.isNotEmpty(groupId) ? new ObjectId(groupId) : null,
+                    null,
+                    subjectIds,
+                    StringUtils.isNotEmpty(communityId) ? new ObjectId(communityId) : null,
+                    scoreStr.toString(),
+                    scoreStr.toString(),
+                    0,
+                    Constant.ZERO,
+                    scoreStrr.toString(),
+                    k
+                    ));
+                k++;
+            }
+            
+            for (GroupExamUserRecordEntry userRecordEntry : userRecordEntries) {
+                groupExamUserRecordDao.saveGroupExamUserRecord(userRecordEntry);
+                
+            }
+        
+    }
+    
+    //删除
+    public void delMultiGroupExam(String id) throws Exception{
+        multiGroupExamDetailDao.updateGroupExamDetailEntry(new ObjectId(id), Constant.ONE);
+    }
+    
+    public List<GroupExamUserRecordDTO> searchRecordStudentScoresNew(ObjectId mulId, ObjectId communityId) {
+        List<GroupExamUserRecordDTO> recordExamScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
+        MultiGroupExamDetailEntry mentry = multiGroupExamDetailDao.getEntry(mulId);
+        if (mentry != null) {
+            final List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(mentry.getID(), communityId);
+            Set<ObjectId> userIds = new HashSet<ObjectId>();
+            for (GroupExamUserRecordEntry recordEntry : recordEntries) {
+                userIds.add(recordEntry.getUserId());
+            }
+            Map<ObjectId, UserEntry> userEntryMap = new HashMap<ObjectId, UserEntry>();
+            Map<ObjectId, NewVersionCommunityBindEntry> bindUserMap = new HashMap<ObjectId, NewVersionCommunityBindEntry>();
+            if (userIds.size() > 0) {
+                userEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
+                bindUserMap = newVersionCommunityBindDao.getUserEntryMapByCondition(
+                        recordEntries.get(0).getCommunityId(), new ArrayList<ObjectId>(userIds));
+            }
+            boolean flag = false;
+            for (GroupExamUserRecordEntry recordEntry : recordEntries) {
+                GroupExamUserRecordDTO userRecordDTO = new GroupExamUserRecordDTO(recordEntry,1);
+                NewVersionCommunityBindEntry
+                        entry = bindUserMap.get(recordEntry.getUserId());
+                if (null == entry) {
+                    flag = true;
+                } else {
+                    userRecordDTO.setUserNumber(entry.getNumber());
+                    if (StringUtils.isNotBlank(entry.getThirdName())) {
+                        userRecordDTO.setUserName(entry.getThirdName());
+                    } else {
+                        flag = true;
+                    }
+                }
+                if (flag) {
+                    UserEntry userEntry = userEntryMap.get(recordEntry.getUserId());
+                    if(null != userEntry){
+                        userRecordDTO.setUserName(
+                                StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+                    }
+                    flag = false;
+                }
+                VirtualUserEntry virtualUserEntry = virtualUserDao.getIrVirtualUserByUserId(recordEntry.getCommunityId(),recordEntry.getUserId());
+                //如果查不到实时的查过版本的
+                if (virtualUserEntry == null) {
+                    virtualUserEntry = virtualUserDao.getVirtualUserByUserId(recordEntry.getUserId());
+                }
+                
+                if(null != virtualUserEntry){
+                    userRecordDTO.setUserNumber(virtualUserEntry.getUserNumber());
+                    userRecordDTO.setUserName(virtualUserEntry.getUserName());
+                }
+           
+                recordExamScoreDTOs.add(userRecordDTO);
+            }
+        }
+        return recordExamScoreDTOs;
+    }
+    
+    public void exportTemplateMulti(HttpServletRequest request,ObjectId examGroupDetailId, HttpServletResponse response) {
+        MultiGroupExamDetailEntry detailEntry = multiGroupExamDetailDao.getEntry(examGroupDetailId);
+        //List<GroupExamUserRecordDTO> recordDTOs = searchRecordStudentScoresNew(examGroupDetailId);
+        HSSFWorkbook wb = new HSSFWorkbook();
+      //合并的单元格样式
+        HSSFCellStyle boderStyle = wb.createCellStyle();
+        //垂直居中
+        boderStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        boderStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+        //设置一个边框
+        boderStyle.setBorderTop(HSSFBorderFormatting.BORDER_THICK);
+   
+        if (null != detailEntry) {
+            List<ObjectId> cmId = detailEntry.getCommunityId();
+            for (ObjectId o : cmId) {
+                List<GroupExamUserRecordDTO> recordDTOs = this.searchRecordStudentScoresNew(examGroupDetailId, o);
+                CommunityEntry c = communityDao.findByObjectId(o);
+                String sheetName = c.getCommunityName();
+                
+                HSSFSheet sheet = wb.createSheet(sheetName);
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
+                
+                
+                HSSFRow rowZero = sheet.createRow(0);
+                HSSFCell cellZero = rowZero.createCell(0);
+                //cellZero.setCellValue("缺（免）考：如考生成绩不计入总分，则填写“缺”；");
+              cellZero.setCellValue(detailEntry.getExamName());
+              
+              
+                HSSFRow row = sheet.createRow(1);
+               
+
+                HSSFCell cell = row.createCell(0);
+                cell.setCellValue("姓名");
+
+        
+                
+                String scoreName = "";
+                if (detailEntry.getRecordScoreType() == 1) {
+                    scoreName = "考试分值";
+                } else {
+                    scoreName = "等第分值";
+                }
+
+                for (GroupExamUserRecordDTO g : recordDTOs) {
+                    String[] ss = g.getSubjectId().split(",");
+                    for (int i =0;i<ss.length;i++) {
+                        SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(ss[i]));
+                        cell = row.createCell(1+i*3);
+                        cell.setCellValue(sc.getName());
+                    }
+                    
+                }
+                String[] sss = recordDTOs.get(0).getSubjectId().split(",");
+                if (sss.length>1) {
+                    cell = row.createCell(1+(sss.length)*3);
+                    cell.setCellValue("总分"+scoreName);
+
+                    
+                }
+                
+           
+                HSSFRow row2 = sheet.createRow(2);
+                int kk = 1;
+              
+                String[] ss = recordDTOs.get(0).getSubjectId().split(",");
+                
+                for (int i =0;i<ss.length;i++) {
+                    //SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(ss[i]));
+                    cell = row2.createCell(kk);
+                    cell.setCellValue("分数");
+                    kk++;
+                    cell = row2.createCell(kk);
+                    cell.setCellValue("班次");
+                    kk++;
+                    cell = row2.createCell(kk);
+                    cell.setCellValue("等第");
+                    kk++;
+                }
+                    
+               
+                
+                
+                if (sss.length>1) {
+                    cell = row2.createCell(kk);
+                    cell.setCellValue("分数");
+                    kk++;
+                    cell = row2.createCell(kk);
+                    cell.setCellValue("班次");
+                    kk++;
+                    cell = row2.createCell(kk);
+                    cell.setCellValue("等第");
+                    kk++;
+
+                    
+                }
+
+                int rowLine = 3;
+
+                HSSFRow rowItem;
+                HSSFCell cellItem;
+                for (GroupExamUserRecordDTO recordDTO : recordDTOs) {
+
+                    rowItem = sheet.createRow(rowLine);
+
+                
+
+                    cellItem = rowItem.createCell(0);
+                    cellItem.setCellValue(recordDTO.getUserName());
+
+                
+                    
+                    for (GroupExamUserRecordDTO g : recordDTOs) {
+                        String[] ssd = g.getSubjectId().split(",");
+                        for (int i =0;i<ssd.length;i++) {
+                            
+                            cellItem = rowItem.createCell(1+i);
+                            cellItem.setCellValue("");
+                        }
+                        if (ss.length>1) {
+                            
+                            cellItem = rowItem.createCell(1+ssd.length);
+                            cellItem.setCellValue("");
+                            
+                        }
+                    }
+                    
+                    rowLine++;
+                    
+                }
+
+                CellRangeAddress cra = new CellRangeAddress(1, 2, 0, 0);
+                sheet.addMergedRegion(cra);
+             
+              
+                
+                for (int i =0;i<ss.length;i++) {
+                    CellRangeAddress craa = new CellRangeAddress(1, 1, 1+3*i,3*(i+1) );
+                    sheet.addMergedRegion(craa);
+                }
+                    
+              
+         
+                if (sss.length>1) {
+                    CellRangeAddress craaa = new CellRangeAddress(1, 1, 1+3*(sss.length),3*(sss.length+1));
+                    sheet.addMergedRegion(craaa);
+
+                    
+                }
+            }
+           }
+        String fileName =  "录入模板.xls";
+        String userAgent = request.getHeader("USER-AGENT");
+        HSSFUtils.exportExcel(userAgent,response, wb, fileName);   
+    }
+    
+    
+public void importTemplateMulti(String groupExamId,InputStream inputStream) throws Exception {
+        
+        HSSFWorkbook workbook = null;
+        workbook = new HSSFWorkbook(inputStream);
+        MultiGroupExamDetailEntry groupExamDetailEntry = multiGroupExamDetailDao.getEntry(new ObjectId(groupExamId));
+        for(int kk = 0; kk < groupExamDetailEntry.getCommunityId().size(); kk++) {
+            HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(kk));
+            FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+            int rowNum = sheet.getLastRowNum();
+            List<GroupExamUserRecordDTO> examScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
+            List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(groupExamId), groupExamDetailEntry.getCommunityId().get(kk));
+            int i; 
+            if (recordEntries.get(0).getSubjectIds().split(",").length == 1) {
+                i = 1;
+            } else {
+                i = recordEntries.get(0).getSubjectIds().split(",").length + 1;
+            }
+         
+            for (int j = 3; j <= rowNum; j++) {
+                GroupExamUserRecordDTO item = new GroupExamUserRecordDTO();
+                //String id = sheet.getRow(j).getCell(0).getStringCellValue();
+                //String groupExamDetailId = sheet.getRow(j).getCell(1).getStringCellValue();
+                //ObjectId communityId = groupExamDetailDao.getEntryById(new ObjectId(groupExamId)).getCommunityId();
+                item.setGroupExamDetailId(groupExamId);
+                String userName = getStringCellValue1(sheet.getRow(j).getCell(0));
+                //List<NewVersionCommunityBindEntry> l = newVersionCommunityBindDao.getBindEntriesNew(communityId, userName);
+                List<VirtualUserEntry> l =virtualUserDao.getAllVirtualUsersNew(groupExamDetailEntry.getCommunityId().get(kk),userName);
+                if (!CollectionUtils.isEmpty(l)) {
+                    if (StringUtils.isNotBlank(l.get(0).getUserId().toString())) {
+                        item.setUserId(l.get(0).getUserId().toString());
+                    } else {
+                        continue;
+                    }
+                    
+                } else {
+                    continue;
+                }
+                
+                //item.setId(id);
+                StringBuffer sb = new StringBuffer();
+                StringBuffer sbb = new StringBuffer();
+                
+                StringBuffer bc = new StringBuffer();
+                StringBuffer xc = new StringBuffer();
+
+                for(int k =0;k < i;k++) {
+                    HSSFCell cell = sheet.getRow(j).getCell(1+k*3);
+                    HSSFCell cell1 = sheet.getRow(j).getCell(2+k*3);
+                    HSSFCell cell2 = sheet.getRow(j).getCell(3+k*3);
+                    if (groupExamDetailEntry.getRecordScoreType() == 1) {
+                        double score = getValue(cell, evaluator);
+                        
+                        if (score == -1.0) {
+                            sb.append("-1").append(",");
+                        } else if(score == -2.0) {
+                      
+                            sb.append("-2").append(",");
+                       
+                            
+                        }else {            
+                            sb.append(String.valueOf(score)).append(",");
+                            
+                            
+                        }
+                        sbb.append("-1").append(",");
+                    } else {
+                        sb.append("-1").append(",");
+                        int scoreLevel = (new Double(getValue(cell, evaluator))).intValue();
+                        sbb.append(String.valueOf(scoreLevel)).append(",");
+                    }
+                    String bcc = getStringCellValue(cell1, evaluator);
+                    if (StringUtils.isNotBlank(bcc)) {
+                        bc.append(bcc).append(",");
+                    } else {
+                        bc.append("-1").append(",");
+                    }
+                    String xcc = getStringCellValue(cell2, evaluator);
+                    if (StringUtils.isNotBlank(xcc)) {
+                        xc.append(xcc).append(",");
+                    } else {
+                        xc.append("-1").append(",");
+                    }
+                  
+                }
+                item.setBc(bc.toString());
+                item.setXc(xc.toString());
+                
+                item.setScoreStr(sb.toString());
+         
+                item.setScoreLevelStr(sbb.toString());
+              
+                
+                
+                item.setRank(Constant.ZERO);
+                examScoreDTOs.add(item);
+            }
+      
+            if (examScoreDTOs.size() > 0) {
+                saveRecordExamScoreMulti(examScoreDTOs);
+                //increaseVersion(new ObjectId(groupExamId));
+            }
+            this.judgeVirtualUserMulti(groupExamDetailEntry.getCommunityId().get(kk), sheet);
+        }
+        
+        
+        
+    }
+
+/**
+ * 
+ *〈简述〉
+ *〈详细描述〉
+ * @author Administrator
+ * @param examScoreDTOs
+ */
+    public void saveRecordExamScoreMulti(List<GroupExamUserRecordDTO> examScoreDTOs) {
+        if (examScoreDTOs.size() > 0) {
+            String groupExamDetailId = examScoreDTOs.get(0).getGroupExamDetailId();
+            for (GroupExamUserRecordDTO dto : examScoreDTOs) {
+                groupExamUserRecordDao.updateGroupExamUserRecordScoreMulti(new ObjectId(dto.getUserId()),new ObjectId(dto.getGroupExamDetailId()),
+                        dto.getScoreStr(), dto.getScoreLevelStr(), dto.getRankStr(),dto.getBc(),dto.getXc());
+            }
+            List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(groupExamDetailId), -1, -1, -1, 1);
+            examScoreDTOs.clear();
+
+            for (GroupExamUserRecordEntry entry : recordEntries) {
+                examScoreDTOs.add(new GroupExamUserRecordDTO(entry,1));
+                
+            }
+            MultiGroupExamDetailEntry detailEntry = multiGroupExamDetailDao.getEntry(new ObjectId(groupExamDetailId));
+           
+            examScoreDTOs = this.tranMulti(examScoreDTOs, detailEntry.getRecordScoreType());
+            for (GroupExamUserRecordDTO dto : examScoreDTOs) {
+                groupExamUserRecordDao.updateGroupExamUserRecordScoreMulti(new ObjectId(dto.getUserId()),new ObjectId(dto.getGroupExamDetailId()),
+                        dto.getScoreStr(), dto.getScoreLevelStr(), dto.getRankStr(),dto.getBc(),dto.getXc());
+                
+            }
+        }
+    }
+    
+    public List<GroupExamUserRecordDTO> tranMulti(List<GroupExamUserRecordDTO> recordExamScoreDTOs, int recordScoreType) {
+        int q = recordExamScoreDTOs.get(0).getScoreStr().split(",").length;
+        
+        for (int i = 0; i< q;i++) {
+            for(GroupExamUserRecordDTO g : recordExamScoreDTOs) {
+                String[] scoreArr = g.getScoreStr().split(",");
+                String[] scoreLevelArr = g.getScoreLevelStr().split(",");
+                g.setScore(Double.valueOf(scoreArr[i]));
+                g.setScoreLevel(Integer.valueOf(scoreLevelArr[i]));
+            }
+            if (recordScoreType == Constant.ONE) {
+                
+                Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+                    @Override
+                    public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                        if (o1.getScore() > o2.getScore()) {
+                            return -1;
+                        } else if (o1.getScore() == o2.getScore()) {
+                            return 0;
+                        } else {
+                            return 1;
+                        }
+                    }
+                });
+            } else {
+                Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+                    @Override
+                    public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                        if (o1.getScoreLevel() > o2.getScoreLevel()) {
+                            return -1;
+                        } else if (o1.getScoreLevel() == o2.getScoreLevel()) {
+                            return 0;
+                        } else {
+                            return 1;
+                        }
+                    }
+                });
+            }
+            int rank = 1;
+            //如果未填写或者缺考排名给-1
+            for (GroupExamUserRecordDTO dto : recordExamScoreDTOs) {
+                if (recordScoreType == Constant.ONE) {
+                    if (dto.getScore() != -1 && dto.getScore() != -2) {
+                        if (StringUtils.isEmpty(dto.getRankStr())) {
+                            dto.setRankStr(String.valueOf(rank));
+                        } else {
+                            StringBuffer s = new StringBuffer();
+                            s.append(dto.getRankStr()).append(",").append(String.valueOf(rank));
+                            dto.setRankStr(s.toString());
+                        }
+                        
+                        rank++;
+                    } else {
+                        if (StringUtils.isEmpty(dto.getRankStr())) {
+                            dto.setRankStr("-1");
+                        } else {
+                            StringBuffer s = new StringBuffer();
+                            s.append(dto.getRankStr()).append(",").append("-1");
+                            dto.setRankStr(s.toString());
+                        }
+                 
+                    }
+                } else {
+                    if (dto.getScoreLevel() != -1 && dto.getScoreLevel() != -2) {
+                        if (StringUtils.isEmpty(dto.getRankStr())) {
+                            dto.setRankStr(String.valueOf(rank));
+                        } else {
+                            StringBuffer s = new StringBuffer();
+                            s.append(dto.getRankStr()).append(",").append(String.valueOf(rank));
+                            dto.setRankStr(s.toString());
+                        }
+                        rank++;
+                    } else {
+                        if (StringUtils.isEmpty(dto.getRankStr())) {
+                            dto.setRankStr("-1");
+                        } else {
+                            StringBuffer s = new StringBuffer();
+                            s.append(dto.getRankStr()).append(",").append("-1");
+                            dto.setRankStr(s.toString());
+                        }
+                    }
+                }
+                
+                
+            }
+        }
+             return    recordExamScoreDTOs;
     }
 }

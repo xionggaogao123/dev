@@ -39,6 +39,7 @@ import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordStrDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordStrListDTO;
 import com.fulaan.reportCard.dto.GroupExamVersionDTO;
+import com.fulaan.reportCard.dto.MultiGroupExamDetailDto;
 import com.fulaan.reportCard.dto.ScoreRepresentDto;
 import com.fulaan.reportCard.service.ReportCardNewService;
 import com.pojo.reportCard.GroupExamDetailEntry;
@@ -680,10 +681,10 @@ public class ReportCardNewController extends BaseController {
          @ApiResponse(code = 500, message = "服务器不能完成请求")})
  @RequestMapping("/getCommunityByNjAndUserId")
  @ResponseBody
-  public RespObj getCommunityByNjAndUserId(String grade) {
+  public RespObj getCommunityByNjAndUserId(String grade, String isWithN) {
      RespObj respObj = new RespObj(Constant.FAILD_CODE);
      try {
-         List<CommunityDTO> list =  reportCardService.getCommunityByNjAndUserId(getUserId(), grade);
+         List<CommunityDTO> list =  reportCardService.getCommunityByNjAndUserId(getUserId(), grade, isWithN);
          respObj.setCode(Constant.SUCCESS_CODE);
          respObj.setMessage(list);
     } catch (Exception e) {
@@ -692,5 +693,128 @@ public class ReportCardNewController extends BaseController {
     }
      return respObj;
   }
+ 
+     /**
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "根据社群和用户id获取所有班级", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMultiReportList")
+    @ResponseBody
+  public RespObj getMultiReportList(String grade, String cId, int page, int pageSize) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String, Object> map = reportCardService.getMultiReportList(getUserId(), grade, cId, page, pageSize);
+            respObj.setMessage(map);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        } catch (Exception e) {
+            respObj.setErrorMessage(e.getMessage());        
+        }
+        return respObj;
+  }
 
+    /**
+    *
+    * @param request
+    * @return
+    * @throws Exception
+    */
+   @ApiOperation(value = "保存成绩", httpMethod = "GET", produces = "application/json")
+   @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+           @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+           @ApiResponse(code = 500, message = "服务器不能完成请求")})
+   @RequestMapping("/saveMultiGroupExam")
+   @ResponseBody
+    public RespObj saveMultiGroupExam(@RequestBody MultiGroupExamDetailDto dto) {
+       RespObj respObj = new RespObj(Constant.FAILD_CODE);
+       try {
+           String id = reportCardService.saveMultiGroupExam(dto, getUserId());
+           respObj.setMessage(id);
+           respObj.setCode(Constant.SUCCESS_CODE);
+       } catch (Exception e) {
+           respObj.setErrorMessage(e.getMessage());        
+       }
+       return respObj;
+    }
+   
+   /**
+   *
+   * @param request
+   * @return
+   * @throws Exception
+   */
+  @ApiOperation(value = "删除成绩", httpMethod = "GET", produces = "application/json")
+  @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+          @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+          @ApiResponse(code = 500, message = "服务器不能完成请求")})
+  @RequestMapping("/delMultiGroupExam")
+  @ResponseBody
+   public RespObj delMultiGroupExam(String id) {
+      RespObj respObj = new RespObj(Constant.FAILD_CODE);
+      try {
+          reportCardService.delMultiGroupExam(id);
+          respObj.setCode(Constant.SUCCESS_CODE);
+      } catch (Exception e) {
+          respObj.setErrorMessage(e.getMessage());        
+      }
+      return respObj;
+   }
+  
+          /**
+          *
+          * @param examGroupDetailId
+          * @param response
+          */
+         @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
+         @RequestMapping("/exportTemplateMulti/{examGroupDetailId}")
+         @ResponseBody
+         public void exportTemplateMulti(@PathVariable @ObjectIdType ObjectId examGroupDetailId,
+                                    HttpServletResponse response,
+                                    HttpServletRequest request) {
+             try {
+                 reportCardService.exportTemplateMulti(request,examGroupDetailId, response);
+             } catch (Exception e) {
+                 e.printStackTrace();
+             }
+         }
+         
+         
+         /**
+         *
+         * @param request
+         * @return
+         * @throws Exception
+         */
+        @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
+        @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+                @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+                @ApiResponse(code = 500, message = "服务器不能完成请求")})
+        @RequestMapping("/importTemplateMulti")
+        @ResponseBody
+        public RespObj importTemplateMulti(HttpServletRequest request) throws Exception {
+            RespObj respObj = new RespObj(Constant.FAILD_CODE);
+            String groupExamId = request.getParameter("groupExamId");
+            MultipartRequest multipartRequest = (MultipartRequest) request;
+            try {
+                MultiValueMap<String, MultipartFile> fileMap = multipartRequest.getMultiFileMap();
+                for (List<MultipartFile> multipartFiles : fileMap.values()) {
+                    for (MultipartFile file : multipartFiles) {
+                        System.out.println("----" + file.getOriginalFilename());
+                        reportCardService.importTemplateMulti(groupExamId,file.getInputStream());
+                    }
+                }
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("导入模板成功");
+            } catch (Exception e) {
+                e.printStackTrace();
+                respObj.setErrorMessage(e.getMessage());
+            }
+            return respObj;
+        }
+  
 }

@@ -27,6 +27,10 @@ public class GroupExamUserRecordDTO {
     private String examType;
     private String subjectId;
     private Integer sort;
+    //班次
+    private String bc;
+    //校次
+    private String xc;
 
 
     public GroupExamUserRecordDTO(){
@@ -275,6 +279,22 @@ public class GroupExamUserRecordDTO {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public String getBc() {
+        return bc;
+    }
+
+    public void setBc(String bc) {
+        this.bc = bc;
+    }
+
+    public String getXc() {
+        return xc;
+    }
+
+    public void setXc(String xc) {
+        this.xc = xc;
     }
     
     

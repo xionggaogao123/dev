@@ -135,6 +135,31 @@ public class GroupExamUserRecordDao extends BaseDao{
         }
         return entries;
     }
+    
+    /**
+     * 查询查询录入成绩的学生名单
+     * @param groupExamDetailId
+     * @return
+     */
+    public List<GroupExamUserRecordEntry> getExamUserRecordEntries(ObjectId groupExamDetailId, ObjectId communityId){
+        List<Integer> status=new ArrayList<Integer>();
+        status.add(Constant.ZERO);
+        status.add(Constant.TWO);
+        status.add(Constant.THREE);
+        BasicDBObject query=new BasicDBObject()
+                .append("eid",groupExamDetailId).append("cmId", communityId)
+                .append("st",new BasicDBObject(Constant.MONGO_IN,status));
+        
+        List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
+                query,Constant.FIELDS);
+        if(null!=dbObjects&&!dbObjects.isEmpty()){
+            for(DBObject dbObject:dbObjects){
+                entries.add(new GroupExamUserRecordEntry(dbObject));
+            }
+        }
+        return entries;
+    }
 
 
     public int countStudentReceivedEntries(
@@ -411,6 +436,22 @@ public class GroupExamUserRecordDao extends BaseDao{
         query.append("eid", groupExamDetailId);
         BasicDBObject updateValue=new BasicDBObject()
                 .append(Constant.MONGO_SET,new BasicDBObject("scs",scoreStr).append("scls",scoreLevelStr).append("rks",rankStr));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
+    }
+    
+    public void updateGroupExamUserRecordScoreMulti(ObjectId uid,
+                                                  ObjectId groupExamDetailId,
+                                               String scoreStr,
+                                               String scoreLevelStr,
+                                               String rankStr,
+                                               String bc,
+                                               String xc
+                                               ){
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",uid);
+        query.append("eid", groupExamDetailId);
+        BasicDBObject updateValue=new BasicDBObject()
+                .append(Constant.MONGO_SET,new BasicDBObject("scs",scoreStr).append("scls",scoreLevelStr).append("rks",rankStr).append("bc",bc).append("xc",xc));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
     }
 

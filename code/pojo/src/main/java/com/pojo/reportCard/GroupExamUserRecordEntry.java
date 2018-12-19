@@ -165,6 +165,22 @@ public class GroupExamUserRecordEntry extends BaseDBObject{
     public String getRankStr(){
         return getSimpleStringValue("rks");
     }
+    
+    public void setBc(String bc){
+        setSimpleValue("bc",bc);
+    }
+
+    public String getBc(){
+        return getSimpleStringValue("bc");
+    }
+    
+    public void setXc(String xc){
+        setSimpleValue("xc",xc);
+    }
+
+    public String getXc(){
+        return getSimpleStringValue("xc");
+    }
 
     public ObjectId getSubjectId(){
         return getSimpleObjecIDValue("sid");

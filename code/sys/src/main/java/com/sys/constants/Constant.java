@@ -932,6 +932,8 @@ public class Constant {
 
     /**------------------------成绩单----------------------**/
     public static final String COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL="report_card_group_exam";
+    
+    public static final String COLLECTION_MULTI_REPORT_CARD_GROUP_EXAM_DETAIL="multi_report_card_group_exam";
 
     public static final String COLLECTION_REPORT_CARD_RECORD_EXAM_SCORE="report_card_rec_exam_sc";
 

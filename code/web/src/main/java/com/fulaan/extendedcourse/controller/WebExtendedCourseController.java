@@ -7,6 +7,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.extendedcourse.dto.ExtendedCourseDTO;
 import com.fulaan.extendedcourse.dto.ExtendedSchoolLabelDTO;
+import com.fulaan.extendedcourse.dto.ExtendedSchoolTeacherDTO;
 import com.fulaan.extendedcourse.service.ExtendedCourseService;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.utils.HSSFUtils;
@@ -75,6 +76,27 @@ public class WebExtendedCourseController extends BaseController {
     }
 
     /**
+     * 获得学校的设置
+     */
+    @ApiOperation(value = "获得学校的设置", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getExtendedSchoolSetting")
+    @ResponseBody
+    public RespObj getExtendedSchoolSetting(@RequestParam(value="schoolId") String schoolId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String result = extendedCourseService.getExtendedSchoolSetting(new ObjectId(schoolId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("修改开课类型失败");
+        }
+        return respObj;
+    }
+
+    /**
      * 删除课程标签
      */
     @ApiOperation(value = "删除课程标签", httpMethod = "GET", produces = "application/json")
@@ -85,6 +107,27 @@ public class WebExtendedCourseController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             extendedCourseService.deleteExtendedSchoolLabel(new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("删除成功");
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("删除课程标签失败");
+        }
+        return respObj;
+    }
+
+    /**
+     * 删除课程老师
+     */
+    @ApiOperation(value = "删除课程老师", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/deleteExtendedSchoolTeacher")
+    @ResponseBody
+    public RespObj deleteExtendedSchoolTeacher(@RequestParam(value="id") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            extendedCourseService.deleteExtendedSchoolTeacher(new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除成功");
         }catch (Exception e){
@@ -118,6 +161,29 @@ public class WebExtendedCourseController extends BaseController {
     }
 
     /**
+     * 添加课程老师
+     */
+    @ApiOperation(value = "添加课程老师", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/addExtendedSchoolTeacher")
+    @ResponseBody
+    public RespObj addExtendedSchoolTeacher(@RequestParam(value="name") String name,
+                                          @RequestParam(value="schoolId") String schoolId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String result = extendedCourseService.addExtendedSchoolTeacher(new ObjectId(schoolId), getUserId(), name);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加课程标签失败");
+        }
+        return respObj;
+    }
+
+
+    /**
      * 查询课程标签列表
      */
     @ApiOperation(value = "查询课程标签列表", httpMethod = "GET", produces = "application/json")
@@ -128,6 +194,27 @@ public class WebExtendedCourseController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             List<ExtendedSchoolLabelDTO> result = extendedCourseService.selectExtendedSchoolLabelList(new ObjectId(schoolId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询课程标签失败");
+        }
+        return respObj;
+    }
+
+    /**
+     * 查询课程老师列表
+     */
+    @ApiOperation(value = "查询课程老师列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/selectExtendedSchoolTeacherList")
+    @ResponseBody
+    public RespObj selectExtendedSchoolTeacherList(@RequestParam(value="schoolId") String schoolId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<ExtendedSchoolTeacherDTO> result = extendedCourseService.selectExtendedSchoolTeacherList(new ObjectId(schoolId));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         }catch (Exception e){
@@ -162,16 +249,16 @@ public class WebExtendedCourseController extends BaseController {
 
     public static void main(String[] args){
         ExtendedCourseDTO dto = new ExtendedCourseDTO();
-        dto.setCourseName("新建拓展课19");
+        dto.setCourseName("火速");
         dto.setDescription("美术拓展课");
         dto.setTypeId(null);
         dto.setTypeName("美术");
-        dto.setApplyStartTime("2018-12-18 11:14:00");
-        dto.setApplyEndTime("2018-12-18 11:30:00");
+        dto.setApplyStartTime("2018-12-19 11:14:00");
+        dto.setApplyEndTime("2018-12-20 11:30:00");
         dto.setVoteStartTime("2018-12-21 15:14:00");
         dto.setVoteEndTime("2018-12-30 15:14:00");
         dto.setWeek(2);
-        dto.setType(1);
+        dto.setType(2);
         dto.setLessonType(8);
         dto.setTeacherName("James老师");
         dto.setTypeId("");
@@ -179,8 +266,8 @@ public class WebExtendedCourseController extends BaseController {
         gradeList.add("2");
         gradeList.add("3");
         dto.setGradeList(gradeList);
-        dto.setUserAllNumber(1);
-        dto.setClassUserNumber(1);
+        dto.setUserAllNumber(20);
+        dto.setClassUserNumber(0);
         dto.setRoomName("美术大教室");
         List<VideoDTO> videoList=new ArrayList<VideoDTO>();           //提交
         List<Attachement> imageList=new ArrayList<Attachement>();     //提交
@@ -419,6 +506,187 @@ public class WebExtendedCourseController extends BaseController {
             logger.error("error",e);
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查询课程列表失败");
+        }
+        return respObj;
+    }
+
+
+    /**
+     * 查询所有课程（校领导）
+     */
+    @ApiOperation(value = "查询所有课程（校领导）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/selectAllExtendedCourseList")
+    @ResponseBody
+    public RespObj selectAllExtendedCourseList(@RequestParam(value="schoolId") String schoolId,
+                                            @RequestParam(value="keyword",defaultValue = "") String keyword,
+                                            @RequestParam(value="gradeId",defaultValue = "") String gradeId,
+                                            @RequestParam(value="status",defaultValue = "0") int status,//0  全部   1  报名中   2  学习中   3 已学完
+                                            @RequestParam(value="page",defaultValue = "1") int page,
+                                            @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> result = extendedCourseService.selectAllWebExtendedCourseList(new ObjectId(schoolId),getUserId(),gradeId,keyword,status,page,pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询课程列表失败");
+        }
+        return respObj;
+    }
+
+    /**
+     * 删除课程（校领导）
+     */
+    @ApiOperation(value = "删除课程（校领导）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/deleteCourse")
+    @ResponseBody
+    public RespObj deleteCourse(@RequestParam(value="schoolId") String schoolId,
+                                               @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            extendedCourseService.deleteCourse(new ObjectId(schoolId),getUserId(),new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("删除成功");
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("删除失败");
+        }
+        return respObj;
+    }
+
+    /**
+     * 提前结束
+     */
+    @ApiOperation(value = "提前结束", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/endCourse")
+    @ResponseBody
+    public RespObj endCourse(@RequestParam(value="schoolId") String schoolId,
+                                @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            extendedCourseService.endCourse(new ObjectId(schoolId), getUserId(), new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("提前结束成功");
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("提前结束失败");
+        }
+        return respObj;
+    }
+
+    /**
+     * 查看所有名单
+     */
+    @ApiOperation(value = "查看所有名单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/selectAllUserList")
+    @ResponseBody
+    public RespObj selectAllUserList(@RequestParam(value="id",defaultValue = "") String id,
+                                     @RequestParam(value="type",defaultValue = "") int type,
+                                     @RequestParam(value="communityId",defaultValue = "") String communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> result = extendedCourseService.selectAllUserList(getUserId(), new ObjectId(id),communityId,type);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查看所有名单失败");
+        }
+        return respObj;
+    }
+
+
+    /**
+     * 打印所有名单
+     */
+    @ApiOperation(value = "打印所有名单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getExclForSelectAllUserList")
+    @ResponseBody
+    public void getExclForSelectAllUserList(HttpServletResponse response,
+                        HttpServletRequest request,@RequestParam(value="id",defaultValue = "") String id,
+                        @RequestParam(value="type",defaultValue = "") int type,
+                        @RequestParam(value="communityId",defaultValue = "") String communityId){
+       try{
+           extendedCourseService.getExclForSelectAllUserList(response, request, getUserId(), new ObjectId(id), communityId, type);
+        }catch ( Exception e){
+
+        }
+    }
+
+    /**
+     * 查看详细名单
+     */
+    @ApiOperation(value = "查看详细名单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/selectOneUserList")
+    @ResponseBody
+    public RespObj selectOneUserList(@RequestParam(value="id",defaultValue = "") String id,
+                                     @RequestParam(value="communityId",defaultValue = "") String communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> result = extendedCourseService.selectOneUserList(getUserId(), new ObjectId(id), new ObjectId(communityId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查看详细名单失败");
+        }
+        return respObj;
+    }
+
+    /**
+     * 编辑回显
+     */
+    @ApiOperation(value = "编辑回显", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/editCourse")
+    @ResponseBody
+    public RespObj editCourse(@RequestParam(value="schoolId") String schoolId,
+                              @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            ExtendedCourseDTO dto = extendedCourseService.editCourse(new ObjectId(schoolId), getUserId(), new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dto);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("编辑回显失败");
+        }
+        return respObj;
+    }
+
+
+    /**
+     * 权限者调整报名名单
+     */
+    @ApiOperation(value = "权限者调整报名名单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/updateUserList")
+    @ResponseBody
+    public RespObj updateUserList(@RequestParam(value="id",defaultValue = "") String id,
+                                  @RequestParam(value="communityId",defaultValue = "") String communityId,
+                                  @RequestParam(value="userIds",defaultValue = "") String userIds){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            extendedCourseService.updateUserList(new ObjectId(id), getUserId(),new ObjectId(communityId), userIds);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("修改成功");
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("权限者调整报名名单失败");
         }
         return respObj;
     }

@@ -379,7 +379,7 @@ public class AppNoticeService {
         result.put("page",page);
         result.put("pageSize",pageSize);
         moduleNumberDao.addEntry(userId,ApplyTypeEn.notice.getType());
-        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return result;
     }
 
@@ -622,7 +622,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -639,7 +639,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -649,7 +649,7 @@ public class AppNoticeService {
             List<ObjectId> readList=appNoticeEntry.getReaList();
             if(!readList.contains(userId)) {
                 appNoticeDao.pushReadList(userId, id);
-               // redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+               //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
             }
             //首页通用
             IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);

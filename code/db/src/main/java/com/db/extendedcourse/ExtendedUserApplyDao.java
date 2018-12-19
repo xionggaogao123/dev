@@ -82,6 +82,23 @@ public class ExtendedUserApplyDao extends BaseDao {
         return entryList;
     }
 
+    public List<ExtendedUserApplyEntry> getEntrysByCourseId3(List<ObjectId> courseIds,ObjectId communityId){
+        List<ExtendedUserApplyEntry> entryList=new ArrayList<ExtendedUserApplyEntry>();
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",Constant.ZERO);
+        query.append("cid",new BasicDBObject(Constant.MONGO_IN,courseIds));
+        query.append("cmid",communityId);
+        query.append("sta",Constant.TWO);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXTENDED_USER_APPLY, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExtendedUserApplyEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     public int countCourseUser(ObjectId courseId,ObjectId communityId){
         BasicDBObject query = new BasicDBObject();
         query.append("isr",Constant.ZERO);

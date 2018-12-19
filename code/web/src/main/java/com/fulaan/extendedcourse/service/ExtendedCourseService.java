@@ -1756,6 +1756,92 @@ public class ExtendedCourseService {
         }
     }
 
+    public Map<String,Object> getAllCommunityAllUserList(ObjectId communityId,int status,int page,int pageSize) throws Exception{
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得社群
+        CommunityEntry communityEntry1 = communityDao.findByObjectId(communityId);
+        if(communityEntry1==null){
+            throw new Exception("该社群不存在");
+        }
+        String gradeName = "";
+        if(communityEntry1.getGradeVal()!=null){
+            gradeName = communityEntry1.getGradeVal();
+        }
+        //获得班级学校
+        SchoolCommunityEntry schoolCommunityEntry = schoolCommunityDao.getEntryById(communityId);
+        if(schoolCommunityEntry==null){
+            throw new Exception("该社群未绑定学校");
+        }
+        ObjectId schoolId = schoolCommunityEntry.getSchoolId();
+        long current  = System.currentTimeMillis();
+        //查询所有
+        List<ExtendedCourseEntry> courseEntries = extendedCourseDao.getAllEntryList(gradeName, schoolId, "",status, current, page, pageSize);
+        int count = extendedCourseDao.countAllEntryList(gradeName, schoolId, "", status, current);
+        List<Map<String,Object>>  mapList  = new ArrayList<Map<String, Object>>();
+        List<ObjectId> ids = new ArrayList<ObjectId>();
+        Map<ObjectId,ExtendedCourseEntry> courseEntryMap = new HashMap<ObjectId, ExtendedCourseEntry>();
+        for(ExtendedCourseEntry entry:courseEntries){
+            ids.add(entry.getID());
+            courseEntryMap.put(entry.getID(),entry);
+        }
+        List<ExtendedUserApplyEntry> extendedUserApplyEntries =  extendedUserApplyDao.getEntrysByCourseId3(ids, communityId);
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        Set<ObjectId> courseIds = new HashSet<ObjectId>();
+        List<ObjectId> courseIds2 = new ArrayList<ObjectId>();
+        Map<ObjectId,Set<ObjectId>> sortMap = new HashMap<ObjectId, Set<ObjectId>>();
+        for(ExtendedUserApplyEntry entry2:extendedUserApplyEntries){
+            userIds.add(entry2.getUserId());
+            courseIds.add(entry2.getCourseId());
+            courseIds2.add(entry2.getCourseId());
+            Set<ObjectId> uids = sortMap.get(entry2.getCourseId());
+            if(uids!=null){
+                uids.add(entry2.getUserId());
+                sortMap.put(entry2.getCourseId(),uids);
+            }else{
+                Set<ObjectId> uids2 = new HashSet<ObjectId>();
+                uids2.add(entry2.getUserId());
+                sortMap.put(entry2.getCourseId(),uids2);
+            }
+        }
+
+        Map<ObjectId,UserEntry> userEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
+        Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(userIds);
+
+        for(ObjectId cid : ids){
+            ExtendedCourseEntry extendedCourseEntry = courseEntryMap.get(cid);
+            if(extendedCourseEntry!=null){
+                ExtendedCourseDTO dto = new ExtendedCourseDTO(extendedCourseEntry,1);
+                Set<ObjectId> userIds2 = sortMap.get(cid);
+                Map<String,Object> mapDto = new HashMap<String, Object>();
+                List<Map<String,Object>> newMapList = new ArrayList<Map<String, Object>>();
+                if(userIds2!=null){
+                    for(ObjectId uid:userIds2){
+                        UserEntry userEntry = userEntryMap.get(uid);
+                        if(userEntry!=null){
+                            String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                            String str = nameMap.get(uid);
+                            if(str!=null && !str.equals("")){
+                                name = str;
+                            }
+                            Map<String,Object> mapDto2 = new HashMap<String, Object>();
+                            mapDto2.put("name",name);
+                            mapDto2.put("userId",uid.toString());
+                            mapDto2.put("communityId",cid.toString());
+                            newMapList.add(mapDto2);
+                        }
+                    }
+                }
+                mapDto.put("dto",dto);
+                mapDto.put("status",0);
+                mapDto.put("list",newMapList);
+                mapList.add(mapDto);
+            }
+        }
+        map.put("count",count);
+        map.put("list",mapList);
+        return map;
+    }
+
     public void sendMessage(ObjectId id,List<ObjectId> ids){
 
 

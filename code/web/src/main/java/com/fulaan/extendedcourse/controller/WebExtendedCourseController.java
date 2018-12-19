@@ -691,4 +691,28 @@ public class WebExtendedCourseController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 报名总览
+     */
+    @ApiOperation(value = "报名总览", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getAllCommunityAllUserList")
+    @ResponseBody
+    public RespObj getAllCommunityAllUserList(@RequestParam(value="status",defaultValue = "0") int status,
+                                  @RequestParam(value="communityId",defaultValue = "") String communityId,
+                                  @RequestParam(value="page",defaultValue = "1") int page,
+                                  @RequestParam(value="pageSize",defaultValue = "1") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> result = extendedCourseService.getAllCommunityAllUserList(new ObjectId(communityId), status, page, pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询报名总览失败");
+        }
+        return respObj;
+    }
+
 }

@@ -7,7 +7,9 @@ import com.db.fcommunity.MineCommunityDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
+import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
+import com.db.jiaschool.SchoolPersionDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -19,6 +21,7 @@ import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.pojo.User;
+import com.fulaan.service.CommunityService;
 import com.fulaan.systemMessage.service.SystemMessageService;
 import com.mongodb.DBObject;
 import com.pojo.extendedcourse.*;
@@ -28,7 +31,9 @@ import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
+import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
+import com.pojo.jiaschool.SchoolPersionEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
@@ -81,6 +86,13 @@ public class ExtendedCourseService {
     private IndexPageDao indexPageDao = new IndexPageDao();
 
     private IndexContentDao indexContentDao = new IndexContentDao();
+
+    private SchoolPersionDao schoolPersionDao = new SchoolPersionDao();
+
+    private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
+
+    @Autowired
+    private CommunityService communityService;
     @Autowired
     private RedDotService redDotService;
 
@@ -324,6 +336,45 @@ public class ExtendedCourseService {
         return map;
     }
 
+    /**
+     * 查询所有课程（app  家长、老师共用 三种状态）
+     */
+    public Map<String,Object> selectWebExtendedCourseList(ObjectId communityId,ObjectId userId,String keyword,int status,int page,int pageSize) throws Exception{
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得社群
+        CommunityEntry communityEntry = communityDao.findByObjectId(communityId);
+        if(communityEntry==null){
+            throw new Exception("该社群不存在");
+        }
+        String gradeName = "";
+        if(communityEntry.getGradeVal()!=null){
+            gradeName = communityEntry.getGradeVal();
+        }
+        //获得班级学校
+        SchoolCommunityEntry schoolCommunityEntry = schoolCommunityDao.getEntryById(communityId);
+        if(schoolCommunityEntry==null){
+            throw new Exception("该社群未绑定学校");
+        }
+        ObjectId schoolId = schoolCommunityEntry.getSchoolId();
+        long current  = System.currentTimeMillis();
+        //0  全部   1  报名中   2  学习中   3 已学完
+        List<ExtendedCourseEntry> courseEntries = extendedCourseDao.getAllEntryList(gradeName, schoolId, keyword, status,current, page, pageSize);
+        int count = extendedCourseDao.countAllEntryList(gradeName, schoolId, keyword, status,current);
+        //获得身份 ( true 老师    false 家长)
+        boolean falge = teacherApproveDao.booleanBig(userId);
+        int role = 2;
+        if(falge){
+            role = 1;
+        }
+        List<ExtendedCourseDTO> dtos1 = new ArrayList<ExtendedCourseDTO>();
+        this.getMyWebCourseList(courseEntries,dtos1,userId,current,status,role);
+        map.put("count", count);
+        map.put("list",dtos1);
+        map.put("role",role);
+        //清除红点
+        redDotService.cleanThirdResult(userId, ApplyTypeEn.extend.getType());
+        return map;
+    }
 
     /**
      * 查询所有课程（学生）
@@ -392,6 +443,44 @@ public class ExtendedCourseService {
             dtos.add(dto);
         }
     }
+
+    public void getMyWebCourseList(List<ExtendedCourseEntry> entries,List<ExtendedCourseDTO> dtos,ObjectId userId,long current,int status,int role){
+        for(ExtendedCourseEntry entry:entries){
+            ExtendedCourseDTO dto = new ExtendedCourseDTO(entry,1);
+           /*private int status; //0  全部   1  报名中   2  学习中   3 已学完
+    private int stage;//   1 报名未开始   2 报名进行中  3 火速报名进行中  4 报名已抢光  5 已报名  6 报名已结束 （针对报名中）
+    private int role;  // 1 老师  2 家长*/
+            dto.setStatus(status);
+            if(status==0){
+                if(entry.getVoteStartTime()>current){//报名中
+                    dto.setStatus(1);
+                }else if(entry.getVoteEndTime()<current){//已结束
+                    dto.setStatus(3);
+                }else{
+                    dto.setStatus(2);
+                }
+            }
+            dto.setRole(role);
+            if(entry.getApplyStartTime()>current){
+                dto.setStage(1);
+            }else if(entry.getApplyEndTime()<current){
+                dto.setStage(6);
+            }else{
+                if(entry.getType()==1){//抢课
+                    dto.setStage(2);
+                    List<ObjectId> userIds = entry.getUserSelectedList();
+                    if(userIds!=null){
+                        if(userIds.size()>= entry.getUserAllNumber()){//报名人数和班级人数相等(或大于)  && !userIds.contains(userId)
+                            dto.setStage(4);
+                        }
+                    }
+                }else if(entry.getType()==2){
+                    dto.setStage(3);
+                }
+            }
+            dtos.add(dto);
+        }
+    }
     public int getStatus(ExtendedCourseEntry entry){
         long current = System.currentTimeMillis();
         int status = 0;
@@ -416,6 +505,7 @@ public class ExtendedCourseService {
         }
         ExtendedCourseDTO dto = new ExtendedCourseDTO(entry);
         dto.setStatus(getStatus(entry));
+        dto.setRole(1);
         List<ObjectId> userIds = extendedUserApplyDao.getIdsByCourseId(id, communityId);
         Map<ObjectId,UserEntry> userEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
         Map<ObjectId,String> nameMap = newVersionBindRelationDao.getCommunitySonEntriesByMainUserId(userIds);
@@ -490,7 +580,7 @@ public class ExtendedCourseService {
             if (userIds != null && userIds.contains(userEntry.getID())) {
                 Map<String,Object> mapDto = new HashMap<String, Object>();
                 String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-                String str = nameMap.get(userEntry.getUserName());
+                String str = nameMap.get(userEntry.getID());
                 if(str!=null&& !str.equals("")){
                     name = str;
                 }
@@ -502,7 +592,7 @@ public class ExtendedCourseService {
             }else{
                 Map<String,Object> mapDto = new HashMap<String, Object>();
                 String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-                String str = nameMap.get(userEntry.getUserName());
+                String str = nameMap.get(userEntry.getID());
                 if(str!=null&& !str.equals("")){
                     name = str;
                 }
@@ -1092,6 +1182,51 @@ public class ExtendedCourseService {
             SystemMessageService.sendMoreNotice(uid, 1);
         }
         return list;
+    }
+
+
+    /**
+     * 获得用户的学校
+     */
+    public Map<String,Object> getUserRole(ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //TODO 临时权限解决
+        List<ObjectId> objectIdList = communityService.getCommunitys3(userId, 1, 100);
+        //所在学校
+        List<ObjectId> schoolIdsList = schoolCommunityDao.getSchoolIdsList(objectIdList);
+        if(schoolIdsList.size()==0){
+            map.put("isHeader",false);
+            map.put("schoolId","");
+            map.put("gradelist",null);
+            return map;
+        }
+        ObjectId schoolId = schoolIdsList.get(0);
+        SchoolPersionEntry schoolPersionEntry = schoolPersionDao.getEntry(userId, schoolId);
+        if(schoolPersionEntry==null){
+            map.put("isHeader",false);
+            map.put("schoolId","");
+            map.put("gradeList",null);
+            return map;
+        }
+        HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
+        if(homeSchoolEntry ==null){
+            map.put("isHeader",false);
+            map.put("schoolId","");
+            map.put("gradeList",null);
+            return map;
+        }
+        //组装年级
+        List<String> stringList = homeSchoolEntry.getSchoolParagraph();
+        if(schoolIdsList==null){
+            map.put("isHeader",false);
+            map.put("schoolId","");
+            map.put("gradeList",null);
+            return map;
+        }
+        map.put("isHeader",true);
+        map.put("schoolId",schoolId.toString());
+        map.put("gradeList",stringList);
+        return map;
     }
 
 }

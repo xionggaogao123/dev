@@ -92,17 +92,17 @@ public class PictureRunNable{
                         }
                     }
                     if(type==1){
-                        sendMessage.put("msg", "作业提醒：\n"+str+" "+name+" 发布了作业“"+title+"” \n请查看！");
+                        sendMessage.put("msg", "作业提醒：\n "+name+" 发布了作业“"+title+"” \n请查看！");
                     }else if(type==2){
-                        sendMessage.put("msg", "通知提醒：\n"+str+" "+name+" 发布了通知“"+title+"” \n请查看！");
+                        sendMessage.put("msg", "通知提醒：\n "+name+" 发布了通知“"+title+"” \n请查看！");
                     }else if(type==3){
-                        sendMessage.put("msg", "火热分享提醒：\n"+str+" "+name+" 发布了火热分享“"+title+"” \n请查看！");
+                        sendMessage.put("msg", "火热分享提醒：\n "+name+" 发布了火热分享“"+title+"” \n请查看！");
                     }else if(type==4){
-                        sendMessage.put("msg", "参考资料提醒：\n"+str+" "+name+" 发布了参考资料“"+title+"” \n请查看！");
+                        sendMessage.put("msg", "参考资料提醒：\n "+name+" 发布了参考资料“"+title+"” \n请查看！");
                     }else if(type==5){
-                        sendMessage.put("msg", "投票提醒：\n"+str+" "+name+" 发布了投票“"+title+"” \n请查看！");
+                        sendMessage.put("msg", "投票提醒：\n "+name+" 发布了投票“"+title+"” \n请查看！");
                     }else if(type==6){
-                        sendMessage.put("msg", "成绩单提醒：\n"+str+" "+name+" 发布了成绩单“"+title+"” \n请查看！");
+                        sendMessage.put("msg", "成绩单提醒：\n "+name+" 发布了成绩单“"+title+"” \n请查看！");
                     }
                     ext.put("groupStyle","community");
                     ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
@@ -161,17 +161,17 @@ public class PictureRunNable{
                         }
                     }
                     if(type==1){
-                        sendMessage.put("msg", "作业提醒：\n"+str+" "+name+" 撤回了作业“"+title+"” \n请知悉！");
+                        sendMessage.put("msg", "作业提醒：\n "+name+" 撤回了作业“"+title+"” \n请知悉！");
                     }else if(type==2){
-                        sendMessage.put("msg", "通知提醒：\n"+str+" "+name+" 撤回了通知“"+title+"” \n请知悉！");
+                        sendMessage.put("msg", "通知提醒：\n "+name+" 撤回了通知“"+title+"” \n请知悉！");
                     }else if(type==3){
-                        sendMessage.put("msg", "火热分享提醒：\n"+str+" "+name+" 撤回了火热分享“"+title+"” \n请知悉！");
+                        sendMessage.put("msg", "火热分享提醒：\n "+name+" 撤回了火热分享“"+title+"” \n请知悉！");
                     }else if(type==4){
-                        sendMessage.put("msg", "参考资料提醒：\n"+str+" "+name+" 撤回了参考资料“"+title+"” \n请知悉！");
+                        sendMessage.put("msg", "参考资料提醒：\n "+name+" 撤回了参考资料“"+title+"” \n请知悉！");
                     }else if(type==5){
-                        sendMessage.put("msg", "投票提醒：\n"+str+" "+name+" 撤回了投票“"+title+"” \n请知悉！");
+                        sendMessage.put("msg", "投票提醒：\n "+name+" 撤回了投票“"+title+"” \n请知悉！");
                     }else if(type==6){
-                        sendMessage.put("msg", "成绩单提醒：\n"+str+" "+name+" 撤回了成绩单“"+title+"” \n请知悉！");
+                        sendMessage.put("msg", "成绩单提醒：\n "+name+" 撤回了成绩单“"+title+"” \n请知悉！");
                     }
                     ext.put("groupStyle","community");
                     ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
@@ -230,17 +230,17 @@ public class PictureRunNable{
                         }
                     }
                     if(type==1){
-                        sendMessage.put("msg", "作业提醒：\n"+str+" "+name+" 发布了新作业-"+title+" \n请查看！");
+                        sendMessage.put("msg", "作业提醒：\n "+name+" 发布了新作业-"+title+" \n请查看！");
                     }else if(type==2){
-                        sendMessage.put("msg", "通知提醒：\n"+str+" "+name+" 发布了新通知-"+title+" \n请查看！");
+                        sendMessage.put("msg", "通知提醒：\n "+name+" 发布了新通知-"+title+" \n请查看！");
                     }else if(type==3){
-                        sendMessage.put("msg", "兴趣社团提醒：\n"+str+" "+name+" 发布了新兴趣社团-"+title+" \n请查看！");
+                        sendMessage.put("msg", "兴趣社团提醒：\n "+name+" 发布了新兴趣社团-"+title+" \n请查看！");
                     }else if(type==4){
-                        sendMessage.put("msg", "参考资料提醒：\n"+str+" "+name+" 发布了新参考资料-"+title+" \n请查看！");
+                        sendMessage.put("msg", "参考资料提醒：\n "+name+" 发布了新参考资料-"+title+" \n请查看！");
                     }else if(type==5){
-                        sendMessage.put("msg", "投票提醒：\n"+str+" "+name+" 发布了一条投票“"+title+"”，投票参与者："+desc+" \n请查看！");
+                        sendMessage.put("msg", "投票提醒：\n "+name+" 发布了一条投票“"+title+"”，投票参与者："+desc+" \n请查看！");
                     }else if(type==6){
-                        sendMessage.put("msg", "成绩单提醒：\n"+str+" "+name+" 撤回了新成绩单-"+title+" \n请查看！");
+                        sendMessage.put("msg", "成绩单提醒：\n "+name+" 发布了新成绩单-"+title+" \n请查看！");
                     }
                     ext.put("groupStyle","community");
                     ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));

@@ -8,7 +8,9 @@ import com.pojo.fcommunity.VideoEntry;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,6 +39,8 @@ public class ExtendedCourseDTO {
     private String roomName;
     private String createTime;
     private String gradeName;
+    private String courseLabel;
+    private int courseCount;
     private List<VideoDTO> videoList=new ArrayList<VideoDTO>();           //提交
     private List<Attachement> imageList=new ArrayList<Attachement>();     //提交
     private List<Attachement> attachements=new ArrayList<Attachement>();  //提交
@@ -132,6 +136,87 @@ public class ExtendedCourseDTO {
             new ExtendedCourseDTO();
         }
     }
+
+    public ExtendedCourseDTO(ExtendedCourseEntry e,int status){
+        if(e!=null){
+            this.id = e.getID()==null?"":e.getID().toString();
+            this.schoolId = e.getSchoolId()==null?"":e.getSchoolId().toString();
+            this.userId =e.getUserId()==null?"":e.getUserId().toString();
+            this.courseName = e.getCourseName();
+            this.description =e.getDescription();
+            this.typeId = e.getTypeId()==null?"":e.getTypeId().toString();
+            this.typeName = e.getTypeName();
+            this.type = e.getType();
+            this.week = e.getWeek();
+            this.lessonType = e.getLessonType();
+            this.teacherName = e.getTeacherName();
+            this.teacherId =e.getTeacherId()==null?"":e.getTeacherId().toString();
+            this.gradeList = e.getGradeList();
+            this.gradeName = getGrade(e.getGradeList());
+            this.userAllNumber = e.getUserAllNumber();
+            this.classUserNumber = e.getClassUserNumber();
+            this.roomName = e.getRoomName();
+            List<AttachmentEntry> attachmentEntries = e.getImageList();
+            if(attachmentEntries != null && attachmentEntries.size()>0){
+                for(AttachmentEntry entry : attachmentEntries){
+                    this.imageList.add(new Attachement(entry));
+                }
+            }
+            List<AttachmentEntry> attachmentEntries2 = e.getAttachmentEntries();
+            if(attachmentEntries2 != null && attachmentEntries2.size()>0){
+                for(AttachmentEntry entry2 : attachmentEntries2){
+                    this.attachements.add(new Attachement(entry2));
+                }
+            }
+            List<AttachmentEntry> attachmentEntries3 = e.getVoiceList();
+            if(attachmentEntries3 != null && attachmentEntries3.size()>0){
+                for(AttachmentEntry entry3 : attachmentEntries3){
+                    this.voiceList.add(new Attachement(entry3));
+                }
+            }
+            List<VideoEntry> videoEntries = e.getVideoList();
+            if(videoEntries != null && videoEntries.size()>0) {
+                for (VideoEntry entry3 : videoEntries) {
+                    this.videoList.add(new VideoDTO(entry3));
+                }
+            }
+            if(e.getApplyStartTime()!=0l){
+                this.applyStartTime = dateToStrLong(new Date(e.getApplyStartTime()), "yyyy/MM/dd-HH:mm");
+            }else{
+                this.applyStartTime = "";
+            }
+            if(e.getApplyEndTime()!=0l){
+                this.applyEndTime = dateToStrLong(new Date(e.getApplyEndTime()), "yyyy/MM/dd-HH:mm");
+            }else{
+                this.applyEndTime = "";
+            }
+            if(e.getVoteStartTime()!=0l){
+                this.voteStartTime = DateTimeUtils.getLongToStrTimeTwo(e.getVoteStartTime()).substring(0, 10);
+            }else{
+                this.voteStartTime = "";
+            }
+            if(e.getVoteEndTime()!=0l){
+                this.voteEndTime = DateTimeUtils.getLongToStrTimeTwo(e.getVoteEndTime()).substring(0,10);
+            }else{
+                this.voteEndTime = "";
+            }
+            if(e.getCreateTime()!=0l){
+                this.createTime = DateTimeUtils.getLongToStrTimeTwo(e.getCreateTime());
+            }else{
+                this.createTime = "";
+            }
+
+        }else{
+            new ExtendedCourseDTO();
+        }
+    }
+
+    public static String dateToStrLong(Date dateDate, String format) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        String dateString = formatter.format(dateDate);
+        return dateString;
+    }
+
     public ExtendedCourseEntry addEntry(){
         ObjectId uId=null;
         if(this.getUserId()!=null&&!"".equals(this.getUserId())){
@@ -218,6 +303,8 @@ public class ExtendedCourseDTO {
                         this.userAllNumber,
                         this.classUserNumber,
                         this.roomName,
+                        this.courseLabel,
+                        this.courseCount,
                         new ArrayList<ObjectId>(),
                         new ArrayList<ObjectId>(),
                         imageEntries,
@@ -225,6 +312,22 @@ public class ExtendedCourseDTO {
                         videoEntries,
                         attachmentEntries);
         return openEntry;
+    }
+
+    public String getCourseLabel() {
+        return courseLabel;
+    }
+
+    public void setCourseLabel(String courseLabel) {
+        this.courseLabel = courseLabel;
+    }
+
+    public int getCourseCount() {
+        return courseCount;
+    }
+
+    public void setCourseCount(int courseCount) {
+        this.courseCount = courseCount;
     }
 
     public String getId() {
@@ -306,6 +409,8 @@ public class ExtendedCourseDTO {
     public void setVoteEndTime(String voteEndTime) {
         this.voteEndTime = voteEndTime;
     }
+
+
 
     public int getWeek() {
         return week;

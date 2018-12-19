@@ -3153,6 +3153,16 @@ public class AppCommentService {
             int weicount = objectIdList3.size();
             entry1.setWriteNumber(allcount-weicount);
             appCommentDao.updEntry(entry1);
+            //首页通用
+            IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
+            if(indexContentEntry!=null){
+                List<ObjectId> reList = indexContentEntry.getReaList();
+                if(!reList.contains(userId)) {
+                    indexContentDao.pushReadList(userId, id);
+                    //红点减一
+                    //redDotService.jianRedDot(userId,ApplyTypeEn.notice.getType());
+                }
+            }
         }
         int score = integralSufferService.addIntegral(userId, IntegralType.operation,3,2);
         return score+"";

@@ -405,8 +405,8 @@ public class ReportCardNewService {
         }
         IndexContentDTO indexContentDTO = new IndexContentDTO(
                 name,
-                "通知—成绩单",
                 entry.getExamName(),
+                "老师发了一份成绩单，赶快查看吧！",
                 new ArrayList<VideoDTO>(),
                 new ArrayList<Attachement>(),
                 new ArrayList<Attachement>(),
@@ -1639,8 +1639,8 @@ public class ReportCardNewService {
                 }
                 IndexContentDTO indexContentDTO = new IndexContentDTO(
                         name,
-                        "通知—成绩单",
                         detailEntry.getExamName(),
+                        "老师发了一份成绩单，赶快查看吧！",
                         new ArrayList<VideoDTO>(),
                         new ArrayList<Attachement>(),
                         new ArrayList<Attachement>(),

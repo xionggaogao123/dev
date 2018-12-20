@@ -1951,7 +1951,7 @@ public class ReportCardNewService {
         return b1.divide(b2, scale, RoundingMode.HALF_UP).doubleValue();
     }
 
-    public GroupExamDetailDTO getGroupExamDetail(ObjectId singleId) {
+    public GroupExamDetailDTO getGroupExamDetail(ObjectId singleId) throws Exception{
         GroupExamDetailDTO detailDTO = new GroupExamDetailDTO();
         GroupExamUserRecordEntry examUserRecordEntry = groupExamUserRecordDao.getGroupExamUserRecordEntry(singleId);
         if (null != examUserRecordEntry) {
@@ -1984,10 +1984,13 @@ public class ReportCardNewService {
         return detailDTO;
     }
 
-    public GroupExamDetailDTO getTeacherGroupExamDetail(ObjectId groupExamDetailId) {
+    public GroupExamDetailDTO getTeacherGroupExamDetail(ObjectId groupExamDetailId) throws Exception{
         
         GroupExamDetailDTO detailDTO = new GroupExamDetailDTO();
         GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
+        if (detailEntry == null) {
+            throw new Exception("改成绩单已删除！");
+        }
         if (null != detailEntry) {
             detailDTO = new GroupExamDetailDTO(detailEntry);
             //detailDTO.setSignCount(this.calcuteSignCount(groupExamDetailId));

@@ -1354,14 +1354,14 @@ public class ExtendedCourseService {
             map.put("gradelist",null);
             return map;
         }
-        ObjectId schoolId = schoolIdsList.get(0);
-        SchoolPersionEntry schoolPersionEntry = schoolPersionDao.getEntry(userId, schoolId);
-        if(schoolPersionEntry==null){
+        List<SchoolPersionEntry> schoolPersionEntrys = schoolPersionDao.getAllEntry(userId, schoolIdsList);
+        if(schoolPersionEntrys.size()==0){
             map.put("isHeader",false);
             map.put("schoolId","");
             map.put("gradeList",null);
             return map;
         }
+        ObjectId schoolId = schoolPersionEntrys.get(0).getSchoolId();
         HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
         if(homeSchoolEntry ==null){
             map.put("isHeader",false);
@@ -1426,7 +1426,15 @@ public class ExtendedCourseService {
         if(entry==null){//课程不存在
             return map;
         }
+        long current = System.currentTimeMillis();
         ExtendedCourseDTO dto = new ExtendedCourseDTO(entry,1);
+        if(entry.getVoteStartTime()>current){//报名中
+            dto.setStatus(1);
+        }else if(entry.getVoteEndTime()<current){//已结束
+            dto.setStatus(3);
+        }else{
+            dto.setStatus(2);
+        }
         List<ExtendedUserApplyEntry> extendedUserApplyEntries = new ArrayList<ExtendedUserApplyEntry>();
         //查询所有已入选用户用户
         if(type==1){//老师

@@ -340,7 +340,7 @@ public class ReportCardService {
         objectIdList.removeAll(signIds);
         unSignIds.addAll(objectIdList);
         //过滤自己
-        unSignIds.remove(groupExamDetailEntry.getUserId());
+       // unSignIds.remove(groupExamDetailEntry.getUserId());
         if(signIds.size()>0) {
             setSignValues(signIds,signTime,sign,Constant.ONE,groupExamDetailEntry.getGroupId());
         }

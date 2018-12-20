@@ -35,6 +35,7 @@ public class SchoolPersionDao extends BaseDao {
     }
 
     //查询
+
     public SchoolPersionEntry getEntry(ObjectId userId,ObjectId schoolId) {
         BasicDBObject query = new BasicDBObject();
         query.append("isr",Constant.ZERO);
@@ -46,6 +47,24 @@ public class SchoolPersionDao extends BaseDao {
             return new SchoolPersionEntry((BasicDBObject) obj);
         }
         return null;
+    }
+    public List<SchoolPersionEntry>  getAllEntry(ObjectId userId,List<ObjectId> schoolIds) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",Constant.ZERO);
+        query.append("uid",userId);
+        query.append("sid",new BasicDBObject(Constant.MONGO_IN,schoolIds));
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_SCHOOL_PERSON,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<SchoolPersionEntry> entryList = new ArrayList<SchoolPersionEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new SchoolPersionEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
     }
 
     //删除

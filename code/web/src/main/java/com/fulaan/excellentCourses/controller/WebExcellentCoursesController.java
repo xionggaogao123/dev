@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -1027,6 +1028,46 @@ public class WebExcellentCoursesController extends BaseController {
             respObj.setErrorMessage(e.getMessage());
         }
         return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 查询所有用户的上课信息
+     */
+    @ApiOperation(value = "查询所有用户的上课信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectAllUserClassDesc")
+    @ResponseBody
+    public String selectAllUserClassDesc(@ApiParam(name = "id", required = true, value = "id") @RequestParam String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> message= excellentCoursesService.selectAllUserClassDesc(new ObjectId(id));
+            respObj.setMessage(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 批量导出
+     */
+    @ApiOperation(value = "批量导出删除订单数据", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/exportTemplate2")
+    @ResponseBody
+    public void exportTemplate(
+            @ApiParam(name = "id", required = true, value = "id") @RequestParam String id,
+            HttpServletResponse response,
+            HttpServletRequest request) {
+        try {
+            excellentCoursesService.exportTemplate(new ObjectId(id), response,request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

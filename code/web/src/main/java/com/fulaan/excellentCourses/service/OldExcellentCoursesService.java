@@ -1509,7 +1509,7 @@ public class OldExcellentCoursesService {
             map.put("password",coursesRoomEntry.getPlaypass());
             //去上课
             if( classOrderEntry.getType()==1){
-                classOrderDao.updateToEntry(classOrderEntry.getID());
+                classOrderDao.updateToEntry(classOrderEntry.getID(),current);
                 NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
                 if(newVersionBindRelationEntry!=null){
                     if(newVersionBindRelationEntry.getUserName()!=null && !newVersionBindRelationEntry.getUserName().equals("")){

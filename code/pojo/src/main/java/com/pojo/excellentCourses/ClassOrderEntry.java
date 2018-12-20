@@ -21,6 +21,7 @@ import java.util.Date;
  * price             购买价格            pri
  * function          付款方式            fun   //0 美豆余额   1 支付宝   2 微信   3 后台添加   4 系统添加课程附带添加
  * type              状态                typ      0 使用中    1 未使用   2 已过期  3 退款中   4 已取消  5  后台删除
+ * gtm                                   使用时间
  *
  */
 public class ClassOrderEntry extends BaseDBObject {
@@ -180,5 +181,13 @@ public class ClassOrderEntry extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+
+    public void setGoTime(long goTime){
+        setSimpleValue("gtm",goTime);
+    }
+
+    public long getGoTime(){
+        return getSimpleLongValueDef("gtm",0);
     }
 }

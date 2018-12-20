@@ -280,6 +280,23 @@ public class ClassOrderDao extends BaseDao {
         return map;
     }
 
+    public List<ClassOrderEntry> getAllEntryMap(ObjectId contactId){
+        List<ClassOrderEntry> classOrderEntryList = new ArrayList<ClassOrderEntry>();
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(1);
+        list.add(0);
+        BasicDBObject query=new BasicDBObject().append("isb",Constant.ONE).append("cid", contactId).append("typ", new BasicDBObject(Constant.MONGO_IN, list)).append("isr", Constant.ZERO);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                ClassOrderEntry classOrderEntry = new ClassOrderEntry((BasicDBObject) obj);
+                classOrderEntryList.add(classOrderEntry);
+            }
+        }
+        return classOrderEntryList;
+    }
+
     //批量删除
     public void delEntry(ObjectId parentId,ObjectId userId){
         BasicDBObject query = new BasicDBObject("pid",parentId).append("uid",userId);
@@ -308,9 +325,9 @@ public class ClassOrderDao extends BaseDao {
     }
 
     //上课去
-    public void updateToEntry(ObjectId id){
+    public void updateToEntry(ObjectId id,long time){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",Constant.ZERO));//使用中
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",Constant.ZERO).append("gtm",time));//使用中
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,updateValue);
     }
 

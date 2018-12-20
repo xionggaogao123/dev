@@ -3326,6 +3326,8 @@ public class AppCommentService {
         if(e.getCreateTime() >current-24*60*60*1000 || e.getStatus()==2){
             if(e!= null && e.getAdminId() != null && e.getAdminId().equals(userId)){
                 appCommentDao.delAppCommentEntry(id);
+                //删除首页记录
+                indexPageDao.delEntry(id);
                 //删除
                 webHomePageDao.removeContactId(id);
                //发送通知

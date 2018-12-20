@@ -1168,6 +1168,8 @@ public class Constant {
     public static final String COLLECTION_EXTENDED_SCHOOL_SETTING = "jxm_extended_school_setting";
     //拓展课课程标签
     public static final String COLLECTION_EXTENDED_SCHOOL_LABEL = "jxm_extended_school_label";
+    //拓展课课程老师
+    public static final String COLLECTION_EXTENDED_SCHOOL_TEACHER = "jxm_extended_school_teacher";
     //拓展课
     public static final String COLLECTION_EXTENDED_COURSE = "jxm_extended_course";
     //拓展课节

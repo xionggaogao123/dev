@@ -22,6 +22,10 @@ public class CoursesOrderResultDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSES_ORDER_RESULT, entry.getBaseEntry());
         return entry.getID().toString();
     }
+
+    public void addBatch(List<DBObject> list) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSES_ORDER_RESULT, list);
+    }
     /**
      * 修改
      */

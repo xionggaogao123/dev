@@ -275,6 +275,14 @@ public class CommunityService {
         }
         if (null != memberEntryMap) {
             MemberEntry entry1 = memberEntryMap.get(groupId + "$" + userId);
+            //权限
+            if(entry1.getRole() ==2){
+                communityDetailDTO.setOperation(1);//社长可删除
+            }else if(communityDetailEntry.getCommunityUserId().equals(userId)){
+                communityDetailDTO.setOperation(1);//发布人相同，可删除
+            }else{
+                communityDetailDTO.setOperation(0);
+            }
             setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
         } else {
             communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
@@ -367,6 +375,7 @@ public class CommunityService {
                     communityDetailDTO.setIsOwner(1);
                 }
             }
+
 
             Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(totalUserIds,Constant.FIELDS);
             List<User> users=new ArrayList<User>();
@@ -1522,7 +1531,7 @@ public class CommunityService {
         }
         List<ObjectId> oblist = new ArrayList<ObjectId>();
         //查询是否大V
-        List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(objectIds);
+        //List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(objectIds);
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);

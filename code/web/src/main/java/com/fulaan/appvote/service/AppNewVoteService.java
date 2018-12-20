@@ -180,8 +180,8 @@ public class AppNewVoteService {
             indexPageDao.addEntry(entry);
             IndexContentDTO indexContentDTO = new IndexContentDTO(
                     appNewVoteDTO.getSubjectName(),
-                    "通知-投票",
                     appNewVoteDTO.getTitle(),
+                    appNewVoteDTO.getContent(),
                     appNewVoteDTO.getVideoList(),
                     appNewVoteDTO.getImageList(),
                     appNewVoteDTO.getAttachements(),
@@ -254,8 +254,8 @@ public class AppNewVoteService {
             indexPageDao.addEntry(entry);
             IndexContentDTO indexContentDTO = new IndexContentDTO(
                     appNewVoteDTO.getSubjectName(),
-                    "通知-投票",
                     appNewVoteDTO.getTitle(),
+                    appNewVoteDTO.getContent(),
                     appNewVoteDTO.getVideoList(),
                     appNewVoteDTO.getImageList(),
                     appNewVoteDTO.getAttachements(),

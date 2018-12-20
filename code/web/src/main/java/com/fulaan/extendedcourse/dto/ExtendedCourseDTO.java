@@ -156,6 +156,8 @@ public class ExtendedCourseDTO {
             this.userAllNumber = e.getUserAllNumber();
             this.classUserNumber = e.getClassUserNumber();
             this.roomName = e.getRoomName();
+            this.courseCount = e.getCourseCount();
+            this.courseLabel = e.getCourseLabel();
             List<AttachmentEntry> attachmentEntries = e.getImageList();
             if(attachmentEntries != null && attachmentEntries.size()>0){
                 for(AttachmentEntry entry : attachmentEntries){

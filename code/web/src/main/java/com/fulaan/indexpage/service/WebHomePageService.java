@@ -21,6 +21,7 @@ import com.pojo.appnotice.GenerateUserCodeEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.WebHomePageEntry;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
@@ -228,7 +229,7 @@ public class WebHomePageService {
         result.put("pageSize", pageSize);
 
         //清除红点
-        //edDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
+        redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
         return result;
     }
 

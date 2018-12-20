@@ -391,4 +391,8 @@ public class ExtendedCourseEntry extends BaseDBObject {
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
     }
+
+    public void setRemoveId(ObjectId removeId){
+        setSimpleValue("rid",removeId);
+    }
 }

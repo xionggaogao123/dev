@@ -42,6 +42,19 @@ public class MultiGroupExamDetailDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_MULTI_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
     }
     
+    /**
+     * 更新状态(是否生成成绩单)
+     * @param id
+     * @param status
+     */
+    public void updateGroupExamDetailEntry1(ObjectId id,int status){
+        BasicDBObject query=new BasicDBObject()
+                .append(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject()
+                .append(Constant.MONGO_SET,new BasicDBObject("st",status));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_MULTI_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
+    }
+    
     public List<MultiGroupExamDetailEntry> getMappingDatas(List<ObjectId> cid, int page,int pageSize){
         List<MultiGroupExamDetailEntry> entries=new ArrayList<MultiGroupExamDetailEntry>();
         BasicDBObject query = new BasicDBObject("isr", Constant.ZERO);

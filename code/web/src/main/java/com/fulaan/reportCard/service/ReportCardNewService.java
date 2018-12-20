@@ -25,6 +25,7 @@ import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.reportCard.dto.*;
+import com.fulaan.service.MemberService;
 import com.fulaan.user.service.TestTable;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
@@ -1300,6 +1301,26 @@ public class ReportCardNewService {
 
             ObjectId groupExamDetailId = groupExamDetailDao.saveGroupExamDetailEntry(dto.buildEntry());
             List<GroupExamUserRecordEntry> userRecordEntries = new ArrayList<GroupExamUserRecordEntry>();
+            if (dto.getIsFromPt() == 1) {
+                List<GroupExamUserRecordEntry> userRecordEntriess = groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(dto.getMultiId()), new ObjectId(dto.getCommunityId()));
+                for (GroupExamUserRecordEntry g : userRecordEntriess) {
+                    userRecordEntries.add(new GroupExamUserRecordEntry(
+                        groupExamDetailId,
+                        userId,
+                        g.getUserId(),
+                        g.getGroupId(),
+                        g.getExamType(),
+                        g.getSubjectIds(),
+                        g.getCommunityId(),
+                        g.getScoreStr(),
+                        g.getScoreLevelStr(),
+                        0,
+                        Constant.ZERO,
+                        g.getRankStr(),
+                        g.getSort()
+                        ));
+                }
+            } 
             int k = 0;
             for (ObjectId uId : userIds) {
                 if (StringUtils.isNotEmpty(dto.getSubjectId())) {
@@ -1333,22 +1354,26 @@ public class ReportCardNewService {
                     for (int j = 0;j<i;j++) {
                         scoreStrr.append("-1,");
                     }
+                    if (dto.getIsFromPt() == 1) {
+                        
+                    } else {
+                        userRecordEntries.add(new GroupExamUserRecordEntry(
+                            groupExamDetailId,
+                            userId,
+                            uId,
+                            StringUtils.isNotEmpty(dto.getGroupId()) ? new ObjectId(dto.getGroupId()) : null,
+                            StringUtils.isNotEmpty(dto.getExamType()) ? new ObjectId(dto.getExamType()) : null,
+                            dto.getSubjectIds(),
+                            StringUtils.isNotEmpty(dto.getCommunityId()) ? new ObjectId(dto.getCommunityId()) : null,
+                            scoreStr.toString(),
+                            scoreStr.toString(),
+                            0,
+                            Constant.ZERO,
+                            scoreStrr.toString(),
+                            k
+                            ));
+                    }
                     
-                    userRecordEntries.add(new GroupExamUserRecordEntry(
-                        groupExamDetailId,
-                        userId,
-                        uId,
-                        StringUtils.isNotEmpty(dto.getGroupId()) ? new ObjectId(dto.getGroupId()) : null,
-                        StringUtils.isNotEmpty(dto.getExamType()) ? new ObjectId(dto.getExamType()) : null,
-                        dto.getSubjectIds(),
-                        StringUtils.isNotEmpty(dto.getCommunityId()) ? new ObjectId(dto.getCommunityId()) : null,
-                        scoreStr.toString(),
-                        scoreStr.toString(),
-                        0,
-                        Constant.ZERO,
-                        scoreStrr.toString(),
-                        k
-                        ));
                 }
                 k++;
             }
@@ -1366,15 +1391,25 @@ public class ReportCardNewService {
                     null, null, StringUtils.isNotEmpty(dto.getExamType()) ? new ObjectId(dto.getExamType()) : null,Constant.ZERO
                 );
                 webHomePageDao.saveWebHomeEntry(homePageEntry);
-                String[] sa = dto.getSubjectIds().split(",");
-                for (int i = 0;i < sa.length; i++) {
-                    SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(sa[i]));
-                    scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(groupExamDetailId, new ObjectId(sa[i]), sc.getName(), "100", "100", "90", "89", "80", "79", "60", "59", "0",i, Constant.ONE));
+                if (dto.getIsFromPt() == 1) {
+                    List<ScoreRepresentEntry> srEntry = scoreRepresentDao.getScoreRepresentAll(new ObjectId(dto.getMultiId()));
+                    for (ScoreRepresentEntry e : srEntry) {
+                        ScoreRepresentEntry seNew = new ScoreRepresentEntry(groupExamDetailId, e.getSubjectId(), e.getSubjectName(),e.getMaxScore(), e.getScoreOne(), e.getScoreTwo(), e.getScoreThree(), e.getScoreFour(), e.getScoreFive(), e.getScoreSix(), e.getScoreSeven(), e.getScoreEight(), e.getSort(), e.getRepresentNameType());
+                        scoreRepresentDao.saveScoreRepresent(seNew);
+                        
+                    }
+                } else {
+                    String[] sa = dto.getSubjectIds().split(",");
+                    for (int i = 0;i < sa.length; i++) {
+                        SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(sa[i]));
+                        scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(groupExamDetailId, new ObjectId(sa[i]), sc.getName(), "100", "100", "90", "89", "80", "79", "60", "59", "0",i, Constant.ONE));
+                    }
+                    int i = sa.length;
+                    if (sa.length>1) {
+                        scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(groupExamDetailId,  "总分", multiply(100, i), multiply(100, i), multiply(90, i), multiplyJy(90, i), multiply(80, i), multiplyJy(80, i), multiply(60, i), multiplyJy(60, i), "0", 50,Constant.ONE));
+                    }
                 }
-                int i = sa.length;
-                if (sa.length>1) {
-                    scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(groupExamDetailId,  "总分", multiply(100, i), multiply(100, i), multiply(90, i), multiplyJy(90, i), multiply(80, i), multiplyJy(80, i), multiply(60, i), multiplyJy(60, i), "0", 50,Constant.ONE));
-                }
+                
                 
             }
             
@@ -4337,6 +4372,41 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
         return cmId.size();
     }
     
+    //生成班级成绩单
+    public void createGroupExam(String multiId) throws Exception{
+        MultiGroupExamDetailEntry entry = multiGroupExamDetailDao.getEntry(new ObjectId(multiId));
+        List<ObjectId> cmIdList = entry.getCommunityId();
+        Map<ObjectId, ObjectId> map = new HashMap<ObjectId, ObjectId>();
+        for (ObjectId cmId : cmIdList) {
+            GroupEntry ge = groupDao.getByCommunityId(cmId);
+            List<ObjectId> list = memberService.getMoreGroupMembers(ge.getID());
+            for (ObjectId uid : list) {
+                if (memberService.judgeNewPersonPermission(uid) == 5) {
+                    map.put(cmId, uid);
+                    break;
+                }
+            }
+        }
+        for (ObjectId cId : map.keySet()) {
+            ObjectId userId = map.get(cId);
+            //创建成绩基本信息
+            ExamGroupNewDto examGroupDTO = new ExamGroupNewDto();
+            examGroupDTO.setCommunityId(cId.toString());
+            examGroupDTO.setExamName(entry.getExamName());
+            examGroupDTO.setGroupId(groupDao.getByCommunityId(cId).getID().toString());
+            examGroupDTO.setRecordScoreType(entry.getRecordScoreType());
+            examGroupDTO.setSubjectIds(entry.getSubjectIds());
+            examGroupDTO.setExamStrTime(DateTimeUtils.convert(entry.getExamTime(),
+            DateTimeUtils.DATE_YYYY_MM_DD));
+            examGroupDTO.setIsFromPt(1);
+            examGroupDTO.setMultiId(entry.getID().toString());
+            GroupExamDetailDTO groupExamDetailDTO = examGroupDTO.buildDTO();
+            this.saveGroupExamDetail(groupExamDetailDTO, userId);
+        }
+        
+        multiGroupExamDetailDao.updateGroupExamDetailEntry1(new ObjectId(multiId), 1);
+    }
+    
     public static void main(String[] args) {
         GroupExamUserRecordDao groupExamUserRecordDao = new GroupExamUserRecordDao();
         while (true) {
@@ -4344,4 +4414,7 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
         }
         
     }
+    @Autowired
+    private MemberService memberService;
+    
 }

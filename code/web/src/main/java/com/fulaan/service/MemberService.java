@@ -475,6 +475,15 @@ public class MemberService {
         }
         return memberDTOs;
     }
+    
+    public List<ObjectId> getMoreGroupMembers(ObjectId groupId) {
+        List<MemberEntry> entries = memberDao.getAllMembers(groupId);
+        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        for (MemberEntry entry : entries) {
+            userIds.add(entry.getUserId());
+        }
+        return userIds;
+    }
 
     /**
      * 获取除了社长全部成员

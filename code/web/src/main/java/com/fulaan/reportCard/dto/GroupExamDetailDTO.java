@@ -99,6 +99,11 @@ public class GroupExamDetailDTO {
     
     private int isNew;
     
+  //是否来自平台创建
+    private Integer isFromPt = 0;
+    
+    private String multiId;
+    
     private List<String> subjectNameList = new ArrayList<String>();
 
     public GroupExamDetailDTO(){
@@ -725,8 +730,26 @@ public class GroupExamDetailDTO {
         this.scoreLevelList = scoreLevelList;
     }
 
+    public Integer getIsFromPt() {
+        return isFromPt;
+    }
+
+    public void setIsFromPt(Integer isFromPt) {
+        this.isFromPt = isFromPt;
+    }
+
+    public String getMultiId() {
+        return multiId;
+    }
+
+    public void setMultiId(String multiId) {
+        this.multiId = multiId;
+    }
+
     
 
+    
+    
    
     
     

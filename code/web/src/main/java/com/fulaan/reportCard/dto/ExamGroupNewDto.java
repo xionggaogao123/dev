@@ -19,6 +19,10 @@ public class ExamGroupNewDto {
     private String subjectIds;
     //考试时间
     private String examStrTime;
+    //是否来自平台创建
+    private Integer isFromPt = 0;
+    
+    private String multiId;
 
      
 
@@ -35,6 +39,8 @@ public class ExamGroupNewDto {
         detailDTO.setRecordScoreType(this.recordScoreType);
         detailDTO.setExamName(this.examName);
         detailDTO.setExamStrTime(this.examStrTime);
+        detailDTO.setIsFromPt(this.isFromPt);
+        detailDTO.setMultiId(this.multiId);
         return detailDTO;
     }
 
@@ -94,6 +100,24 @@ public class ExamGroupNewDto {
         this.examStrTime = examStrTime;
     }
 
+    public Integer getIsFromPt() {
+        return isFromPt;
+    }
+
+    public void setIsFromPt(Integer isFromPt) {
+        this.isFromPt = isFromPt;
+    }
+
+    public String getMultiId() {
+        return multiId;
+    }
+
+    public void setMultiId(String multiId) {
+        this.multiId = multiId;
+    }
+
+    
+    
     
     
     

@@ -376,13 +376,25 @@ public class ExtendedCourseService {
         ObjectId schoolId = schoolCommunityEntry.getSchoolId();
         long current  = System.currentTimeMillis();
         //0  全部   1  报名中   2  学习中   3 已学完
-        List<ExtendedCourseEntry> courseEntries = extendedCourseDao.getAllEntryList(gradeName, schoolId, keyword, status,current, page, pageSize);
-        int count = extendedCourseDao.countAllEntryList(gradeName, schoolId, keyword, status,current);
         //获得身份 ( true 老师    false 家长)
         boolean falge = teacherApproveDao.booleanBig(userId);
         int role = 2;
         if(falge){
             role = 1;
+        }
+        List<ExtendedCourseEntry> courseEntries = new ArrayList<ExtendedCourseEntry>();
+        int count  = 0;
+        if(role == 1){//老师查询所有
+            courseEntries = extendedCourseDao.getAllEntryList(gradeName, schoolId, keyword, status,current, page, pageSize);
+            count = extendedCourseDao.countAllEntryList(gradeName, schoolId, keyword, status,current);
+        }else{
+            List<NewVersionCommunityBindEntry> sids = newVersionCommunityBindDao.getBindEntries(communityId, userId);
+            List<ObjectId> sonIds = new ArrayList<ObjectId>();
+            for(NewVersionCommunityBindEntry communityBindEntry:sids){
+                sonIds.add(communityBindEntry.getUserId());
+            }
+            courseEntries = extendedCourseDao.getParentAllEntryList(sonIds, gradeName, schoolId, keyword, status, current, page, pageSize);
+            count = extendedCourseDao.countParentAllEntryList(sonIds,gradeName, schoolId, keyword, status,current);
         }
         List<ExtendedCourseDTO> dtos1 = new ArrayList<ExtendedCourseDTO>();
         this.getMyCourseList(courseEntries,dtos1,userId,current,status,role);
@@ -416,13 +428,25 @@ public class ExtendedCourseService {
         ObjectId schoolId = schoolCommunityEntry.getSchoolId();
         long current  = System.currentTimeMillis();
         //0  全部   1  报名中   2  学习中   3 已学完
-        List<ExtendedCourseEntry> courseEntries = extendedCourseDao.getAllEntryList(gradeName, schoolId, keyword, status,current, page, pageSize);
-        int count = extendedCourseDao.countAllEntryList(gradeName, schoolId, keyword, status,current);
         //获得身份 ( true 老师    false 家长)
         boolean falge = teacherApproveDao.booleanBig(userId);
         int role = 2;
         if(falge){
             role = 1;
+        }
+        List<ExtendedCourseEntry> courseEntries = new ArrayList<ExtendedCourseEntry>();
+        int count  = 0;
+        if(role == 1){//老师查询所有
+            courseEntries = extendedCourseDao.getAllEntryList(gradeName, schoolId, keyword, status,current, page, pageSize);
+            count = extendedCourseDao.countAllEntryList(gradeName, schoolId, keyword, status,current);
+        }else{
+            List<NewVersionCommunityBindEntry> sids = newVersionCommunityBindDao.getBindEntries(communityId, userId);
+            List<ObjectId> sonIds = new ArrayList<ObjectId>();
+            for(NewVersionCommunityBindEntry communityBindEntry:sids){
+                sonIds.add(communityBindEntry.getUserId());
+            }
+            courseEntries = extendedCourseDao.getParentAllEntryList(sonIds, gradeName, schoolId, keyword, status, current, page, pageSize);
+            count = extendedCourseDao.countParentAllEntryList(sonIds,gradeName, schoolId, keyword, status,current);
         }
         List<ExtendedCourseDTO> dtos1 = new ArrayList<ExtendedCourseDTO>();
         this.getMyWebCourseList(courseEntries,dtos1,userId,current,status,role);
@@ -481,8 +505,9 @@ public class ExtendedCourseService {
         ObjectId schoolId = schoolCommunityEntry.getSchoolId();
         long current  = System.currentTimeMillis();
         //0  全部   1  报名中   2  学习中   3 已学完
-        List<ExtendedCourseEntry> courseEntries = extendedCourseDao.getAllEntryList(gradeName, schoolId, keyword, status,current, page, pageSize);
-        int count = extendedCourseDao.countAllEntryList(gradeName, schoolId, keyword, status,current);
+        List<ObjectId> sonIds = new ArrayList<ObjectId>();
+        List<ExtendedCourseEntry> courseEntries = extendedCourseDao.getParentAllEntryList(sonIds, gradeName, schoolId, keyword, status, current, page, pageSize);
+        int count = extendedCourseDao.countParentAllEntryList(sonIds, gradeName, schoolId, keyword, status, current);
         //获得身份 ( 学生)
         int role = 3;
         List<ExtendedCourseDTO> dtos1 = new ArrayList<ExtendedCourseDTO>();

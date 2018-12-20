@@ -133,6 +133,39 @@ public class GroupExamUserRecordEntry extends BaseDBObject{
                 .append("sort", sort);
         setBaseEntry(basicDBObject);
     }
+    public GroupExamUserRecordEntry(ObjectId groupExamDetailId,
+                                    ObjectId mainUserId,
+                                    ObjectId userId,
+                                    ObjectId groupId,
+                                    ObjectId examType,
+                                    String subjectIds,
+                                    ObjectId communityId,
+                                    String score,
+                                    String scoreLevel,
+                                    int rank,
+                                    int status,
+                                    String rankStr,
+                                    int sort,
+                                    String bc,
+                                    String xc){
+        BasicDBObject basicDBObject=new BasicDBObject()
+                .append("sids",subjectIds)
+                .append("etp",examType)
+                .append("eid",groupExamDetailId)
+                .append("uid",userId)
+                .append("muid",mainUserId)
+                .append("st",status)
+                .append("gid",groupId)
+                .append("scs",score)
+                .append("scls",scoreLevel)
+                .append("rk",rank)
+                .append("cmId",communityId)
+                .append("rks", rankStr)
+                .append("sort", sort)
+                .append("bc",bc)
+                .append("xc",xc);
+        setBaseEntry(basicDBObject);
+    }
     
     public void setScoreStr(String scoreStr){
         setSimpleValue("scs",scoreStr);

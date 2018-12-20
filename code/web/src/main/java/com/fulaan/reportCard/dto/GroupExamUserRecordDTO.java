@@ -141,6 +141,8 @@ public class GroupExamUserRecordDTO {
         this.subjectId=null!=examUserRecordEntry.getSubjectIds()?
                 examUserRecordEntry.getSubjectIds():Constant.EMPTY;
                 this.sort=examUserRecordEntry.getSort();
+                this.bc = examUserRecordEntry.getBc();
+                this.xc = examUserRecordEntry.getXc();
         /*this.rankStr=null!=examUserRecordEntry.getRankStr()?
             examUserRecordEntry.getRankStr():Constant.EMPTY;*/
     }

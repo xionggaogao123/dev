@@ -454,6 +454,22 @@ public class GroupExamUserRecordDao extends BaseDao{
                 .append(Constant.MONGO_SET,new BasicDBObject("scs",scoreStr).append("scls",scoreLevelStr).append("rks",rankStr).append("bc",bc).append("xc",xc));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
     }
+    
+    public void updateGroupExamUserRecordScoreMultii(ObjectId uid,
+                                                    ObjectId groupExamDetailId,
+                                                 String scoreStr,
+                                                 String scoreLevelStr,
+         
+                                                 String bc,
+                                                 String xc
+                                                 ){
+          BasicDBObject query=new BasicDBObject()
+                  .append("uid",uid);
+          query.append("eid", groupExamDetailId);
+          BasicDBObject updateValue=new BasicDBObject()
+                  .append(Constant.MONGO_SET,new BasicDBObject("scs",scoreStr).append("scls",scoreLevelStr).append("bc",bc).append("xc",xc));
+          update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
+      }
 
     /**
      * 阅读该条信息

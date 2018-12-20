@@ -23,30 +23,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.db.reportCard.GroupExamDetailDao;
 import com.db.reportCard.ScoreRepresentDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.community.dto.CommunityDTO;
-import com.fulaan.reportCard.dto.ExamGroupDTO;
 import com.fulaan.reportCard.dto.ExamGroupNewDto;
-import com.fulaan.reportCard.dto.ExamGroupScoreDTO;
-import com.fulaan.reportCard.dto.ExamGroupUserScoreDTO;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
 import com.fulaan.reportCard.dto.GroupExamScoreDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
-import com.fulaan.reportCard.dto.GroupExamUserRecordStrDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordStrListDTO;
 import com.fulaan.reportCard.dto.GroupExamVersionDTO;
+import com.fulaan.reportCard.dto.MultiAllDto;
 import com.fulaan.reportCard.dto.MultiGroupExamDetailDto;
 import com.fulaan.reportCard.dto.ScoreRepresentDto;
 import com.fulaan.reportCard.service.ReportCardNewService;
 import com.pojo.reportCard.GroupExamDetailEntry;
-import com.pojo.reportCard.GroupExamUserRecordEntry;
 import com.pojo.reportCard.ScoreRepresentEntry;
-import com.pojo.reportCard.VirtualUserEntry;
-import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
@@ -816,5 +811,89 @@ public class ReportCardNewController extends BaseController {
             }
             return respObj;
         }
+        
+        /**
+        *
+        * @param request
+        * @return
+        * @throws Exception
+        */
+       @ApiOperation(value = "", httpMethod = "GET", produces = "application/json")
+       @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+               @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+               @ApiResponse(code = 500, message = "服务器不能完成请求")})
+       @RequestMapping("/getMultiInfo")
+       @ResponseBody
+       public RespObj getMultiInfo(String multiId){
+           RespObj respObj = new RespObj(Constant.FAILD_CODE);
+           
+           try {
+               MultiAllDto multiAllDto = reportCardService.getMultiInfo(multiId);
+               respObj.setCode(Constant.SUCCESS_CODE);
+               respObj.setMessage(multiAllDto);
+           } catch (Exception e) {
+               e.printStackTrace();
+               respObj.setErrorMessage(e.getMessage());
+           }
+           return respObj;
+       }
+       
+       /**
+       *
+       * @param request
+       * @return
+       * @throws Exception
+       */
+      @ApiOperation(value = "", httpMethod = "GET", produces = "application/json")
+      @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+              @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+              @ApiResponse(code = 500, message = "服务器不能完成请求")})
+      @RequestMapping("/saveMultiInfo")
+      @ResponseBody
+      public RespObj saveMultiInfo(@RequestBody MultiAllDto multiAllDto){
+          RespObj respObj = new RespObj(Constant.FAILD_CODE);
+          
+          try {
+              reportCardService.saveMultiInfo(multiAllDto);
+              respObj.setCode(Constant.SUCCESS_CODE);
+              respObj.setMessage(multiAllDto);
+          } catch (Exception e) {
+              e.printStackTrace();
+              respObj.setErrorMessage(e.getMessage());
+          }
+          return respObj;
+      }
+      
+      /**
+      *
+      * @param request
+      * @return
+      * @throws Exception
+      */
+      @ApiOperation(value = "", httpMethod = "GET", produces = "application/json")
+      @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+             @ApiResponse(code = 500, message = "服务器不能完成请求")})
+      @RequestMapping("/getMultiInfoSize")
+      @ResponseBody
+      public RespObj getMultiInfoSize(String multiId){
+         RespObj respObj = new RespObj(Constant.FAILD_CODE);
+         
+         try {
+             Integer size = reportCardService.getMultiInfoSize(multiId);
+             respObj.setCode(Constant.SUCCESS_CODE);
+             respObj.setMessage(size);
+         } catch (Exception e) {
+             e.printStackTrace();
+             respObj.setErrorMessage(e.getMessage());
+         }
+         return respObj;
+      }
+      
   
+      
 }
+
+
+  
+

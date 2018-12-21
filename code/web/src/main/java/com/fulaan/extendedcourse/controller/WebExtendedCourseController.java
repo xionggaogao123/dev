@@ -500,6 +500,7 @@ public class WebExtendedCourseController extends BaseController {
                                @RequestParam(value="communityId") String communityId){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
+
             String result = extendedCourseService.applyCourse(new ObjectId(communityId),getUserId(), new ObjectId(id),sonIds);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);

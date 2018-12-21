@@ -3589,7 +3589,8 @@ public class ReportCardNewService {
             cDto.add(oo);
         }
         
-        List<ObjectId> ids = memberDao.getMyCommunityOIdsByUserId(userId);
+        List<ObjectId> idss = memberDao.getGroupIdsList(userId);
+        List<ObjectId> ids = groupDao.getCommunitysIdsgroupIdList(idss);
         if (CollectionUtils.isNotEmpty(ids)) {
             if (StringUtils.isNotBlank(grade)) {
                 ids = countService.reList(ids, grade);

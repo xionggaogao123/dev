@@ -232,6 +232,19 @@ public class GroupDao extends BaseDao {
         return memberEntries;
     }
     
+    public List<ObjectId> getCommunitysIdsgroupIdList(List<ObjectId> groupIds) {
+        BasicDBObject query = new BasicDBObject().append("_id", new BasicDBObject(Constant.MONGO_IN, groupIds)).append("r", 0);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
+        for (DBObject dbo : dbObjects) {
+            GroupEntry memberEntry = new GroupEntry(dbo);
+            if (memberEntry.getCommunityId() != null) {
+                memberEntries.add(memberEntry.getCommunityId());
+            }
+        }
+        return memberEntries;
+    }
+    
     public GroupEntry getByCommunityId(ObjectId communityId) {
         BasicDBObject query = new BasicDBObject().append("cmid", communityId).append("r", 0);
        

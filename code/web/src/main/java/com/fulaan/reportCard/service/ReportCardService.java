@@ -1718,6 +1718,33 @@ public class ReportCardService {
     public Map<ObjectId, VirtualCommunityEntry> getVirtualCommunityMap(List<ObjectId> communityIds){
         return  virtualCommunityDao.getVirtualMap(communityIds);
     }
+    
+    public List<GradeDto> getGradeDto(ObjectId userId, String flag) {
+        List<GradeDto> gradeDtoList = new ArrayList<GradeDto>();
+        if (StringUtils.isNotBlank(flag)) {
+            GradeDto gd = new GradeDto("", "请选择");
+            gradeDtoList.add(gd);
+        }
+        List<ObjectId> groupIds = memberDao.getManagerGroupIdsByUserId(userId);
+        List<CommunityEntry> entries = communityDao.getCommunityEntriesByGroupIds(groupIds);
+        Set<String> gradeValSet = new HashSet<String>();
+        for (CommunityEntry ce : entries) {
+            if(StringUtils.isNotBlank(ce.getGradeVal())) {
+                gradeValSet.add(ce.getGradeVal());
+            }
+        }
+        
+        for (String s : gradeValSet) {
+            for (GradeEnum ge : GradeEnum.values()) {
+                if (ge.getGradeValue().equals(s)) {
+                    GradeDto gd = new GradeDto(ge.getGradeValue(), ge.getGradeName());
+                    gradeDtoList.add(gd);
+                }
+            }    
+        }
+        
+        return gradeDtoList;
+    }
 
     public List<VirtualCommunityUserDTO> getRoleCommunities(ObjectId userId, String grade, String communityId) {
         List<VirtualCommunityUserDTO> virtualCommunityUserDTOs

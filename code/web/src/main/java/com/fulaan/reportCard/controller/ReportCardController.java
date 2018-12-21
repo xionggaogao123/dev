@@ -26,6 +26,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.reportCard.dto.ExamGroupDTO;
 import com.fulaan.reportCard.dto.ExamGroupScoreDTO;
 import com.fulaan.reportCard.dto.ExamGroupUserScoreDTO;
+import com.fulaan.reportCard.dto.GradeDto;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
 import com.fulaan.reportCard.dto.GroupExamScoreDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
@@ -630,6 +631,19 @@ public class ReportCardController extends BaseController {
     public RespObj getRoleCommunities(String grade, String communityId) {
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         List<VirtualCommunityUserDTO> dtos = reportCardService.getRoleCommunities(getUserId(), grade, communityId);
+        respObj.setMessage(dtos);
+        return respObj;
+    }
+    
+    @ApiOperation(value = "获取当前登录人所在的年级", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getGradeDto")
+    @ResponseBody
+    public RespObj getGradeDto(String flag) {
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        List<GradeDto> dtos = reportCardService.getGradeDto(getUserId(), flag);
         respObj.setMessage(dtos);
         return respObj;
     }

@@ -1733,16 +1733,28 @@ public class ExtendedCourseService {
 
         //成功添加
         String[] sonIdList = sonIds.split(",");
-        //判断此次添加是否合理
-        if(sonIdList.length >extendedCourseEntry.getUserAllNumber()){//抢课
-            throw new Exception("超过课程总人数限制！");
-        }
+
         //已参选选项
         List<ObjectId> objectIdList = extendedUserApplyDao.getIdsByCourseId(id, communityId);
+        if(sonIds.equals("")){//全删
+            extendedUserApplyDao.delAllEntry(id,communityId,objectIdList);
+            userSelectList.removeAll(objectIdList);
+            applyUserList.removeAll(objectIdList);
+            extendedCourseDao.saveEntry(extendedCourseEntry);
+            return;
+        }
         //本次选择的
         List<ObjectId> selectList = new ArrayList<ObjectId>();
         for(String str:sonIdList){
             selectList.add(new ObjectId(str));
+        }
+        //判断此次添加是否合理
+        List<ObjectId> list = new ArrayList<ObjectId>();
+        list.addAll(userSelectList);
+        list.removeAll(selectList);
+        int allNumber = selectList.size() + list.size();
+        if(allNumber >extendedCourseEntry.getUserAllNumber()){//抢课
+            throw new Exception("超过课程总人数限制！");
         }
         //本次新增的
         List<ObjectId> newStudentIds =  new ArrayList<ObjectId>();

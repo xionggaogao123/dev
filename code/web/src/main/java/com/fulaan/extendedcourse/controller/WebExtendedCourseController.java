@@ -762,4 +762,26 @@ public class WebExtendedCourseController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 查询课程详情（家长）
+     */
+    @ApiOperation(value = "查询课程详情（家长）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/selectCourseDesc")
+    @ResponseBody
+    public RespObj selectCourseDesc(@RequestParam(value="id") String id,
+                                    @RequestParam(value="communityId") String communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> result = extendedCourseService.selectCourseDesc(getUserId(), new ObjectId(id),new ObjectId(communityId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 }

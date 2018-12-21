@@ -830,7 +830,7 @@ public class ExtendedCourseService {
                         throw new Exception("课程已抢光！");
                     }
                     int count = extendedUserApplyDao.countCourseUser(id,communityId);
-                    if (count>=extendedCourseEntry.getClassUserNumber()) {
+                    if (extendedCourseEntry.getClassUserNumber()!=0 && count>=extendedCourseEntry.getClassUserNumber()) {
                         throw new Exception("本班级名额已抢光！");
                     }
                     ExtendedUserApplyEntry extendedUserApplyEntry1 = new ExtendedUserApplyEntry(
@@ -951,7 +951,7 @@ public class ExtendedCourseService {
                     throw new Exception("已报名，不可重复报名！");
                 }
                 int count = extendedUserApplyDao.countCourseUser(id,communityId);
-                if (count>=extendedCourseEntry.getClassUserNumber()) {
+                if (extendedCourseEntry.getClassUserNumber()!=0 && count>=extendedCourseEntry.getClassUserNumber()) {
                     throw new Exception("本班级名额已抢光！");
                 }
                 ExtendedUserApplyEntry extendedUserApplyEntry1 = new ExtendedUserApplyEntry(
@@ -1032,10 +1032,14 @@ public class ExtendedCourseService {
         }
         //构造
         if(type==1){
+            applyUserList.remove(sonId);
             userSelectList.remove(sonId);
             extendedCourseEntry.setUserSelectedList(userSelectList);
+            extendedCourseEntry.setUserApplyList(applyUserList);
         }else{
+            userSelectList.remove(sonId);
             applyUserList.remove(sonId);
+            extendedCourseEntry.setUserSelectedList(userSelectList);
             extendedCourseEntry.setUserApplyList(applyUserList);
         }
         if(extendedUserApplyEntry==null){
@@ -1070,10 +1074,14 @@ public class ExtendedCourseService {
         }
         //构造
         if(type==1){
+            applyUserList.remove(sonId);
             userSelectList.remove(sonId);
             extendedCourseEntry.setUserSelectedList(userSelectList);
+            extendedCourseEntry.setUserApplyList(applyUserList);
         }else{
+            userSelectList.remove(sonId);
             applyUserList.remove(sonId);
+            extendedCourseEntry.setUserSelectedList(userSelectList);
             extendedCourseEntry.setUserApplyList(applyUserList);
         }
         if(extendedUserApplyEntry==null){

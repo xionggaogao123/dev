@@ -488,6 +488,52 @@ public class WebExtendedCourseController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 报名、抢课(家长)
+     */
+    @ApiOperation(value = "报名、抢课(家长)", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/applyCourse")
+    @ResponseBody
+    public RespObj applyCourse(@RequestParam(value="id") String id,
+                               @RequestParam(value="sonIds") String sonIds,
+                               @RequestParam(value="communityId") String communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String result = extendedCourseService.applyCourse(new ObjectId(communityId),getUserId(), new ObjectId(id),sonIds);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 取消报名（家长）
+     */
+    @ApiOperation(value = "取消报名（家长）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/deleteMyApply")
+    @ResponseBody
+    public RespObj deleteMyApply(@RequestParam(value="communityId") String communityId,
+                                 @RequestParam(value="sonId") String sonId,
+                                 @RequestParam(value="id") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            extendedCourseService.deleteMyApply(new ObjectId(id), new ObjectId(communityId),getUserId(), new ObjectId(sonId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("取消成功");
+        }catch (Exception e){
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 
     /**
      * 获得老师权限及是否展示

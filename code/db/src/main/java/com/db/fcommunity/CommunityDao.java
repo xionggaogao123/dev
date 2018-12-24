@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by jerry on 2016/10/24.
@@ -52,6 +53,22 @@ public class CommunityDao extends BaseDao {
 
     public List<CommunityEntry> findByObjectIds(List<ObjectId> ids) {
         BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+        List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
+        for (DBObject dbo : dbObjects) {
+            communitys.add(new CommunityEntry(dbo));
+        }
+        return communitys;
+    }
+    
+    public List<CommunityEntry> findByObjectIds(String title, List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
+        if (StringUtils.isNotBlank(title)) {
+            if(StringUtils.isNotBlank(title)){
+                Pattern pattern = Pattern.compile("^.*" + title + ".*$", Pattern.CASE_INSENSITIVE);
+                query.append("cmmn",new BasicDBObject(Constant.MONGO_REGEX, pattern));
+            }
+        }
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
         List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
         for (DBObject dbo : dbObjects) {
@@ -378,6 +395,29 @@ public class CommunityDao extends BaseDao {
     public List<CommunityEntry> getCommunityEntriesByGroupIds(List<ObjectId> groupIds){
         List<CommunityEntry> entries=new ArrayList<CommunityEntry>();
         BasicDBObject query = new BasicDBObject().append("grid", new BasicDBObject(Constant.MONGO_IN,groupIds));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new CommunityEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+    
+    /**
+     * 通过群组Ids列表查询社区列表
+     * @param groupIds
+     * @return
+     */
+    public List<CommunityEntry> getCommunityEntriesByGroupIds(String title, List<ObjectId> groupIds){
+        List<CommunityEntry> entries=new ArrayList<CommunityEntry>();
+        BasicDBObject query = new BasicDBObject().append("grid", new BasicDBObject(Constant.MONGO_IN,groupIds));
+   
+        if(StringUtils.isNotBlank(title)){
+            Pattern pattern = Pattern.compile("^.*" + title + ".*$", Pattern.CASE_INSENSITIVE);
+            query.append("cmmn",new BasicDBObject(Constant.MONGO_REGEX, pattern));
+        }
+      
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){

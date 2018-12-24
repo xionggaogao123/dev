@@ -48,6 +48,7 @@ import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.QiniuFileUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.*;
@@ -3604,7 +3605,7 @@ public class ReportCardNewService {
      * @param userId
      * @param grade
      */
-    public List<CommunityDTO> getCommunityByNjAndUserId(ObjectId userId, String grade, String isWithN) {
+    public List<CommunityDTO> getCommunityByNjAndUserId(String title, ObjectId userId, String grade, String isWithN) {
         List<CommunityDTO> cDto = new ArrayList<CommunityDTO>();
         if (StringUtils.isBlank(isWithN)) {
             CommunityDTO oo = new CommunityDTO();
@@ -3619,7 +3620,7 @@ public class ReportCardNewService {
             if (StringUtils.isNotBlank(grade)) {
                 ids = countService.reList(ids, grade);
             }
-            List<CommunityEntry> ceList = communityDao.findByObjectIds(ids);
+            List<CommunityEntry> ceList = communityDao.findByObjectIds(title, ids);
             for (CommunityEntry e : ceList) {
                 CommunityDTO o = new CommunityDTO(e);
                 cDto.add(o);
@@ -3908,7 +3909,13 @@ public class ReportCardNewService {
                     }
                     
                 }
-                String[] sss = recordDTOs.get(0).getSubjectId().split(",");
+                String[] sss;
+                if (CollectionUtils.isNotEmpty(recordDTOs)) {
+                    sss = recordDTOs.get(0).getSubjectId().split(",");
+                } else {
+                    sss = new String[] {};
+                }
+                
                 if (sss.length>1) {
                     cell = row.createCell(1+(sss.length)*3);
                     cell.setCellValue("总分"+scoreName);
@@ -3919,8 +3926,14 @@ public class ReportCardNewService {
            
                 HSSFRow row2 = sheet.createRow(2);
                 int kk = 1;
+                String[] ss;
+                if (CollectionUtils.isNotEmpty(recordDTOs)) {
+                    ss = recordDTOs.get(0).getSubjectId().split(",");
+                } else {
+                    ss = new String[] {};
+                }
               
-                String[] ss = recordDTOs.get(0).getSubjectId().split(",");
+                
                 
                 for (int i =0;i<ss.length;i++) {
                     //SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(ss[i]));
@@ -4092,16 +4105,24 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
                         sbb.append(String.valueOf(scoreLevel)).append(",");
                     }
                     String bcc = getStringCellValue(cell1, evaluator);
-                    if (StringUtils.isNotBlank(bcc)) {
-                        bc.append(bcc).append(",");
-                    } else {
+                    if (StringUtils.isBlank(bcc)) {
+                        bc.append("-2").append(",");
+                    } else if ((!org.apache.commons.lang.math.NumberUtils.isNumber(bcc)) && !"缺".equals(bcc.trim()) && StringUtils.isNotBlank(bcc)) {
+                        throw new Exception("班次存在非正整数，请检查");
+                    } else if ("缺".equals(bcc.trim())) {
                         bc.append("-1").append(",");
+                    } else {
+                        bc.append(bcc).append(",");
                     }
                     String xcc = getStringCellValue(cell2, evaluator);
-                    if (StringUtils.isNotBlank(xcc)) {
-                        xc.append(xcc).append(",");
-                    } else {
+                    if (StringUtils.isBlank(xcc)) {
+                        xc.append("-2").append(",");
+                    } else if ((!org.apache.commons.lang.math.NumberUtils.isNumber(xcc)) && !"缺".equals(xcc.trim()) && StringUtils.isNotBlank(xcc)) {
+                        throw new Exception("校次存在非正整数，请检查");
+                    } else if ("缺".equals(xcc.trim())){
                         xc.append("-1").append(",");
+                    } else {
+                        xc.append(xcc);
                     }
                   
                 }
@@ -4352,10 +4373,31 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
                 List<MultiDto> multiDtoList = new ArrayList<MultiDto>();
                 for (int i = 0; i < scoreStrArry.length; i++) {
                     MultiDto multiDto = new MultiDto();
-                    multiDto.setScore(scoreStrArry[i]);
+                    if ("-1".equals(scoreStrArry[i])) {
+                        multiDto.setScore("缺");
+                    } else if ("-2".equals(scoreStrArry[i])) {
+                        multiDto.setScore("");
+                    } else {
+                        multiDto.setScore(scoreStrArry[i]);
+                    }
+                    
                     multiDto.setScoreLevel(scoreLevelStrArry[i]);
-                    multiDto.setBc(String.valueOf(new BigDecimal(bcArry[i]).intValue()));
-                    multiDto.setXc(String.valueOf(new BigDecimal(xcArry[i]).intValue()));
+                    if ("-1".equals(bcArry[i])) {
+                        multiDto.setBc("缺");
+                    } else if ("-2".equals(bcArry[i]) || StringUtils.isBlank(bcArry[i])) {
+                        multiDto.setBc("");
+                    } else{
+                        multiDto.setBc(String.valueOf(new BigDecimal(bcArry[i]).intValue()));
+                    }
+                    
+                    if ("-1".equals(xcArry[i])) {
+                        multiDto.setXc("缺");
+                    } else if ("-2".equals(xcArry[i]) || StringUtils.isBlank(xcArry[i])) {
+                        multiDto.setXc("");
+                    } else {
+                        multiDto.setXc(String.valueOf(new BigDecimal(xcArry[i]).intValue()));
+                    }
+                    
                     multiDtoList.add(multiDto);
                 }
                 multiPartDto.setMultiDtoList(multiDtoList);
@@ -4386,15 +4428,43 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
                 StringBuffer xc = new StringBuffer();
                 int ii = 0;
                 for (MultiDto m : md) {
-                    if(!this.isNumeric(m.getScore())) {
-                        throw new Exception("不是数字");
-                    } else if (new BigDecimal(m.getScore()).compareTo(new BigDecimal(list.get(ii).getMaxScore())) >1) {
-                        throw new Exception("超最大值");
+                    if((!org.apache.commons.lang.math.NumberUtils.isNumber(m.getScore())) && !"缺".equals(m.getScore().trim()) && StringUtils.isNotBlank(m.getScore())) {
+                        throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门分数不是数字");
+                    } else if (!"缺".equals(m.getScore().trim()) && StringUtils.isNotBlank(m.getScore()) && new BigDecimal(m.getScore()).compareTo(new BigDecimal(list.get(ii).getMaxScore())) > 0) {
+                        throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门分数超最大值");
                     }
-                    scoreStr.append(m.getScore()).append(",");
+                    if ("缺".equals(m.getScore().trim())) {
+                        scoreStr.append("-1").append(",");
+                    } else if (StringUtils.isBlank(m.getScore())) {
+                        scoreStr.append("-2").append(",");
+                    } else {
+                        scoreStr.append(m.getScore()).append(",");
+                    }
+                    
                     scoreLevelStr.append(m.getScoreLevel()).append(",");
-                    bc.append(m.getBc()).append(",");
-                    xc.append(m.getXc()).append(",");
+                    if((!org.apache.commons.lang.math.NumberUtils.isNumber(m.getBc())) && !"缺".equals(m.getBc().trim()) && StringUtils.isNotBlank(m.getBc())) {
+                        throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门班次格式不对");
+                    } 
+                    if((!org.apache.commons.lang.math.NumberUtils.isNumber(m.getXc())) && !"缺".equals(m.getXc().trim()) && StringUtils.isNotBlank(m.getXc())) {
+                        throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门校次格式不对");
+                    } 
+                    if ("缺".equals(m.getBc().trim())) {
+                        bc.append("-1").append(",");
+                    } else if (StringUtils.isBlank(m.getBc())) {
+                        bc.append("-2").append(",");
+                    } else {
+                        bc.append(m.getBc()).append(",");
+                    }
+                    
+                    if ("缺".equals(m.getXc().trim())) {
+                        xc.append("-1").append(",");
+                    } else if (StringUtils.isBlank(m.getXc())) {
+                        xc.append("-2").append(",");
+                    } else {
+                        xc.append(m.getXc()).append(",");
+                    }
+                    
+                    
                     ii++;
                 }
                 groupExamUserRecordDao.updateGroupExamUserRecordScoreMultii(new ObjectId(userId), new ObjectId(multiAllDto.getMultiId()), scoreStr.toString(), scoreLevelStr.toString(), bc.toString(), xc.toString());
@@ -4402,15 +4472,7 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
         }
     }
     
-  //方法一：用JAVA自带的函数
-     public  boolean isNumeric(String str){
-        for (int i = str.length();--i>=0;){  
-            if (!Character.isDigit(str.charAt(i))){
-                return false;
-            }
-        }
-       return true;
-     }
+  
     
     public Integer getMultiInfoSize(String multiId) {
         MultiGroupExamDetailEntry entry = multiGroupExamDetailDao.getEntry(new ObjectId(multiId));

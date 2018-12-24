@@ -677,10 +677,10 @@ public class ReportCardNewController extends BaseController {
          @ApiResponse(code = 500, message = "服务器不能完成请求")})
  @RequestMapping("/getCommunityByNjAndUserId")
  @ResponseBody
-  public RespObj getCommunityByNjAndUserId(String grade, String isWithN) {
+  public RespObj getCommunityByNjAndUserId(String title,String grade, String isWithN) {
      RespObj respObj = new RespObj(Constant.FAILD_CODE);
      try {
-         List<CommunityDTO> list =  reportCardService.getCommunityByNjAndUserId(getUserId(), grade, isWithN);
+         List<CommunityDTO> list =  reportCardService.getCommunityByNjAndUserId(title, getUserId(), grade, isWithN);
          respObj.setCode(Constant.SUCCESS_CODE);
          respObj.setMessage(list);
     } catch (Exception e) {

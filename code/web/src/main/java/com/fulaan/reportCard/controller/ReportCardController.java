@@ -628,9 +628,9 @@ public class ReportCardController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getRoleCommunities")
     @ResponseBody
-    public RespObj getRoleCommunities(String grade, String communityId) {
+    public RespObj getRoleCommunities(String title, String grade, String communityId) {
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        List<VirtualCommunityUserDTO> dtos = reportCardService.getRoleCommunities(getUserId(), grade, communityId);
+        List<VirtualCommunityUserDTO> dtos = reportCardService.getRoleCommunities(title, getUserId(), grade, communityId);
         respObj.setMessage(dtos);
         return respObj;
     }

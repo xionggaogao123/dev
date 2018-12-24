@@ -1748,7 +1748,7 @@ public class ReportCardService {
         return gradeDtoList;
     }
 
-    public List<VirtualCommunityUserDTO> getRoleCommunities(ObjectId userId, String grade, String communityId) {
+    public List<VirtualCommunityUserDTO> getRoleCommunities(String title, ObjectId userId, String grade, String communityId) {
         List<VirtualCommunityUserDTO> virtualCommunityUserDTOs
                 = new ArrayList<VirtualCommunityUserDTO>();
         List<ObjectId> communityIds = new ArrayList<ObjectId>();
@@ -1759,7 +1759,7 @@ public class ReportCardService {
             communityIds.add(communityEntry.getID());
         } else {
             List<ObjectId> groupIds = memberDao.getManagerGroupIdsByUserId(userId);
-            entries = communityDao.getCommunityEntriesByGroupIds(groupIds);
+            entries = communityDao.getCommunityEntriesByGroupIds(title, groupIds);
             //List<ObjectId> communityIds = new ArrayList<ObjectId>();
             for (CommunityEntry communityEntry : entries) {
                 communityIds.add(communityEntry.getID());

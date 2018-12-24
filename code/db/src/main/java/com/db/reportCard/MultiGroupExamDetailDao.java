@@ -2,6 +2,7 @@ package com.db.reportCard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
@@ -55,11 +56,15 @@ public class MultiGroupExamDetailDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_MULTI_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
     }
     
-    public List<MultiGroupExamDetailEntry> getMappingDatas(List<ObjectId> cid, int page,int pageSize){
+    public List<MultiGroupExamDetailEntry> getMappingDatas(String title, List<ObjectId> cid, int page,int pageSize){
         List<MultiGroupExamDetailEntry> entries=new ArrayList<MultiGroupExamDetailEntry>();
         BasicDBObject query = new BasicDBObject("isr", Constant.ZERO);
         if (Constant.ZERO != cid.size()) {
             query.append("cmId", new BasicDBObject(Constant.MONGO_IN, cid));
+        }
+        if(StringUtils.isNotBlank(title)){
+            Pattern pattern = Pattern.compile("^.*" + title + ".*$", Pattern.CASE_INSENSITIVE);
+            query.append("en",new BasicDBObject(Constant.MONGO_REGEX, pattern));
         }
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),
                 Constant.COLLECTION_MULTI_REPORT_CARD_GROUP_EXAM_DETAIL,query,

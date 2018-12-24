@@ -30,6 +30,7 @@ import com.fulaan.user.service.TestTable;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
+import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.GroupEntry;
 import com.pojo.fcommunity.MemberEntry;
@@ -1304,16 +1305,31 @@ public class ReportCardNewService {
             if (dto.getIsFromPt() == 1) {
                 List<GroupExamUserRecordEntry> userRecordEntriess = groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(dto.getMultiId()), new ObjectId(dto.getCommunityId()));
                 for (GroupExamUserRecordEntry g : userRecordEntriess) {
+                    String[] scoreStrOld = g.getScoreStr().split(",");
+                    String[] scoreLevelStrOld = g.getScoreLevelStr().split(",");
+                    String scoreStrNew = "";
+                    String scoreLevelStrNew = "";
+                    String[] ss = dto.getSubjectIds().split(",");
+                    List<String> ssList = Arrays.asList(ss);
+                    String[] ss1 = g.getSubjectIds().split(",");
+                    for (int i = 0; i<ss1.length; i++) {
+                        if (ssList.contains(ss1[i])) {
+                            scoreStrNew = scoreStrNew + scoreStrOld[i] + ",";
+                            scoreLevelStrNew = scoreLevelStrNew + scoreLevelStrOld[i];
+       
+                        }
+                    }
+                    
                     userRecordEntries.add(new GroupExamUserRecordEntry(
                         groupExamDetailId,
                         userId,
                         g.getUserId(),
                         g.getGroupId(),
                         g.getExamType(),
-                        g.getSubjectIds(),
+                        dto.getSubjectIds(),
                         g.getCommunityId(),
-                        g.getScoreStr(),
-                        g.getScoreLevelStr(),
+                        scoreStrNew,
+                        scoreLevelStrNew,
                         0,
                         Constant.ZERO,
                         g.getRankStr(),
@@ -1393,9 +1409,17 @@ public class ReportCardNewService {
                 webHomePageDao.saveWebHomeEntry(homePageEntry);
                 if (dto.getIsFromPt() == 1) {
                     List<ScoreRepresentEntry> srEntry = scoreRepresentDao.getScoreRepresentAll(new ObjectId(dto.getMultiId()));
+                    String[] ss = dto.getSubjectIds().split(",");
+                    List<String> sL = Arrays.asList(ss);
                     for (ScoreRepresentEntry e : srEntry) {
-                        ScoreRepresentEntry seNew = new ScoreRepresentEntry(groupExamDetailId, e.getSubjectId(), e.getSubjectName(),e.getMaxScore(), e.getScoreOne(), e.getScoreTwo(), e.getScoreThree(), e.getScoreFour(), e.getScoreFive(), e.getScoreSix(), e.getScoreSeven(), e.getScoreEight(), e.getSort(), e.getRepresentNameType());
-                        scoreRepresentDao.saveScoreRepresent(seNew);
+                        if (e.getSubjectId() != null) {
+                            if (sL.contains(e.getSubjectId().toString())) {
+                                ScoreRepresentEntry seNew = new ScoreRepresentEntry(groupExamDetailId, e.getSubjectId(), e.getSubjectName(),e.getMaxScore(), e.getScoreOne(), e.getScoreTwo(), e.getScoreThree(), e.getScoreFour(), e.getScoreFive(), e.getScoreSix(), e.getScoreSeven(), e.getScoreEight(), e.getSort(), e.getRepresentNameType());
+                                scoreRepresentDao.saveScoreRepresent(seNew);
+                            }
+                        }
+                        
+                        
                         
                     }
                 } else {
@@ -3605,7 +3629,7 @@ public class ReportCardNewService {
         return cDto;
     }
     
-    public Map<String, Object> getMultiReportList(ObjectId userId,String grade, String cId, int page, int pageSize) {
+    public Map<String, Object> getMultiReportList(String title, ObjectId userId,String grade, String cId, int page, int pageSize) {
         Map<String, Object> result = new HashMap<String, Object>();
         List<ObjectId> cidList = new ArrayList<ObjectId>();
         if (StringUtils.isNotBlank(cId)) {
@@ -3616,7 +3640,7 @@ public class ReportCardNewService {
                 cidList = countService.reList(cidList, grade);
             }
         }
-        List<MultiGroupExamDetailEntry> me = multiGroupExamDetailDao.getMappingDatas(cidList, page, pageSize);
+        List<MultiGroupExamDetailEntry> me = multiGroupExamDetailDao.getMappingDatas(title,cidList, page, pageSize);
         List<MultiGroupExamDetailDto> med = new ArrayList<MultiGroupExamDetailDto>();
         for (MultiGroupExamDetailEntry m : me) {
             MultiGroupExamDetailDto o = new MultiGroupExamDetailDto(m);
@@ -4345,8 +4369,9 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
         return multiAllDto;
     }
     
-    public void saveMultiInfo(MultiAllDto multiAllDto) {
+    public void saveMultiInfo(MultiAllDto multiAllDto) throws Exception{
         MultiGroupExamDetailEntry entry = multiGroupExamDetailDao.getEntry(new ObjectId(multiAllDto.getMultiId()));
+        List<ScoreRepresentDto> list = this.getScoreRepresentById(new ObjectId(multiAllDto.getMultiId()));
         Map<Integer, List<MultiPartDto>> mp = multiAllDto.getMultiPartDtoList();
         List<ObjectId> cmId = entry.getCommunityId();
         for (int i = 0; i<cmId.size(); i++) {
@@ -4355,19 +4380,37 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
                 List<MultiDto> md = mpd.get(j).getMultiDtoList();
                 String userId = mpd.get(j).getUserId();
                 StringBuffer scoreStr = new StringBuffer();
+                
                 StringBuffer scoreLevelStr = new StringBuffer();
                 StringBuffer bc = new StringBuffer();
                 StringBuffer xc = new StringBuffer();
+                int ii = 0;
                 for (MultiDto m : md) {
+                    if(!this.isNumeric(m.getScore())) {
+                        throw new Exception("不是数字");
+                    } else if (new BigDecimal(m.getScore()).compareTo(new BigDecimal(list.get(ii).getMaxScore())) >1) {
+                        throw new Exception("超最大值");
+                    }
                     scoreStr.append(m.getScore()).append(",");
                     scoreLevelStr.append(m.getScoreLevel()).append(",");
                     bc.append(m.getBc()).append(",");
                     xc.append(m.getXc()).append(",");
+                    ii++;
                 }
                 groupExamUserRecordDao.updateGroupExamUserRecordScoreMultii(new ObjectId(userId), new ObjectId(multiAllDto.getMultiId()), scoreStr.toString(), scoreLevelStr.toString(), bc.toString(), xc.toString());
             }
         }
     }
+    
+  //方法一：用JAVA自带的函数
+     public  boolean isNumeric(String str){
+        for (int i = str.length();--i>=0;){  
+            if (!Character.isDigit(str.charAt(i))){
+                return false;
+            }
+        }
+       return true;
+     }
     
     public Integer getMultiInfoSize(String multiId) {
         MultiGroupExamDetailEntry entry = multiGroupExamDetailDao.getEntry(new ObjectId(multiId));
@@ -4377,7 +4420,7 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
     }
     
     //生成班级成绩单
-    public void createGroupExam(String multiId) throws Exception{
+    public void createGroupExam(String multiId, String subjectId, ObjectId userId) throws Exception{
         MultiGroupExamDetailEntry entry = multiGroupExamDetailDao.getEntry(new ObjectId(multiId));
         List<ObjectId> cmIdList = entry.getCommunityId();
         Map<ObjectId, ObjectId> map = new HashMap<ObjectId, ObjectId>();
@@ -4385,30 +4428,42 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
             GroupEntry ge = groupDao.getByCommunityId(cmId);
             List<ObjectId> list = memberService.getMoreGroupMembers(ge.getID());
             for (ObjectId uid : list) {
-                if (memberService.judgeNewPersonPermission(uid) == 5) {
+                if (memberService.judgeNewPersonPermission(uid) == 5 && uid.equals(userId)) {
                     map.put(cmId, uid);
-                    break;
                 }
             }
         }
         for (ObjectId cId : map.keySet()) {
-            ObjectId userId = map.get(cId);
+            ObjectId userIdd = map.get(cId);
             //创建成绩基本信息
             ExamGroupNewDto examGroupDTO = new ExamGroupNewDto();
             examGroupDTO.setCommunityId(cId.toString());
             examGroupDTO.setExamName(entry.getExamName());
             examGroupDTO.setGroupId(groupDao.getByCommunityId(cId).getID().toString());
             examGroupDTO.setRecordScoreType(entry.getRecordScoreType());
-            examGroupDTO.setSubjectIds(entry.getSubjectIds());
+            examGroupDTO.setSubjectIds(subjectId);
             examGroupDTO.setExamStrTime(DateTimeUtils.convert(entry.getExamTime(),
             DateTimeUtils.DATE_YYYY_MM_DD));
             examGroupDTO.setIsFromPt(1);
             examGroupDTO.setMultiId(entry.getID().toString());
             GroupExamDetailDTO groupExamDetailDTO = examGroupDTO.buildDTO();
-            this.saveGroupExamDetail(groupExamDetailDTO, userId);
+            this.saveGroupExamDetail(groupExamDetailDTO, userIdd);
         }
         
         multiGroupExamDetailDao.updateGroupExamDetailEntry1(new ObjectId(multiId), 1);
+    }
+    
+    public List<SubjectClassDTO> getSubjectList(String multiId) {
+        List<SubjectClassDTO> list = new ArrayList<SubjectClassDTO>();
+        MultiGroupExamDetailEntry m = multiGroupExamDetailDao.getEntry(new ObjectId(multiId));
+        String ids = m.getSubjectIds();
+        String[] idArray = ids.split(",");
+        for (String s : idArray) {
+            SubjectClassEntry entry = subjectClassDao.getEntry(new ObjectId(s));
+            SubjectClassDTO subjectClassDto = new SubjectClassDTO(entry);
+            list.add(subjectClassDto);
+        }
+        return list;
     }
     
     public static void main(String[] args) {

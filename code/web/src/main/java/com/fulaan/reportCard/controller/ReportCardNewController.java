@@ -40,6 +40,7 @@ import com.fulaan.reportCard.dto.MultiAllDto;
 import com.fulaan.reportCard.dto.MultiGroupExamDetailDto;
 import com.fulaan.reportCard.dto.ScoreRepresentDto;
 import com.fulaan.reportCard.service.ReportCardNewService;
+import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.reportCard.GroupExamDetailEntry;
 import com.pojo.reportCard.ScoreRepresentEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
@@ -701,10 +702,10 @@ public class ReportCardNewController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getMultiReportList")
     @ResponseBody
-  public RespObj getMultiReportList(String grade, String cId, int page, int pageSize) {
+  public RespObj getMultiReportList(String title, String grade, String cId, int page, int pageSize) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
-            Map<String, Object> map = reportCardService.getMultiReportList(getUserId(), grade, cId, page, pageSize);
+            Map<String, Object> map = reportCardService.getMultiReportList(title,getUserId(), grade, cId, page, pageSize);
             respObj.setMessage(map);
             respObj.setCode(Constant.SUCCESS_CODE);
         } catch (Exception e) {
@@ -902,11 +903,11 @@ public class ReportCardNewController extends BaseController {
              @ApiResponse(code = 500, message = "服务器不能完成请求")})
       @RequestMapping("/createGroupExam")
       @ResponseBody
-      public RespObj createGroupExam(String multiId){
+      public RespObj createGroupExam(String multiId, String subjectId){
          RespObj respObj = new RespObj(Constant.FAILD_CODE);
          
          try {
-             reportCardService.createGroupExam(multiId);
+             reportCardService.createGroupExam(multiId, subjectId, getUserId());
              respObj.setCode(Constant.SUCCESS_CODE);
   
          } catch (Exception e) {
@@ -916,7 +917,31 @@ public class ReportCardNewController extends BaseController {
          return respObj;
       }
       
-  
+      /**
+      *
+      * @param request
+      * @return
+      * @throws Exception
+      */ 
+      @ApiOperation(value = "", httpMethod = "GET", produces = "application/json")
+      @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+             @ApiResponse(code = 500, message = "服务器不能完成请求")})
+      @RequestMapping("/getSubjectList")
+      @ResponseBody
+      public RespObj getSubjectList(String multiId){
+         RespObj respObj = new RespObj(Constant.FAILD_CODE);
+         
+         try {
+             List<SubjectClassDTO> list = reportCardService.getSubjectList(multiId);
+             respObj.setCode(Constant.SUCCESS_CODE);
+             respObj.setMessage(list);
+         } catch (Exception e) {
+             e.printStackTrace();
+             respObj.setErrorMessage(e.getMessage());
+         }
+         return respObj;
+      }
       
 }
 

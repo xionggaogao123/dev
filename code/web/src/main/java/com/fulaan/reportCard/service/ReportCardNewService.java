@@ -4254,7 +4254,7 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
                     } else if ("缺".equals(xcc.trim())){
                         xc.append("-1").append(",");
                     } else {
-                        xc.append(xcc);
+                        xc.append(xcc).append(",");
                     }
                   
                 }

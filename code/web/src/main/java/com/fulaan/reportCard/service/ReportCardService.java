@@ -1,5 +1,40 @@
 package com.fulaan.reportCard.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.NumberToTextConverter;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
@@ -9,12 +44,22 @@ import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.indexPage.WebHomePageDao;
 import com.db.instantmessage.RedDotDao;
+import com.db.jiaschool.SchoolCommunityDao;
 import com.db.operation.AppNoticeDao;
-import com.db.reportCard.*;
+import com.db.reportCard.GroupExamDetailDao;
+import com.db.reportCard.GroupExamUserRecordDao;
+import com.db.reportCard.GroupExamVersionDao;
+import com.db.reportCard.RecordLevelEvaluateDao;
+import com.db.reportCard.RecordScoreEvaluateDao;
+import com.db.reportCard.ReportCardSignDao;
+import com.db.reportCard.VirtualAndUserDao;
+import com.db.reportCard.VirtualCommunityDao;
+import com.db.reportCard.VirtualUserDao;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.count.service.CountService;
 import com.fulaan.dto.VideoDTO;
+import com.fulaan.extendedcourse.service.ExtendedCourseService;
 import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
@@ -22,7 +67,14 @@ import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
-import com.fulaan.reportCard.dto.*;
+import com.fulaan.reportCard.dto.GradeDto;
+import com.fulaan.reportCard.dto.GradeEnum;
+import com.fulaan.reportCard.dto.GroupExamDetailDTO;
+import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
+import com.fulaan.reportCard.dto.GroupExamVersionDTO;
+import com.fulaan.reportCard.dto.RecordLevelEnum;
+import com.fulaan.reportCard.dto.VirtualCommunityUserDTO;
+import com.fulaan.reportCard.dto.VirtualUserDTO;
 import com.fulaan.user.service.TestTable;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
@@ -36,34 +88,21 @@ import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.instantmessage.RedDotEntry;
 import com.pojo.newVersionGrade.CommunityType;
-import com.pojo.reportCard.*;
+import com.pojo.reportCard.ExamTypeEntry;
+import com.pojo.reportCard.GroupExamDetailEntry;
+import com.pojo.reportCard.GroupExamUserRecordEntry;
+import com.pojo.reportCard.GroupExamVersionEntry;
+import com.pojo.reportCard.RecordLevelEvaluateEntry;
+import com.pojo.reportCard.RecordScoreEvaluateEntry;
+import com.pojo.reportCard.ReportCardSignEntry;
+import com.pojo.reportCard.VirtualCommunityEntry;
+import com.pojo.reportCard.VirtualUserEntry;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.QiniuFileUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.NumberToTextConverter;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Created by scott on 2017/9/30.
@@ -1721,15 +1760,37 @@ public class ReportCardService {
         return  virtualCommunityDao.getVirtualMap(communityIds);
     }
     
+    @Autowired
+    public ExtendedCourseService extendedCourseService;
+    
+    private SchoolCommunityDao schoolCommunityDao = new SchoolCommunityDao();
+    
     public List<GradeDto> getGradeDto(ObjectId userId, String flag) {
         List<GradeDto> gradeDtoList = new ArrayList<GradeDto>();
         if (StringUtils.isNotBlank(flag)) {
             GradeDto gd = new GradeDto("", "请选择");
             gradeDtoList.add(gd);
         }
+        
+        Map<String,Object> map = extendedCourseService.getUserRole(userId);
+        List<ObjectId> cIdL = new ArrayList<ObjectId>();
+        if((Boolean)map.get("isHeader")) {
+            String schoolId = (String)map.get("schoolId");
+            List<ObjectId> schoolIdList = new ArrayList<ObjectId>();
+            schoolIdList.add(new ObjectId(schoolId));
+          //已绑定的社群集合
+            cIdL =  schoolCommunityDao.getCommunityIdsList(schoolIdList);
+        } 
+        List<CommunityEntry> entries1 = communityDao.getCommunitysByCommunityIds(cIdL);
+        
         List<ObjectId> groupIds = memberDao.getManagerGroupIdsByUserId(userId);
         List<CommunityEntry> entries = communityDao.getCommunityEntriesByGroupIds(groupIds);
         Set<String> gradeValSet = new HashSet<String>();
+        for (CommunityEntry ce : entries1) {
+            if(StringUtils.isNotBlank(ce.getGradeVal())) {
+                gradeValSet.add(ce.getGradeVal());
+            }
+        }
         for (CommunityEntry ce : entries) {
             if(StringUtils.isNotBlank(ce.getGradeVal())) {
                 gradeValSet.add(ce.getGradeVal());

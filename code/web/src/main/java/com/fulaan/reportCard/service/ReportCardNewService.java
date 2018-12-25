@@ -3711,18 +3711,31 @@ public class ReportCardNewService {
         Map<String, Object> result = new HashMap<String, Object>();
         List<MultiGroupExamDetailDto> med = new ArrayList<MultiGroupExamDetailDto>();
         Integer count = 0;
-        if (ii == 1) {
+        
+        
+        Map<String,Object> map = extendedCourseService.getUserRole(userId);
+        List<ObjectId> cIdL = new ArrayList<ObjectId>();
+        if((Boolean)map.get("isHeader")) {
+            String schoolId = (String)map.get("schoolId");
+            List<ObjectId> schoolIdList = new ArrayList<ObjectId>();
+            schoolIdList.add(new ObjectId(schoolId));
+          //已绑定的社群集合
+            cIdL =  schoolCommunityDao.getCommunityIdsList(schoolIdList);
             
             List<ObjectId> cidList = new ArrayList<ObjectId>();
             if (StringUtils.isNotBlank(cId)) {
                 cidList.add(new ObjectId(cId));
+                cIdL = cidList;
             } else {
+                
+                cidList = memberDao.getMyCommunityOIdsByUserId(userId);
+                cIdL.addAll(cidList);
                 if (StringUtils.isNotBlank(grade)) {
-                    cidList = memberDao.getMyCommunityOIdsByUserId(userId);
-                    cidList = countService.reList(cidList, grade);
+                    cIdL = countService.reList(cIdL, grade);
+                    
                 }
             }
-            List<MultiGroupExamDetailEntry> me = multiGroupExamDetailDao.getMappingDatas(title,cidList, page, pageSize);
+            List<MultiGroupExamDetailEntry> me = multiGroupExamDetailDao.getMappingDatas(title,cIdL, page, pageSize);
             
             for (MultiGroupExamDetailEntry m : me) {
                 MultiGroupExamDetailDto o = new MultiGroupExamDetailDto(m);
@@ -3740,7 +3753,42 @@ public class ReportCardNewService {
                 med.add(o);
             }
             count = multiGroupExamDetailDao.getMappingDatas(cidList);
+        } else {
+            if (ii == 1) {
+                
+                List<ObjectId> cidList = new ArrayList<ObjectId>();
+                if (StringUtils.isNotBlank(cId)) {
+                    cidList.add(new ObjectId(cId));
+                } else {
+                    
+                    cidList = memberDao.getMyCommunityOIdsByUserId(userId);
+                    if (StringUtils.isNotBlank(grade)) {
+                        cidList = countService.reList(cidList, grade);
+                    }
+                }
+                List<MultiGroupExamDetailEntry> me = multiGroupExamDetailDao.getMappingDatas(title,cidList, page, pageSize);
+                
+                for (MultiGroupExamDetailEntry m : me) {
+                    MultiGroupExamDetailDto o = new MultiGroupExamDetailDto(m);
+                    String[] ss = m.getSubjectIds().split(",");
+                    String s = "";
+                    for (int i = 0; i < ss.length; i++) {
+                        if (i != ss.length-1) {
+                            s = s + this.subjectMap().get(new ObjectId(ss[i])) + ",";
+                        } else {
+                            s += this.subjectMap().get(new ObjectId(ss[i]));
+                        }
+                        
+                    }
+                    o.setSubjectName(s);
+                    med.add(o);
+                }
+                count = multiGroupExamDetailDao.getMappingDatas(cidList);
+            }
         }
+        
+        
+        
         
         
         result.put("list", med);

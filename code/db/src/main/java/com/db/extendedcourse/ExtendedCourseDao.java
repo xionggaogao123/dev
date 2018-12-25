@@ -22,6 +22,24 @@ public class ExtendedCourseDao extends BaseDao {
     }
 
     //老师查询全部
+    public List<ExtendedCourseEntry> getSendMessage(long current){
+        List<ExtendedCourseEntry> entryList=new ArrayList<ExtendedCourseEntry>();
+        BasicDBObject query=new BasicDBObject();
+        query.append("isr", 0);
+        query.append("typ",Constant.TWO);
+        query.append("aet",new BasicDBObject(Constant.MONGO_LT,current));
+        query.append("pus",new BasicDBObject(Constant.MONGO_NE,Constant.ONE));
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXTENDED_COURSE, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExtendedCourseEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    //老师查询全部
     public List<ExtendedCourseEntry> getAllEntryList(String gradeName,ObjectId schoolId,String keyword,int status,long current,int page,int pageSize){
         List<ExtendedCourseEntry> entryList=new ArrayList<ExtendedCourseEntry>();
         BasicDBObject query=new BasicDBObject();

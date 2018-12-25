@@ -9,10 +9,9 @@ import com.db.controlphone.ControlSimpleDao;
 import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.HourClassDao;
-import com.db.fcommunity.CommunityDao;
-import com.db.fcommunity.CommunityDetailDao;
-import com.db.fcommunity.MemberDao;
-import com.db.fcommunity.MineCommunityDao;
+import com.db.extendedcourse.ExtendedCourseDao;
+import com.db.extendedcourse.ExtendedUserApplyDao;
+import com.db.fcommunity.*;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppNewOperationDao;
 import com.db.operation.AppNoticeDao;
@@ -39,6 +38,8 @@ import com.pojo.controlphone.ControlSimpleEntry;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
+import com.pojo.extendedcourse.ExtendedCourseEntry;
+import com.pojo.extendedcourse.ExtendedUserApplyEntry;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.VideoEntry;
@@ -109,6 +110,10 @@ public class SystemMessageService extends BaseService {
     private CommunityDao communityDao = new CommunityDao();
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
+
+    private static final String[] gradeString = new String[]{"","一年级","二年级","三年级","四年级","五年级","六年级","初一","初二","初三","高一","高二","高三"};
+
+    private static final String[] weekString = new String[]{"","周一","周二","周三","周四","周五","周六","周日"};
 
     //保存系统消息
     public  void  addEntry(ObjectId userId,AppCommentDTO dto){
@@ -786,6 +791,68 @@ public class SystemMessageService extends BaseService {
         jPushUtils.pushRestAndroidParentBusyWork(audience, description, "", "直播课堂通知", new HashMap<String, String>());
 
     }
+    public void sendMoreExtendedMessage(){
+        long current = System.currentTimeMillis();
+        ExtendedCourseDao extendedCourseDao =  new ExtendedCourseDao();
+        ExtendedUserApplyDao extendedUserApplyDao = new ExtendedUserApplyDao();
+        List<ExtendedCourseEntry> extendedCourseEntries = extendedCourseDao.getSendMessage(current);
+        for(ExtendedCourseEntry extendedCourseEntry:extendedCourseEntries){
+            List<ExtendedUserApplyEntry> extendedUserApplyEntries = extendedUserApplyDao.getEntrysByCourseId(extendedCourseEntry.getID());
+            for(ExtendedUserApplyEntry extendedUserApplyEntry: extendedUserApplyEntries){
+                //抢课成功
+                this.sendExtendedMessage(extendedUserApplyEntry.getUserId(), extendedCourseEntry,1);
+            }
+            extendedCourseEntry.setPush(1);
+            extendedCourseDao.saveEntry(extendedCourseEntry);
+        }
+
+    }
+
+    public void sendExtendedMessage(ObjectId sonId,ExtendedCourseEntry extendedCourseEntry,int type){
+        String description = "";
+        NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(sonId);
+        if(newVersionBindRelationEntry==null){
+            return;
+        }
+        ObjectId userId = new ObjectId();
+        String week = weekString[extendedCourseEntry.getWeek()];
+        int lesson = extendedCourseEntry.getLessonType();
+        String st = "";
+        String et = "";
+        if(extendedCourseEntry.getVoteStartTime()!=0l){
+            st = DateTimeUtils.getLongToStrTimeTwo(extendedCourseEntry.getVoteStartTime()).substring(0,10);
+        }
+        if(extendedCourseEntry.getVoteEndTime()!=0l){
+            et = DateTimeUtils.getLongToStrTimeTwo(extendedCourseEntry.getVoteEndTime()).substring(0,10);
+        }
+        if(type==1){//抢课
+            description  = "恭喜您成功抢到课程“"+extendedCourseEntry.getCourseName()+"”,\n课程时间为："+st+"至"+et+" ，每"+week+"第"+lesson+"节,\n请准时上课";
+        }else{
+            description  = "恭喜您成功报名课程“"+extendedCourseEntry.getCourseName()+"”,\n课程时间为："+st+"至"+et+" ，每"+week+"第"+lesson+"节,\n请准时上课";
+        }
+        //添加系统信息
+        SystemMessageDTO dto = new SystemMessageDTO();
+        dto.setType(7);
+        dto.setAvatar("");
+        dto.setName(extendedCourseEntry.getCourseName());
+        dto.setFileUrl("");
+        dto.setSourceId("");
+        dto.setContent(description);
+        dto.setFileType(1);
+        dto.setSourceName("");
+        dto.setSourceType(0);
+        dto.setTitle("");
+        String id = systemMessageDao.addEntry(dto.buildAddEntry());
+
+        //添加首页记录
+        IndexPageDTO dto1 = new IndexPageDTO();
+        dto1.setType(CommunityType.system.getType());
+        dto1.setUserId(userId.toString());
+        dto1.setCommunityId(userId.toString());
+        dto1.setContactId(id.toString());
+        IndexPageEntry entry = dto1.buildAddEntry();
+        indexPageDao.addEntry(entry);
+    }
 
     /**
      * 发送登陆提醒（同步消息提醒）
@@ -1034,5 +1101,6 @@ public class SystemMessageService extends BaseService {
                 pushMessageDao.delEntry(pushMessageEntry.getID());
             }
         }
+        this.sendMoreExtendedMessage();
     }
 }

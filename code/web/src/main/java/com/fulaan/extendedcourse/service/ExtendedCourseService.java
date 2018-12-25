@@ -22,7 +22,6 @@ import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.pojo.User;
-import com.fulaan.service.CommunityService;
 import com.fulaan.systemMessage.service.SystemMessageService;
 import com.fulaan.utils.HSSFUtils;
 import com.mongodb.DBObject;
@@ -102,7 +101,7 @@ public class ExtendedCourseService {
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
 
     @Autowired
-    private CommunityService communityService;
+    private SystemMessageService systemMessageService;
     @Autowired
     private RedDotService redDotService;
 
@@ -449,7 +448,7 @@ public class ExtendedCourseService {
             count = extendedCourseDao.countParentAllEntryList(sonIds,gradeName, schoolId, keyword, status,current);
         }
         List<ExtendedCourseDTO> dtos1 = new ArrayList<ExtendedCourseDTO>();
-        this.getMyWebCourseList(courseEntries,dtos1,userId,current,status,role);
+        this.getMyWebCourseList(courseEntries, dtos1, userId, current, status, role);
         map.put("count", count);
         map.put("list",dtos1);
         map.put("role",role);
@@ -845,6 +844,8 @@ public class ExtendedCourseService {
                             Constant.ONE//家长帮抢
                             );
                     extendedUserApplyDao.saveEntry(extendedUserApplyEntry1);
+                    //抢课成功
+                    systemMessageService.sendExtendedMessage(sonId,extendedCourseEntry,1);
                     //成功
                     userSelectList.remove(sonId);
                     userSelectList.add(sonId);
@@ -872,17 +873,17 @@ public class ExtendedCourseService {
                     //成功
                     applyUserList.remove(sonId);
                     applyUserList.add(sonId);
+                    extendedCourseEntry.setUserApplyList(applyUserList);
                     int count = extendedUserApplyDao.countCourseUser(id,communityId);
                     if (extendedCourseEntry.getClassUserNumber()>count) {
                         if(extendedCourseEntry.getUserAllNumber()>userSelectList.size()){
                             userSelectList.remove(sonId);
                             userSelectList.add(sonId);
-                            extendedUserApplyEntry1.setStatus(Constant.TWO);
                             extendedCourseEntry.setUserSelectedList(userSelectList);
+                            extendedUserApplyEntry1.setStatus(Constant.TWO);
                         }
                     }
                     extendedUserApplyDao.saveEntry(extendedUserApplyEntry1);
-                    extendedCourseEntry.setUserApplyList(applyUserList);
                     extendedCourseDao.saveEntry(extendedCourseEntry);
                 }
             }
@@ -966,6 +967,8 @@ public class ExtendedCourseService {
                         Constant.ZERO//自己抢
                 );
                 extendedUserApplyDao.saveEntry(extendedUserApplyEntry1);
+                //抢课成功
+                systemMessageService.sendExtendedMessage(sonId,extendedCourseEntry,1);
                 //成功
                 userSelectList.remove(sonId);
                 userSelectList.add(sonId);
@@ -993,6 +996,7 @@ public class ExtendedCourseService {
                 //成功
                 applyUserList.remove(sonId);
                 applyUserList.add(sonId);
+                extendedCourseEntry.setUserApplyList(applyUserList);
                 //名额在加入选课成功列表
                 int count = extendedUserApplyDao.countCourseUser(id,communityId);
                 if (extendedCourseEntry.getClassUserNumber()>count) {
@@ -1004,7 +1008,6 @@ public class ExtendedCourseService {
                     }
                 }
                 extendedUserApplyDao.saveEntry(extendedUserApplyEntry1);
-                extendedCourseEntry.setUserApplyList(applyUserList);
                 extendedCourseDao.saveEntry(extendedCourseEntry);
             }
 
@@ -1356,6 +1359,7 @@ public class ExtendedCourseService {
         if(schoolPersionEntrys.size()==0){
             map.put("isHeader",false);
             map.put("schoolId","");
+            map.put("schoolName","");
             map.put("gradeList",null);
             return map;
         }
@@ -1364,6 +1368,7 @@ public class ExtendedCourseService {
         if(homeSchoolEntry ==null){
             map.put("isHeader",false);
             map.put("schoolId","");
+            map.put("schoolName","");
             map.put("gradeList",null);
             return map;
         }
@@ -1371,6 +1376,7 @@ public class ExtendedCourseService {
         List<String> stringList = homeSchoolEntry.getSchoolParagraph();
         map.put("isHeader",true);
         map.put("schoolId",schoolId.toString());
+        map.put("schoolName",homeSchoolEntry.getName());
         map.put("gradeList",stringList);
         return map;
     }
@@ -1691,17 +1697,7 @@ public class ExtendedCourseService {
         if(extendedCourseEntry==null){
             throw new Exception("该课程已被删除！");
         }
-        //2.上课人员
-        List<ObjectId> userSelectList = extendedCourseEntry.getUserSelectedList();
-        if(userSelectList==null){
-            userSelectList = new ArrayList<ObjectId>();
-        }
-        //3.申请人员
-        List<ObjectId> applyUserList = extendedCourseEntry.getUserApplyList();
-        if(applyUserList==null){
-            applyUserList = new ArrayList<ObjectId>();
-        }
-        //5.前置满足
+        //1.前置满足
         SchoolCommunityEntry schoolCommunityEntry = schoolCommunityDao.getEntryById(communityId);
         CommunityEntry communityEntry = communityDao.findByObjectId(communityId);
         if(schoolCommunityEntry==null){
@@ -1722,24 +1718,39 @@ public class ExtendedCourseService {
         for(String str:sonIdList){
             selectList.add(new ObjectId(str));
         }
-        //该课程的所有入选者
-        List<ExtendedUserApplyEntry> extendedUserApplyEntries = extendedUserApplyDao.getEntrysByCourseId(id);
+        //该课程的所有参与者
+        List<ExtendedUserApplyEntry> extendedUserApplyEntries = extendedUserApplyDao.getAllEntrysByCourseId(id);
         Set<ObjectId> userIds  = new HashSet<ObjectId>();
         Map<ObjectId,Set<ObjectId>> setMap = new HashMap<ObjectId, Set<ObjectId>>();
+        Set<ObjectId> seList = new HashSet<ObjectId>();
+        Set<ObjectId> applyList = new HashSet<ObjectId>();
         for(ExtendedUserApplyEntry extendedUserApplyEntry : extendedUserApplyEntries){
             ObjectId addUserId = extendedUserApplyEntry.getUserId();
-            ObjectId addCommunityId = extendedUserApplyEntry.getCommunityId();
-            userIds.add(addUserId);
-            Set<ObjectId> communityMap = setMap.get(addCommunityId);
-            if(communityMap==null){
-                Set<ObjectId> communityMap2 = new HashSet<ObjectId>();
-                communityMap2.add(addUserId);
-                setMap.put(addCommunityId,communityMap2);
-            }else{
-                communityMap.add(addUserId);
-                setMap.put(addCommunityId,communityMap);
+            if(extendedUserApplyEntry.getStatus()==2){
+                ObjectId addCommunityId = extendedUserApplyEntry.getCommunityId();
+                userIds.add(addUserId);
+                Set<ObjectId> communityMap = setMap.get(addCommunityId);
+                if(communityMap==null){
+                    Set<ObjectId> communityMap2 = new HashSet<ObjectId>();
+                    communityMap2.add(addUserId);
+                    setMap.put(addCommunityId,communityMap2);
+                }else{
+                    communityMap.add(addUserId);
+                    setMap.put(addCommunityId,communityMap);
+                }
+                //入选者
+                seList.add(addUserId);
+                applyList.add(addUserId);
+            }else if(extendedUserApplyEntry.getStatus()==1){
+                //参选者
+                applyList.add(addUserId);
             }
+
         }
+        List<ObjectId> userSelectList = new ArrayList<ObjectId>();
+        List<ObjectId> applyUserList = new ArrayList<ObjectId>();
+        userSelectList.addAll(seList);
+        applyUserList.addAll(applyList);
         //本次无选择，去除所有本社群记录
         if(sonIds.equals("")){
             Set<ObjectId> set = setMap.get(communityId);
@@ -1753,7 +1764,6 @@ public class ExtendedCourseService {
             }
             return;
         }
-
         //总人数
         //加入选择的人
         userIds.addAll(selectList);
@@ -1793,9 +1803,9 @@ public class ExtendedCourseService {
                 userSelectList.add(sonId);
                 extendedCourseEntry.setUserSelectedList(userSelectList);
                 //报名成功
-//                applyUserList.remove(sonId);
-//                applyUserList.add(sonId);
-//                extendedCourseEntry.setUserApplyList(applyUserList);
+                applyUserList.remove(sonId);
+                applyUserList.add(sonId);
+                extendedCourseEntry.setUserApplyList(applyUserList);
             }else {
                 //老师帮助选上
                 ExtendedUserApplyEntry extendedUserApplyEntry1 = new ExtendedUserApplyEntry(
@@ -1815,9 +1825,9 @@ public class ExtendedCourseService {
                 userSelectList.add(sonId);
                 extendedCourseEntry.setUserSelectedList(userSelectList);
                 //报名成功
-//                applyUserList.remove(sonId);
-//                applyUserList.add(sonId);
-//                extendedCourseEntry.setUserApplyList(applyUserList);
+                applyUserList.remove(sonId);
+                applyUserList.add(sonId);
+                extendedCourseEntry.setUserApplyList(applyUserList);
             }
         }
         extendedCourseDao.saveEntry(extendedCourseEntry);

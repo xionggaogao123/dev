@@ -45,6 +45,7 @@ import java.util.List;
  *
  *  userApplyList            申请用户集合                  ult
  *  userSelectedList         上课用户集合                  slt
+ *  push                      是否推送信息                 pus
  *
  */
 public class ExtendedCourseEntry extends BaseDBObject {
@@ -394,5 +395,13 @@ public class ExtendedCourseEntry extends BaseDBObject {
 
     public void setRemoveId(ObjectId removeId){
         setSimpleValue("rid",removeId);
+    }
+
+    public void setPush(int push){
+        setSimpleValue("pus",push);
+    }
+
+    public int getPush(){
+        return getSimpleIntegerValueDef("pus",0);
     }
 }

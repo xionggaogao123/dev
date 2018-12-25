@@ -48,11 +48,10 @@ public class SchoolPersionDao extends BaseDao {
         }
         return null;
     }
-    public List<SchoolPersionEntry>  getAllEntry(ObjectId userId,List<ObjectId> schoolIds) {
+    public List<SchoolPersionEntry>  getAllEntry(ObjectId userId) {
         BasicDBObject query = new BasicDBObject();
         query.append("isr",Constant.ZERO);
         query.append("uid",userId);
-        query.append("sid",new BasicDBObject(Constant.MONGO_IN,schoolIds));
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_SCHOOL_PERSON,

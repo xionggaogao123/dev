@@ -9,7 +9,9 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by James on 2018-12-10.
@@ -141,6 +143,24 @@ public class ExtendedUserApplyDao extends BaseDao {
         }else{
             return new ExtendedUserApplyEntry((BasicDBObject) dbObject);
         }
+    }
+
+    //查询用户记录
+    public Map<ObjectId,ExtendedUserApplyEntry> getAllEntryMapById(ObjectId id,List<ObjectId> userIds){
+        BasicDBObject query = new BasicDBObject();
+        Map<ObjectId,ExtendedUserApplyEntry> map=new HashMap<ObjectId, ExtendedUserApplyEntry>();
+        query.append("isr",Constant.ZERO);
+        query.append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
+        query.append("cid",id);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXTENDED_USER_APPLY, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                ExtendedUserApplyEntry extendedUserApplyEntry = new ExtendedUserApplyEntry((BasicDBObject) obj);
+                map.put(extendedUserApplyEntry.getUserId(),extendedUserApplyEntry);
+            }
+        }
+        return map;
     }
 }
 

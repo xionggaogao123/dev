@@ -1810,6 +1810,17 @@ public class ReportCardService {
     }
 
     public List<VirtualCommunityUserDTO> getRoleCommunities(String title, ObjectId userId, String grade, String communityId) {
+        
+        List<ObjectId> communityIds2 = new ArrayList<ObjectId>();
+        Map<String,Object> mappp = extendedCourseService.getUserRole(userId);
+        if((Boolean)mappp.get("isHeader")) {
+            String schoolId = (String)mappp.get("schoolId");
+            List<ObjectId> schoolIdList = new ArrayList<ObjectId>();
+            schoolIdList.add(new ObjectId(schoolId));
+          //已绑定的社群集合
+            communityIds2 =  schoolCommunityDao.getCommunityIdsList(schoolIdList);
+        } 
+        
         List<VirtualCommunityUserDTO> virtualCommunityUserDTOs
                 = new ArrayList<VirtualCommunityUserDTO>();
         List<ObjectId> communityIds = new ArrayList<ObjectId>();
@@ -1821,6 +1832,7 @@ public class ReportCardService {
         } else {
             List<ObjectId> groupIds = memberDao.getManagerGroupIdsByUserId(userId);
             entries = communityDao.getCommunityEntriesByGroupIds(title, groupIds);
+            entries.addAll(communityDao.getCommunitysByCommunityIds(communityIds2));
             //List<ObjectId> communityIds = new ArrayList<ObjectId>();
             for (CommunityEntry communityEntry : entries) {
                 communityIds.add(communityEntry.getID());

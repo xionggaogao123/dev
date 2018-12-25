@@ -3752,7 +3752,7 @@ public class ReportCardNewService {
                 o.setSubjectName(s);
                 med.add(o);
             }
-            count = multiGroupExamDetailDao.getMappingDatas(cidList);
+            count = multiGroupExamDetailDao.getMappingDatas(cIdL);
         } else {
             if (ii == 1) {
                 

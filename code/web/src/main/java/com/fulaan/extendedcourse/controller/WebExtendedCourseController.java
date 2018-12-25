@@ -733,7 +733,7 @@ public class WebExtendedCourseController extends BaseController {
         }catch (Exception e){
             logger.error("error",e);
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("权限者调整报名名单失败");
+            respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
     }

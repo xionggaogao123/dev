@@ -2464,6 +2464,25 @@ public class ReportCardNewService {
         }
         return flag;
     }
+    
+    public void judgeIsExistMatchs(String communityId) throws Exception{
+        String[] s = communityId.split(",");
+        for(String ss : s) {
+            int flag=1;
+            VirtualCommunityEntry communityEntry =virtualCommunityDao.findntryByCommunityId(new ObjectId(ss));
+            if(null==communityEntry){
+                flag=0;
+            }else{
+                if(communityEntry.getUserCount()==Constant.ZERO){
+                    flag=0;
+                }
+            }
+            if (flag == 0) {
+                throw new Exception(communityDao.getCommunityName(new ObjectId(ss))+"没有上传学生名单");
+            }
+        }
+        
+    }
 
     public void sendUnMatchNotice(String communityId,ObjectId userId)throws Exception{
         List<VirtualUserDTO> userDTOs = matchInputCount(communityId);
@@ -3635,10 +3654,11 @@ public class ReportCardNewService {
             schoolIdList.add(new ObjectId(schoolId));
           //已绑定的社群集合
             communityIds2 =  schoolCommunityDao.getCommunityIdsList(schoolIdList);
-        } else {
-            List<ObjectId> idss = memberDao.getGroupIdsList(userId);
-            communityIds2  = groupDao.getCommunitysIdsgroupIdList(idss);
-        }
+        } 
+        
+        List<ObjectId> idss = memberDao.getGroupIdsList(userId);
+        List<ObjectId> communityIds3  = groupDao.getCommunitysIdsgroupIdList(idss);
+        communityIds2.addAll(communityIds3);
         
         
         if (CollectionUtils.isNotEmpty(communityIds2)) {

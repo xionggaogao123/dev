@@ -688,6 +688,17 @@ public class ReportCardNewService {
                 in++;
                 
             }
+            
+            for (GroupExamUserRecordDTO dto : recordExamScoreDTOs) {
+                String bc = dto.getBc();
+                if (StringUtils.isNotBlank(bc)) {
+                  if (!("-1".equals(bc)||("-2".equals(bc)))) {
+                      dto.setRankStr(bc);
+                  } else {
+                      dto.setRankStr("-1");
+                  } 
+                } 
+            }
         }
         
         
@@ -1320,15 +1331,26 @@ public class ReportCardNewService {
                     String[] scoreLevelStrOld = g.getScoreLevelStr().split(",");
                     String scoreStrNew = "";
                     String scoreLevelStrNew = "";
+                    String bc = "";
+                    String xc = "";
                     String[] ss = dto.getSubjectIds().split(",");
                     List<String> ssList = Arrays.asList(ss);
                     String[] ss1 = g.getSubjectIds().split(",");
+                    String[] bcc = g.getBc().split(",");
+                    String[] xcc = g.getXc().split(",");
                     for (int i = 0; i<ss1.length; i++) {
                         if (ssList.contains(ss1[i])) {
                             scoreStrNew = scoreStrNew + scoreStrOld[i] + ",";
-                            scoreLevelStrNew = scoreLevelStrNew + scoreLevelStrOld[i];
-       
+                            scoreLevelStrNew = scoreLevelStrNew + scoreLevelStrOld[i] + ",";
+                            bc = bc + bcc[i] + ",";
+                            xc = xc + xcc[i] + ",";
                         }
+                    }
+                    if (ss.length >1) {
+                        scoreStrNew = scoreStrNew + scoreStrOld[ss1.length] + ",";
+                        scoreLevelStrNew = scoreLevelStrNew + scoreLevelStrOld[ss1.length] + ",";
+                        bc = bc + bcc[ss1.length] + ",";
+                        xc = xc + xcc[ss1.length] + ",";
                     }
                     
                     userRecordEntries.add(new GroupExamUserRecordEntry(
@@ -1344,7 +1366,9 @@ public class ReportCardNewService {
                         0,
                         Constant.ZERO,
                         g.getRankStr(),
-                        g.getSort()
+                        g.getSort(),
+                        bc,
+                        xc
                         ));
                 }
             } 
@@ -1432,6 +1456,10 @@ public class ReportCardNewService {
                         
                         
                         
+                    }
+                    if (ss.length >1) {
+                        ScoreRepresentEntry seNew = new ScoreRepresentEntry(groupExamDetailId, srEntry.get(srEntry.size()-1).getSubjectId(), srEntry.get(srEntry.size()-1).getSubjectName(),srEntry.get(srEntry.size()-1).getMaxScore(), srEntry.get(srEntry.size()-1).getScoreOne(), srEntry.get(srEntry.size()-1).getScoreTwo(), srEntry.get(srEntry.size()-1).getScoreThree(), srEntry.get(srEntry.size()-1).getScoreFour(), srEntry.get(srEntry.size()-1).getScoreFive(), srEntry.get(srEntry.size()-1).getScoreSix(), srEntry.get(srEntry.size()-1).getScoreSeven(), srEntry.get(srEntry.size()-1).getScoreEight(), srEntry.get(srEntry.size()-1).getSort(), srEntry.get(srEntry.size()-1).getRepresentNameType());
+                        scoreRepresentDao.saveScoreRepresent(seNew);
                     }
                 } else {
                     String[] sa = dto.getSubjectIds().split(",");

@@ -937,11 +937,11 @@ public class ReportCardNewController extends BaseController {
              @ApiResponse(code = 500, message = "服务器不能完成请求")})
       @RequestMapping("/createGroupExam")
       @ResponseBody
-      public RespObj createGroupExam(String multiId, String subjectId){
+      public RespObj createGroupExam(String multiId, String subjectId, String communityId){
          RespObj respObj = new RespObj(Constant.FAILD_CODE);
          
          try {
-             reportCardService.createGroupExam(multiId, subjectId, getUserId());
+             reportCardService.createGroupExam(multiId, subjectId, communityId, getUserId());
              respObj.setCode(Constant.SUCCESS_CODE);
   
          } catch (Exception e) {
@@ -976,6 +976,33 @@ public class ReportCardNewController extends BaseController {
          }
          return respObj;
       }
+      
+      /**
+      *
+      * @param request
+      * @return
+      * @throws Exception
+      */ 
+      @ApiOperation(value = "", httpMethod = "GET", produces = "application/json")
+      @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+             @ApiResponse(code = 500, message = "服务器不能完成请求")})
+      @RequestMapping("/getCommunityList")
+      @ResponseBody
+      public RespObj getCommunityList(String multiId){
+         RespObj respObj = new RespObj(Constant.FAILD_CODE);
+         
+         try {
+             List<CommunityDTO> list = reportCardService.getCommunityList(multiId, getUserId());
+             respObj.setCode(Constant.SUCCESS_CODE);
+             respObj.setMessage(list);
+         } catch (Exception e) {
+             e.printStackTrace();
+             respObj.setErrorMessage(e.getMessage());
+         }
+         return respObj;
+      }
+      
       
 }
 

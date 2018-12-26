@@ -371,6 +371,13 @@ public class CommunityDao extends BaseDao {
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
         return dbo == null ? null : (String) dbo.get("cmmn");
     }
+    
+    public CommunityEntry getCommunity(ObjectId communityId) {
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
+        //BasicDBObject field = new BasicDBObject().append("cmmn", 1);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
+        return new CommunityEntry(dbo);
+    }
 
 
     public void transferOwner(ObjectId communityId,ObjectId ownerId){

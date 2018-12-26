@@ -28,6 +28,7 @@ import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.reportCard.dto.*;
+import com.fulaan.service.CommunityService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.TestTable;
 import com.fulaan.user.service.UserService;
@@ -1327,6 +1328,7 @@ public class ReportCardNewService {
             List<GroupExamUserRecordEntry> userRecordEntries = new ArrayList<GroupExamUserRecordEntry>();
             if (dto.getIsFromPt() == 1) {
                 List<GroupExamUserRecordEntry> userRecordEntriess = groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(dto.getMultiId()), new ObjectId(dto.getCommunityId()));
+                
                 for (GroupExamUserRecordEntry g : userRecordEntriess) {
                     String[] scoreStrOld = g.getScoreStr().split(",");
                     String[] scoreLevelStrOld = g.getScoreLevelStr().split(",");
@@ -1353,8 +1355,7 @@ public class ReportCardNewService {
                         bc = bc + bcc[ss1.length] + ",";
                         xc = xc + xcc[ss1.length] + ",";
                     }
-                    
-                    userRecordEntries.add(new GroupExamUserRecordEntry(
+                    GroupExamUserRecordEntry eee = new GroupExamUserRecordEntry(
                         groupExamDetailId,
                         userId,
                         g.getUserId(),
@@ -1370,9 +1371,14 @@ public class ReportCardNewService {
                         g.getSort(),
                         bc,
                         xc
-                        ));
+                        );
+                    userRecordEntries.add(eee);
+                    //GroupExamUserRecordDTO d = new GroupExamUserRecordDTO(eee);
+                    //listGe.add(d);
                 }
+                //this.tranEvaluate(listGe, groupExamDetailDao.getEntryById(groupExamDetailId), groupExamDetailId.toString());
             } 
+            
             int k = 0;
             for (ObjectId uId : userIds) {
                 if (StringUtils.isNotEmpty(dto.getSubjectId())) {
@@ -1490,6 +1496,12 @@ public class ReportCardNewService {
                         recordId,Constant.ZERO,System.currentTimeMillis());
                 reportCardSignDao.saveEntry(signEntry);
             }
+            List<GroupExamUserRecordEntry> list = groupExamUserRecordDao.getExamUserRecordEntries(groupExamDetailId);
+            List<GroupExamUserRecordDTO> listGe = new ArrayList<GroupExamUserRecordDTO>();
+            for (GroupExamUserRecordEntry geur : list) {
+                listGe.add(new GroupExamUserRecordDTO(geur,1));
+            }
+            this.tranEvaluate(listGe, groupExamDetailDao.getEntryById(groupExamDetailId), groupExamDetailId.toString());
             //groupExamDetailDao.updateSignCount(groupExamDetailId, userIds.size());
             GroupExamVersionEntry versionEntry = new GroupExamVersionEntry(groupExamDetailId, 1L);
             groupExamVersionDao.saveGroupExamVersionEntry(versionEntry);
@@ -3676,13 +3688,13 @@ public class ReportCardNewService {
         
         List<ObjectId> communityIds2 = new ArrayList<ObjectId>();
         Map<String,Object> map = extendedCourseService.getUserRole(userId);
-        if((Boolean)map.get("isHeader")) {
+        /*if((Boolean)map.get("isHeader")) {*/
             String schoolId = (String)map.get("schoolId");
             List<ObjectId> schoolIdList = new ArrayList<ObjectId>();
             schoolIdList.add(new ObjectId(schoolId));
           //已绑定的社群集合
             communityIds2 =  schoolCommunityDao.getCommunityIdsList(schoolIdList);
-        } 
+        /*} */
         
         List<ObjectId> idss = memberDao.getGroupIdsList(userId);
         List<ObjectId> communityIds3  = groupDao.getCommunitysIdsgroupIdList(idss);
@@ -3703,8 +3715,8 @@ public class ReportCardNewService {
         return cDto;
     }
     
-    
-    
+    @Autowired
+    private CommunityService communityService;
     
     public Map<String, Object> getMultiReportList(String title, ObjectId userId,String grade, String cId, int page, int pageSize) {    
         //获得用户权限  0：没权限  1：有权限
@@ -3729,7 +3741,7 @@ public class ReportCardNewService {
                 cIdL = cidList;
             } else {
                 
-                cidList = memberDao.getMyCommunityOIdsByUserId(userId);
+                cidList = communityService.getCommunitys3(userId, 1, 100);
                 cIdL.addAll(cidList);
                 if (StringUtils.isNotBlank(grade)) {
                     cIdL = countService.reList(cIdL, grade);
@@ -3767,7 +3779,8 @@ public class ReportCardNewService {
                     cidList.add(new ObjectId(cId));
                 } else {
                     
-                    cidList = memberDao.getMyCommunityOIdsByUserId(userId);
+                    //cidList = memberDao.getMyCommunityOIdsByUserId(userId);
+                    cidList = communityService.getCommunitys3(userId, 1, 100);
                     if (StringUtils.isNotBlank(grade)) {
                         cidList = countService.reList(cidList, grade);
                     }
@@ -4854,7 +4867,7 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
     }
     
     //生成班级成绩单
-    public void createGroupExam(String multiId, String subjectId, ObjectId userId) throws Exception{
+    public void createGroupExam(String multiId, String subjectId, String communityId, ObjectId userId) throws Exception{
         MultiGroupExamDetailEntry entry = multiGroupExamDetailDao.getEntry(new ObjectId(multiId));
         List<ObjectId> cmIdList = entry.getCommunityId();
         Map<ObjectId, ObjectId> map = new HashMap<ObjectId, ObjectId>();
@@ -4868,20 +4881,31 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
             }
         }
         for (ObjectId cId : map.keySet()) {
-            ObjectId userIdd = map.get(cId);
-            //创建成绩基本信息
-            ExamGroupNewDto examGroupDTO = new ExamGroupNewDto();
-            examGroupDTO.setCommunityId(cId.toString());
-            examGroupDTO.setExamName(entry.getExamName());
-            examGroupDTO.setGroupId(groupDao.getByCommunityId(cId).getID().toString());
-            examGroupDTO.setRecordScoreType(entry.getRecordScoreType());
-            examGroupDTO.setSubjectIds(subjectId);
-            examGroupDTO.setExamStrTime(DateTimeUtils.convert(entry.getExamTime(),
-            DateTimeUtils.DATE_YYYY_MM_DD));
-            examGroupDTO.setIsFromPt(1);
-            examGroupDTO.setMultiId(entry.getID().toString());
-            GroupExamDetailDTO groupExamDetailDTO = examGroupDTO.buildDTO();
-            this.saveGroupExamDetail(groupExamDetailDTO, userIdd);
+            if (StringUtils.isNotBlank(communityId)) {
+                String[] ar = communityId.split(",");
+                List<String> list = Arrays.asList(ar);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    if (list.contains(cId.toString())) {
+                        ObjectId userIdd = map.get(cId);
+                        //创建成绩基本信息
+                        ExamGroupNewDto examGroupDTO = new ExamGroupNewDto();
+                        examGroupDTO.setCommunityId(cId.toString());
+                        examGroupDTO.setExamName(entry.getExamName());
+                        examGroupDTO.setGroupId(groupDao.getByCommunityId(cId).getID().toString());
+                        examGroupDTO.setRecordScoreType(entry.getRecordScoreType());
+                        examGroupDTO.setSubjectIds(subjectId);
+                        examGroupDTO.setExamStrTime(DateTimeUtils.convert(entry.getExamTime(),
+                        DateTimeUtils.DATE_YYYY_MM_DD));
+                        examGroupDTO.setIsFromPt(1);
+                        examGroupDTO.setMultiId(entry.getID().toString());
+                        GroupExamDetailDTO groupExamDetailDTO = examGroupDTO.buildDTO();
+                        this.saveGroupExamDetail(groupExamDetailDTO, userIdd);
+                    }
+                }
+                
+                
+            }
+            
         }
         
         multiGroupExamDetailDao.updateGroupExamDetailEntry1(new ObjectId(multiId), 1);
@@ -4900,13 +4924,28 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
         return list;
     }
     
-    public static void main(String[] args) {
-        GroupExamUserRecordDao groupExamUserRecordDao = new GroupExamUserRecordDao();
-        while (true) {
-            groupExamUserRecordDao.updateGroupExamUserRecordScoreMultii(new ObjectId("5b04cbe5d55e0929bc054a2c"), new ObjectId("5c1af74c78a0d222bc273ccd"), "5,6,7,", "-1,-1,-1,", "4,4,4,", "4,4,4,");
+    public List<CommunityDTO> getCommunityList(String multiId, ObjectId userId) {
+        List<CommunityDTO> list = new ArrayList<CommunityDTO>();
+        MultiGroupExamDetailEntry entry = multiGroupExamDetailDao.getEntry(new ObjectId(multiId));
+        List<ObjectId> cmIdList = entry.getCommunityId();
+        Map<ObjectId, ObjectId> map = new HashMap<ObjectId, ObjectId>();
+        for (ObjectId cmId : cmIdList) {
+            GroupEntry ge = groupDao.getByCommunityId(cmId);
+            List<ObjectId> listt = memberService.getMoreGroupMembers(ge.getID());
+            for (ObjectId uid : listt) {
+                if (memberService.judgeNewPersonPermission(uid) == 5 && uid.equals(userId)) {
+                    map.put(cmId, uid);
+                }
+            }
         }
-        
+        for(ObjectId id : map.keySet()) {
+            CommunityDTO cd = new CommunityDTO(communityDao.getCommunity(id));
+            list.add(cd);
+        }
+        return list;
     }
+    
+  
     @Autowired
     private MemberService memberService;
     

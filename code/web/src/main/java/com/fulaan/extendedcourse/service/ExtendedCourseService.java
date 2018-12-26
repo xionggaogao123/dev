@@ -3,6 +3,7 @@ package com.fulaan.extendedcourse.service;
 import com.db.backstage.TeacherApproveDao;
 import com.db.extendedcourse.*;
 import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.MineCommunityDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.IndexContentDao;
@@ -100,6 +101,7 @@ public class ExtendedCourseService {
 
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
 
+    private MemberDao memberDao = new MemberDao();
     @Autowired
     private SystemMessageService systemMessageService;
     @Autowired
@@ -297,12 +299,14 @@ public class ExtendedCourseService {
         //String gradeName = getGrade(dto.getGradeList());
         List<String> gradeNames = dto.getGradeList();
         List<String> cids = new ArrayList<String>();
+        List<ObjectId> gids  = new ArrayList<ObjectId>();
         for(CommunityEntry com:communityEntrys){
             if(gradeNames.contains(com.getGradeVal())){
                 cids.add(com.getID().toString());
+                gids.add(com.getGroupId());
             }
         }
-        this.sendIndexPageMessage(dto,userId,cids,entry.getID());
+        this.sendIndexPageMessage(dto,userId,cids,entry.getID(),gids);
         return "";
     }
 
@@ -317,7 +321,7 @@ public class ExtendedCourseService {
     }
 
     //todo 选课首页
-    public void sendIndexPageMessage(ExtendedCourseDTO dto,ObjectId userId,List<String> communityIds,ObjectId id){
+    public void sendIndexPageMessage(ExtendedCourseDTO dto,ObjectId userId,List<String> communityIds,ObjectId id,List<ObjectId> groupIds){
 
         IndexPageDTO dto2 = new IndexPageDTO();
         dto2.setType(CommunityType.extended.getType());
@@ -337,11 +341,12 @@ public class ExtendedCourseService {
                 dto.getVoiceList(),
                 dto.getGradeName(),
                 "");
+        List<ObjectId> members=memberDao.getAllGroupIdsMembers(groupIds);
         IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(dto.getUserId(),null, null,null,3);
         indexContentEntry.setReadList(new ArrayList<ObjectId>());
         indexContentEntry.setContactId(id);
         indexContentEntry.setContactType(11);
-        indexContentEntry.setAllCount(0);
+        indexContentEntry.setAllCount(members.size());
         indexContentDao.addEntry(indexContentEntry);
         List<ObjectId> oids = new ArrayList<ObjectId>();
         for(String st:communityIds){
@@ -505,6 +510,7 @@ public class ExtendedCourseService {
         long current  = System.currentTimeMillis();
         //0  全部   1  报名中   2  学习中   3 已学完
         List<ObjectId> sonIds = new ArrayList<ObjectId>();
+        sonIds.add(userId);
         List<ExtendedCourseEntry> courseEntries = extendedCourseDao.getParentAllEntryList(sonIds, gradeName, schoolId, keyword, status, current, page, pageSize);
         int count = extendedCourseDao.countParentAllEntryList(sonIds, gradeName, schoolId, keyword, status, current);
         //获得身份 ( 学生)

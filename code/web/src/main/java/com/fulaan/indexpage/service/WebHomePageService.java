@@ -407,10 +407,12 @@ public class WebHomePageService {
                         String str = userRecordEntry.getSubjectIds();
                         String[] sArry = str.split(",");
                         StringBuffer subjectName = new StringBuffer();
+                        List<String> subStr = new ArrayList<String>();
                         for (int i = 0;i < sArry.length;i++) {
                             SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(new ObjectId(sArry[i]));
                             if (null != subjectClassEntry) {
                                 subjectName.append(subjectClassEntry.getName());
+                                subStr.add(subjectClassEntry.getName());
                                 if (i < sArry.length-1) {
                                     subjectName.append(",");
                                 }
@@ -418,6 +420,7 @@ public class WebHomePageService {
                             }
                             
                         }
+                        detailDTO.setSubjectNameList(subStr);
                         detailDTO.setSubjectName(subjectName.toString());
                     }
                     
@@ -508,11 +511,13 @@ public class WebHomePageService {
                 } else {
                     String str = detailEntry.getSubjectIds();
                     String[] sArry = str.split(",");
+                    List<String> subStr = new ArrayList<String>();
                     StringBuffer subjectName = new StringBuffer();
                     for (int i = 0;i < sArry.length;i++) {
                         SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(new ObjectId(sArry[i]));
                         if (null != subjectClassEntry) {
                             subjectName.append(subjectClassEntry.getName());
+                            subStr.add(subjectClassEntry.getName());
                             if (i < sArry.length-1) {
                                 subjectName.append(",");
                             }
@@ -520,6 +525,7 @@ public class WebHomePageService {
                         }
                         
                     }
+                    detailDTO.setSubjectNameList(subStr);
                     detailDTO.setSubjectName(subjectName.toString());
                 }
                 

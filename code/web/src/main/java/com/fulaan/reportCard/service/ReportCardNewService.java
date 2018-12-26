@@ -4752,17 +4752,13 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
                     }
                     
                     multiDto.setScoreLevel(scoreLevelStrArry[i]);
-                    if ("-1".equals(bcArry[i])) {
-                        multiDto.setBc("缺");
-                    } else if ("-2".equals(bcArry[i]) || StringUtils.isBlank(bcArry[i])) {
+                    if ("-1".equals(bcArry[i])|| "-2".equals(bcArry[i]) || StringUtils.isBlank(bcArry[i])) {
                         multiDto.setBc("");
                     } else{
                         multiDto.setBc(String.valueOf(new BigDecimal(bcArry[i]).intValue()));
                     }
                     
-                    if ("-1".equals(xcArry[i])) {
-                        multiDto.setXc("缺");
-                    } else if ("-2".equals(xcArry[i]) || StringUtils.isBlank(xcArry[i])) {
+                    if ("-1".equals(xcArry[i])||"-2".equals(xcArry[i]) || StringUtils.isBlank(xcArry[i])) {
                         multiDto.setXc("");
                     } else {
                         multiDto.setXc(String.valueOf(new BigDecimal(xcArry[i]).intValue()));

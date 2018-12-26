@@ -47,7 +47,7 @@ public class ExtendedCourseDTO {
     private List<Attachement> voiceList=new ArrayList<Attachement>();     //提交
 
     private int status; //0  全部   1  报名中   2  学习中   3 已学完
-    private int stage;//   1 报名未开始   2 报名进行中  3 火速报名进行中  4 报名已抢光  5 已报名  6 报名已结束 （针对报名中）
+    private int stage;//   1 报名未开始   2 报名进行中  3 火速报名进行中  4 报名已抢光  5 已报名  6 报名已结束 （针对报名中） 7 已入选已结束
     private int role;  // 1 老师  2 家长  3 学生
     private static final String[] gradeString = new String[]{"","一年级","二年级","三年级","四年级","五年级","六年级","初一","初二","初三","高一","高二","高三"};
     public  String getGrade(List<String> gradeList){

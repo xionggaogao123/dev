@@ -43,10 +43,7 @@ import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -4370,7 +4367,7 @@ public class ExcellentCoursesService {
         return map;
     }
 
-    public  Map<String,Object>  selectAllUserClassDesc(ObjectId id) throws  Exception{
+    public  Map<String,Object>  selectAllUserClassDesc(ObjectId id,int page,int pageSize) throws  Exception{
         Map<String,Object> map = new HashMap<String, Object>();
         ExcellentCoursesEntry excellentCoursesEntry =  excellentCoursesDao.getEntry(id);
         //CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(id);
@@ -4389,7 +4386,7 @@ public class ExcellentCoursesService {
             String str = classOrderEntry.getParentId().toString()+"&"+classOrderEntry.getUserId().toString();
             entryMap.put(str,classOrderEntry);
         }
-        List<UserEntry> userEntryList = userDao.getUserEntryList(userIds, Constant.FIELDS);
+        List<UserEntry> userEntryList = userDao.getPageUserEntryList(userIds, Constant.FIELDS, page, pageSize);
         List<Map<String,Object>> cols = new ArrayList<Map<String, Object>>();
         List<Map<String,Object>> tableData = new ArrayList<Map<String, Object>>();
         Map<String,Object> map1 = new HashMap<String, Object>();
@@ -4432,6 +4429,7 @@ public class ExcellentCoursesService {
             }
             tableData.add(map3);
         }
+        map.put("count",userIds.size());
         map.put("cols",cols);
         map.put("tableData",tableData);
         return map;
@@ -4458,6 +4456,8 @@ public class ExcellentCoursesService {
         String sheetName = "课程《"+excellentCoursesEntry.getTitle()+"》用户上课情况列表";
 
         HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFCellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
         HSSFSheet sheet;
         try {
             sheet = wb.createSheet(sheetName);
@@ -4468,20 +4468,47 @@ public class ExcellentCoursesService {
         sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
         HSSFRow rowZero = sheet.createRow(0);
         HSSFCell cellZero = rowZero.createCell(0);
-        cellZero.setCellValue("共计"+userEntryList.size()+"份记录");
+        cellZero.setCellValue(excellentCoursesEntry.getTitle() + "上课详情");
 
         HSSFRow row = sheet.createRow(1);
 
         int index3 = 0;
+        int row3 = 1;
+        int in = 0;
         HSSFCell cell = row.createCell(0);
         cell.setCellValue("用户名");
+        cell.setCellStyle(cellStyle);
         for(HourClassEntry hourClassEntry:hourClassEntries){
             index3++;
             cell = row.createCell(index3);
-            cell.setCellValue("第"+index3+"课时\n是否进入|进入时间");
+            cell.setCellStyle(cellStyle);
+            in++;
+            cell.setCellValue("第"+in+"课时");
+            cell.setCellStyle(cellStyle);
+            index3++;
+            cell = row.createCell(index3);
+            cell.setCellValue("");
+            sheet.addMergedRegion(new CellRangeAddress(1, 1, row3, row3+1));
+            row3++;
+            row3++;
         }
         int rowLine = 2;
-
+        HSSFRow rowItem2 = sheet.createRow(rowLine);
+        int index8 = 0;
+        cell = rowItem2.createCell(index8);
+        cell.setCellValue("");
+        cell.setCellStyle(cellStyle);
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            index8++;
+            cell = rowItem2.createCell(index8);
+            cell.setCellValue("是否进入");
+            cell.setCellStyle(cellStyle);
+            index8++;
+            cell = rowItem2.createCell(index8);
+            cell.setCellValue("进入时间");
+            cell.setCellStyle(cellStyle);
+        }
+        rowLine++;
         HSSFRow rowItem;
         HSSFCell cellItem;
         for(UserEntry userEntry:userEntryList){
@@ -4497,7 +4524,12 @@ public class ExcellentCoursesService {
                 cellItem = rowItem.createCell(index);
                 if(classOrderEntry==null){
                     //未购买
-                    cellItem.setCellValue("未购买，-");
+                    cellItem.setCellValue("未购买");
+                    cellItem.setCellStyle(cellStyle);
+                    index++;
+                    cellItem = rowItem.createCell(index);
+                    cellItem.setCellStyle(cellStyle);
+                    cellItem.setCellValue("-");
                 }else{
                     if(classOrderEntry.getType()==0){
                         String createTime = "";
@@ -4507,10 +4539,20 @@ public class ExcellentCoursesService {
                             createTime = "未记录";
                         }
                         //已进入
-                        cellItem.setCellValue("已进入，"+createTime);
+                        cellItem.setCellValue("已进入");
+                        cellItem.setCellStyle(cellStyle);
+                        index++;
+                        cellItem = rowItem.createCell(index);
+                        cellItem.setCellStyle(cellStyle);
+                        cellItem.setCellValue(createTime);
                     }else{
                         //未进入
-                        cellItem.setCellValue("未进入，-");
+                        cellItem.setCellValue("未进入");
+                        cellItem.setCellStyle(cellStyle);
+                        index++;
+                        cellItem = rowItem.createCell(index);
+                        cellItem.setCellStyle(cellStyle);
+                        cellItem.setCellValue("-");
                     }
                 }
             }

@@ -74,7 +74,11 @@ public class IndexContentDTO {
         this.tag="";
         this.subject=entry.getSubject();
         this.title=entry.getTitle();
-        this.content= NewStringUtil.toGoodJsonStr(entry.getContent());
+        if(entry.getContent()!=null){
+            this.content= NewStringUtil.toGoodJsonStr(entry.getContent());
+        }else{
+            this.content="";
+        }
         this.groupName=entry.getGroupName();
         List<VideoEntry> videoEntries=entry.getVideoList();
         for(VideoEntry videoEntry:videoEntries){

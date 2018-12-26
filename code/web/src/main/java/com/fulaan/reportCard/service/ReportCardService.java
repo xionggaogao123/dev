@@ -55,6 +55,7 @@ import com.db.reportCard.ReportCardSignDao;
 import com.db.reportCard.VirtualAndUserDao;
 import com.db.reportCard.VirtualCommunityDao;
 import com.db.reportCard.VirtualUserDao;
+import com.db.user.UserDao;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.count.service.CountService;
@@ -79,6 +80,7 @@ import com.fulaan.user.service.TestTable;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
+import com.mongodb.BasicDBObject;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
@@ -1864,12 +1866,23 @@ public class ReportCardService {
             if (null != map.get(communityEntry.getID())) {
                 userDTO.setUserCount(map.get(communityEntry.getID()).getUserCount());
                 userDTO.setFileName(map.get(communityEntry.getID()).getFileName());
-                userDTO.setSheZhang(mapp.get(communityEntry.getID()));
+                if (StringUtils.isNotBlank(mapp.get(communityEntry.getID()))) {
+                    userDTO.setSheZhang(mapp.get(communityEntry.getID()));
+                } else {
+                    if (communityEntry.getOwerID() != null) {
+                        UserEntry user = userDao.getUserEntry(communityEntry.getOwerID(), new BasicDBObject());
+                        userDTO.setSheZhang(user.getNickName());
+                    }
+                    
+                }
+                
             }
             virtualCommunityUserDTOs.add(userDTO);
         }
         return virtualCommunityUserDTOs;
     }
+    
+    private UserDao userDao = new UserDao();
 
     public void removeVirtualUserList(ObjectId communityId) {
         VirtualCommunityEntry virtualCommunityEntry=virtualCommunityDao.findntryByCommunityId(communityId);

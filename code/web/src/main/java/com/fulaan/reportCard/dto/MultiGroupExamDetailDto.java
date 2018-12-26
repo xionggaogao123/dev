@@ -29,6 +29,8 @@ public class MultiGroupExamDetailDto {
     
     private String grade;
     
+    private boolean isOwn;
+    
     
     
     public MultiGroupExamDetailDto() {
@@ -119,6 +121,14 @@ public class MultiGroupExamDetailDto {
 
     public void setSubjectIds(String subjectIds) {
         this.subjectIds = subjectIds;
+    }
+
+    public boolean isOwn() {
+        return isOwn;
+    }
+
+    public void setOwn(boolean isOwn) {
+        this.isOwn = isOwn;
     }
     
     

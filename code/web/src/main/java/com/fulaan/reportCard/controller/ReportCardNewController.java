@@ -797,6 +797,25 @@ public class ReportCardNewController extends BaseController {
          
          /**
          *
+         * @param examGroupDetailId
+         * @param response
+         */
+        @ApiOperation(value = "导出成绩", httpMethod = "GET", produces = "application/json")
+        @RequestMapping("/exportTemplateMultiWithData/{examGroupDetailId}")
+        @ResponseBody
+        public void exportTemplateMultiWithData(@PathVariable @ObjectIdType ObjectId examGroupDetailId,
+                                   HttpServletResponse response,
+                                   HttpServletRequest request) {
+            try {
+                reportCardService.exportTemplateMultiWithData(request,examGroupDetailId, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+         
+         
+         /**
+         *
          * @param request
          * @return
          * @throws Exception

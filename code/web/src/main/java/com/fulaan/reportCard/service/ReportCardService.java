@@ -1768,7 +1768,7 @@ public class ReportCardService {
     public List<GradeDto> getGradeDto(ObjectId userId, String flag) {
         List<GradeDto> gradeDtoList = new ArrayList<GradeDto>();
         if (StringUtils.isNotBlank(flag)) {
-            GradeDto gd = new GradeDto("", "请选择");
+            GradeDto gd = new GradeDto("", "全部年级");
             gradeDtoList.add(gd);
         }
         

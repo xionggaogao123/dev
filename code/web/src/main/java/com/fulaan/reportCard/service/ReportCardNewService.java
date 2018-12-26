@@ -74,6 +74,7 @@ import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by scott on 2017/9/30.
@@ -3669,7 +3670,7 @@ public class ReportCardNewService {
         if (StringUtils.isBlank(isWithN)) {
             CommunityDTO oo = new CommunityDTO();
             oo.setId("");
-            oo.setName("请选择");
+            oo.setName("全部班级");
             cDto.add(oo);
         }
         
@@ -3750,6 +3751,11 @@ public class ReportCardNewService {
                     
                 }
                 o.setSubjectName(s);
+                if (m.getUserId().equals(userId)) {
+                    o.setOwn(true);
+                } else {
+                    o.setOwn(false);
+                }
                 med.add(o);
             }
             count = multiGroupExamDetailDao.getMappingDatas(cIdL);
@@ -3781,6 +3787,11 @@ public class ReportCardNewService {
                         
                     }
                     o.setSubjectName(s);
+                    if (m.getUserId().equals(userId)) {
+                        o.setOwn(true);
+                    } else {
+                        o.setOwn(false);
+                    }
                     med.add(o);
                 }
                 count = multiGroupExamDetailDao.getMappingDatas(cidList);
@@ -3929,6 +3940,11 @@ public class ReportCardNewService {
     
     //删除
     public void delMultiGroupExam(String id) throws Exception{
+        MultiGroupExamDetailEntry entry = multiGroupExamDetailDao.getEntry(new ObjectId(id));
+        long current=System.currentTimeMillis();
+        if(entry.getSubmitTime() >current-24*60*60*1000) {
+            throw new Exception("已过有效时间！");
+        }
         multiGroupExamDetailDao.updateGroupExamDetailEntry(new ObjectId(id), Constant.ONE);
     }
     
@@ -4164,6 +4180,215 @@ public class ReportCardNewService {
         String userAgent = request.getHeader("USER-AGENT");
         HSSFUtils.exportExcel(userAgent,response, wb, fileName);   
     }
+    
+    
+    
+    public void exportTemplateMultiWithData(HttpServletRequest request,ObjectId examGroupDetailId, HttpServletResponse response) {
+        MultiGroupExamDetailEntry detailEntry = multiGroupExamDetailDao.getEntry(examGroupDetailId);
+        //List<GroupExamUserRecordDTO> recordDTOs = searchRecordStudentScoresNew(examGroupDetailId);
+        HSSFWorkbook wb = new HSSFWorkbook();
+      //合并的单元格样式
+        HSSFCellStyle boderStyle = wb.createCellStyle();
+        //垂直居中
+        boderStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        boderStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+        //设置一个边框
+        boderStyle.setBorderTop(HSSFBorderFormatting.BORDER_THICK);
+   
+        if (null != detailEntry) {
+            List<ObjectId> cmId = detailEntry.getCommunityId();
+            for (ObjectId o : cmId) {
+                List<GroupExamUserRecordDTO> recordDTOs = this.searchRecordStudentScoresNew(examGroupDetailId, o);
+                CommunityEntry c = communityDao.findByObjectId(o);
+                String sheetName = c.getCommunityName();
+                
+                HSSFSheet sheet = wb.createSheet(sheetName);
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
+                
+                
+                HSSFRow rowZero = sheet.createRow(0);
+                HSSFCell cellZero = rowZero.createCell(0);
+                //cellZero.setCellValue("缺（免）考：如考生成绩不计入总分，则填写“缺”；");
+              cellZero.setCellValue(detailEntry.getExamName());
+              
+              
+                HSSFRow row = sheet.createRow(1);
+               
+
+                HSSFCell cell = row.createCell(0);
+                cell.setCellValue("姓名");
+
+        
+                
+                String scoreName = "";
+                if (detailEntry.getRecordScoreType() == 1) {
+                    scoreName = "考试分值";
+                } else {
+                    scoreName = "等第分值";
+                }
+
+                for (GroupExamUserRecordDTO g : recordDTOs) {
+                    String[] ss = g.getSubjectId().split(",");
+                    for (int i =0;i<ss.length;i++) {
+                        SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(ss[i]));
+                        cell = row.createCell(1+i*3);
+                        cell.setCellValue(sc.getName());
+                    }
+                    
+                }
+                String[] sss;
+                if (CollectionUtils.isNotEmpty(recordDTOs)) {
+                    sss = recordDTOs.get(0).getSubjectId().split(",");
+                } else {
+                    sss = new String[] {};
+                }
+                
+                if (sss.length>1) {
+                    cell = row.createCell(1+(sss.length)*3);
+                    cell.setCellValue("总分"+scoreName);
+
+                    
+                }
+                
+           
+                HSSFRow row2 = sheet.createRow(2);
+                int kk = 1;
+                String[] ss;
+                if (CollectionUtils.isNotEmpty(recordDTOs)) {
+                    ss = recordDTOs.get(0).getSubjectId().split(",");
+                } else {
+                    ss = new String[] {};
+                }
+              
+                
+                
+                for (int i =0;i<ss.length;i++) {
+                    //SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(ss[i]));
+                    cell = row2.createCell(kk);
+                    if (detailEntry.getRecordScoreType() == 1) {
+                        cell.setCellValue("分数");
+                    } else {
+                        cell.setCellValue("等第");
+                    }
+                    
+                    kk++;
+                    cell = row2.createCell(kk);
+                    cell.setCellValue("班次");
+                    kk++;
+                    cell = row2.createCell(kk);
+                    cell.setCellValue("校次");
+                    kk++;
+                }
+                    
+               
+                
+                
+                if (sss.length>1) {
+                    cell = row2.createCell(kk);
+                    if (detailEntry.getRecordScoreType() == 1) {
+                        cell.setCellValue("分数");
+                    } else {
+                        cell.setCellValue("等第");
+                    }
+                    kk++;
+                    cell = row2.createCell(kk);
+                    cell.setCellValue("班次");
+                    kk++;
+                    cell = row2.createCell(kk);
+                    cell.setCellValue("校次");
+                    kk++;
+
+                    
+                }
+
+                int rowLine = 3;
+
+                HSSFRow rowItem;
+                HSSFCell cellItem;
+                for (GroupExamUserRecordDTO recordDTO : recordDTOs) {
+
+                    rowItem = sheet.createRow(rowLine);
+
+                
+
+                    cellItem = rowItem.createCell(0);
+                    cellItem.setCellValue(recordDTO.getUserName());
+
+                
+                    
+                    for (GroupExamUserRecordDTO g : recordDTOs) {
+                        String[] ssd = g.getSubjectId().split(",");
+                        String[] scoreStrStr = g.getScoreStr().split(",");
+                        String[] scoreLevelStrStr = g.getScoreLevelStr().split(",");
+                        String[] bcArray = g.getBc().split(",");
+                        String[] xcArray = g.getXc().split(",");
+                        for (int i =0;i<ssd.length;i++) {
+                            //分数
+                            cellItem = rowItem.createCell(1+i);
+                            if (detailEntry.getRecordScoreType() == 1) {
+                                
+                                cellItem.setCellValue(compareScore(scoreStrStr[i]));
+                            } else {
+                                cellItem.setCellValue(compareScoreLevel(Integer.valueOf(scoreLevelStrStr[i])));
+                            }
+                            //班次
+                            cellItem = rowItem.createCell(2+i);
+                            cellItem.setCellValue(compareScore(bcArray[i]));
+                            //校次
+                            cellItem = rowItem.createCell(3+i);
+                            cellItem.setCellValue(compareScore(xcArray[i]));
+                        }
+                        if (ss.length>1) {
+                            
+                            cellItem = rowItem.createCell(1+ssd.length);
+                            
+                            if (detailEntry.getRecordScoreType() == 1) {
+                                
+                                cellItem.setCellValue(compareScore(scoreStrStr[scoreStrStr.length-1]));
+                            } else {
+                                cellItem.setCellValue(compareScoreLevel(Integer.valueOf(scoreLevelStrStr[scoreLevelStrStr.length-1])));
+                            }
+                            
+                          //班次
+                            cellItem = rowItem.createCell(2+ssd.length);
+                            cellItem.setCellValue(compareScore(bcArray[bcArray.length-1]));
+                            //校次
+                            cellItem = rowItem.createCell(3+ssd.length);
+                            cellItem.setCellValue(compareScore(xcArray[xcArray.length-1]));
+                            
+                        }
+                    }
+                    
+                    rowLine++;
+                    
+                }
+
+                CellRangeAddress cra = new CellRangeAddress(1, 2, 0, 0);
+                sheet.addMergedRegion(cra);
+             
+              
+                
+                for (int i =0;i<ss.length;i++) {
+                    CellRangeAddress craa = new CellRangeAddress(1, 1, 1+3*i,3*(i+1) );
+                    sheet.addMergedRegion(craa);
+                }
+                    
+              
+         
+                if (sss.length>1) {
+                    CellRangeAddress craaa = new CellRangeAddress(1, 1, 1+3*(sss.length),3*(sss.length+1));
+                    sheet.addMergedRegion(craaa);
+
+                    
+                }
+            }
+           }
+        String fileName =  detailEntry.getExamName() + ".xls";
+        String userAgent = request.getHeader("USER-AGENT");
+        HSSFUtils.exportExcel(userAgent,response, wb, fileName);   
+    }
+    
+    
     
     
 public void importTemplateMulti(String groupExamId,InputStream inputStream) throws Exception {
@@ -4565,6 +4790,9 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
                     } else if (!"缺".equals(m.getScore().trim()) && StringUtils.isNotBlank(m.getScore()) && new BigDecimal(m.getScore()).compareTo(new BigDecimal(list.get(ii).getMaxScore())) > 0) {
                         throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门分数超最大值");
                     }
+                    if (m.getScore().contains("-")) {
+                        throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门分数不能为负数");
+                    }
                     if ("缺".equals(m.getScore().trim())) {
                         scoreStr.append("-1").append(",");
                     } else if (StringUtils.isBlank(m.getScore())) {
@@ -4574,16 +4802,28 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
                     }
                     
                     scoreLevelStr.append(m.getScoreLevel()).append(",");
-                    if((!org.apache.commons.lang.math.NumberUtils.isNumber(m.getBc())) && !"缺".equals(m.getBc().trim()) && StringUtils.isNotBlank(m.getBc())) {
-                        throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门班次格式不对");
-                    } 
-                    if((!org.apache.commons.lang.math.NumberUtils.isNumber(m.getXc())) && !"缺".equals(m.getXc().trim()) && StringUtils.isNotBlank(m.getXc())) {
-                        throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门校次格式不对");
-                    } 
+                    Pattern pattern = Pattern.compile("^[1-9]\\d*$");
+                    if (StringUtils.isNotBlank(m.getBc())) {
+                        if((!org.apache.commons.lang.math.NumberUtils.isNumber(m.getBc())) && (!"缺".equals(m.getBc().trim()))) {
+                            throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门班次必须是正整数");
+                        }
+                        if ((!pattern.matcher(m.getBc()).matches()) && (!"缺".equals(m.getBc().trim()))) {
+                            throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门班次必须是正整数");
+                        }
+                    }
+                    if (StringUtils.isNotBlank(m.getXc())) { 
+                        if((!org.apache.commons.lang.math.NumberUtils.isNumber(m.getXc())) && (!"缺".equals(m.getXc().trim()))) {
+                            throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门校次必须是正整数");
+                        } 
+                        if ((!pattern.matcher(m.getXc()).matches()) && (!"缺".equals(m.getXc().trim()))) {
+                            throw new Exception("第"+(i+1)+"页"+mpd.get(j).getUserName()+"的第"+(ii+1)+"门校次必须是正整数");
+                        }
+                    }
+                    
                     if ("缺".equals(m.getBc().trim())) {
                         bc.append("-1").append(",");
                     } else if (StringUtils.isBlank(m.getBc())) {
-                        bc.append("-2").append(",");
+                        bc.append("-1").append(",");
                     } else {
                         bc.append(m.getBc()).append(",");
                     }
@@ -4591,7 +4831,7 @@ public void importTemplateMulti(String groupExamId,InputStream inputStream) thro
                     if ("缺".equals(m.getXc().trim())) {
                         xc.append("-1").append(",");
                     } else if (StringUtils.isBlank(m.getXc())) {
-                        xc.append("-2").append(",");
+                        xc.append("-1").append(",");
                     } else {
                         xc.append(m.getXc()).append(",");
                     }

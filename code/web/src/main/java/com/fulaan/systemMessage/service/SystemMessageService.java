@@ -814,7 +814,7 @@ public class SystemMessageService extends BaseService {
         if(newVersionBindRelationEntry==null){
             return;
         }
-        ObjectId userId = new ObjectId();
+        ObjectId userId = newVersionBindRelationEntry.getMainUserId();
         String week = weekString[extendedCourseEntry.getWeek()];
         int lesson = extendedCourseEntry.getLessonType();
         String st = "";

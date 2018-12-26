@@ -1039,11 +1039,13 @@ public class WebExcellentCoursesController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectAllUserClassDesc")
     @ResponseBody
-    public String selectAllUserClassDesc(@ApiParam(name = "id", required = true, value = "id") @RequestParam String id){
+    public String selectAllUserClassDesc(@ApiParam(name = "id", required = true, value = "id") @RequestParam String id,
+                                         @ApiParam(name = "page", required = true, value = "page") @RequestParam int page,
+                                         @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam int pageSize){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> message= excellentCoursesService.selectAllUserClassDesc(new ObjectId(id));
+            Map<String,Object> message= excellentCoursesService.selectAllUserClassDesc(new ObjectId(id),page,pageSize);
             respObj.setMessage(message);
         } catch (Exception e) {
             e.printStackTrace();

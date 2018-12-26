@@ -731,6 +731,10 @@ public class ExtendedCourseService {
             dto.setStage(1);
         }else if(entry.getApplyEndTime()<current){
             dto.setStage(6);
+            List<ObjectId> userIds = entry.getUserSelectedList();
+            if(userIds.contains(userId)){
+                dto.setStage(5);
+            }
         }else {
             if (entry.getType() == 1) {//抢课
                 dto.setStage(2);
@@ -1764,8 +1768,11 @@ public class ExtendedCourseService {
             }
             return;
         }
+        //该班级人数
+        Set<ObjectId> set = setMap.get(communityId);
         //总人数
         //加入选择的人
+        userIds.removeAll(set);
         userIds.addAll(selectList);
         int allCount = userIds.size();
         if(allCount >extendedCourseEntry.getUserAllNumber()){//抢课
@@ -1776,7 +1783,6 @@ public class ExtendedCourseService {
         if(extendedCourseEntry.getClassUserNumber() !=0 && communityCount >extendedCourseEntry.getClassUserNumber()){//抢课
             throw new Exception("超过课程班级限制人数限制！");
         }
-        Set<ObjectId> set = setMap.get(communityId);
         if(set!=null){
             set.removeAll(selectList);
             if(set.size()>0){

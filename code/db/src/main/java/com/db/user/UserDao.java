@@ -186,6 +186,17 @@ public class UserDao extends BaseDao {
         return retList;
     }
 
+
+    public List<UserEntry> getPageUserEntryList(Collection<ObjectId> ids, DBObject fields,int page,int pageSize) {
+        List<UserEntry> retList = new ArrayList<UserEntry>();
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids)).append("ir", Constant.ZERO);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query,fields,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        for (DBObject dbo : list) {
+            retList.add(new UserEntry((BasicDBObject) dbo));
+        }
+        return retList;
+    }
+
     /**
      * 根据id集合查询多个用户
      *

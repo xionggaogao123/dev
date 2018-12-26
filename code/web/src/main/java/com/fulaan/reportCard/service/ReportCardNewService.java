@@ -3688,13 +3688,13 @@ public class ReportCardNewService {
         
         List<ObjectId> communityIds2 = new ArrayList<ObjectId>();
         Map<String,Object> map = extendedCourseService.getUserRole(userId);
-        /*if((Boolean)map.get("isHeader")) {*/
+        if((Boolean)map.get("isHeader")) {
             String schoolId = (String)map.get("schoolId");
             List<ObjectId> schoolIdList = new ArrayList<ObjectId>();
             schoolIdList.add(new ObjectId(schoolId));
           //已绑定的社群集合
             communityIds2 =  schoolCommunityDao.getCommunityIdsList(schoolIdList);
-        /*} */
+        } 
         
         List<ObjectId> idss = memberDao.getGroupIdsList(userId);
         List<ObjectId> communityIds3  = groupDao.getCommunitysIdsgroupIdList(idss);
@@ -3955,7 +3955,7 @@ public class ReportCardNewService {
     public void delMultiGroupExam(String id) throws Exception{
         MultiGroupExamDetailEntry entry = multiGroupExamDetailDao.getEntry(new ObjectId(id));
         long current=System.currentTimeMillis();
-        if(entry.getSubmitTime() >current-24*60*60*1000) {
+        if(entry.getSubmitTime() <current-24*60*60*1000) {
             throw new Exception("已过有效时间！");
         }
         multiGroupExamDetailDao.updateGroupExamDetailEntry(new ObjectId(id), Constant.ONE);

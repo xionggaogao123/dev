@@ -2650,6 +2650,8 @@ public class CommunityService {
                 msg="通知";
             }else{
                 msg="火热分享";
+                //删除首页记录
+                indexPageDao.delEntry(id);
                 PictureRunNable.deleteTongzhi(entry.getCommunityId().toString(), entry.getCommunityUserId().toString(), 3, entry.getCommunityTitle());
             }
             fInformationService.sendSystemMessage(entry.getCommunityUserId(),"你的"+msg+"\""+title+"\"已被管理员删除");

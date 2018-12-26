@@ -739,7 +739,7 @@ public class ExtendedCourseService {
             dto.setStage(6);
             List<ObjectId> userIds = entry.getUserSelectedList();
             if(userIds.contains(userId)){
-                dto.setStage(5);
+                dto.setStage(7);
             }
         }else {
             if (entry.getType() == 1) {//抢课
@@ -1778,7 +1778,9 @@ public class ExtendedCourseService {
         Set<ObjectId> set = setMap.get(communityId);
         //总人数
         //加入选择的人
-        userIds.removeAll(set);
+        if(set!=null){
+            userIds.removeAll(set);
+        }
         userIds.addAll(selectList);
         int allCount = userIds.size();
         if(allCount >extendedCourseEntry.getUserAllNumber()){//抢课

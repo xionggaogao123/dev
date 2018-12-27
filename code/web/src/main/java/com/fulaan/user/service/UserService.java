@@ -496,12 +496,12 @@ public class UserService extends BaseService {
                 return validate;
             }
 
-//            if(StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
-//                String cacheUserKey=CacheHandler.getUserKey(e.getID().toString());
-//                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey);
-//                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY, e.getID().toString());
-//                CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY, cacheUserKey);
-//            }
+            if(StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
+                String cacheUserKey=CacheHandler.getUserKey(e.getID().toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey);
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY, e.getID().toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY, cacheUserKey);
+            }
             CacheHandler.setCacheStudentUserKey(e.getID().toString(),Constant.SECONDS_IN_HALF_YEAR);
         }else if(type==3){
             if (null != newVersionUserRoleDao.getEntry(e.getID())) {

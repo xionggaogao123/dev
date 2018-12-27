@@ -1825,6 +1825,7 @@ public class ReportCardService {
         
         List<VirtualCommunityUserDTO> virtualCommunityUserDTOs
                 = new ArrayList<VirtualCommunityUserDTO>();
+        
         List<ObjectId> communityIds = new ArrayList<ObjectId>();
         List<CommunityEntry> entries = new ArrayList<CommunityEntry>();
         if (StringUtils.isNotBlank(communityId)) {
